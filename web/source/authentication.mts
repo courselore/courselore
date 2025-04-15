@@ -923,7 +923,7 @@ export default async (application: Application): Promise<void> => {
                           .systemAdministratorEmail ??
                         "system-administrator@courselore.org"}?${new URLSearchParams(
                           {
-                            subject: "Potential sign up impersonation",
+                            subject: "Potential impersonation",
                             body: `Email: ${request.body.email}`,
                           },
                         )
@@ -1098,13 +1098,13 @@ export default async (application: Application): Promise<void> => {
               'email',
               ${new Date().toISOString()},
               ${JSON.stringify({
-                to: request.body.email,
+                to: request.state.user.email,
                 subject: "Email verification",
                 html: html`
                   <p>
                     Someone signed up to Courselore with the following email
                     address:
-                    <code>${request.body.email!}</code>
+                    <code>${request.state.user.email}</code>
                   </p>
                   <p>
                     If it was you, please confirm your email:
@@ -1126,8 +1126,8 @@ export default async (application: Application): Promise<void> => {
                         .systemAdministratorEmail ??
                       "system-administrator@courselore.org"}?${new URLSearchParams(
                         {
-                          subject: "Potential sign up impersonation",
-                          body: `Email: ${request.body.email}`,
+                          subject: "Potential impersonation",
+                          body: `Email: ${request.state.user.email}`,
                         },
                       )
                         .toString()
@@ -1349,7 +1349,7 @@ export default async (application: Application): Promise<void> => {
                       .systemAdministratorEmail ??
                     "system-administrator@courselore.org"}?${new URLSearchParams(
                       {
-                        subject: "Potential sign up impersonation",
+                        subject: "Potential impersonation",
                         body: `Email: ${request.state.user.emailVerificationEmail}`,
                       },
                     )
@@ -1818,13 +1818,13 @@ export default async (application: Application): Promise<void> => {
             'email',
             ${new Date().toISOString()},
             ${JSON.stringify({
-              to: request.body.email,
+              to: request.state.user.email,
               subject: "Sign in",
               html: html`
                 <p>
                   Someone signed in to Courselore with the following email
                   address:
-                  <code>${request.body.email!}</code>
+                  <code>${request.state.user.email}</code>
                 </p>
                 <p>
                   If it was not you, please report the issue to
@@ -1833,8 +1833,8 @@ export default async (application: Application): Promise<void> => {
                       .systemAdministratorEmail ??
                     "system-administrator@courselore.org"}?${new URLSearchParams(
                       {
-                        subject: "Potential sign up impersonation",
-                        body: `Email: ${request.body.email}`,
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user.email}`,
                       },
                     )
                       .toString()
