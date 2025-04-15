@@ -1250,8 +1250,7 @@ export default async (application: Application): Promise<void> => {
                                     this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
                                   `}"
                                 ></span>
-                                before you can request the email verification to
-                                be sent again.
+                                before you can request a new email verification.
                               </p>
                             `
                           : html`
@@ -1259,7 +1258,7 @@ export default async (application: Application): Promise<void> => {
                                 type="submit"
                                 class="button button--rectangle button--blue"
                               >
-                                Resend email verification
+                                Send new email verification
                               </button>
                             `}
                       </div>
