@@ -1310,16 +1310,17 @@ export default async (application: Application): Promise<void> => {
         request.state.user.emailVerificationCreatedAt
       )
         throw "validation";
-      const emailVerificationNonce = cryptoRandomString({
+      request.state.user.emailVerificationNonce = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
+      request.state.user.emailVerificationCreatedAt = new Date().toISOString();
       application.database.run(
         sql`
           update "users"
           set
-            "emailVerificationNonce" = ${emailVerificationNonce},
-            "emailVerificationCreatedAt" = ${new Date().toISOString()}
+            "emailVerificationNonce" = ${request.state.user.emailVerificationNonce},
+            "emailVerificationCreatedAt" = ${request.state.user.emailVerificationCreatedAt}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -1346,11 +1347,12 @@ export default async (application: Application): Promise<void> => {
                   If it was you, please confirm your email:
                   <a
                     href="https://${application.configuration
-                      .hostname}/authentication/email-verification/${emailVerificationNonce}${request
-                      .URL.search}"
+                      .hostname}/authentication/email-verification/${request
+                      .state.user.emailVerificationNonce}${request.URL.search}"
                     >https://${application.configuration
-                      .hostname}/authentication/email-verification/${emailVerificationNonce}${request
-                      .URL.search}</a
+                      .hostname}/authentication/email-verification/${request
+                      .state.user.emailVerificationNonce}${request.URL
+                      .search}</a
                   >
                 </p>
                 <p>
