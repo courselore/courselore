@@ -284,109 +284,14 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.user.email ===
           request.state.user.emailVerificationEmail &&
-        typeof request.state.user.emailVerificationCreatedAt === "string" &&
         !request.URL.pathname.match(
           new RegExp("^/authentication/email-verification(?:$|/)"),
         )
       ) {
-        response.end(
-          application.layouts.main({
-            request,
-            response,
-            head: html`<title>Email verification · Courselore</title>`,
-            body: html`
-              <div
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--size--2);
-                `}"
-              >
-                <div
-                  css="${css`
-                    font-size: var(--font-size--4);
-                    line-height: var(--font-size--4--line-height);
-                    font-weight: 800;
-                  `}"
-                >
-                  Email verification
-                </div>
-                <p>To continue please check your email.</p>
-                <div
-                  type="form"
-                  method="POST"
-                  action="/authentication/email-verification/resend?${new URLSearchParams(
-                    { redirect: request.URL.pathname + request.URL.search },
-                  ).toString()}"
-                  css="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size--4);
-                  `}"
-                >
-                  <label>
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Email
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <input
-                        type="email"
-                        value="${request.state.user.emailVerificationEmail}"
-                        disabled
-                        class="input--text"
-                        css="${css`
-                          flex: 1;
-                        `}"
-                      />
-                    </div>
-                  </label>
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--3);
-                      line-height: var(--font-size--3--line-height);
-                    `}"
-                  >
-                    $${new Date(Date.now() - 5 * 60 * 1000).toISOString() <
-                    request.state.user.emailVerificationCreatedAt
-                      ? html`
-                          <p>
-                            Wait until
-                            <span
-                              javascript="${javascript`
-                                this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
-                              `}"
-                            ></span>
-                            before you can request the email verification to be
-                            sent again.
-                          </p>
-                        `
-                      : html`
-                          <button
-                            type="submit"
-                            class="button button--rectangle button--blue"
-                          >
-                            Resend email verification
-                          </button>
-                        `}
-                  </div>
-                </div>
-              </div>
-            `,
-          }),
+        response.redirect(
+          `/authentication/email-verification?${new URLSearchParams({
+            redirect: request.URL.pathname + request.URL.search,
+          }).toString()}`,
         );
         return;
       }
@@ -1237,13 +1142,15 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect();
+      response.redirect(
+        `/authentication/email-verification${request.URL.search}`,
+      );
     },
   });
 
   application.server?.push({
     method: "GET",
-    pathname: "/authentication/sign-up",
+    pathname: "/authentication/email-verification",
     handler: (
       request: serverTypes.Request<
         {},
@@ -1254,12 +1161,16 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (request.state.user !== undefined) return;
+      if (
+        request.state.user !== undefined &&
+        request.state.user.emailVerificationEmail === null
+      )
+        return;
       response.end(
         application.layouts.main({
           request,
           response,
-          head: html`<title>Sign up · Courselore</title>`,
+          head: html`<title>Email verification · Courselore</title>`,
           body: html`
             <div
               css="${css`
@@ -1275,9 +1186,86 @@ export default async (application: Application): Promise<void> => {
                   font-weight: 800;
                 `}"
               >
-                Sign up
+                Email verification
               </div>
               <p>To continue please check your email.</p>
+              $${request.state.user !== undefined &&
+              typeof request.state.user.emailVerificationEmail === "string" &&
+              typeof request.state.user.emailVerificationCreatedAt === "string"
+                ? html`
+                    <div
+                      type="form"
+                      method="POST"
+                      action="/authentication/email-verification/resend${request
+                        .URL.search}"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--4);
+                      `}"
+                    >
+                      <label>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Email
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <input
+                            type="email"
+                            value="${request.state.user.emailVerificationEmail}"
+                            disabled
+                            class="input--text"
+                            css="${css`
+                              flex: 1;
+                            `}"
+                          />
+                        </div>
+                      </label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                        `}"
+                      >
+                        $${new Date(Date.now() - 5 * 60 * 1000).toISOString() <
+                        request.state.user.emailVerificationCreatedAt
+                          ? html`
+                              <p>
+                                Wait until
+                                <span
+                                  javascript="${javascript`
+                                    this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
+                                  `}"
+                                ></span>
+                                before you can request the email verification to
+                                be sent again.
+                              </p>
+                            `
+                          : html`
+                              <button
+                                type="submit"
+                                class="button button--rectangle button--blue"
+                              >
+                                Resend email verification
+                              </button>
+                            `}
+                      </div>
+                    </div>
+                  `
+                : html``}
             </div>
           `,
         }),
@@ -1377,56 +1365,8 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      response.redirect();
-    },
-  });
-
-  application.server?.push({
-    method: "GET",
-    pathname: "/authentication/email-verification/resend",
-    handler: (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {},
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (
-        request.state.user === undefined ||
-        typeof request.state.user.emailVerificationEmail !== "string" ||
-        typeof request.state.user.emailVerificationNonce !== "string" ||
-        typeof request.state.user.emailVerificationCreatedAt !== "string"
-      )
-        return;
-      response.end(
-        application.layouts.main({
-          request,
-          response,
-          head: html`<title>Email verification · Courselore</title>`,
-          body: html`
-            <div
-              css="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--size--2);
-              `}"
-            >
-              <div
-                css="${css`
-                  font-size: var(--font-size--4);
-                  line-height: var(--font-size--4--line-height);
-                  font-weight: 800;
-                `}"
-              >
-                Email verification
-              </div>
-              <p>To continue please check your email.</p>
-            </div>
-          `,
-        }),
+      response.redirect(
+        `/authentication/email-verification${request.URL.search}`,
       );
     },
   });
@@ -1684,7 +1624,9 @@ export default async (application: Application): Promise<void> => {
             a new email verification.
           </div>
         `);
-        response.redirect(request.search.redirect ?? "/");
+        response.redirect(
+          `/authentication/email-verification${request.URL.search}`,
+        );
         return;
       }
       application.database.run(
@@ -1718,7 +1660,6 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      // TODO: Send email warning about sign in
       if (request.state.user !== undefined) return;
       if (
         typeof request.search.redirect === "string" &&
@@ -1732,24 +1673,112 @@ export default async (application: Application): Promise<void> => {
         request.body.password.length <= 8
       )
         throw "validation";
-      const user = application.database.get<{ id: number; password: string }>(
+      request.state.user = application.database.get<{
+        id: number;
+        publicId: string;
+        name: string;
+        email: string;
+        emailVerificationEmail: string | null;
+        emailVerificationNonce: string | null;
+        emailVerificationCreatedAt: string | null;
+        password: string | null;
+        passwordResetNonce: string | null;
+        passwordResetCreatedAt: string | null;
+        twoFactorAuthenticationEnabled: number;
+        twoFactorAuthenticationSecret: string | null;
+        twoFactorAuthenticationRecoveryCodes: string | null;
+        avatarColor:
+          | "red"
+          | "orange"
+          | "amber"
+          | "yellow"
+          | "lime"
+          | "green"
+          | "emerald"
+          | "teal"
+          | "cyan"
+          | "sky"
+          | "blue"
+          | "indigo"
+          | "violet"
+          | "purple"
+          | "fuchsia"
+          | "pink"
+          | "rose";
+        avatarImage: string | null;
+        userRole:
+          | "userRoleSystemAdministrator"
+          | "userRoleStaff"
+          | "userRoleUser";
+        lastSeenOnlineAt: string;
+        darkMode:
+          | "userDarkModeSystem"
+          | "userDarkModeLight"
+          | "userDarkModeDark";
+        sidebarWidth: number;
+        emailNotificationsForAllMessages: number;
+        emailNotificationsForMessagesIncludingMentions: number;
+        emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+        emailNotificationsForMessagesInConversationsThatYouStarted: number;
+        userAnonymityPreferred:
+          | "userAnonymityPreferredNone"
+          | "userAnonymityPreferredCourseParticipationRoleStudents"
+          | "userAnonymityPreferredCourseParticipationRoleInstructors";
+        mostRecentlyVisitedCourseParticipation: number | null;
+      }>(
         sql`
-          select "id", "password"
+          select
+            "id",
+            "publicId",
+            "name",
+            "email",
+            "emailVerificationEmail",
+            "emailVerificationNonce",
+            "emailVerificationCreatedAt",
+            "password",
+            "passwordResetNonce",
+            "passwordResetCreatedAt",
+            "twoFactorAuthenticationEnabled",
+            "twoFactorAuthenticationSecret",
+            "twoFactorAuthenticationRecoveryCodes",
+            "avatarColor",
+            "avatarImage",
+            "userRole",
+            "lastSeenOnlineAt",
+            "darkMode",
+            "sidebarWidth",
+            "emailNotificationsForAllMessages",
+            "emailNotificationsForMessagesIncludingMentions",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+            "emailNotificationsForMessagesInConversationsThatYouStarted",
+            "userAnonymityPreferred",
+            "mostRecentlyVisitedCourseParticipation"
           from "users"
           where "email" = ${request.body.email};
         `,
       );
       const passwordVerify = await argon2.verify(
-        user?.password ??
+        request.state.user?.password ??
           "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
         request.body.password,
         application.privateConfiguration.argon2,
       );
-      if (user === undefined || !passwordVerify) {
-        response.redirect("/TODO");
+      if (request.state.user === undefined || !passwordVerify) {
+        response.setFlash(html`
+          <div class="flash--red">Invalid email or password.</div>
+        `);
+        response.redirect(`/authentication${request.URL.search}`);
         return;
       }
-      const userSession = application.database.get<{ publicId: string }>(
+      request.state.userSession = application.database.get<{
+        id: number;
+        publicId: string;
+        user: number;
+        createdAt: string;
+        samlIdentifier: string | null;
+        samlSessionIndex: string | null;
+        samlNameID: string | null;
+      }>(
         sql`
           select * from "userSessions" where "id" = ${
             application.database.run(
@@ -1767,7 +1796,7 @@ export default async (application: Application): Promise<void> => {
                     length: 100,
                     type: "alphanumeric",
                   })},
-                  ${user.id},
+                  ${request.state.user.id},
                   ${new Date().toISOString()},
                   ${null},
                   ${null},
@@ -1778,7 +1807,48 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       )!;
-      response.setCookie("session", userSession.publicId);
+      response.setCookie("session", request.state.userSession.publicId);
+      application.database.run(
+        sql`
+          insert into "_backgroundJobs" (
+            "type",
+            "startAt",
+            "parameters"
+          )
+          values (
+            'email',
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              to: request.body.email,
+              subject: "Sign in",
+              html: html`
+                <p>
+                  Someone signed in to Courselore with the following email
+                  address:
+                  <code>${request.body.email!}</code>
+                </p>
+                <p>
+                  If it was not you, please report the issue to
+                  <a
+                    href="mailto:${application.configuration
+                      .systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}?${new URLSearchParams(
+                      {
+                        subject: "Potential sign up impersonation",
+                        body: `Email: ${request.body.email}`,
+                      },
+                    )
+                      .toString()
+                      .replaceAll("+", "%20")}"
+                    >${application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}</a
+                  >
+                </p>
+              `,
+            })}
+          );
+        `,
+      );
       response.redirect(request.search.redirect ?? "/");
     },
   });
