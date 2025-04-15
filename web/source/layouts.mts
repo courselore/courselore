@@ -857,7 +857,11 @@ export default async (application: Application): Promise<void> => {
                         </a>
                       `
                     : html``}
-                  <div type="form" method="DELETE" action="/session">
+                  <div
+                    type="form"
+                    method="POST"
+                    action="/authentication/sign-out"
+                  >
                     <button
                       type="submit"
                       class="button button--rectangle button--transparent button--dropdown-menu"

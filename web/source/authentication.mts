@@ -1851,4 +1851,28 @@ export default async (application: Application): Promise<void> => {
       response.redirect(request.search.redirect ?? "/");
     },
   });
+
+  application.server?.push({
+    method: "POST",
+    pathname: "/authentication/sign-out",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.userSession === undefined) return;
+      application.database.run(
+        sql`
+          delete from "userSessions" where "id" = ${request.state.userSession.id};
+        `,
+      );
+      response.deleteCookie("session");
+      response.redirect("/");
+    },
+  });
 };
