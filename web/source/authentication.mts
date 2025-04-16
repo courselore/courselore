@@ -2077,6 +2077,228 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/authentication/reset-password/(?<passwordResetNonce>[0-9]+)$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        { passwordResetNonce: string },
+        { redirect: string },
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (typeof request.pathname.passwordResetNonce !== "string") return;
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.startsWith("/")
+      )
+        delete request.search.redirect;
+      if (request.state.user !== undefined) {
+        response.setFlash(html`
+          <div class="flash--red">
+            You can’t reset the password because you’re already signed in.
+          </div>
+        `);
+        response.redirect(request.search.redirect ?? "/");
+        return;
+      }
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Reset password · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Reset password
+              </div>
+              <div
+                type="form"
+                method="POST"
+                action="/authentication/reset-password/${request.pathname
+                  .passwordResetNonce}${request.URL.search}"
+                css="${css`
+                  padding: var(--size--2) var(--size--0);
+                  border-bottom: var(--border-width--1) solid
+                    light-dark(
+                      var(--color--slate--200),
+                      var(--color--slate--800)
+                    );
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Password
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="password"
+                      name="password"
+                      required
+                      minlength="8"
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                    />
+                  </div>
+                </label>
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Password confirmation
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="password"
+                      required
+                      minlength="8"
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                      javascript="${javascript`
+                        this.onvalidate = () => {
+                          if (this.value !== this.closest('[type~="form"]').querySelector('[name="password"]').value)
+                            throw new javascript.ValidationError("“Password” and “Password confirmation” don’t match.");
+                        };
+                      `}"
+                    />
+                  </div>
+                </label>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--blue"
+                  >
+                    Reset password
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/authentication/email-verification/(?<emailVerificationNonce>[0-9]+)$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        { emailVerificationNonce: string },
+        { redirect: string },
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.emailVerificationNonce !== "string" ||
+        request.state.user === undefined ||
+        typeof request.state.user.emailVerificationEmail !== "string" ||
+        typeof request.state.user.emailVerificationNonce !== "string" ||
+        typeof request.state.user.emailVerificationCreatedAt !== "string"
+      )
+        return;
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.startsWith("/")
+      )
+        delete request.search.redirect;
+      if (
+        request.state.user.emailVerificationNonce !==
+          request.pathname.emailVerificationNonce ||
+        request.state.user.emailVerificationCreatedAt <
+          new Date(Date.now() - 15 * 60 * 1000).toISOString()
+      ) {
+        response.setFlash(html`
+          <div class="flash--red">
+            There’s something wrong with this email verification. Please request
+            a new email verification.
+          </div>
+        `);
+        response.redirect(
+          `/authentication/email-verification${request.URL.search}`,
+        );
+        return;
+      }
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "email" = ${request.state.user.emailVerificationEmail},
+            "emailVerificationEmail" = null,
+            "emailVerificationNonce" = null,
+            "emailVerificationCreatedAt" = null
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">The email was verified successfully.</div>
+      `);
+      response.redirect(request.search.redirect ?? "/");
+    },
+  });
+
+  application.server?.push({
     method: "POST",
     pathname: "/authentication/sign-out",
     handler: (
