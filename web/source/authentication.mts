@@ -1628,14 +1628,18 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
+      request.state.user.email = request.state.user.emailVerificationEmail;
+      request.state.user.emailVerificationEmail = null;
+      request.state.user.emailVerificationNonce = null;
+      request.state.user.emailVerificationCreatedAt = null;
       application.database.run(
         sql`
           update "users"
           set
-            "email" = ${request.state.user.emailVerificationEmail},
-            "emailVerificationEmail" = null,
-            "emailVerificationNonce" = null,
-            "emailVerificationCreatedAt" = null
+            "email" = ${request.state.user.email},
+            "emailVerificationEmail" = ${request.state.user.emailVerificationEmail},
+            "emailVerificationNonce" = ${request.state.user.emailVerificationNonce},
+            "emailVerificationCreatedAt" = ${request.state.user.emailVerificationCreatedAt}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -2368,13 +2372,16 @@ export default async (application: Application): Promise<void> => {
         response.redirect(`/authentication${request.URL.search}`);
         return;
       }
+      request.state.user.password = password;
+      request.state.user.passwordResetNonce = null;
+      request.state.user.passwordResetCreatedAt = null;
       application.database.run(
         sql`
           update "users"
           set
-            "password" = ${password},
-            "passwordResetNonce" = null,
-            "passwordResetCreatedAt" = null
+            "password" = ${request.state.user.password},
+            "passwordResetNonce" = ${request.state.user.passwordResetNonce},
+            "passwordResetCreatedAt" = ${request.state.user.passwordResetCreatedAt}
           where "id" = ${request.state.user.id};
         `,
       );
