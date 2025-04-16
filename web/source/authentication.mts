@@ -2388,6 +2388,47 @@ export default async (application: Application): Promise<void> => {
       response.setFlash(html`
         <div class="flash--green">The password was reset successfully.</div>
       `);
+      application.database.run(
+        sql`
+          insert into "_backgroundJobs" (
+            "type",
+            "startAt",
+            "parameters"
+          )
+          values (
+            'email',
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              to: request.state.user.email,
+              subject: "Password has been reset",
+              html: html`
+                <p>
+                  Someone reset the password for an account on Courselore with
+                  the following email address:
+                  <code>${request.state.user.email}</code>
+                </p>
+                <p>
+                  If it was not you, please report the issue to
+                  <a
+                    href="mailto:${application.configuration
+                      .systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}?${new URLSearchParams(
+                      {
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user.emailVerificationEmail}`,
+                      },
+                    )
+                      .toString()
+                      .replaceAll("+", "%20")}"
+                    >${application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}</a
+                  >
+                </p>
+              `,
+            })}
+          );
+        `,
+      );
       response.redirect(`/authentication${request.URL.search}`);
     },
   });
