@@ -2238,63 +2238,150 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/authentication/email-verification/(?<emailVerificationNonce>[0-9]+)$",
+      "^/authentication/reset-password/(?<passwordResetNonce>[0-9]+)$",
     ),
-    handler: (
+    handler: async (
       request: serverTypes.Request<
-        { emailVerificationNonce: string },
+        { passwordResetNonce: string },
         { redirect: string },
         {},
-        {},
+        { password: string },
         Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
       if (
-        typeof request.pathname.emailVerificationNonce !== "string" ||
-        request.state.user === undefined ||
-        typeof request.state.user.emailVerificationEmail !== "string" ||
-        typeof request.state.user.emailVerificationNonce !== "string" ||
-        typeof request.state.user.emailVerificationCreatedAt !== "string"
+        typeof request.pathname.passwordResetNonce !== "string" ||
+        request.state.user !== undefined
       )
         return;
+      if (
+        typeof request.body.password !== "string" ||
+        request.body.password.length <= 8
+      )
+        throw "validation";
       if (
         typeof request.search.redirect === "string" &&
         !request.search.redirect.startsWith("/")
       )
         delete request.search.redirect;
+      const password = await argon2.hash(
+        request.body.password,
+        application.privateConfiguration.argon2,
+      );
+      request.state.user = application.database.get<{
+        id: number;
+        publicId: string;
+        name: string;
+        email: string;
+        emailVerificationEmail: string | null;
+        emailVerificationNonce: string | null;
+        emailVerificationCreatedAt: string | null;
+        password: string | null;
+        passwordResetNonce: string | null;
+        passwordResetCreatedAt: string | null;
+        twoFactorAuthenticationEnabled: number;
+        twoFactorAuthenticationSecret: string | null;
+        twoFactorAuthenticationRecoveryCodes: string | null;
+        avatarColor:
+          | "red"
+          | "orange"
+          | "amber"
+          | "yellow"
+          | "lime"
+          | "green"
+          | "emerald"
+          | "teal"
+          | "cyan"
+          | "sky"
+          | "blue"
+          | "indigo"
+          | "violet"
+          | "purple"
+          | "fuchsia"
+          | "pink"
+          | "rose";
+        avatarImage: string | null;
+        userRole:
+          | "userRoleSystemAdministrator"
+          | "userRoleStaff"
+          | "userRoleUser";
+        lastSeenOnlineAt: string;
+        darkMode:
+          | "userDarkModeSystem"
+          | "userDarkModeLight"
+          | "userDarkModeDark";
+        sidebarWidth: number;
+        emailNotificationsForAllMessages: number;
+        emailNotificationsForMessagesIncludingMentions: number;
+        emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+        emailNotificationsForMessagesInConversationsThatYouStarted: number;
+        userAnonymityPreferred:
+          | "userAnonymityPreferredNone"
+          | "userAnonymityPreferredCourseParticipationRoleStudents"
+          | "userAnonymityPreferredCourseParticipationRoleInstructors";
+        mostRecentlyVisitedCourseParticipation: number | null;
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "name",
+            "email",
+            "emailVerificationEmail",
+            "emailVerificationNonce",
+            "emailVerificationCreatedAt",
+            "password",
+            "passwordResetNonce",
+            "passwordResetCreatedAt",
+            "twoFactorAuthenticationEnabled",
+            "twoFactorAuthenticationSecret",
+            "twoFactorAuthenticationRecoveryCodes",
+            "avatarColor",
+            "avatarImage",
+            "userRole",
+            "lastSeenOnlineAt",
+            "darkMode",
+            "sidebarWidth",
+            "emailNotificationsForAllMessages",
+            "emailNotificationsForMessagesIncludingMentions",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+            "emailNotificationsForMessagesInConversationsThatYouStarted",
+            "userAnonymityPreferred",
+            "mostRecentlyVisitedCourseParticipation"
+          from "users"
+          where "passwordResetNonce" = ${request.pathname.passwordResetNonce};
+        `,
+      );
       if (
-        request.state.user.emailVerificationNonce !==
-          request.pathname.emailVerificationNonce ||
-        request.state.user.emailVerificationCreatedAt <
+        request.state.user === undefined ||
+        typeof request.state.user.passwordResetCreatedAt !== "string" ||
+        request.state.user.passwordResetCreatedAt <
           new Date(Date.now() - 15 * 60 * 1000).toISOString()
       ) {
         response.setFlash(html`
           <div class="flash--red">
-            There’s something wrong with this email verification. Please request
-            a new email verification.
+            There’s something wrong with this password reset. Please request a
+            new password reset.
           </div>
         `);
-        response.redirect(
-          `/authentication/email-verification${request.URL.search}`,
-        );
+        response.redirect(`/authentication${request.URL.search}`);
         return;
       }
       application.database.run(
         sql`
           update "users"
           set
-            "email" = ${request.state.user.emailVerificationEmail},
-            "emailVerificationEmail" = null,
-            "emailVerificationNonce" = null,
-            "emailVerificationCreatedAt" = null
+            "password" = ${password},
+            "passwordResetNonce" = null,
+            "passwordResetCreatedAt" = null
           where "id" = ${request.state.user.id};
         `,
       );
       response.setFlash(html`
-        <div class="flash--green">The email was verified successfully.</div>
+        <div class="flash--green">The password was reset successfully.</div>
       `);
-      response.redirect(request.search.redirect ?? "/");
+      response.redirect(`/authentication${request.URL.search}`);
     },
   });
 
