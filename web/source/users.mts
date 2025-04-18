@@ -1675,6 +1675,16 @@ export default async (application: Application): Promise<void> => {
               where "id" = ${request.state.user.id};
             `,
           );
+      if (typeof request.body.avatarImage === "object") {
+        // TODO
+      } else if (request.body["avatarImage--remove"] === "on")
+        application.database.run(
+          sql`
+            update "users"
+            set "avatarImage" = null
+            where "id" = ${request.state.user.id};
+          `,
+        );
       if (typeof request.body.sidebarWidth === "string")
         if (
           request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
