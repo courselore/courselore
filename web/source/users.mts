@@ -1699,7 +1699,7 @@ export default async (application: Application): Promise<void> => {
           application.database.run(
             sql`
               update "users"
-              set "avatarImage" = ${`${relativePath}.webp`}
+              set "avatarImage" = ${`/${relativePath}.webp`}
               where "id" = ${request.state.user.id};
             `,
           );
