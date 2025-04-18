@@ -1683,24 +1683,23 @@ export default async (application: Application): Promise<void> => {
         if (!request.body.avatarImage.mimeType.startsWith("image/"))
           throw "validation";
         else {
-          const file = path.join(
+          const relativePath = `files/${cryptoRandomString({
+            length: 20,
+            characters: "abcdefghijklmnopqrstuvwxyz0123456789",
+          })}/${request.body.avatarImage.filename}`;
+          const absolutePath = path.join(
             application.configuration.dataDirectory,
-            "files",
-            cryptoRandomString({
-              length: 20,
-              characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-            }),
-            request.body.avatarImage.filename,
+            relativePath,
           );
-          await fs.mkdir(path.dirname(file), { recursive: true });
-          await fs.rename(request.body.avatarImage.path, file);
-          await sharp(file, { autoOrient: true })
+          await fs.mkdir(path.dirname(absolutePath), { recursive: true });
+          await fs.rename(request.body.avatarImage.path, absolutePath);
+          await sharp(absolutePath, { autoOrient: true })
             .resize(256, 256 /* var(--size--64) */)
-            .toFile(`${file}.webp`);
+            .toFile(`${absolutePath}.webp`);
           application.database.run(
             sql`
               update "users"
-              set "avatarImage" = ${`${file}.webp`}
+              set "avatarImage" = ${`${relativePath}.webp`}
               where "id" = ${request.state.user.id};
             `,
           );
