@@ -1650,12 +1650,31 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        { sidebarWidth: string },
+        {
+          name: string;
+          avatarImage: serverTypes.RequestBodyFile;
+          "avatarImage--remove": "on";
+          darkMode:
+            | "userDarkModeSystem"
+            | "userDarkModeLight"
+            | "userDarkModeDark";
+          sidebarWidth: string;
+        },
         Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
       if (request.state.user === undefined) return;
+      if (typeof request.body.name === "string")
+        if (request.body.name.trim() === "") throw "validation";
+        else
+          application.database.run(
+            sql`
+              update "users"
+              set "name" = ${request.body.name}
+              where "id" = ${request.state.user.id};
+            `,
+          );
       if (typeof request.body.sidebarWidth === "string")
         if (
           request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
@@ -1671,6 +1690,9 @@ export default async (application: Application): Promise<void> => {
               where "id" = ${request.state.user.id};
             `,
           );
+      response.setFlash(html`
+        <div class="flash--green">General settings updated successfully.</div>
+      `);
       response.redirect();
     },
   });
