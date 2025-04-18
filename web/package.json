@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@node-saml/node-saml": "^5.0.1",
-    "@radically-straightforward/production": "^1.0.37",
+    "@radically-straightforward/production": "^1.0.38",
     "argon2": "^0.41.1",
     "crypto-random-string": "^5.0.0",
     "email-addresses": "^5.0.0",
