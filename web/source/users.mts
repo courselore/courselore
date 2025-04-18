@@ -1712,6 +1712,21 @@ export default async (application: Application): Promise<void> => {
             where "id" = ${request.state.user.id};
           `,
         );
+      if (typeof request.body.darkMode === "string")
+        if (
+          request.body.darkMode !== "userDarkModeSystem" &&
+          request.body.darkMode !== "userDarkModeLight" &&
+          request.body.darkMode !== "userDarkModeDark"
+        )
+          throw "validation";
+        else
+          application.database.run(
+            sql`
+              update "users"
+              set "darkMode" = ${request.body.darkMode}
+              where "id" = ${request.state.user.id};
+            `,
+          );
       if (typeof request.body.sidebarWidth === "string")
         if (
           request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
