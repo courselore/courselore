@@ -1,8 +1,12 @@
+import path from "node:path";
+import fs from "node:fs/promises";
 import * as serverTypes from "@radically-straightforward/server";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
+import cryptoRandomString from "crypto-random-string";
+import sharp from "sharp";
 import { Application } from "./index.mjs";
 
 export type ApplicationUsers = {
@@ -1645,7 +1649,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "PATCH",
     pathname: "/settings",
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {},
@@ -1675,9 +1679,33 @@ export default async (application: Application): Promise<void> => {
               where "id" = ${request.state.user.id};
             `,
           );
-      if (typeof request.body.avatarImage === "object") {
-        // TODO
-      } else if (request.body["avatarImage--remove"] === "on")
+      if (typeof request.body.avatarImage === "object")
+        if (!request.body.avatarImage.mimeType.startsWith("image/"))
+          throw "validation";
+        else {
+          const file = path.join(
+            application.configuration.dataDirectory,
+            "files",
+            cryptoRandomString({
+              length: 20,
+              characters: "abcdefghijklmnopqrstuvwxyz0123456789",
+            }),
+            request.body.avatarImage.filename,
+          );
+          await fs.mkdir(path.dirname(file), { recursive: true });
+          await fs.rename(request.body.avatarImage.path, file);
+          await sharp(file, { autoOrient: true })
+            .resize(256, 256 /* var(--size--64) */)
+            .toFile(`${file}.webp`);
+          application.database.run(
+            sql`
+              update "users"
+              set "avatarImage" = ${`${file}.webp`}
+              where "id" = ${request.state.user.id};
+            `,
+          );
+        }
+      else if (request.body["avatarImage--remove"] === "on")
         application.database.run(
           sql`
             update "users"
