@@ -180,6 +180,7 @@ export default async (application: Application): Promise<void> => {
                   javascript="${javascript`
                     this.onsubmit = () => {
                       delete this.querySelector('[key~="userAvatar--withAvatarImage"]').morph;
+                      this.querySelector('[name="avatarImage"]').value = "";
                     };
                   `}"
                 >
@@ -1680,7 +1681,10 @@ export default async (application: Application): Promise<void> => {
             `,
           );
       if (typeof request.body.avatarImage === "object")
-        if (!request.body.avatarImage.mimeType.startsWith("image/"))
+        if (
+          request.body.avatarImage.mimeType !== "image/png" &&
+          request.body.avatarImage.mimeType !== "image/jpeg"
+        )
           throw "validation";
         else {
           const relativePath = `files/${cryptoRandomString({
