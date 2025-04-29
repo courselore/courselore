@@ -1751,19 +1751,128 @@ export default async (application: Application): Promise<void> => {
         ))
       )
         throw "validation";
-      // application.database.run(
-      //   sql`
-      //     update "users"
-      //     set
-      //       "name" = ${request.body.name},
-      //       $${typeof avatarImage === "string" ? sql`"avatarImage" = ${avatarImage},` : request.body["avatarImage--remove"] === "on" ? sql`"avatarImage" = null,` : sql``}
-      //       "darkMode" = ${request.body.darkMode}
-      //     where "id" = ${request.state.user.id};
-      //   `,
-      // );
-      // response.setFlash(html`
-      //   <div class="flash--green">General settings updated successfully.</div>
-      // `);
+      request.state.user.emailVerificationEmail = request.body.email;
+      request.state.user.emailVerificationNonce = cryptoRandomString({
+        length: 100,
+        type: "numeric",
+      });
+      request.state.user.emailVerificationCreatedAt = new Date().toISOString();
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "emailVerificationEmail" = ${request.state.user.emailVerificationEmail},
+            "emailVerificationNonce" = ${request.state.user.emailVerificationNonce},
+            "emailVerificationCreatedAt" = ${request.state.user.emailVerificationCreatedAt}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      application.database.run(
+        sql`
+          insert into "_backgroundJobs" (
+            "type",
+            "startAt",
+            "parameters"
+          )
+          values (
+            'email',
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              to: request.state.user.email,
+              subject: "Trying to change email address",
+              html: html`
+                <p>
+                  Someone is trying to change an account on Courselore from the
+                  email address <code>${request.state.user.email}</code> to the
+                  email address
+                  <code>${request.state.user.emailVerificationEmail}</code>.
+                </p>
+                <p>
+                  If it was you, please check the inbox for
+                  <code>${request.state.user.emailVerificationEmail}</code> to
+                  verify the email address.
+                </p>
+                <p>
+                  If it was not you, please report the issue to
+                  <a
+                    href="mailto:${application.configuration
+                      .systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}?${new URLSearchParams(
+                      {
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user.email}`,
+                      },
+                    )
+                      .toString()
+                      .replaceAll("+", "%20")}"
+                    >${application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}</a
+                  >
+                </p>
+              `,
+            })}
+          );
+        `,
+      );
+      application.database.run(
+        sql`
+          insert into "_backgroundJobs" (
+            "type",
+            "startAt",
+            "parameters"
+          )
+          values (
+            'email',
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              to: request.state.user.emailVerificationEmail,
+              subject: "Email verification",
+              html: html`
+                <p>
+                  Someone is trying to change an account on Courselore from the
+                  email address <code>${request.state.user.email}</code> to the
+                  email address
+                  <code>${request.state.user.emailVerificationEmail}</code>.
+                </p>
+                <p>
+                  If it was you, please confirm your email:
+                  <a
+                    href="https://${application.configuration
+                      .hostname}/authentication/email-verification/${request
+                      .state.user.emailVerificationNonce}${request.URL.search}"
+                    >https://${application.configuration
+                      .hostname}/authentication/email-verification/${request
+                      .state.user.emailVerificationNonce}${request.URL
+                      .search}</a
+                  >
+                </p>
+                <p>
+                  If it was not you, please report the issue to
+                  <a
+                    href="mailto:${application.configuration
+                      .systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}?${new URLSearchParams(
+                      {
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user.emailVerificationEmail}`,
+                      },
+                    )
+                      .toString()
+                      .replaceAll("+", "%20")}"
+                    >${application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}</a
+                  >
+                </p>
+              `,
+            })}
+          );
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">
+          Check your inbox to verify the new email address.
+        </div>
+      `);
       response.redirect("/settings");
     },
   });
