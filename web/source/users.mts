@@ -1289,7 +1289,7 @@ export default async (application: Application): Promise<void> => {
                 <div
                   type="form"
                   method="PATCH"
-                  action="/settings"
+                  action="/settings/email-notifications"
                   css="${css`
                     padding: var(--size--2) var(--size--0);
                     border-bottom: var(--border-width--1) solid
@@ -2006,6 +2006,43 @@ export default async (application: Application): Promise<void> => {
       );
       response.setFlash(html`
         <div class="flash--green">Password updated successfully.</div>
+      `);
+      response.redirect("/settings");
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: "/settings/email-notifications",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          emailNotificationsForAllMessages: "on";
+          emailNotificationsForMessagesIncludingMentions: "on";
+          emailNotificationsForMessagesInConversationsInWhichYouParticipated: "on";
+          emailNotificationsForMessagesInConversationsThatYouStarted: "on";
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "emailNotificationsForAllMessages" = ${Number(request.body.emailNotificationsForAllMessages === "on")},
+            "emailNotificationsForMessagesIncludingMentions" = ${Number(request.body.emailNotificationsForMessagesIncludingMentions === "on")},
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipated" = ${Number(request.body.emailNotificationsForMessagesInConversationsInWhichYouParticipated === "on")},
+            "emailNotificationsForMessagesInConversationsThatYouStarted" = ${Number(request.body.emailNotificationsForMessagesInConversationsThatYouStarted === "on")}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">Email notification updated successfully.</div>
       `);
       response.redirect("/settings");
     },
