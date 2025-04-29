@@ -2083,6 +2083,13 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            update "users"
+            set "mostRecentlyVisitedCourseParticipation" = null
+            where "id" = ${request.state.user!.id};
+          `,
+        );
         for (const courseParticipation of application.database.all<{
           id: number;
         }>(
