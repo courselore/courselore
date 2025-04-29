@@ -1743,14 +1743,22 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.email !== "string" ||
         !request.body.email.match(utilities.emailRegExp) ||
         typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.length <= 8 ||
+        request.body.passwordConfirmation.length <= 8
+      )
+        throw "validation";
+      if (
         !(await argon2.verify(
           request.state.user.password!,
           request.body.passwordConfirmation,
           application.privateConfiguration.argon2,
         ))
-      )
-        throw "validation";
+      ) {
+        response.setFlash(html`
+          <div class="flash--red">Invalid password confirmation.</div>
+        `);
+        response.redirect("/settings");
+        return;
+      }
       request.state.user.emailVerificationEmail = request.body.email;
       request.state.user.emailVerificationNonce = cryptoRandomString({
         length: 100,
