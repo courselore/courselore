@@ -728,7 +728,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form"
                       method="PATCH"
-                      action="/settings"
+                      action="/settings/password"
                       css="${css`
                         padding: var(--size--2) var(--size--0);
                         border-bottom: var(--border-width--1) solid
@@ -1872,6 +1872,106 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">
           Check your inbox to verify the new email address.
         </div>
+      `);
+      response.redirect("/settings");
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: "/settings/password",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          passwordConfirmation: string;
+          password: string;
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.userSession === undefined ||
+        request.state.user === undefined
+      )
+        return;
+      if (
+        typeof request.body.passwordConfirmation !== "string" ||
+        request.body.passwordConfirmation.length <= 8 ||
+        !(await argon2.verify(
+          request.state.user.password!,
+          request.body.passwordConfirmation,
+          application.privateConfiguration.argon2,
+        )) ||
+        typeof request.body.password !== "string" ||
+        request.body.password.length <= 8
+      )
+        throw "validation";
+      request.state.user.password = await argon2.hash(
+        request.body.password,
+        application.privateConfiguration.argon2,
+      );
+      application.database.run(
+        sql`
+          update "users"
+          set "password" = ${request.state.user.password}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      application.database.run(
+        sql`
+          delete from "userSessions"
+          where
+            "id" != ${request.state.userSession.id} and
+            "user" = ${request.state.user.id};
+        `,
+      );
+      application.database.run(
+        sql`
+          insert into "_backgroundJobs" (
+            "type",
+            "startAt",
+            "parameters"
+          )
+          values (
+            'email',
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              to: request.state.user.email,
+              subject: "Password changed",
+              html: html`
+                <p>
+                  Someone changed the password for an account on Courselore with
+                  the following email address:
+                  <code>${request.state.user.email}</code>
+                </p>
+                <p>
+                  If it was not you, please report the issue to
+                  <a
+                    href="mailto:${application.configuration
+                      .systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}?${new URLSearchParams(
+                      {
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user.email}`,
+                      },
+                    )
+                      .toString()
+                      .replaceAll("+", "%20")}"
+                    >${application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}</a
+                  >
+                </p>
+              `,
+            })}
+          );
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">Password updated successfully.</div>
       `);
       response.redirect("/settings");
     },
