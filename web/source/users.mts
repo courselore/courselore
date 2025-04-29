@@ -5,7 +5,9 @@ import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
+import * as utilities from "@radically-straightforward/utilities";
 import cryptoRandomString from "crypto-random-string";
+import argon2 from "argon2";
 import sharp from "sharp";
 import { Application } from "./index.mjs";
 
@@ -516,7 +518,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form"
                       method="PATCH"
-                      action="/settings"
+                      action="/settings/email-address"
                       css="${css`
                         padding: var(--size--2) var(--size--0);
                         border-bottom: var(--border-width--1) solid
@@ -597,6 +599,12 @@ export default async (application: Application): Promise<void> => {
                               font-family:
                                 "Roboto Mono Variable",
                                 var(--font-family--monospace);
+                            `}"
+                            javascript="${javascript`
+                              this.onvalidate = () => {
+                                if (this.value === ${request.state.user.email})
+                                  throw new javascript.ValidationError("“New email address” cannot be the same as “Current email address”.");
+                              };
                             `}"
                           />
                         </div>
@@ -1711,6 +1719,52 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">General settings updated successfully.</div>
       `);
       response.redirect();
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: "/settings/email-address",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          email: string;
+          passwordConfirmation: string;
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      if (
+        typeof request.body.email !== "string" ||
+        !request.body.email.match(utilities.emailRegExp) ||
+        typeof request.body.passwordConfirmation !== "string" ||
+        request.body.passwordConfirmation.length <= 8 ||
+        !(await argon2.verify(
+          request.state.user.password!,
+          request.body.passwordConfirmation,
+          application.privateConfiguration.argon2,
+        ))
+      )
+        throw "validation";
+      // application.database.run(
+      //   sql`
+      //     update "users"
+      //     set
+      //       "name" = ${request.body.name},
+      //       $${typeof avatarImage === "string" ? sql`"avatarImage" = ${avatarImage},` : request.body["avatarImage--remove"] === "on" ? sql`"avatarImage" = null,` : sql``}
+      //       "darkMode" = ${request.body.darkMode}
+      //     where "id" = ${request.state.user.id};
+      //   `,
+      // );
+      // response.setFlash(html`
+      //   <div class="flash--green">General settings updated successfully.</div>
+      // `);
+      response.redirect("/settings");
     },
   });
 
