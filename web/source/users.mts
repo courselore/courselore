@@ -1742,6 +1742,7 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.email !== "string" ||
         !request.body.email.match(utilities.emailRegExp) ||
+        request.body.email === request.state.user.email ||
         typeof request.body.passwordConfirmation !== "string" ||
         request.body.passwordConfirmation.length < 8
       )
