@@ -794,7 +794,7 @@ export default async (application: Application): Promise<void> => {
                         >
                           <input
                             type="password"
-                            name="newPassword"
+                            name="password"
                             required
                             minlength="8"
                             maxlength="2000"
@@ -833,7 +833,7 @@ export default async (application: Application): Promise<void> => {
                             `}"
                             javascript="${javascript`
                               this.onvalidate = () => {
-                                if (this.value !== this.closest('[type~="form"]').querySelector('[name="newPassword"]').value)
+                                if (this.value !== this.closest('[type~="form"]').querySelector('[name="password"]').value)
                                   throw new javascript.ValidationError("“New password” and “New password confirmation” don’t match.");
                               };
                             `}"
