@@ -1483,7 +1483,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form popover"
                       method="DELETE"
-                      action="/delete-my-account"
+                      action="/settings/delete-my-account"
                       css="${css`
                         display: flex;
                         flex-direction: column;
@@ -2045,6 +2045,89 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">Email notification updated successfully.</div>
       `);
       response.redirect("/settings");
+    },
+  });
+
+  application.server?.push({
+    method: "DELETE",
+    pathname: "/settings/delete-my-account",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          passwordConfirmation: string;
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      if (
+        typeof request.body.passwordConfirmation !== "string" ||
+        request.body.passwordConfirmation.length < 8
+      )
+        throw "validation";
+      if (
+        !(await argon2.verify(
+          request.state.user.password!,
+          request.body.passwordConfirmation,
+          application.privateConfiguration.argon2,
+        ))
+      ) {
+        response.setFlash(html`
+          <div class="flash--red">Invalid “Password confirmation”.</div>
+        `);
+        response.redirect("/settings");
+        return;
+      }
+      // TODO
+      application.database.run(
+        sql`
+          insert into "_backgroundJobs" (
+            "type",
+            "startAt",
+            "parameters"
+          )
+          values (
+            'email',
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              to: request.state.user.email,
+              subject: "Account deleted",
+              html: html`
+                <p>
+                  Someone deleted the account on Courselore with the following
+                  email address:
+                  <code>${request.state.user.email}</code>
+                </p>
+                <p>
+                  If it was not you, please report the issue to
+                  <a
+                    href="mailto:${application.configuration
+                      .systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}?${new URLSearchParams(
+                      {
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user.email}`,
+                      },
+                    )
+                      .toString()
+                      .replaceAll("+", "%20")}"
+                    >${application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}</a
+                  >
+                </p>
+              `,
+            })}
+          );
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">Account deleted.</div>
+      `);
+      response.redirect("/");
     },
   });
 
