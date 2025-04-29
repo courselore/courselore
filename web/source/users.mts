@@ -295,7 +295,7 @@ export default async (application: Application): Promise<void> => {
                           <input
                             type="file"
                             name="avatarImage"
-                            accept="image/png, image/jpeg"
+                            accept="image/jpeg, image/png"
                             hidden
                             javascript="${javascript`
                               this.onchange = async () => {
@@ -1663,89 +1663,50 @@ export default async (application: Application): Promise<void> => {
             | "userDarkModeSystem"
             | "userDarkModeLight"
             | "userDarkModeDark";
-          sidebarWidth: string;
         },
         Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
       if (request.state.user === undefined) return;
-      if (typeof request.body.name === "string")
-        if (request.body.name.trim() === "") throw "validation";
-        else
-          application.database.run(
-            sql`
-              update "users"
-              set "name" = ${request.body.name}
-              where "id" = ${request.state.user.id};
-            `,
-          );
-      if (typeof request.body.avatarImage === "object")
-        if (
-          request.body.avatarImage.mimeType !== "image/png" &&
-          request.body.avatarImage.mimeType !== "image/jpeg"
-        )
-          throw "validation";
-        else {
-          const relativePath = `files/${cryptoRandomString({
-            length: 20,
-            characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-          })}/${request.body.avatarImage.filename}`;
-          const absolutePath = path.join(
-            application.configuration.dataDirectory,
-            relativePath,
-          );
-          await fs.mkdir(path.dirname(absolutePath), { recursive: true });
-          await fs.rename(request.body.avatarImage.path, absolutePath);
-          await sharp(absolutePath, { autoOrient: true })
-            .resize(256, 256 /* var(--size--64) */)
-            .toFile(`${absolutePath}.webp`);
-          application.database.run(
-            sql`
-              update "users"
-              set "avatarImage" = ${`/${relativePath}.webp`}
-              where "id" = ${request.state.user.id};
-            `,
-          );
-        }
-      else if (request.body["avatarImage--remove"] === "on")
-        application.database.run(
-          sql`
-            update "users"
-            set "avatarImage" = null
-            where "id" = ${request.state.user.id};
-          `,
-        );
-      if (typeof request.body.darkMode === "string")
-        if (
-          request.body.darkMode !== "userDarkModeSystem" &&
+      if (
+        typeof request.body.name !== "string" ||
+        request.body.name.trim() === "" ||
+        (typeof request.body.avatarImage === "object" &&
+          request.body.avatarImage.mimeType !== "image/jpeg" &&
+          request.body.avatarImage.mimeType !== "image/png") ||
+        (request.body.darkMode !== "userDarkModeSystem" &&
           request.body.darkMode !== "userDarkModeLight" &&
-          request.body.darkMode !== "userDarkModeDark"
-        )
-          throw "validation";
-        else
-          application.database.run(
-            sql`
-              update "users"
-              set "darkMode" = ${request.body.darkMode}
-              where "id" = ${request.state.user.id};
-            `,
-          );
-      if (typeof request.body.sidebarWidth === "string")
-        if (
-          request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
-          Number(request.body.sidebarWidth) < 60 * 4 ||
-          112 * 4 < Number(request.body.sidebarWidth)
-        )
-          throw "validation";
-        else
-          application.database.run(
-            sql`
-              update "users"
-              set "sidebarWidth" = ${Number(request.body.sidebarWidth)}
-              where "id" = ${request.state.user.id};
-            `,
-          );
+          request.body.darkMode !== "userDarkModeDark")
+      )
+        throw "validation";
+      let avatarImage: string | undefined;
+      if (typeof request.body.avatarImage === "object") {
+        const relativePath = `files/${cryptoRandomString({
+          length: 20,
+          characters: "abcdefghijklmnopqrstuvwxyz0123456789",
+        })}/${request.body.avatarImage.filename}`;
+        const absolutePath = path.join(
+          application.configuration.dataDirectory,
+          relativePath,
+        );
+        await fs.mkdir(path.dirname(absolutePath), { recursive: true });
+        await fs.rename(request.body.avatarImage.path, absolutePath);
+        await sharp(absolutePath, { autoOrient: true })
+          .resize(256, 256 /* var(--size--64) */)
+          .toFile(`${absolutePath}.webp`);
+        avatarImage = `/${relativePath}.webp`;
+      }
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "name" = ${request.body.name},
+            $${typeof avatarImage === "string" ? sql`"avatarImage" = ${avatarImage},` : request.body["avatarImage--remove"] === "on" ? sql`"avatarImage" = null,` : sql``}
+            "darkMode" = ${request.body.darkMode}
+          where "id" = ${request.state.user.id};
+        `,
+      );
       response.setFlash(html`
         <div class="flash--green">General settings updated successfully.</div>
       `);
