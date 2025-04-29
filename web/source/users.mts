@@ -802,6 +802,12 @@ export default async (application: Application): Promise<void> => {
                             css="${css`
                               flex: 1;
                             `}"
+                            javascript="${javascript`
+                              this.onvalidate = () => {
+                                if (this.value === this.closest('[type~="form"]').querySelector('[name="passwordConfirmation"]').value)
+                                  throw new javascript.ValidationError("“New password” cannot be the same as “Current password”.");
+                              };
+                            `}"
                           />
                         </div>
                       </label>
@@ -1755,7 +1761,7 @@ export default async (application: Application): Promise<void> => {
         ))
       ) {
         response.setFlash(html`
-          <div class="flash--red">Invalid password confirmation.</div>
+          <div class="flash--red">Invalid “Password confirmation”.</div>
         `);
         response.redirect("/settings");
         return;
@@ -1910,15 +1916,24 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.passwordConfirmation !== "string" ||
         request.body.passwordConfirmation.length < 8 ||
+        typeof request.body.password !== "string" ||
+        request.body.password.length < 8 ||
+        request.body.passwordConfirmation === request.body.password
+      )
+        throw "validation";
+      if (
         !(await argon2.verify(
           request.state.user.password!,
           request.body.passwordConfirmation,
           application.privateConfiguration.argon2,
-        )) ||
-        typeof request.body.password !== "string" ||
-        request.body.password.length < 8
-      )
-        throw "validation";
+        ))
+      ) {
+        response.setFlash(html`
+          <div class="flash--red">Invalid “Current password”.</div>
+        `);
+        response.redirect("/settings");
+        return;
+      }
       request.state.user.password = await argon2.hash(
         request.body.password,
         application.privateConfiguration.argon2,
