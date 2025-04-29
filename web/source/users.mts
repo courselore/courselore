@@ -2082,48 +2082,110 @@ export default async (application: Application): Promise<void> => {
         response.redirect("/settings");
         return;
       }
-      // TODO
-      application.database.run(
-        sql`
-          insert into "_backgroundJobs" (
-            "type",
-            "startAt",
-            "parameters"
-          )
-          values (
-            'email',
-            ${new Date().toISOString()},
-            ${JSON.stringify({
-              to: request.state.user.email,
-              subject: "Account deleted",
-              html: html`
-                <p>
-                  Someone deleted the account on Courselore with the following
-                  email address:
-                  <code>${request.state.user.email}</code>
-                </p>
-                <p>
-                  If it was not you, please report the issue to
-                  <a
-                    href="mailto:${application.configuration
-                      .systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}?${new URLSearchParams(
-                      {
-                        subject: "Potential impersonation",
-                        body: `Email: ${request.state.user.email}`,
-                      },
-                    )
-                      .toString()
-                      .replaceAll("+", "%20")}"
-                    >${application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}</a
-                  >
-                </p>
-              `,
-            })}
+      application.database.executeTransaction(() => {
+        for (const courseParticipation of application.database.all<{
+          id: number;
+        }>(
+          sql`
+            select "id"
+            from "courseParticipations"
+            where "user" = ${request.state.user!.id};
+          `,
+        )) {
+          application.database.run(
+            sql`
+              delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+            `,
           );
-        `,
-      );
+          application.database.run(
+            sql`
+              delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessages"
+              set "createdByCourseParticipation" = null
+              where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessageViews"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessageLikes"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+            delete from "courseConversationMessageEmailNotificationDeliveries" where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseParticipations" where "id" = ${courseParticipation.id};
+            `,
+          );
+        }
+        application.database.run(
+          sql`
+            delete from "userSessions" where "user" = ${request.state.user!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "users" where "id" = ${request.state.user!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            insert into "_backgroundJobs" (
+              "type",
+              "startAt",
+              "parameters"
+            )
+            values (
+              'email',
+              ${new Date().toISOString()},
+              ${JSON.stringify({
+                to: request.state.user!.email,
+                subject: "Account deleted",
+                html: html`
+                  <p>
+                    Someone deleted the account on Courselore with the following
+                    email address:
+                    <code>${request.state.user!.email}</code>
+                  </p>
+                  <p>
+                    If it was not you, please report the issue to
+                    <a
+                      href="mailto:${application.configuration
+                        .systemAdministratorEmail ??
+                      "system-administrator@courselore.org"}?${new URLSearchParams(
+                        {
+                          subject: "Potential impersonation",
+                          body: `Email: ${request.state.user!.email}`,
+                        },
+                      )
+                        .toString()
+                        .replaceAll("+", "%20")}"
+                      >${application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"}</a
+                    >
+                  </p>
+                `,
+              })}
+            );
+          `,
+        );
+      });
       response.setFlash(html`
         <div class="flash--green">Account deleted.</div>
       `);
