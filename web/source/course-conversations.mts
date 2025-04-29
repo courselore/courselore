@@ -1044,7 +1044,7 @@ export default async (application: Application): Promise<void> => {
                   updateSidebarWidth();
                 };
                 const updateSidebarWidth = utilities.foregroundJob(async () => {
-                  await fetch("/settings", {
+                  await fetch("/settings/sidebar-width", {
                     redirect: "manual",
                     method: "PATCH",
                     headers: { "CSRF-Protection": "true" },
@@ -1077,6 +1077,38 @@ export default async (application: Application): Promise<void> => {
       `,
     });
   };
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: "/settings/sidebar-width",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { sidebarWidth: string },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      if (
+        typeof request.body.sidebarWidth !== "string" ||
+        request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
+        Number(request.body.sidebarWidth) < 60 * 4 ||
+        112 * 4 < Number(request.body.sidebarWidth)
+      )
+        throw "validation";
+      application.database.run(
+        sql`
+          update "users"
+          set "sidebarWidth" = ${Number(request.body.sidebarWidth)}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.end();
+    },
+  });
 
   application.server?.push({
     method: "GET",
