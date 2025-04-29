@@ -870,7 +870,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.email !== "string" ||
         !request.body.email.match(utilities.emailRegExp) ||
         typeof request.body.password !== "string" ||
-        request.body.password.length <= 8
+        request.body.password.length < 8
       )
         throw "validation";
       const password = await argon2.hash(
@@ -1673,7 +1673,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.email !== "string" ||
         !request.body.email.match(utilities.emailRegExp) ||
         typeof request.body.password !== "string" ||
-        request.body.password.length <= 8
+        request.body.password.length < 8
       )
         throw "validation";
       request.state.user = application.database.get<{
@@ -2261,7 +2261,7 @@ export default async (application: Application): Promise<void> => {
         return;
       if (
         typeof request.body.password !== "string" ||
-        request.body.password.length <= 8
+        request.body.password.length < 8
       )
         throw "validation";
       if (

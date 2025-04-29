@@ -1743,7 +1743,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.email !== "string" ||
         !request.body.email.match(utilities.emailRegExp) ||
         typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.length <= 8
+        request.body.passwordConfirmation.length < 8
       )
         throw "validation";
       if (
@@ -1908,14 +1908,14 @@ export default async (application: Application): Promise<void> => {
         return;
       if (
         typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.length <= 8 ||
+        request.body.passwordConfirmation.length < 8 ||
         !(await argon2.verify(
           request.state.user.password!,
           request.body.passwordConfirmation,
           application.privateConfiguration.argon2,
         )) ||
         typeof request.body.password !== "string" ||
-        request.body.password.length <= 8
+        request.body.password.length < 8
       )
         throw "validation";
       request.state.user.password = await argon2.hash(
