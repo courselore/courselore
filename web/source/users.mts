@@ -1209,11 +1209,11 @@ export default async (application: Application): Promise<void> => {
                                 you configured two-factor authentication. Ten
                                 recovery codes have been shown, and you may use
                                 any one of them above. Only use the recovery
-                                codes if you lost access to the method of
-                                two-factor authentication, for example, if you
-                                lost your phone. Recovery codes may be used only
-                                once, and after that you must configure
-                                two-factor authentication again.
+                                codes if you lost the method of two-factor
+                                authentication, for example, if you lost your
+                                phone. Recovery codes may be used only once, and
+                                after that you must configure two-factor
+                                authentication again.
                               </div>
                               <div
                                 css="${css`
@@ -2115,8 +2115,9 @@ export default async (application: Application): Promise<void> => {
               <p>
                 Before you can enable two-factor authentication, take note of
                 the recovery codes below. They are only shown to you now, and
-                you will need them to access your account in case you lose your
-                method of two-factor authentication.
+                you will need one of them to access your account in case you
+                lose your method of two-factor authentication, for example, if
+                you lose your phone.
               </p>
               <ul
                 css="${css`
