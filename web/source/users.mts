@@ -946,8 +946,8 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <div
                             type="form"
-                            method="PATCH"
-                            action="/settings"
+                            method="POST"
+                            action="/settings/two-factor-authentication"
                             css="${css`
                               padding: var(--size--2) var(--size--0);
                               border-bottom: var(--border-width--1) solid
@@ -2008,6 +2008,134 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">Password updated successfully.</div>
       `);
       response.redirect("/settings");
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: "/settings/two-factor-authentication",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { passwordConfirmation: string },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
+      )
+        return;
+      if (
+        typeof request.body.passwordConfirmation !== "string" ||
+        request.body.passwordConfirmation.length < 8
+      )
+        throw "validation";
+      if (
+        !(await argon2.verify(
+          request.state.user.password!,
+          request.body.passwordConfirmation,
+          application.privateConfiguration.argon2,
+        ))
+      ) {
+        response.setFlash(html`
+          <div class="flash--red">Invalid “Password confirmation”.</div>
+        `);
+        response.redirect("/settings");
+        return;
+      }
+      request.state.user.twoFactorAuthenticationSecret = cryptoRandomString({
+        length: 100,
+        type: "alphanumeric",
+      });
+      request.state.user.twoFactorAuthenticationRecoveryCodes = JSON.stringify(
+        Array.from({ length: 10 }, () =>
+          cryptoRandomString({ length: 10, type: "numeric" }),
+        ),
+      );
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
+            "twoFactorAuthenticationRecoveryCodes" = ${request.state.user.twoFactorAuthenticationRecoveryCodes}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.redirect();
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: "/settings/two-factor-authentication",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
+        typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodes !==
+          "string"
+      )
+        return;
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Two-factor authentication · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Two-factor authentication
+              </div>
+              <p>
+                Before you can enable two-factor authentication, take note of
+                the recovery codes below. They are only shown to you now, and
+                you will need them to access your account in case you lose your
+                method of two-factor authentication.
+              </p>
+              <ul
+                css="${css`
+                  font-family:
+                    "Roboto Mono Variable", var(--font-family--monospace);
+                  columns: 2;
+                `}"
+              >
+                $${JSON.parse(
+                  request.state.user.twoFactorAuthenticationRecoveryCodes,
+                ).map(
+                  (twoFactorAuthenticationRecoveryCode: string) =>
+                    html`<li>${twoFactorAuthenticationRecoveryCode}</li>`,
+                )}
+              </ul>
+            </div>
+          `,
+        }),
+      );
     },
   });
 
