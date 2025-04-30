@@ -8,6 +8,8 @@ import javascript from "@radically-straightforward/javascript";
 import * as utilities from "@radically-straightforward/utilities";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
+import * as OTPAuth from "otpauth";
+import QRCode from "qrcode";
 import sharp from "sharp";
 import { Application } from "./index.mjs";
 
@@ -674,6 +676,7 @@ export default async (application: Application): Promise<void> => {
                                   inputmode="numeric"
                                   name="twoFactorAuthenticationConfirmation"
                                   required
+                                  minlength="6"
                                   class="input--text"
                                   css="${css`
                                     flex: 1;
@@ -884,6 +887,7 @@ export default async (application: Application): Promise<void> => {
                                   inputmode="numeric"
                                   name="twoFactorAuthenticationConfirmation"
                                   required
+                                  minlength="6"
                                   class="input--text"
                                   css="${css`
                                     flex: 1;
@@ -1118,6 +1122,7 @@ export default async (application: Application): Promise<void> => {
                                     inputmode="numeric"
                                     name="twoFactorAuthenticationConfirmation"
                                     required
+                                    minlength="6"
                                     class="input--text"
                                     css="${css`
                                       flex: 1;
@@ -1639,6 +1644,7 @@ export default async (application: Application): Promise<void> => {
                                   inputmode="numeric"
                                   name="twoFactorAuthenticationConfirmation"
                                   required
+                                  minlength="6"
                                   class="input--text"
                                   css="${css`
                                     flex: 1;
@@ -2047,10 +2053,8 @@ export default async (application: Application): Promise<void> => {
         response.redirect("/settings");
         return;
       }
-      request.state.user.twoFactorAuthenticationSecret = cryptoRandomString({
-        length: 100,
-        type: "alphanumeric",
-      });
+      request.state.user.twoFactorAuthenticationSecret =
+        new OTPAuth.Secret().base32;
       request.state.user.twoFactorAuthenticationRecoveryCodes = JSON.stringify(
         Array.from({ length: 10 }, () =>
           cryptoRandomString({ length: 10, type: "numeric" }),
@@ -2072,7 +2076,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: "/settings/two-factor-authentication",
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {},
@@ -2113,11 +2117,10 @@ export default async (application: Application): Promise<void> => {
                 Two-factor authentication
               </div>
               <p>
-                Before you can enable two-factor authentication, take note of
-                the recovery codes below. They are only shown to you now, and
-                you will need one of them to access your account in case you
-                lose your method of two-factor authentication, for example, if
-                you lose your phone.
+                Take note of the recovery codes below. They are only shown to
+                you now, and you will need one of them to access your account in
+                case you lose your method of two-factor authentication, for
+                example, if you lose your phone.
               </p>
               <ul
                 css="${css`
@@ -2133,6 +2136,93 @@ export default async (application: Application): Promise<void> => {
                     html`<li>${twoFactorAuthenticationRecoveryCode}</li>`,
                 )}
               </ul>
+              <hr class="separator" />
+              <p>
+                Scan the following QR code with your two-factor authentication
+                application on your phone, for example, Google Authenticator or
+                Authy.
+              </p>
+              <div>
+                $${(
+                  await QRCode.toString(
+                    new OTPAuth.TOTP({
+                      issuer: `Courselore (${application.configuration.hostname})`,
+                      label: request.state.user.email,
+                      secret: request.state.user.twoFactorAuthenticationSecret,
+                    }).toString(),
+                    { type: "svg", margin: 0 },
+                  )
+                )
+                  .replace("#000000", "currentColor")
+                  .replace("#ffffff", "transparent")}
+              </div>
+              <hr class="separator" />
+              <p>
+                Provide a code generated from your two-factor authentication
+                application.
+              </p>
+              <div
+                type="form"
+                method="POST"
+                action="/settings/two-factor-authentication/enable"
+                css="${css`
+                  padding: var(--size--2) var(--size--0);
+                  border-bottom: var(--border-width--1) solid
+                    light-dark(
+                      var(--color--slate--200),
+                      var(--color--slate--800)
+                    );
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Two-factor authentication code
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="text"
+                      inputmode="numeric"
+                      name="twoFactorAuthenticationConfirmation"
+                      required
+                      minlength="6"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                    />
+                  </div>
+                </label>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--blue"
+                  >
+                    Enable two-factor authentication
+                  </button>
+                </div>
+              </div>
             </div>
           `,
         }),
