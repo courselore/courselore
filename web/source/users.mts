@@ -2231,6 +2231,78 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
+    method: "POST",
+    pathname: "/settings/two-factor-authentication/enable",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { twoFactorAuthenticationConfirmation: string },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
+        typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodes !==
+          "string"
+      )
+        return;
+      if (
+        typeof request.body.twoFactorAuthenticationConfirmation !== "string" ||
+        request.body.twoFactorAuthenticationConfirmation.length < 6
+      )
+        throw "validation";
+      if (
+        new OTPAuth.TOTP({
+          secret: request.state.user.twoFactorAuthenticationSecret,
+        }).validate({
+          token: request.body.twoFactorAuthenticationConfirmation,
+        }) === null
+      ) {
+        response.setFlash(html`
+          <div class="flash--red">
+            Invalid “Two-factor authentication code”.
+          </div>
+        `);
+        response.redirect("/settings/two-factor-authentication");
+        return;
+      }
+      request.state.user.twoFactorAuthenticationEnabled = Number(true);
+      request.state.user.twoFactorAuthenticationRecoveryCodes = JSON.stringify(
+        await Promise.all(
+          JSON.parse(
+            request.state.user.twoFactorAuthenticationRecoveryCodes,
+          ).map((twoFactorAuthenticationRecoveryCode: string) =>
+            argon2.hash(
+              twoFactorAuthenticationRecoveryCode,
+              application.privateConfiguration.argon2,
+            ),
+          ),
+        ),
+      );
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
+            "twoFactorAuthenticationRecoveryCodes" = ${request.state.user.twoFactorAuthenticationRecoveryCodes}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">
+          Two-factor authentication enabled successfully.
+        </div>
+      `);
+      response.redirect("/settings");
+    },
+  });
+
+  application.server?.push({
     method: "PATCH",
     pathname: "/settings/email-notifications",
     handler: (
