@@ -1871,7 +1871,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: "/authentication/reset-password",
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {},
@@ -1887,6 +1887,14 @@ export default async (application: Application): Promise<void> => {
         !request.body.email.match(utilities.emailRegExp)
       )
         throw "validation";
+      const passwordResetNoncePlaintext = cryptoRandomString({
+        length: 100,
+        type: "numeric",
+      });
+      const passwordResetNonce = await argon2.hash(
+        passwordResetNoncePlaintext,
+        application.privateConfiguration.argon2,
+      );
       request.state.user = application.database.get<{
         id: number;
         publicId: string;
@@ -1977,10 +1985,7 @@ export default async (application: Application): Promise<void> => {
           request.state.user.passwordResetCreatedAt <
             new Date(Date.now() - 5 * 60 * 1000).toISOString())
       ) {
-        request.state.user.passwordResetNonce = cryptoRandomString({
-          length: 100,
-          type: "numeric",
-        });
+        request.state.user.passwordResetNonce = passwordResetNonce;
         request.state.user.passwordResetCreatedAt = new Date().toISOString();
         application.database.run(
           sql`
@@ -2015,10 +2020,12 @@ export default async (application: Application): Promise<void> => {
                     <a
                       href="https://${application.configuration
                         .hostname}/authentication/reset-password/${request.state
-                        .user.passwordResetNonce}${request.URL.search}"
+                        .user.publicId}/${passwordResetNoncePlaintext}${request
+                        .URL.search}"
                       >https://${application.configuration
                         .hostname}/authentication/reset-password/${request.state
-                        .user.passwordResetNonce}${request.URL.search}</a
+                        .user.publicId}/${passwordResetNoncePlaintext}${request
+                        .URL.search}</a
                     >
                   </p>
                   <p>
@@ -2095,11 +2102,11 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/authentication/reset-password/(?<passwordResetNonce>[0-9]+)$",
+      "^/authentication/reset-password/(?<userPublicId>[0-9]+)/(?<passwordResetNonce>[0-9]+)$",
     ),
     handler: (
       request: serverTypes.Request<
-        { passwordResetNonce: string },
+        { userPublicId: string; passwordResetNonce: string },
         { redirect: string },
         {},
         {},
@@ -2107,7 +2114,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (typeof request.pathname.passwordResetNonce !== "string") return;
+      if (
+        typeof request.pathname.userPublicId !== "string" ||
+        typeof request.pathname.passwordResetNonce !== "string"
+      )
+        return;
       if (
         typeof request.search.redirect === "string" &&
         !request.search.redirect.startsWith("/")
@@ -2148,7 +2159,8 @@ export default async (application: Application): Promise<void> => {
                 type="form"
                 method="POST"
                 action="/authentication/reset-password/${request.pathname
-                  .passwordResetNonce}${request.URL.search}"
+                  .userPublicId}/${request.pathname.passwordResetNonce}${request
+                  .URL.search}"
                 css="${css`
                   padding: var(--size--2) var(--size--0);
                   border-bottom: var(--border-width--1) solid
@@ -2254,11 +2266,11 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/authentication/reset-password/(?<passwordResetNonce>[0-9]+)$",
+      "^/authentication/reset-password/(?<userPublicId>[0-9]+)/(?<passwordResetNonce>[0-9]+)$",
     ),
     handler: async (
       request: serverTypes.Request<
-        { passwordResetNonce: string },
+        { userPublicId: string; passwordResetNonce: string },
         { redirect: string },
         {},
         { password: string },
@@ -2267,6 +2279,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        typeof request.pathname.userPublicId !== "string" ||
         typeof request.pathname.passwordResetNonce !== "string" ||
         request.state.user !== undefined
       )
@@ -2366,11 +2379,18 @@ export default async (application: Application): Promise<void> => {
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation"
           from "users"
-          where "passwordResetNonce" = ${request.pathname.passwordResetNonce};
+          where "publicId" = ${request.pathname.userPublicId};
         `,
+      );
+      const passwordResetNonceVerify = await argon2.verify(
+        request.state.user?.passwordResetNonce ??
+          "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+        request.pathname.passwordResetNonce,
+        application.privateConfiguration.argon2,
       );
       if (
         request.state.user === undefined ||
+        !passwordResetNonceVerify ||
         typeof request.state.user.passwordResetCreatedAt !== "string" ||
         request.state.user.passwordResetCreatedAt <
           new Date(Date.now() - 15 * 60 * 1000).toISOString()
