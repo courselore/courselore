@@ -873,6 +873,14 @@ export default async (application: Application): Promise<void> => {
         request.body.password.length < 8
       )
         throw "validation";
+      const emailVerificationNoncePlaintext = cryptoRandomString({
+        length: 100,
+        type: "numeric",
+      });
+      const emailVerificationNonce = await argon2.hash(
+        emailVerificationNoncePlaintext,
+        application.privateConfiguration.argon2,
+      );
       const password = await argon2.hash(
         request.body.password,
         application.privateConfiguration.argon2,
@@ -1033,7 +1041,7 @@ export default async (application: Application): Promise<void> => {
                       .join(" ")},
                     ${request.body.email},
                     ${request.body.email},
-                    ${cryptoRandomString({ length: 100, type: "numeric" })},
+                    ${emailVerificationNonce},
                     ${new Date().toISOString()},
                     ${password},
                     ${null},
@@ -1110,13 +1118,11 @@ export default async (application: Application): Promise<void> => {
                     If it was you, please confirm your email:
                     <a
                       href="https://${application.configuration
-                        .hostname}/authentication/email-verification/${request
-                        .state.user.emailVerificationNonce!}${request.URL
-                        .search}"
+                        .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
+                        .URL.search}"
                       >https://${application.configuration
-                        .hostname}/authentication/email-verification/${request
-                        .state.user.emailVerificationNonce!}${request.URL
-                        .search}</a
+                        .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
+                        .URL.search}</a
                     >
                   </p>
                   <p>
@@ -1275,7 +1281,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: "/authentication/email-verification/resend",
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {},
@@ -1297,10 +1303,14 @@ export default async (application: Application): Promise<void> => {
         request.state.user.emailVerificationCreatedAt
       )
         throw "validation";
-      request.state.user.emailVerificationNonce = cryptoRandomString({
+      const emailVerificationNoncePlaintext = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
+      request.state.user.emailVerificationNonce = await argon2.hash(
+        emailVerificationNoncePlaintext,
+        application.privateConfiguration.argon2,
+      );
       request.state.user.emailVerificationCreatedAt = new Date().toISOString();
       application.database.run(
         sql`
@@ -1334,12 +1344,11 @@ export default async (application: Application): Promise<void> => {
                   If it was you, please confirm your email:
                   <a
                     href="https://${application.configuration
-                      .hostname}/authentication/email-verification/${request
-                      .state.user.emailVerificationNonce}${request.URL.search}"
+                      .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
+                      .URL.search}"
                     >https://${application.configuration
-                      .hostname}/authentication/email-verification/${request
-                      .state.user.emailVerificationNonce}${request.URL
-                      .search}</a
+                      .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
+                      .URL.search}</a
                   >
                 </p>
                 <p>
@@ -1588,7 +1597,7 @@ export default async (application: Application): Promise<void> => {
     pathname: new RegExp(
       "^/authentication/email-verification/(?<emailVerificationNonce>[0-9]+)$",
     ),
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         { emailVerificationNonce: string },
         { redirect: string },
@@ -1612,8 +1621,11 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (
-        request.state.user.emailVerificationNonce !==
-          request.pathname.emailVerificationNonce ||
+        !(await argon2.verify(
+          request.state.user.emailVerificationNonce,
+          request.pathname.emailVerificationNonce,
+          application.privateConfiguration.argon2,
+        )) ||
         request.state.user.emailVerificationCreatedAt <
           new Date(Date.now() - 15 * 60 * 1000).toISOString()
       ) {
