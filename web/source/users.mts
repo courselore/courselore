@@ -2277,6 +2277,13 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
+      application.database.run(
+        sql`
+          update "userSessions"
+          set "needsTwoFactorAuthentication" = ${Number(false)}
+          where "user" = ${request.state.user.id};
+        `,
+      );
       response.setFlash(html`
         <div class="flash--green">
           Two-factor authentication disabled successfully.
