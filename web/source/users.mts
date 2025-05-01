@@ -2139,8 +2139,7 @@ export default async (application: Application): Promise<void> => {
               <hr class="separator" />
               <p>
                 Scan the following QR code with your two-factor authentication
-                application on your phone, for example, Google Authenticator or
-                Authy.
+                application on your phone, for example, Google Authenticator.
               </p>
               <div>
                 $${(
