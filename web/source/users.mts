@@ -2214,7 +2214,7 @@ export default async (application: Application): Promise<void> => {
             Invalid “Password confirmation” or “Two-factor authentication code”.
           </div>
         `);
-        response.redirect("/settings/two-factor-authentication");
+        response.redirect("/settings");
         return;
       }
       request.state.user.twoFactorAuthenticationEnabled = Number(false);
