@@ -1027,8 +1027,8 @@ export default async (application: Application): Promise<void> => {
                       : html`
                           <div
                             type="form"
-                            method="PATCH"
-                            action="/settings"
+                            method="DELETE"
+                            action="/settings/two-factor-authentication"
                             css="${css`
                               padding: var(--size--2) var(--size--0);
                               border-bottom: var(--border-width--1) solid
@@ -2160,6 +2160,79 @@ export default async (application: Application): Promise<void> => {
       response.setFlash(html`
         <div class="flash--green">
           Two-factor authentication enabled successfully.
+        </div>
+      `);
+      response.redirect("/settings");
+    },
+  });
+
+  application.server?.push({
+    method: "DELETE",
+    pathname: "/settings/two-factor-authentication",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          passwordConfirmation: string;
+          twoFactorAuthenticationConfirmation: string;
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
+        typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodes !==
+          "string"
+      )
+        return;
+      if (
+        typeof request.body.passwordConfirmation !== "string" ||
+        request.body.passwordConfirmation.length < 8 ||
+        typeof request.body.twoFactorAuthenticationConfirmation !== "string" ||
+        request.body.twoFactorAuthenticationConfirmation.length < 6
+      )
+        throw "validation";
+      const passwordConfirmationVerify = await argon2.verify(
+        request.state.user.password!,
+        request.body.passwordConfirmation,
+        application.privateConfiguration.argon2,
+      );
+      const twoFactorAuthenticationValidate =
+        new OTPAuth.TOTP({
+          secret: request.state.user.twoFactorAuthenticationSecret,
+        }).validate({
+          token: request.body.twoFactorAuthenticationConfirmation,
+        }) !== null;
+      if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
+        response.setFlash(html`
+          <div class="flash--red">
+            Invalid “Password confirmation” or “Two-factor authentication code”.
+          </div>
+        `);
+        response.redirect("/settings/two-factor-authentication");
+        return;
+      }
+      request.state.user.twoFactorAuthenticationEnabled = Number(false);
+      request.state.user.twoFactorAuthenticationSecret = null;
+      request.state.user.twoFactorAuthenticationRecoveryCodes = null;
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
+            "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
+            "twoFactorAuthenticationRecoveryCodes" = ${request.state.user.twoFactorAuthenticationRecoveryCodes}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">
+          Two-factor authentication disabled successfully.
         </div>
       `);
       response.redirect("/settings");
