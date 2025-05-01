@@ -7,6 +7,7 @@ import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
+import * as OTPAuth from "otpauth";
 import { Application } from "./index.mjs";
 
 export type ApplicationAuthentication = {
@@ -1975,7 +1976,7 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="text"
                         inputmode="numeric"
-                        name="twoFactorAuthenticationConfirmation"
+                        name="twoFactorAuthenticationCode"
                         required
                         minlength="6"
                         class="input--text"
@@ -2002,13 +2003,13 @@ export default async (application: Application): Promise<void> => {
                       javascript="${javascript`
                         this.onclick = () => {
                           this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationCode"]').hidden = true;
-                          this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationConfirmation"]').disabled = true;
+                          this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationCode"]').disabled = true;
                           this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationRecoveryCode"]').hidden = false;
                           this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationRecoveryCode"]').disabled = false;
                         };
                       `}"
                     >
-                      Use recovery code instead
+                      Use two-factor authentication recovery code instead
                     </button>
                   </div>
                 </div>
@@ -2033,7 +2034,7 @@ export default async (application: Application): Promise<void> => {
                         );
                       `}"
                     >
-                      Recovery code
+                      Two-factor authentication recovery code
                     </div>
                     <div
                       css="${css`
@@ -2089,7 +2090,7 @@ export default async (application: Application): Promise<void> => {
                       javascript="${javascript`
                         this.onclick = () => {
                           this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationCode"]').hidden = false;
-                          this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationConfirmation"]').disabled = false;
+                          this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationCode"]').disabled = false;
                           this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationRecoveryCode"]').hidden = true;
                           this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationRecoveryCode"]').disabled = true;
                         };
@@ -2117,6 +2118,138 @@ export default async (application: Application): Promise<void> => {
           `,
         }),
       );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: "/authentication/sign-in/two-factor-authentication",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        { redirect: string },
+        {},
+        {
+          twoFactorAuthenticationCode: string;
+          twoFactorAuthenticationRecoveryCode: string;
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.userSession === undefined ||
+        Boolean(request.state.userSession.needsTwoFactorAuthentication) ===
+          false ||
+        request.state.user === undefined ||
+        Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
+        typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodes !==
+          "string"
+      )
+        return;
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.startsWith("/")
+      )
+        delete request.search.redirect;
+      if (
+        (typeof request.body.twoFactorAuthenticationCode !== "string" &&
+          typeof request.body.twoFactorAuthenticationRecoveryCode !==
+            "string") ||
+        (typeof request.body.twoFactorAuthenticationCode === "string" &&
+          typeof request.body.twoFactorAuthenticationRecoveryCode ===
+            "string") ||
+        (typeof request.body.twoFactorAuthenticationCode === "string" &&
+          request.body.twoFactorAuthenticationCode.length < 8) ||
+        (typeof request.body.twoFactorAuthenticationRecoveryCode === "string" &&
+          request.body.twoFactorAuthenticationRecoveryCode.length < 10)
+      )
+        throw "validation";
+      if (
+        (typeof request.body.twoFactorAuthenticationCode === "string" &&
+          new OTPAuth.TOTP({
+            secret: request.state.user.twoFactorAuthenticationSecret,
+          }).validate({
+            token: request.body.twoFactorAuthenticationCode,
+          }) === null) ||
+        (typeof request.body.twoFactorAuthenticationRecoveryCode === "string" &&
+          !(
+            await Promise.all(
+              JSON.parse(
+                request.state.user.twoFactorAuthenticationRecoveryCodes,
+              ).map((twoFactorAuthenticationCode: string) =>
+                argon2.verify(
+                  twoFactorAuthenticationCode,
+                  request.body.twoFactorAuthenticationRecoveryCode!,
+                  application.privateConfiguration.argon2,
+                ),
+              ),
+            )
+          ).some(
+            (twoFactorAuthenticationCodeVerify: boolean) =>
+              twoFactorAuthenticationCodeVerify,
+          ))
+      ) {
+        response.setFlash(html`
+          <div class="flash--red">
+            Invalid
+            ${typeof request.body.twoFactorAuthenticationCode === "string"
+              ? "“Two-factor authentication code”"
+              : typeof request.body.twoFactorAuthenticationRecoveryCode ===
+                  "string"
+                ? "“Two-factor authentication recovery code”"
+                : (() => {
+                    throw new Error();
+                  })()}.
+          </div>
+        `);
+        response.redirect(
+          `/authentication/sign-in/two-factor-authentication${request.URL.search}`,
+        );
+        return;
+      }
+      request.state.userSession.needsTwoFactorAuthentication = Number(false);
+      application.database.run(
+        sql`
+          update "userSessions"
+          set "needsTwoFactorAuthentication" = ${request.state.userSession.needsTwoFactorAuthentication}
+          where "id" = ${request.state.userSession.id};
+        `,
+      );
+      if (
+        typeof request.body.twoFactorAuthenticationRecoveryCode === "string"
+      ) {
+        request.state.user.twoFactorAuthenticationEnabled = Number(false);
+        request.state.user.twoFactorAuthenticationSecret = null;
+        request.state.user.twoFactorAuthenticationRecoveryCodes = null;
+        application.database.run(
+          sql`
+            update "users"
+            set
+              "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
+              "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
+              "twoFactorAuthenticationRecoveryCodes" = ${request.state.user.twoFactorAuthenticationRecoveryCodes}
+            where "id" = ${request.state.user.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            update "userSessions"
+            set "needsTwoFactorAuthentication" = ${Number(false)}
+            where "user" = ${request.state.user.id};
+          `,
+        );
+        response.setFlash(html`
+          <div class="flash--green">
+            Two-factor authentication was disabled because you used a recovery
+            code. Please consider enabling it again.
+          </div>
+        `);
+        response.redirect("/settings");
+        return;
+      }
+      response.redirect(request.search.redirect ?? "/");
     },
   });
 
