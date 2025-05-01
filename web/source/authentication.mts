@@ -301,6 +301,21 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
+      if (
+        Boolean(request.state.userSession.needsTwoFactorAuthentication) &&
+        !request.URL.pathname.match(
+          new RegExp(
+            "^/authentication/sign-in/two-factor-authentication(?:$|/)",
+          ),
+        )
+      ) {
+        response.redirect(
+          `/authentication/sign-in/two-factor-authentication?${new URLSearchParams(
+            { redirect: request.URL.pathname + request.URL.search },
+          ).toString()}`,
+        );
+        return;
+      }
     },
   });
 
@@ -1874,6 +1889,234 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       response.redirect(request.search.redirect ?? "/");
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: "/authentication/sign-in/two-factor-authentication",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.userSession === undefined ||
+        Boolean(request.state.userSession.needsTwoFactorAuthentication) ===
+          false ||
+        request.state.user === undefined
+      )
+        return;
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Two-factor authentication · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Two-factor authentication
+              </div>
+              <div
+                type="form"
+                method="POST"
+                action="/authentication/sign-in/two-factor-authentication${request
+                  .URL.search}"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <div
+                  key="twoFactorAuthenticationCode"
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--1);
+                  `}"
+                >
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Two-factor authentication code
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        inputmode="numeric"
+                        name="twoFactorAuthenticationConfirmation"
+                        required
+                        minlength="6"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--600),
+                        var(--color--slate--400)
+                      );
+                    `}"
+                  >
+                    <button
+                      type="button"
+                      class="button button--rectangle button--transparent"
+                      javascript="${javascript`
+                        this.onclick = () => {
+                          this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationCode"]').hidden = true;
+                          this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationConfirmation"]').disabled = true;
+                          this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationRecoveryCode"]').hidden = false;
+                          this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationRecoveryCode"]').disabled = false;
+                        };
+                      `}"
+                    >
+                      Use recovery code instead
+                    </button>
+                  </div>
+                </div>
+                <div
+                  key="twoFactorAuthenticationRecoveryCode"
+                  hidden
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--1);
+                  `}"
+                >
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Recovery code
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        inputmode="numeric"
+                        name="twoFactorAuthenticationRecoveryCode"
+                        required
+                        minlength="10"
+                        disabled
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      color: light-dark(
+                        var(--color--slate--600),
+                        var(--color--slate--400)
+                      );
+                    `}"
+                  >
+                    The recovery codes have been shown to you when you
+                    configured two-factor authentication. Ten recovery codes
+                    have been shown, and you may use any one of them above. Only
+                    use a recovery code if you lost the method of two-factor
+                    authentication, for example, if you lost your phone. A
+                    recovery code may be used only once, and after that you must
+                    configure two-factor authentication again.
+                  </div>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--600),
+                        var(--color--slate--400)
+                      );
+                    `}"
+                  >
+                    <button
+                      type="button"
+                      class="button button--rectangle button--transparent"
+                      javascript="${javascript`
+                        this.onclick = () => {
+                          this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationCode"]').hidden = false;
+                          this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationConfirmation"]').disabled = false;
+                          this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationRecoveryCode"]').hidden = true;
+                          this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationRecoveryCode"]').disabled = true;
+                        };
+                      `}"
+                    >
+                      Use two-factor authentication code instead
+                    </button>
+                  </div>
+                </div>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--blue"
+                  >
+                    Sign in
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+        }),
+      );
     },
   });
 
