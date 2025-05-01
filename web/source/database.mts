@@ -2470,6 +2470,7 @@ export default async (application: Application): Promise<void> => {
             "publicId" text not null unique,
             "user" integer not null references "users",
             "createdAt" text not null,
+            "needsTwoFactorAuthentication" integer not null,
             "samlIdentifier" text null,
             "samlSessionIndex" text null,
             "samlNameID" text null

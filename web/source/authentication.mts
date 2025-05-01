@@ -18,6 +18,7 @@ export type ApplicationAuthentication = {
           publicId: string;
           user: number;
           createdAt: string;
+          needsTwoFactorAuthentication: number;
           samlIdentifier: string | null;
           samlSessionIndex: string | null;
           samlNameID: string | null;
@@ -104,6 +105,7 @@ export default async (application: Application): Promise<void> => {
         publicId: string;
         user: number;
         createdAt: string;
+        needsTwoFactorAuthentication: number;
         samlIdentifier: string | null;
         samlSessionIndex: string | null;
         samlNameID: string | null;
@@ -114,6 +116,7 @@ export default async (application: Application): Promise<void> => {
             "publicId",
             "user",
             "createdAt",
+            "needsTwoFactorAuthentication",
             "samlIdentifier",
             "samlSessionIndex",
             "samlNameID"
@@ -162,6 +165,7 @@ export default async (application: Application): Promise<void> => {
           publicId: string;
           user: number;
           createdAt: string;
+          needsTwoFactorAuthentication: number;
           samlIdentifier: string | null;
           samlSessionIndex: string | null;
           samlNameID: string | null;
@@ -174,6 +178,7 @@ export default async (application: Application): Promise<void> => {
                     "publicId",
                     "user",
                     "createdAt",
+                    "needsTwoFactorAuthentication",
                     "samlIdentifier",
                     "samlSessionIndex",
                     "samlNameID"
@@ -185,6 +190,7 @@ export default async (application: Application): Promise<void> => {
                     })},
                     ${request.state.userSession.user},
                     ${new Date().toISOString()},
+                    ${request.state.userSession.needsTwoFactorAuthentication},
                     ${request.state.userSession.samlIdentifier},
                     ${request.state.userSession.samlSessionIndex},
                     ${request.state.userSession.samlNameID}
@@ -1790,6 +1796,7 @@ export default async (application: Application): Promise<void> => {
         publicId: string;
         user: number;
         createdAt: string;
+        needsTwoFactorAuthentication: number;
         samlIdentifier: string | null;
         samlSessionIndex: string | null;
         samlNameID: string | null;
@@ -1802,6 +1809,7 @@ export default async (application: Application): Promise<void> => {
                   "publicId",
                   "user",
                   "createdAt",
+                  "needsTwoFactorAuthentication",
                   "samlIdentifier",
                   "samlSessionIndex",
                   "samlNameID"
@@ -1813,6 +1821,7 @@ export default async (application: Application): Promise<void> => {
                   })},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
+                  ${request.state.user.twoFactorAuthenticationEnabled},
                   ${null},
                   ${null},
                   ${null}
