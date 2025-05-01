@@ -2333,6 +2333,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           passwordConfirmation: string;
+          twoFactorAuthenticationConfirmation: string;
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -2341,18 +2342,38 @@ export default async (application: Application): Promise<void> => {
       if (request.state.user === undefined) return;
       if (
         typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.length < 8
+        request.body.passwordConfirmation.length < 8 ||
+        (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
+          (typeof request.body.twoFactorAuthenticationConfirmation !==
+            "string" ||
+            request.body.twoFactorAuthenticationConfirmation.length < 6))
       )
         throw "validation";
-      if (
-        !(await argon2.verify(
-          request.state.user.password!,
-          request.body.passwordConfirmation,
-          application.privateConfiguration.argon2,
-        ))
-      ) {
+      const passwordConfirmationVerify = await argon2.verify(
+        request.state.user.password!,
+        request.body.passwordConfirmation,
+        application.privateConfiguration.argon2,
+      );
+      const twoFactorAuthenticationValidate =
+        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
+        typeof request.state.user.twoFactorAuthenticationSecret === "string" &&
+        typeof request.body.twoFactorAuthenticationConfirmation === "string"
+          ? new OTPAuth.TOTP({
+              secret: request.state.user.twoFactorAuthenticationSecret,
+            }).validate({
+              token: request.body.twoFactorAuthenticationConfirmation,
+            }) !== null
+          : true;
+      if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
         response.setFlash(html`
-          <div class="flash--red">Invalid “Password confirmation”.</div>
+          <div class="flash--red">
+            Invalid “Password
+            confirmation”${Boolean(
+              request.state.user.twoFactorAuthenticationEnabled,
+            ) === true
+              ? " or “Two-factor authentication code”"
+              : ""}.
+          </div>
         `);
         response.redirect("/settings");
         return;
