@@ -8,6 +8,7 @@ import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
 import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
+import { SAML } from "@node-saml/node-saml";
 import database, { ApplicationDatabase } from "./database.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
@@ -97,7 +98,7 @@ application.privateConfiguration.argon2 = {
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
-    csrfProtectionExceptionPathname: new RegExp("^TODO$"),
+    csrfProtectionExceptionPathname: new RegExp("^/authentication/saml/"),
   });
 application.layouts = {} as Application["layouts"];
 application.partials = {} as Application["partials"];
