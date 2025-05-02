@@ -8,7 +8,7 @@ import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
 import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
-import { SAML } from "@node-saml/node-saml";
+import * as SAML from "@node-saml/node-saml";
 import database, { ApplicationDatabase } from "./database.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
@@ -45,8 +45,11 @@ export type Application = {
       [samlIdentifier: string]: {
         name: string;
         domains: string[];
-        attributes: (samlResponse: "TODO") => { email: string; name: string };
-        options: "TODO";
+        attributes: (samlResponse: SAML.Profile) => {
+          email: string;
+          name: string;
+        };
+        options: SAML.SamlConfig;
       };
     };
     dataDirectory: string;
