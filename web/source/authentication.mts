@@ -1,6 +1,7 @@
 import * as serverTypes from "@radically-straightforward/server";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
+import * as SAML from "@node-saml/node-saml";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
@@ -808,7 +809,7 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
                   </details>
-                  $${0 < application.configuration.saml.length
+                  $${typeof application.configuration.saml === "object"
                     ? html`
                         <details>
                           <summary
@@ -842,7 +843,7 @@ export default async (application: Application): Promise<void> => {
                             >
                               <i class="bi bi-chevron-right"></i>
                             </span>
-                            School credentials
+                            Institution credentials
                           </summary>
                           <div
                             css="${css`
@@ -857,11 +858,13 @@ export default async (application: Application): Promise<void> => {
                               gap: var(--size--4);
                             `}"
                           >
-                            $${application.configuration.saml.map(
-                              (saml) => html`
+                            $${Object.entries(
+                              application.configuration.saml,
+                            ).map(
+                              ([samlIdentifier, saml]) => html`
                                 <div>
                                   <a
-                                    href="/authentication/saml/${saml.identifier}"
+                                    href="/authentication/saml/${samlIdentifier}"
                                     class="link"
                                     >${saml.name}</a
                                   >
@@ -2857,6 +2860,31 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       response.redirect(`/authentication${request.URL.search}`);
+    },
+  });
+
+  type StateAuthenticationSAML =
+    Application["types"]["states"]["Authentication"] & { saml: SAML.SAML };
+
+  application.server?.push({
+    pathname: new RegExp(
+      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        { samlIdentifier: string },
+        {},
+        {},
+        {},
+        StateAuthenticationSAML
+      >,
+      response,
+    ) => {
+      if (typeof request.pathname.samlIdentifier !== "string") return;
+      // const options = application.configuration.saml[request.pathname.samlIdentifier]
+      // request.state.saml = new SAML.SAML({
+
+      // })
     },
   });
 
