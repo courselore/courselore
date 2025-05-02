@@ -2186,10 +2186,7 @@ export default async (application: Application): Promise<void> => {
                 ),
               ),
             )
-          ).some(
-            (twoFactorAuthenticationCodeVerify: boolean) =>
-              twoFactorAuthenticationCodeVerify,
-          ))
+          ).includes(true))
       ) {
         response.setFlash(html`
           <div class="flash--red">
@@ -2209,14 +2206,6 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      request.state.userSession.needsTwoFactorAuthentication = Number(false);
-      application.database.run(
-        sql`
-          update "userSessions"
-          set "needsTwoFactorAuthentication" = ${request.state.userSession.needsTwoFactorAuthentication}
-          where "id" = ${request.state.userSession.id};
-        `,
-      );
       if (
         typeof request.body.twoFactorAuthenticationRecoveryCode === "string"
       ) {
@@ -2249,6 +2238,14 @@ export default async (application: Application): Promise<void> => {
         response.redirect("/settings");
         return;
       }
+      request.state.userSession.needsTwoFactorAuthentication = Number(false);
+      application.database.run(
+        sql`
+          update "userSessions"
+          set "needsTwoFactorAuthentication" = ${request.state.userSession.needsTwoFactorAuthentication}
+          where "id" = ${request.state.userSession.id};
+        `,
+      );
       response.redirect(request.search.redirect ?? "/");
     },
   });
