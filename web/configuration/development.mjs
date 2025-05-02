@@ -9,8 +9,8 @@ export default {
     "courselore-university": {
       name: "Courselore University",
       logo: {
-        light: "development/courselore-university--light--2025-05-02.webp",
-        dark: "development/courselore-university--dark--2025-05-02.webp",
+        light: "/development/courselore-university--light--2025-05-02.webp",
+        dark: "/development/courselore-university--dark--2025-05-02.webp",
         width: 300,
       },
       domains: ["courselore-university.edu"],
