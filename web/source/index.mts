@@ -225,7 +225,7 @@ if (application.commandLineArguments.values.type === undefined) {
             "../configuration/development/saml-idp/certificate.pem",
           ),
           "--issuer",
-          `https://${application.configuration.hostname}:8001/metadata`,
+          "http://localhost:8001/metadata",
           "--acsUrl",
           `https://${application.configuration.hostname}/authentication/saml/courselore-university/assertion-consumer-service`,
           "--sloUrl",
