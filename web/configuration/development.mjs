@@ -5,7 +5,6 @@ export default {
     port: 8025,
     from: "Courselore <courselore@courselore.org>",
   },
-  environment: "development",
   saml: {
     "courselore-university": {
       name: "Courselore University",
@@ -29,4 +28,5 @@ export default {
       },
     },
   },
+  environment: "development",
 };

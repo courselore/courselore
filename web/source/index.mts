@@ -40,6 +40,19 @@ export type Application = {
     hostname: string;
     systemAdministratorEmail: string | undefined;
     email: any;
+    saml: {
+      [institution: string]: {
+        name: string;
+        logo: {
+          light: string;
+          dark: string;
+          width: number;
+        };
+        domains: string[];
+        attributes: (samlResponse: "TODO") => { email: string; name: string };
+        options: "TODO";
+      };
+    };
     dataDirectory: string;
     environment: "production" | "development";
     hstsPreload?: boolean;
