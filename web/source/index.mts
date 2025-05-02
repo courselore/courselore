@@ -41,13 +41,8 @@ export type Application = {
     systemAdministratorEmail: string | undefined;
     email: any;
     saml: {
-      [institution: string]: {
+      [samlIdentifier: string]: {
         name: string;
-        logo: {
-          light: string;
-          dark: string;
-          width: number;
-        };
         domains: string[];
         attributes: (samlResponse: "TODO") => { email: string; name: string };
         options: "TODO";
