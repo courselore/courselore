@@ -2161,7 +2161,7 @@ export default async (application: Application): Promise<void> => {
           typeof request.body.twoFactorAuthenticationRecoveryCode ===
             "string") ||
         (typeof request.body.twoFactorAuthenticationCode === "string" &&
-          request.body.twoFactorAuthenticationCode.length < 8) ||
+          request.body.twoFactorAuthenticationCode.length < 6) ||
         (typeof request.body.twoFactorAuthenticationRecoveryCode === "string" &&
           request.body.twoFactorAuthenticationRecoveryCode.length < 10)
       )
