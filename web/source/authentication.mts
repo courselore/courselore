@@ -2864,11 +2864,11 @@ export default async (application: Application): Promise<void> => {
   });
 
   type StateAuthenticationSAML =
-    Application["types"]["states"]["Authentication"] & { saml: SAML.SAML };
+    Application["types"]["states"]["Authentication"] & { /* TODO: It would be more convenient to pull the configuration into the state */ saml: SAML.SAML };
 
   application.server?.push({
     pathname: new RegExp(
-      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/",
+      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
