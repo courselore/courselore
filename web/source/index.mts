@@ -42,16 +42,15 @@ export type Application = {
     systemAdministratorEmail: string | undefined;
     email: any;
     saml: {
-      [samlIdentifier: string]: {
+      identifier: string;
+      name: string;
+      domains: string[];
+      attributes: (samlResponse: SAML.Profile) => {
+        email: string;
         name: string;
-        domains: string[];
-        attributes: (samlResponse: SAML.Profile) => {
-          email: string;
-          name: string;
-        };
-        options: SAML.SamlConfig;
       };
-    };
+      options: SAML.SamlConfig;
+    }[];
     dataDirectory: string;
     environment: "production" | "development";
     hstsPreload?: boolean;
@@ -84,6 +83,7 @@ application.commandLineArguments = util.parseArgs({
 application.configuration = (
   await import(path.resolve(application.commandLineArguments.positionals[0]))
 ).default;
+application.configuration.saml ??= [];
 application.configuration.dataDirectory ??= path.resolve("./data/");
 await fs.mkdir(application.configuration.dataDirectory, { recursive: true });
 application.configuration.environment ??= "production";
