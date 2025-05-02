@@ -3321,11 +3321,11 @@ export default async (application: Application): Promise<void> => {
 
                       # Animated GIF
 
-                      [<video src="/development--video-example.mp4"></video>](/development--video-example.mp4)
+                      [<video src="/development/video-example.mp4"></video>](/development/video-example.mp4)
 
                       # Video
 
-                      <video src="/development--video-example.mp4"></video>
+                      <video src="/development/video-example.mp4"></video>
 
                       # Image/Video Proxy
 
