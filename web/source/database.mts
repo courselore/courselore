@@ -2478,14 +2478,6 @@ export default async (application: Application): Promise<void> => {
           create index "index_userSessions_user" on "userSessions" ("user");
           create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
           
-          create table "userSessionsSamlCache" (
-            "id" integer primary key autoincrement,
-            "createdAt" text not null,
-            "samlIdentifier" text not null,
-            "key" text not null unique,
-            "value" text not null
-          ) strict;
-          
           create table "courses" (
             "id" integer primary key autoincrement,
             "publicId" text not null unique,
