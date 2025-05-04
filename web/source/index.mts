@@ -49,7 +49,7 @@ export type Application = {
           email: string;
           name: string;
         };
-        options: SAML.SamlConfig;
+        options: SAML.SamlConfig & { decryptionCert?: string };
       };
     };
     dataDirectory: string;

@@ -2918,8 +2918,9 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        application.configuration.saml === undefined ||
         typeof request.pathname.samlIdentifier !== "string" ||
-        application.configuration.saml === undefined
+        request.state.systemOptions === undefined
       )
         return;
       const identifier = request.pathname.samlIdentifier;
@@ -2929,8 +2930,38 @@ export default async (application: Application): Promise<void> => {
         ...configuration.options,
         issuer: `https://${application.configuration.hostname}/authentication/saml/${identifier}/metadata`,
         callbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/assertion-consumer-service`,
+        logoutCallbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/single-logout-service`,
+        privateKey: request.state.systemOptions.privateKey,
+        publicCert: request.state.systemOptions.certificate,
+        signMetadata: true,
+        validateInResponseTo: SAML.ValidateInResponseTo.ifPresent,
       });
       request.state.saml = { identifier, configuration, saml };
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/metadata$",
+    ),
+    handler: (
+      request: serverTypes.Request<{}, {}, {}, {}, StateAuthenticationSAML>,
+      response,
+    ) => {
+      if (
+        request.state.systemOptions === undefined ||
+        request.state.saml === undefined
+      )
+        return;
+      response
+        .setHeader("Content-Type", "application/xml; charset=utf-8")
+        .end(
+          request.state.saml.saml.generateServiceProviderMetadata(
+            request.state.saml.configuration.options.decryptionCert ?? null,
+            request.state.systemOptions.certificate,
+          ),
+        );
     },
   });
 
