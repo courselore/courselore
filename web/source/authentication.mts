@@ -2991,6 +2991,23 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "POST",
+    pathname: new RegExp(
+      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/assertion-consumer-service$",
+    ),
+    handler: async (
+      request: serverTypes.Request<{}, {}, {}, {}, StateAuthenticationSAML>,
+      response,
+    ) => {
+      if (request.state.user !== undefined || request.state.saml === undefined)
+        return;
+      console.log(
+        await request.state.saml.saml.validatePostResponseAsync(request.body),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
     pathname: "/authentication/sign-out",
     handler: (
       request: serverTypes.Request<
