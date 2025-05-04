@@ -895,6 +895,9 @@ export default async (application: Application): Promise<void> => {
                                   <a
                                     href="/authentication/saml/${samlIdentifier}/authorize"
                                     class="link"
+                                    javascript="${javascript`
+                                      this.liveNavigate = false;
+                                    `}"
                                     >${saml.name}</a
                                   >
                                 </div>
