@@ -2895,7 +2895,12 @@ export default async (application: Application): Promise<void> => {
         return;
       const identifier = request.pathname.samlIdentifier;
       const configuration = application.configuration.saml[identifier];
-      const saml = new SAML.SAML({ ...configuration.options });
+      if (configuration === undefined) return;
+      const saml = new SAML.SAML({
+        ...configuration.options,
+        issuer: `https://${application.configuration.hostname}/authentication/saml/${identifier}/metadata`,
+        callbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/assertion-consumer-service`,
+      });
       request.state.saml = { identifier, configuration, saml };
     },
   });
