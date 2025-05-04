@@ -2864,7 +2864,15 @@ export default async (application: Application): Promise<void> => {
   });
 
   type StateAuthenticationSAML =
-    Application["types"]["states"]["Authentication"] & { /* TODO: It would be more convenient to pull the configuration into the state */ saml: SAML.SAML };
+    Application["types"]["states"]["Authentication"] & {
+      saml: {
+        identifier: string;
+        configuration: NonNullable<
+          Application["configuration"]["saml"]
+        >[string];
+        saml: SAML.SAML;
+      };
+    };
 
   application.server?.push({
     pathname: new RegExp(
@@ -2880,11 +2888,15 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (typeof request.pathname.samlIdentifier !== "string") return;
-      // const options = application.configuration.saml[request.pathname.samlIdentifier]
-      // request.state.saml = new SAML.SAML({
-
-      // })
+      if (
+        typeof request.pathname.samlIdentifier !== "string" ||
+        application.configuration.saml === undefined
+      )
+        return;
+      const identifier = request.pathname.samlIdentifier;
+      const configuration = application.configuration.saml[identifier];
+      const saml = new SAML.SAML({ ...configuration.options });
+      request.state.saml = { identifier, configuration, saml };
     },
   });
 
