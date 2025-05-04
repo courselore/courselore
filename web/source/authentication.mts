@@ -15,6 +15,15 @@ export type ApplicationAuthentication = {
   types: {
     states: {
       Authentication: {
+        systemOptions: {
+          id: number;
+          privateKey: string;
+          certificate: string;
+          userRolesWhoMayCreateCourses:
+            | "userRoleUser"
+            | "userRoleStaff"
+            | "userRoleSystemAdministrator";
+        };
         userSession: {
           id: number;
           publicId: string;
@@ -95,6 +104,26 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
+      request.state.systemOptions = application.database.get<{
+        id: number;
+        privateKey: string;
+        certificate: string;
+        userRolesWhoMayCreateCourses:
+          | "userRoleUser"
+          | "userRoleStaff"
+          | "userRoleSystemAdministrator";
+      }>(
+        sql`
+          select
+            "id",
+            "privateKey",
+            "certificate",
+            "userRolesWhoMayCreateCourses"
+          from "systemOptions"
+          limit 1;
+        `,
+      );
+      if (request.state.systemOptions === undefined) throw new Error();
       if (typeof request.cookies.session !== "string") {
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect(
