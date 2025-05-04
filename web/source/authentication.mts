@@ -893,7 +893,7 @@ export default async (application: Application): Promise<void> => {
                               ([samlIdentifier, saml]) => html`
                                 <div>
                                   <a
-                                    href="/authentication/saml/${samlIdentifier}"
+                                    href="/authentication/saml/${samlIdentifier}/authorize"
                                     class="link"
                                     >${saml.name}</a
                                   >
@@ -2962,6 +2962,27 @@ export default async (application: Application): Promise<void> => {
             request.state.systemOptions.certificate,
           ),
         );
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/authorize$",
+    ),
+    handler: async (
+      request: serverTypes.Request<{}, {}, {}, {}, StateAuthenticationSAML>,
+      response,
+    ) => {
+      if (request.state.user !== undefined || request.state.saml === undefined)
+        return;
+      response.redirect(
+        await request.state.saml.saml.getAuthorizeUrlAsync(
+          request.URL.search.slice(1),
+          undefined,
+          {},
+        ),
+      );
     },
   });
 
