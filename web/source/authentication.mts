@@ -3000,7 +3000,7 @@ export default async (application: Application): Promise<void> => {
       if (saml === undefined) return;
       response.redirect(
         await saml.saml.getAuthorizeUrlAsync(
-          request.URL.search.slice(1), // TODO
+          request.URL.search.slice(1),
           undefined,
           {},
         ),
