@@ -2896,30 +2896,6 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
-    method: "POST",
-    pathname: "/authentication/sign-out",
-    handler: (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {},
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (request.state.userSession === undefined) return;
-      application.database.run(
-        sql`
-          delete from "userSessions" where "id" = ${request.state.userSession.id};
-        `,
-      );
-      response.deleteCookie("session");
-      response.redirect("/");
-    },
-  });
-
   const samls =
     typeof application.configuration.saml === "object"
       ? (() => {
@@ -3417,13 +3393,11 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
-    method: "GET",
-    pathname: new RegExp(
-      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/sign-out$",
-    ),
+    method: "POST",
+    pathname: "/authentication/sign-out",
     handler: async (
       request: serverTypes.Request<
-        { samlIdentifier: string },
+        {},
         {},
         {},
         {},
@@ -3431,22 +3405,30 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        typeof request.pathname.samlIdentifier !== "string" ||
-        request.state.userSession === undefined ||
-        typeof request.state.userSession.samlProfile !== "string" ||
-        request.state.user === undefined
-      )
-        return;
-      const saml = samls?.[request.pathname.samlIdentifier];
-      if (saml === undefined) return;
-      response.redirect(
-        await saml.saml.getLogoutUrlAsync(
-          JSON.parse(request.state.userSession.samlProfile),
-          "",
-          {},
-        ),
+      if (request.state.userSession === undefined) return;
+      application.database.run(
+        sql`
+          delete from "userSessions" where "id" = ${request.state.userSession.id};
+        `,
       );
+      response.deleteCookie("session");
+      if (
+        typeof request.state.userSession.samlIdentifier === "string" &&
+        request.state.userSession.samlProfile === "string"
+      ) {
+        const saml = samls?.[request.state.userSession.samlIdentifier];
+        if (saml === undefined) {
+          response.redirect("/");
+          return;
+        }
+        response.redirect(
+          await saml.saml.getLogoutUrlAsync(
+            JSON.parse(request.state.userSession.samlProfile),
+            "",
+            {},
+          ),
+        );
+      } else response.redirect("/");
     },
   });
 };
