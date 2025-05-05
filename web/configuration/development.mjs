@@ -9,9 +9,9 @@ export default {
     "courselore-university": {
       name: "Courselore University",
       domains: ["courselore-university.edu"],
-      attributes: (samlProfile) => ({
-        email: samlProfile?.nameID,
-        name: samlProfile?.attributes?.name,
+      attributes: (profile) => ({
+        email: profile.nameID,
+        name: profile.attributes.name,
       }),
       options: {
         idpIssuer: "http://localhost:8001/metadata",

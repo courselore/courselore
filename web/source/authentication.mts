@@ -3021,14 +3021,47 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        typeof request.pathname.samlIdentifier !== "string" ||
-        request.state.user !== undefined
-      )
+      if (typeof request.pathname.samlIdentifier !== "string") return;
+      if (request.state.user !== undefined) {
+        response.redirect("TODO");
         return;
+      }
       const saml = samls?.[request.pathname.samlIdentifier];
       if (saml === undefined) return;
-      console.log(await saml.saml.validatePostResponseAsync(request.body));
+      let attributes: { email: string; name: string };
+      try {
+        const assertion = await saml.saml.validatePostResponseAsync(
+          request.body,
+        );
+        if (
+          assertion.loggedOut !== false ||
+          assertion.profile === undefined ||
+          assertion.profile === null ||
+          assertion.profile.issuer !== saml.configuration.options.idpIssuer
+        )
+          throw new Error();
+        attributes = saml.configuration.attributes(assertion.profile);
+        if (
+          typeof attributes.email !== "string" ||
+          !attributes.email.match(utilities.emailRegExp) ||
+          typeof attributes.name !== "string" ||
+          attributes.name.trim() === ""
+        )
+          throw new Error();
+      } catch (error) {
+        request.log("ERROR", String(error));
+        response.setFlash(html`
+          <div class="flash--red">
+            Something went wrong. Please try signing in again.
+          </div>
+        `);
+        response.redirect(
+          `/authentication?${new URLSearchParams({
+            redirect: "TODO",
+          }).toString()}`,
+        );
+        return;
+      }
     },
   });
 

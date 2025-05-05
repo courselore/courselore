@@ -45,7 +45,7 @@ export type Application = {
       [identifier: string]: {
         name: string;
         domains: string[];
-        attributes: (samlProfile: SAML.Profile) => {
+        attributes: (profile: SAML.Profile) => {
           email: string;
           name: string;
         };
