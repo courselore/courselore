@@ -2473,11 +2473,11 @@ export default async (application: Application): Promise<void> => {
             "needsTwoFactorAuthentication" integer not null,
             "samlIdentifier" text null,
             "samlSessionIndex" text null,
-            "samlProfile" text null
+            "samlProfile" text null,
+            unique ("samlIdentifier", "samlSessionIndex")
           ) strict;
           create index "index_userSessions_user" on "userSessions" ("user");
           create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
-          create index "index_userSessions_samlSessionIndex" on "userSessions" ("samlSessionIndex");
           
           create table "courses" (
             "id" integer primary key autoincrement,
