@@ -3414,7 +3414,7 @@ export default async (application: Application): Promise<void> => {
       response.deleteCookie("session");
       if (
         typeof request.state.userSession.samlIdentifier === "string" &&
-        request.state.userSession.samlProfile === "string"
+        typeof request.state.userSession.samlProfile === "string"
       ) {
         const saml = samls?.[request.state.userSession.samlIdentifier];
         if (saml === undefined) {
