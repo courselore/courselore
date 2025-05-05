@@ -861,9 +861,6 @@ export default async (application: Application): Promise<void> => {
                     type="form"
                     method="POST"
                     action="/authentication/sign-out"
-                    javascript="${javascript`
-                      this.liveNavigate = false;
-                    `}"
                   >
                     <button
                       type="submit"
