@@ -3018,14 +3018,21 @@ export default async (application: Application): Promise<void> => {
         { samlIdentifier: string },
         {},
         {},
-        {},
+        { RelayState: string },
         Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
       if (typeof request.pathname.samlIdentifier !== "string") return;
+      let redirect =
+        typeof request.body.RelayState === "string" &&
+        request.body.RelayState.trim() !== ""
+          ? (new URLSearchParams(request.body.RelayState).get("redirect") ??
+            "/")
+          : "/";
+      if (!redirect.startsWith("/")) redirect = "/";
       if (request.state.user !== undefined) {
-        response.redirect("TODO");
+        response.redirect(redirect);
         return;
       }
       const saml = samls?.[request.pathname.samlIdentifier];
@@ -3062,9 +3069,7 @@ export default async (application: Application): Promise<void> => {
           </div>
         `);
         response.redirect(
-          `/authentication?${new URLSearchParams({
-            redirect: "TODO",
-          }).toString()}`,
+          `/authentication?${typeof request.body.RelayState === "string" && request.body.RelayState.trim() !== "" ? request.body.RelayState : ""}`,
         );
         return;
       }
@@ -3383,7 +3388,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      response.redirect("TODO");
+      response.redirect(redirect);
     },
   });
 
