@@ -2895,53 +2895,51 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  type StateAuthenticationSAML =
-    Application["types"]["states"]["Authentication"] & {
-      saml: {
-        identifier: string;
-        configuration: NonNullable<
-          Application["configuration"]["saml"]
-        >[string];
-        saml: SAML.SAML;
-      };
-    };
-
-  application.server?.push({
-    pathname: new RegExp(
-      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)(?:$|/)",
-    ),
-    handler: (
-      request: serverTypes.Request<
-        { samlIdentifier: string },
-        {},
-        {},
-        {},
-        StateAuthenticationSAML
-      >,
-      response,
-    ) => {
-      if (
-        application.configuration.saml === undefined ||
-        typeof request.pathname.samlIdentifier !== "string" ||
-        request.state.systemOptions === undefined
-      )
-        return;
-      const identifier = request.pathname.samlIdentifier;
-      const configuration = application.configuration.saml[identifier];
-      if (configuration === undefined) return;
-      const saml = new SAML.SAML({
-        ...configuration.options,
-        issuer: `https://${application.configuration.hostname}/authentication/saml/${identifier}/metadata`,
-        callbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/assertion-consumer-service`,
-        logoutCallbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/single-logout-service`,
-        privateKey: request.state.systemOptions.privateKey,
-        publicCert: request.state.systemOptions.certificate,
-        signMetadata: true,
-        validateInResponseTo: SAML.ValidateInResponseTo.ifPresent,
-      });
-      request.state.saml = { identifier, configuration, saml };
-    },
-  });
+  const samls =
+    typeof application.configuration.saml === "object"
+      ? (() => {
+          const systemOptions = application.database.get<{
+            id: number;
+            privateKey: string;
+            certificate: string;
+            userRolesWhoMayCreateCourses:
+              | "userRoleUser"
+              | "userRoleStaff"
+              | "userRoleSystemAdministrator";
+          }>(
+            sql`
+              select
+                "id",
+                "privateKey",
+                "certificate",
+                "userRolesWhoMayCreateCourses"
+              from "systemOptions"
+              limit 1;
+            `,
+          );
+          if (systemOptions === undefined) throw new Error();
+          return Object.fromEntries(
+            Object.entries(application.configuration.saml).map(
+              ([identifier, configuration]) => [
+                identifier,
+                {
+                  configuration,
+                  saml: new SAML.SAML({
+                    ...configuration.options,
+                    issuer: `https://${application.configuration.hostname}/authentication/saml/${identifier}/metadata`,
+                    callbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/assertion-consumer-service`,
+                    logoutCallbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/single-logout-service`,
+                    privateKey: systemOptions.privateKey,
+                    publicCert: systemOptions.certificate,
+                    signMetadata: true,
+                    validateInResponseTo: SAML.ValidateInResponseTo.ifPresent,
+                  }),
+                },
+              ],
+            ),
+          );
+        })()
+      : undefined;
 
   application.server?.push({
     method: "GET",
@@ -2949,19 +2947,27 @@ export default async (application: Application): Promise<void> => {
       "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/metadata$",
     ),
     handler: (
-      request: serverTypes.Request<{}, {}, {}, {}, StateAuthenticationSAML>,
+      request: serverTypes.Request<
+        { samlIdentifier: string },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
       response,
     ) => {
       if (
-        request.state.systemOptions === undefined ||
-        request.state.saml === undefined
+        typeof request.pathname.samlIdentifier !== "string" ||
+        request.state.systemOptions === undefined
       )
         return;
+      const saml = samls?.[request.pathname.samlIdentifier];
+      if (saml === undefined) return;
       response
         .setHeader("Content-Type", "application/xml; charset=utf-8")
         .end(
-          request.state.saml.saml.generateServiceProviderMetadata(
-            request.state.saml.configuration.options.decryptionCert ?? null,
+          saml.saml.generateServiceProviderMetadata(
+            saml.configuration.options.decryptionCert ?? null,
             request.state.systemOptions.certificate,
           ),
         );
@@ -2974,13 +2980,24 @@ export default async (application: Application): Promise<void> => {
       "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/authorize$",
     ),
     handler: async (
-      request: serverTypes.Request<{}, {}, {}, {}, StateAuthenticationSAML>,
+      request: serverTypes.Request<
+        { samlIdentifier: string },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
       response,
     ) => {
-      if (request.state.user !== undefined || request.state.saml === undefined)
+      if (
+        typeof request.pathname.samlIdentifier !== "string" ||
+        request.state.user !== undefined
+      )
         return;
+      const saml = samls?.[request.pathname.samlIdentifier];
+      if (saml === undefined) return;
       response.redirect(
-        await request.state.saml.saml.getAuthorizeUrlAsync(
+        await saml.saml.getAuthorizeUrlAsync(
           request.URL.search.slice(1),
           undefined,
           {},
@@ -2995,14 +3012,23 @@ export default async (application: Application): Promise<void> => {
       "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/assertion-consumer-service$",
     ),
     handler: async (
-      request: serverTypes.Request<{}, {}, {}, {}, StateAuthenticationSAML>,
+      request: serverTypes.Request<
+        { samlIdentifier: string },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
       response,
     ) => {
-      if (request.state.user !== undefined || request.state.saml === undefined)
+      if (
+        typeof request.pathname.samlIdentifier !== "string" ||
+        request.state.user !== undefined
+      )
         return;
-      console.log(
-        await request.state.saml.saml.validatePostResponseAsync(request.body),
-      );
+      const saml = samls?.[request.pathname.samlIdentifier];
+      if (saml === undefined) return;
+      console.log(await saml.saml.validatePostResponseAsync(request.body));
     },
   });
 
