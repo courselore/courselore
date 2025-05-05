@@ -2477,6 +2477,7 @@ export default async (application: Application): Promise<void> => {
           ) strict;
           create index "index_userSessions_user" on "userSessions" ("user");
           create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
+          create index "index_userSessions_samlSessionIndex" on "userSessions" ("samlSessionIndex");
           
           create table "courses" (
             "id" integer primary key autoincrement,
