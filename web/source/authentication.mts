@@ -2923,6 +2923,7 @@ export default async (application: Application): Promise<void> => {
               ([identifier, configuration]) => [
                 identifier,
                 {
+                  identifier,
                   configuration,
                   saml: new SAML.SAML({
                     ...configuration.options,
@@ -2998,7 +2999,7 @@ export default async (application: Application): Promise<void> => {
       if (saml === undefined) return;
       response.redirect(
         await saml.saml.getAuthorizeUrlAsync(
-          request.URL.search.slice(1),
+          request.URL.search.slice(1), // TODO
           undefined,
           {},
         ),
@@ -3028,6 +3029,7 @@ export default async (application: Application): Promise<void> => {
       }
       const saml = samls?.[request.pathname.samlIdentifier];
       if (saml === undefined) return;
+      let profile: SAML.Profile;
       let attributes: { email: string; name: string };
       try {
         const assertion = await saml.saml.validatePostResponseAsync(
@@ -3037,10 +3039,13 @@ export default async (application: Application): Promise<void> => {
           assertion.loggedOut !== false ||
           assertion.profile === undefined ||
           assertion.profile === null ||
-          assertion.profile.issuer !== saml.configuration.options.idpIssuer
+          assertion.profile.issuer !== saml.configuration.options.idpIssuer ||
+          typeof assertion.profile.sessionIndex !== "string" ||
+          assertion.profile.sessionIndex.trim() === ""
         )
           throw new Error();
-        attributes = saml.configuration.attributes(assertion.profile);
+        profile = assertion.profile;
+        attributes = saml.configuration.attributes(profile);
         if (
           typeof attributes.email !== "string" ||
           !attributes.email.match(utilities.emailRegExp) ||
@@ -3062,6 +3067,322 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
+      application.database.executeTransaction(() => {
+        request.state.user = application.database.get<{
+          id: number;
+          publicId: string;
+          name: string;
+          email: string;
+          emailVerificationEmail: string | null;
+          emailVerificationNonce: string | null;
+          emailVerificationCreatedAt: string | null;
+          password: string | null;
+          passwordResetNonce: string | null;
+          passwordResetCreatedAt: string | null;
+          twoFactorAuthenticationEnabled: number;
+          twoFactorAuthenticationSecret: string | null;
+          twoFactorAuthenticationRecoveryCodes: string | null;
+          avatarColor:
+            | "red"
+            | "orange"
+            | "amber"
+            | "yellow"
+            | "lime"
+            | "green"
+            | "emerald"
+            | "teal"
+            | "cyan"
+            | "sky"
+            | "blue"
+            | "indigo"
+            | "violet"
+            | "purple"
+            | "fuchsia"
+            | "pink"
+            | "rose";
+          avatarImage: string | null;
+          userRole:
+            | "userRoleSystemAdministrator"
+            | "userRoleStaff"
+            | "userRoleUser";
+          lastSeenOnlineAt: string;
+          darkMode:
+            | "userDarkModeSystem"
+            | "userDarkModeLight"
+            | "userDarkModeDark";
+          sidebarWidth: number;
+          emailNotificationsForAllMessages: number;
+          emailNotificationsForMessagesIncludingMentions: number;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+          emailNotificationsForMessagesInConversationsThatYouStarted: number;
+          userAnonymityPreferred:
+            | "userAnonymityPreferredNone"
+            | "userAnonymityPreferredCourseParticipationRoleStudents"
+            | "userAnonymityPreferredCourseParticipationRoleInstructors";
+          mostRecentlyVisitedCourseParticipation: number | null;
+        }>(
+          sql`
+            select
+              "id",
+              "publicId",
+              "name",
+              "email",
+              "emailVerificationEmail",
+              "emailVerificationNonce",
+              "emailVerificationCreatedAt",
+              "password",
+              "passwordResetNonce",
+              "passwordResetCreatedAt",
+              "twoFactorAuthenticationEnabled",
+              "twoFactorAuthenticationSecret",
+              "twoFactorAuthenticationRecoveryCodes",
+              "avatarColor",
+              "avatarImage",
+              "userRole",
+              "lastSeenOnlineAt",
+              "darkMode",
+              "sidebarWidth",
+              "emailNotificationsForAllMessages",
+              "emailNotificationsForMessagesIncludingMentions",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+              "emailNotificationsForMessagesInConversationsThatYouStarted",
+              "userAnonymityPreferred",
+              "mostRecentlyVisitedCourseParticipation"
+            from "users"
+            where "email" = ${attributes.email};
+          `,
+        );
+        request.state.user ??= application.database.get<{
+          id: number;
+          publicId: string;
+          name: string;
+          email: string;
+          emailVerificationEmail: string | null;
+          emailVerificationNonce: string | null;
+          emailVerificationCreatedAt: string | null;
+          password: string | null;
+          passwordResetNonce: string | null;
+          passwordResetCreatedAt: string | null;
+          twoFactorAuthenticationEnabled: number;
+          twoFactorAuthenticationSecret: string | null;
+          twoFactorAuthenticationRecoveryCodes: string | null;
+          avatarColor:
+            | "red"
+            | "orange"
+            | "amber"
+            | "yellow"
+            | "lime"
+            | "green"
+            | "emerald"
+            | "teal"
+            | "cyan"
+            | "sky"
+            | "blue"
+            | "indigo"
+            | "violet"
+            | "purple"
+            | "fuchsia"
+            | "pink"
+            | "rose";
+          avatarImage: string | null;
+          userRole:
+            | "userRoleSystemAdministrator"
+            | "userRoleStaff"
+            | "userRoleUser";
+          lastSeenOnlineAt: string;
+          darkMode:
+            | "userDarkModeSystem"
+            | "userDarkModeLight"
+            | "userDarkModeDark";
+          sidebarWidth: number;
+          emailNotificationsForAllMessages: number;
+          emailNotificationsForMessagesIncludingMentions: number;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+          emailNotificationsForMessagesInConversationsThatYouStarted: number;
+          userAnonymityPreferred:
+            | "userAnonymityPreferredNone"
+            | "userAnonymityPreferredCourseParticipationRoleStudents"
+            | "userAnonymityPreferredCourseParticipationRoleInstructors";
+          mostRecentlyVisitedCourseParticipation: number | null;
+        }>(
+          sql`
+            select * from "users" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "users" (
+                    "publicId",
+                    "name",
+                    "nameSearch",
+                    "email",
+                    "emailVerificationEmail",
+                    "emailVerificationNonce",
+                    "emailVerificationCreatedAt",
+                    "password",
+                    "passwordResetNonce",
+                    "passwordResetCreatedAt",
+                    "twoFactorAuthenticationEnabled",
+                    "twoFactorAuthenticationSecret",
+                    "twoFactorAuthenticationRecoveryCodes",
+                    "avatarColor",
+                    "avatarImage",
+                    "userRole",
+                    "lastSeenOnlineAt",
+                    "darkMode",
+                    "sidebarWidth",
+                    "emailNotificationsForAllMessages",
+                    "emailNotificationsForMessagesIncludingMentions",
+                    "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                    "emailNotificationsForMessagesInConversationsThatYouStarted",
+                    "userAnonymityPreferred",
+                    "mostRecentlyVisitedCourseParticipation"
+                  )
+                  values (
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${attributes.name!},
+                    ${utilities
+                      .tokenize(attributes.name!)
+                      .map((tokenWithPosition) => tokenWithPosition.token)
+                      .join(" ")},
+                    ${attributes.email},
+                    ${null},
+                    ${null},
+                    ${null},
+                    ${null},
+                    ${null},
+                    ${null},
+                    ${Number(false)},
+                    ${null},
+                    ${null},
+                    ${
+                      [
+                        "red",
+                        "orange",
+                        "amber",
+                        "yellow",
+                        "lime",
+                        "green",
+                        "emerald",
+                        "teal",
+                        "cyan",
+                        "sky",
+                        "blue",
+                        "indigo",
+                        "violet",
+                        "purple",
+                        "fuchsia",
+                        "pink",
+                        "rose",
+                      ][Math.floor(Math.random() * 17)]
+                    },
+                    ${null},
+                    ${
+                      application.database.get<{ count: number }>(
+                        sql`
+                          select count(*) as "count" from "users";
+                        `,
+                      )!.count === 0
+                        ? "userRoleSystemAdministrator"
+                        : "userRoleUser"
+                    },
+                    ${new Date().toISOString()},
+                    ${"userDarkModeSystem"},
+                    ${80 * 4},
+                    ${Number(false)},
+                    ${Number(true)},
+                    ${Number(true)},
+                    ${Number(true)},
+                    ${"userAnonymityPreferredNone"},
+                    ${null}
+                  );
+                `,
+              ).lastInsertRowid
+            };
+          `,
+        )!;
+      });
+      request.state.userSession = application.database.get<{
+        id: number;
+        publicId: string;
+        user: number;
+        createdAt: string;
+        needsTwoFactorAuthentication: number;
+        samlIdentifier: string | null;
+        samlSessionIndex: string | null;
+        samlNameID: string | null;
+      }>(
+        sql`
+          select * from "userSessions" where "id" = ${
+            application.database.run(
+              sql`
+                insert into "userSessions" (
+                  "publicId",
+                  "user",
+                  "createdAt",
+                  "needsTwoFactorAuthentication",
+                  "samlIdentifier",
+                  "samlSessionIndex",
+                  "samlNameID"
+                )
+                values (
+                  ${cryptoRandomString({
+                    length: 100,
+                    type: "alphanumeric",
+                  })},
+                  ${request.state.user!.id},
+                  ${new Date().toISOString()},
+                  ${Number(false)},
+                  ${saml.identifier},
+                  ${profile.sessionIndex},
+                  ${profile.nameID}
+                );
+              `,
+            ).lastInsertRowid
+          };
+        `,
+      )!;
+      response.setCookie("session", request.state.userSession.publicId);
+      application.database.run(
+        sql`
+          insert into "_backgroundJobs" (
+            "type",
+            "startAt",
+            "parameters"
+          )
+          values (
+            'email',
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              to: request.state.user!.email,
+              subject: "Sign in",
+              html: html`
+                <p>
+                  Someone signed in to Courselore with the following email
+                  address:
+                  <code>${request.state.user!.email}</code>
+                </p>
+                <p>
+                  If it was not you, please report the issue to
+                  <a
+                    href="mailto:${application.configuration
+                      .systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}?${new URLSearchParams(
+                      {
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user!.email}`,
+                      },
+                    )
+                      .toString()
+                      .replaceAll("+", "%20")}"
+                    >${application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}</a
+                  >
+                </p>
+              `,
+            })}
+          );
+        `,
+      );
+      response.redirect("TODO");
     },
   });
 
