@@ -2473,7 +2473,7 @@ export default async (application: Application): Promise<void> => {
             "needsTwoFactorAuthentication" integer not null,
             "samlIdentifier" text null,
             "samlSessionIndex" text null,
-            "samlNameID" text null
+            "samlProfile" text null
           ) strict;
           create index "index_userSessions_user" on "userSessions" ("user");
           create index "index_userSessions_createdAt" on "userSessions" ("createdAt");

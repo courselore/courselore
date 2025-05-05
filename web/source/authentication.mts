@@ -32,7 +32,7 @@ export type ApplicationAuthentication = {
           needsTwoFactorAuthentication: number;
           samlIdentifier: string | null;
           samlSessionIndex: string | null;
-          samlNameID: string | null;
+          samlProfile: string | null;
         };
         user: {
           id: number;
@@ -139,7 +139,7 @@ export default async (application: Application): Promise<void> => {
         needsTwoFactorAuthentication: number;
         samlIdentifier: string | null;
         samlSessionIndex: string | null;
-        samlNameID: string | null;
+        samlProfile: string | null;
       }>(
         sql`
           select
@@ -150,7 +150,7 @@ export default async (application: Application): Promise<void> => {
             "needsTwoFactorAuthentication",
             "samlIdentifier",
             "samlSessionIndex",
-            "samlNameID"
+            "samlProfile"
           from "userSessions"
           where "publicId" = ${request.cookies.session};
         `,
@@ -199,7 +199,7 @@ export default async (application: Application): Promise<void> => {
           needsTwoFactorAuthentication: number;
           samlIdentifier: string | null;
           samlSessionIndex: string | null;
-          samlNameID: string | null;
+          samlProfile: string | null;
         }>(
           sql`
             select * from "userSessions" where "id" = ${
@@ -212,7 +212,7 @@ export default async (application: Application): Promise<void> => {
                     "needsTwoFactorAuthentication",
                     "samlIdentifier",
                     "samlSessionIndex",
-                    "samlNameID"
+                    "samlProfile"
                   )
                   values (
                     ${cryptoRandomString({
@@ -224,7 +224,7 @@ export default async (application: Application): Promise<void> => {
                     ${request.state.userSession.needsTwoFactorAuthentication},
                     ${request.state.userSession.samlIdentifier},
                     ${request.state.userSession.samlSessionIndex},
-                    ${request.state.userSession.samlNameID}
+                    ${request.state.userSession.samlProfile}
                   );
                 `,
               ).lastInsertRowid
@@ -1864,7 +1864,7 @@ export default async (application: Application): Promise<void> => {
         needsTwoFactorAuthentication: number;
         samlIdentifier: string | null;
         samlSessionIndex: string | null;
-        samlNameID: string | null;
+        samlProfile: string | null;
       }>(
         sql`
           select * from "userSessions" where "id" = ${
@@ -1877,7 +1877,7 @@ export default async (application: Application): Promise<void> => {
                   "needsTwoFactorAuthentication",
                   "samlIdentifier",
                   "samlSessionIndex",
-                  "samlNameID"
+                  "samlProfile"
                 )
                 values (
                   ${cryptoRandomString({
@@ -3314,7 +3314,7 @@ export default async (application: Application): Promise<void> => {
         needsTwoFactorAuthentication: number;
         samlIdentifier: string | null;
         samlSessionIndex: string | null;
-        samlNameID: string | null;
+        samlProfile: string | null;
       }>(
         sql`
           select * from "userSessions" where "id" = ${
@@ -3327,7 +3327,7 @@ export default async (application: Application): Promise<void> => {
                   "needsTwoFactorAuthentication",
                   "samlIdentifier",
                   "samlSessionIndex",
-                  "samlNameID"
+                  "samlProfile"
                 )
                 values (
                   ${cryptoRandomString({
@@ -3339,7 +3339,7 @@ export default async (application: Application): Promise<void> => {
                   ${Number(false)},
                   ${saml.identifier},
                   ${profile.sessionIndex},
-                  ${profile.nameID}
+                  ${JSON.stringify(profile)}
                 );
               `,
             ).lastInsertRowid
