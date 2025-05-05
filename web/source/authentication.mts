@@ -3392,6 +3392,38 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  // application.server?.push({
+  //   method: "GET",
+  //   pathname: new RegExp(
+  //     "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/sign-out$",
+  //   ),
+  //   handler: async (
+  //     request: serverTypes.Request<
+  //       { samlIdentifier: string },
+  //       {},
+  //       {},
+  //       {},
+  //       Application["types"]["states"]["Authentication"]
+  //     >,
+  //     response,
+  //   ) => {
+  //     if (
+  //       typeof request.pathname.samlIdentifier !== "string" ||
+  //       request.state.user !== undefined
+  //     )
+  //       return;
+  //     const saml = samls?.[request.pathname.samlIdentifier];
+  //     if (saml === undefined) return;
+  //     response.redirect(
+  //       await saml.saml.getLogoutUrlAsync(
+  //         {},
+  //         "",
+  //         {},
+  //       ),
+  //     );
+  //   },
+  // });
+
   application.server?.push({
     method: "POST",
     pathname: "/authentication/sign-out",
