@@ -1045,7 +1045,6 @@ export default async (application: Application): Promise<void> => {
                 };
                 const updateSidebarWidth = utilities.foregroundJob(async () => {
                   await fetch("/settings/sidebar-width", {
-                    redirect: "manual",
                     method: "PATCH",
                     headers: { "CSRF-Protection": "true" },
                     body: new URLSearchParams({ sidebarWidth: this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
