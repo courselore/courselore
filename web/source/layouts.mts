@@ -621,7 +621,7 @@ export default async (application: Application): Promise<void> => {
                             href="/courses/${course.publicId}"
                             class="button button--rectangle button--transparent ${request.URL.pathname.startsWith(
                               `/courses/${course.publicId}/`,
-                            ) !== null
+                            )
                               ? "button--blue"
                               : ""} button--dropdown-menu"
                             css="${css`
