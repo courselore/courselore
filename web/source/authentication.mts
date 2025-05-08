@@ -31,7 +31,6 @@ export type ApplicationAuthentication = {
           createdAt: string;
           needsTwoFactorAuthentication: number;
           samlIdentifier: string | null;
-          samlSessionIndex: string | null;
           samlProfile: string | null;
         };
         user: {
@@ -138,7 +137,6 @@ export default async (application: Application): Promise<void> => {
         createdAt: string;
         needsTwoFactorAuthentication: number;
         samlIdentifier: string | null;
-        samlSessionIndex: string | null;
         samlProfile: string | null;
       }>(
         sql`
@@ -149,7 +147,6 @@ export default async (application: Application): Promise<void> => {
             "createdAt",
             "needsTwoFactorAuthentication",
             "samlIdentifier",
-            "samlSessionIndex",
             "samlProfile"
           from "userSessions"
           where "publicId" = ${request.cookies.session};
@@ -198,7 +195,6 @@ export default async (application: Application): Promise<void> => {
           createdAt: string;
           needsTwoFactorAuthentication: number;
           samlIdentifier: string | null;
-          samlSessionIndex: string | null;
           samlProfile: string | null;
         }>(
           sql`
@@ -211,7 +207,6 @@ export default async (application: Application): Promise<void> => {
                     "createdAt",
                     "needsTwoFactorAuthentication",
                     "samlIdentifier",
-                    "samlSessionIndex",
                     "samlProfile"
                   )
                   values (
@@ -223,7 +218,6 @@ export default async (application: Application): Promise<void> => {
                     ${new Date().toISOString()},
                     ${request.state.userSession.needsTwoFactorAuthentication},
                     ${request.state.userSession.samlIdentifier},
-                    ${request.state.userSession.samlSessionIndex},
                     ${request.state.userSession.samlProfile}
                   );
                 `,
@@ -1860,7 +1854,6 @@ export default async (application: Application): Promise<void> => {
         createdAt: string;
         needsTwoFactorAuthentication: number;
         samlIdentifier: string | null;
-        samlSessionIndex: string | null;
         samlProfile: string | null;
       }>(
         sql`
@@ -1873,7 +1866,6 @@ export default async (application: Application): Promise<void> => {
                   "createdAt",
                   "needsTwoFactorAuthentication",
                   "samlIdentifier",
-                  "samlSessionIndex",
                   "samlProfile"
                 )
                 values (
@@ -1884,7 +1876,6 @@ export default async (application: Application): Promise<void> => {
                   ${request.state.user.id},
                   ${new Date().toISOString()},
                   ${request.state.user.twoFactorAuthenticationEnabled},
-                  ${null},
                   ${null},
                   ${null}
                 );
@@ -3311,7 +3302,6 @@ export default async (application: Application): Promise<void> => {
         createdAt: string;
         needsTwoFactorAuthentication: number;
         samlIdentifier: string | null;
-        samlSessionIndex: string | null;
         samlProfile: string | null;
       }>(
         sql`
@@ -3324,7 +3314,6 @@ export default async (application: Application): Promise<void> => {
                   "createdAt",
                   "needsTwoFactorAuthentication",
                   "samlIdentifier",
-                  "samlSessionIndex",
                   "samlProfile"
                 )
                 values (
@@ -3336,7 +3325,6 @@ export default async (application: Application): Promise<void> => {
                   ${new Date().toISOString()},
                   ${Number(false)},
                   ${saml.identifier},
-                  ${profile.sessionIndex},
                   ${JSON.stringify(profile)}
                 );
               `,

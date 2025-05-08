@@ -2472,9 +2472,7 @@ export default async (application: Application): Promise<void> => {
             "createdAt" text not null,
             "needsTwoFactorAuthentication" integer not null,
             "samlIdentifier" text null,
-            "samlSessionIndex" text null,
-            "samlProfile" text null,
-            unique ("samlIdentifier", "samlSessionIndex")
+            "samlProfile" text null
           ) strict;
           create index "index_userSessions_user" on "userSessions" ("user");
           create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
