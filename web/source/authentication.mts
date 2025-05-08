@@ -3448,14 +3448,12 @@ export default async (application: Application): Promise<void> => {
       let redirect: string;
       try {
         samlRequest = await saml.saml.validatePostRequestAsync(request.body);
-        redirect = await saml.saml.getLogoutUrlAsync(
+        redirect = await saml.saml.getLogoutResponseUrlAsync(
           samlRequest.profile,
           request.body.RelayState,
           {},
+          true,
         );
-        // TODO
-        // saml.saml.getLogoutResponseUrlAsync()
-        // saml.saml.validateRedirectAsync()
       } catch (error) {
         request.log("ERROR", String(error));
         response.setFlash(html`
