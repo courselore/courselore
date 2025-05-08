@@ -3025,12 +3025,12 @@ export default async (application: Application): Promise<void> => {
       }
       const saml = samls?.[request.pathname.samlIdentifier];
       if (saml === undefined) return;
-      let profile: SAML.Profile;
+      let samlResponse: Awaited<
+        ReturnType<typeof saml.saml.validatePostResponseAsync>
+      >;
       let attributes: { email: string; name: string };
       try {
-        const samlResponse = await saml.saml.validatePostResponseAsync(
-          request.body,
-        );
+        samlResponse = await saml.saml.validatePostResponseAsync(request.body);
         if (
           samlResponse.loggedOut !== false ||
           samlResponse.profile === undefined ||
@@ -3041,8 +3041,7 @@ export default async (application: Application): Promise<void> => {
           samlResponse.profile.sessionIndex.trim() === ""
         )
           throw new Error();
-        profile = samlResponse.profile;
-        attributes = saml.configuration.attributes(profile);
+        attributes = saml.configuration.attributes(samlResponse.profile);
         if (
           typeof attributes.email !== "string" ||
           !attributes.email.match(utilities.emailRegExp) ||
@@ -3325,7 +3324,7 @@ export default async (application: Application): Promise<void> => {
                   ${new Date().toISOString()},
                   ${Number(false)},
                   ${saml.identifier},
-                  ${JSON.stringify(profile)}
+                  ${JSON.stringify(samlResponse.profile)}
                 );
               `,
             ).lastInsertRowid
