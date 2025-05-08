@@ -327,6 +327,19 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       if (
+        typeof request.state.user.password !== "string" &&
+        !request.URL.pathname.match(
+          new RegExp("^/authentication/password(?:$|/)"),
+        )
+      ) {
+        response.redirect(
+          `/authentication/password?${new URLSearchParams({
+            redirect: request.URL.pathname + request.URL.search,
+          }).toString()}`,
+        );
+        return;
+      }
+      if (
         Boolean(request.state.userSession.needsTwoFactorAuthentication) &&
         !request.URL.pathname.match(
           new RegExp(
@@ -2836,9 +2849,11 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.setFlash(html`
-        <div class="flash--green">The password was reset successfully.</div>
-      `);
+      application.database.run(
+        sql`
+          delete from "userSessions" where "user" = ${request.state.user.id};
+        `,
+      );
       application.database.run(
         sql`
           insert into "_backgroundJobs" (
@@ -2880,6 +2895,9 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
+      response.setFlash(html`
+        <div class="flash--green">The password was reset successfully.</div>
+      `);
       response.redirect(`/authentication${request.URL.search}`);
     },
   });
