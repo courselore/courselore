@@ -3037,19 +3037,20 @@ export default async (application: Application): Promise<void> => {
       let profile: SAML.Profile;
       let attributes: { email: string; name: string };
       try {
-        const assertion = await saml.saml.validatePostResponseAsync(
+        const samlResponse = await saml.saml.validatePostResponseAsync(
           request.body,
         );
         if (
-          assertion.loggedOut !== false ||
-          assertion.profile === undefined ||
-          assertion.profile === null ||
-          assertion.profile.issuer !== saml.configuration.options.idpIssuer ||
-          typeof assertion.profile.sessionIndex !== "string" ||
-          assertion.profile.sessionIndex.trim() === ""
+          samlResponse.loggedOut !== false ||
+          samlResponse.profile === undefined ||
+          samlResponse.profile === null ||
+          samlResponse.profile.issuer !==
+            saml.configuration.options.idpIssuer ||
+          typeof samlResponse.profile.sessionIndex !== "string" ||
+          samlResponse.profile.sessionIndex.trim() === ""
         )
           throw new Error();
-        profile = assertion.profile;
+        profile = samlResponse.profile;
         attributes = saml.configuration.attributes(profile);
         if (
           typeof attributes.email !== "string" ||
@@ -3452,39 +3453,16 @@ export default async (application: Application): Promise<void> => {
         response.redirect("/");
         return;
       }
-      if (
-        request.state.user === undefined ||
-        request.state.userSession === undefined ||
-        typeof request.state.userSession.samlProfile !== "string"
-      ) {
-        response.redirect("/TODO");
-        return;
-      }
       const saml = samls?.[request.pathname.samlIdentifier];
       if (saml === undefined) return;
+      let samlRequest: Awaited<
+        ReturnType<typeof saml.saml.validatePostRequestAsync>
+      >;
       let redirect: string;
       try {
-        const assertion = await saml.saml.validatePostRequestAsync(
-          request.body,
-        );
-        const sessionProfile = JSON.parse(
-          request.state.userSession.samlProfile,
-        );
-        if (
-          assertion.loggedOut !== true ||
-          assertion.profile === undefined ||
-          assertion.profile === null ||
-          assertion.profile.issuer !== saml.configuration.options.idpIssuer ||
-          typeof assertion.profile.nameID !== "string" ||
-          assertion.profile.nameID.trim() === "" ||
-          assertion.profile.nameID !== sessionProfile.nameID ||
-          typeof assertion.profile.sessionIndex !== "string" ||
-          assertion.profile.sessionIndex.trim() === "" ||
-          assertion.profile.sessionIndex !== sessionProfile.sessionIndex
-        )
-          throw new Error();
+        samlRequest = await saml.saml.validatePostRequestAsync(request.body);
         redirect = await saml.saml.getLogoutUrlAsync(
-          assertion.profile,
+          samlRequest.profile,
           request.body.RelayState,
           {},
         );
@@ -3495,19 +3473,44 @@ export default async (application: Application): Promise<void> => {
         request.log("ERROR", String(error));
         response.setFlash(html`
           <div class="flash--red">
-            Something went wrong. Please try signing in again.
+            Something went wrong. Please try signing out again.
           </div>
         `);
-        response.redirect("/TODO");
+        response.redirect("/");
         return;
       }
-      application.database.run(
-        sql`
-          delete from "userSessions" where "id" = ${request.state.userSession.id};
-        `,
-      );
-      response.deleteCookie("session");
-      response.redirect("TODO");
+      if (
+        request.state.userSession !== undefined &&
+        typeof request.state.userSession.samlIdentifier === "string" &&
+        typeof request.state.userSession.samlProfile === "string" &&
+        request.state.user !== undefined
+      ) {
+        const sessionProfile = JSON.parse(
+          request.state.userSession.samlProfile,
+        );
+        if (
+          request.state.userSession.samlIdentifier ===
+            request.pathname.samlIdentifier &&
+          samlRequest.loggedOut === true &&
+          samlRequest.profile !== undefined &&
+          samlRequest.profile !== null &&
+          samlRequest.profile.issuer === saml.configuration.options.idpIssuer &&
+          typeof samlRequest.profile.nameID === "string" &&
+          samlRequest.profile.nameID.trim() !== "" &&
+          samlRequest.profile.nameID === sessionProfile.nameID &&
+          typeof samlRequest.profile.sessionIndex === "string" &&
+          samlRequest.profile.sessionIndex.trim() !== "" &&
+          samlRequest.profile.sessionIndex === sessionProfile.sessionIndex
+        ) {
+          application.database.run(
+            sql`
+              delete from "userSessions" where "id" = ${request.state.userSession.id};
+            `,
+          );
+          response.deleteCookie("session");
+        }
+      }
+      response.redirect(redirect);
     },
   });
 };
