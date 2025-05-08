@@ -340,6 +340,22 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       if (
+        request.state.user.userRole === "userRoleSystemAdministrator" &&
+        Boolean(request.state.user.twoFactorAuthenticationEnabled) === false &&
+        !request.URL.pathname.match(
+          new RegExp(
+            "(?:^/authentication/set-two-factor-authentication)|(?:^/settings/two-factor-authentication$)",
+          ),
+        )
+      ) {
+        response.redirect(
+          `/authentication/set-two-factor-authentication?${new URLSearchParams({
+            redirect: request.URL.pathname + request.URL.search,
+          }).toString()}`,
+        );
+        return;
+      }
+      if (
         Boolean(request.state.userSession.needsTwoFactorAuthentication) &&
         !request.URL.pathname.match(
           new RegExp(
