@@ -3445,7 +3445,10 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (typeof request.pathname.samlIdentifier !== "string") return;
-      if (typeof request.body.SAMLRequest !== "string") {
+      if (
+        typeof request.body.SAMLRequest !== "string" ||
+        typeof request.body.RelayState !== "string"
+      ) {
         response.redirect("/");
         return;
       }
@@ -3459,6 +3462,7 @@ export default async (application: Application): Promise<void> => {
       }
       const saml = samls?.[request.pathname.samlIdentifier];
       if (saml === undefined) return;
+      let redirect: string;
       try {
         const assertion = await saml.saml.validatePostRequestAsync(
           request.body,
@@ -3479,6 +3483,14 @@ export default async (application: Application): Promise<void> => {
           assertion.profile.sessionIndex !== sessionProfile.sessionIndex
         )
           throw new Error();
+        redirect = await saml.saml.getLogoutUrlAsync(
+          assertion.profile,
+          request.body.RelayState,
+          {},
+        );
+        // TODO
+        // saml.saml.getLogoutResponseUrlAsync()
+        // saml.saml.validateRedirectAsync()
       } catch (error) {
         request.log("ERROR", String(error));
         response.setFlash(html`
