@@ -2594,12 +2594,6 @@ export default async (application: Application): Promise<void> => {
                   .userPublicId}/${request.pathname.passwordResetNonce}${request
                   .URL.search}"
                 css="${css`
-                  padding: var(--size--2) var(--size--0);
-                  border-bottom: var(--border-width--1) solid
-                    light-dark(
-                      var(--color--slate--200),
-                      var(--color--slate--800)
-                    );
                   display: flex;
                   flex-direction: column;
                   gap: var(--size--4);
@@ -3410,7 +3404,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
-        request.state.user.password !== undefined
+        typeof request.state.user.password === "string"
       )
         return;
       response.end(
@@ -3440,12 +3434,6 @@ export default async (application: Application): Promise<void> => {
                 method="POST"
                 action="/authentication/set-password${request.URL.search}"
                 css="${css`
-                  padding: var(--size--2) var(--size--0);
-                  border-bottom: var(--border-width--1) solid
-                    light-dark(
-                      var(--color--slate--200),
-                      var(--color--slate--800)
-                    );
                   display: flex;
                   flex-direction: column;
                   gap: var(--size--4);
@@ -3556,7 +3544,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
-        request.state.user.password !== undefined
+        typeof request.state.user.password === "string"
       )
         return;
       if (
