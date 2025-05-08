@@ -3057,6 +3057,9 @@ export default async (application: Application): Promise<void> => {
         if (
           typeof attributes.email !== "string" ||
           !attributes.email.match(utilities.emailRegExp) ||
+          !saml.configuration.domains.some((domain) =>
+            `.${attributes.email.split("@")[1]}`.endsWith(`.${domain}`),
+          ) ||
           typeof attributes.name !== "string" ||
           attributes.name.trim() === ""
         )
