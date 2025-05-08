@@ -3445,371 +3445,57 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (typeof request.pathname.samlIdentifier !== "string") return;
+      if (typeof request.body.SAMLRequest !== "string") {
+        response.redirect("/");
+        return;
+      }
       if (
         request.state.user === undefined ||
-        typeof request.body.SAMLRequest !== "string"
+        request.state.userSession === undefined ||
+        typeof request.state.userSession.samlProfile !== "string"
       ) {
-        response.redirect("/");
+        response.redirect("/TODO");
         return;
       }
       const saml = samls?.[request.pathname.samlIdentifier];
       if (saml === undefined) return;
-
-      console.log(await saml.saml.validatePostRequestAsync(request.body));
-      response.end();
-
-      // let profile: SAML.Profile;
-      // let attributes: { email: string; name: string };
-      // try {
-      //   const assertion = await saml.saml.validatePostResponseAsync(
-      //     request.body,
-      //   );
-      //   if (
-      //     assertion.loggedOut !== false ||
-      //     assertion.profile === undefined ||
-      //     assertion.profile === null ||
-      //     assertion.profile.issuer !== saml.configuration.options.idpIssuer ||
-      //     typeof assertion.profile.sessionIndex !== "string" ||
-      //     assertion.profile.sessionIndex.trim() === ""
-      //   )
-      //     throw new Error();
-      //   profile = assertion.profile;
-      //   attributes = saml.configuration.attributes(profile);
-      //   if (
-      //     typeof attributes.email !== "string" ||
-      //     !attributes.email.match(utilities.emailRegExp) ||
-      //     typeof attributes.name !== "string" ||
-      //     attributes.name.trim() === ""
-      //   )
-      //     throw new Error();
-      // } catch (error) {
-      //   request.log("ERROR", String(error));
-      //   response.setFlash(html`
-      //     <div class="flash--red">
-      //       Something went wrong. Please try signing in again.
-      //     </div>
-      //   `);
-      //   response.redirect(
-      //     `/authentication?${typeof request.body.RelayState === "string" && request.body.RelayState.trim() !== "" ? request.body.RelayState : ""}`,
-      //   );
-      //   return;
-      // }
-      // application.database.executeTransaction(() => {
-      //   request.state.user = application.database.get<{
-      //     id: number;
-      //     publicId: string;
-      //     name: string;
-      //     email: string;
-      //     emailVerificationEmail: string | null;
-      //     emailVerificationNonce: string | null;
-      //     emailVerificationCreatedAt: string | null;
-      //     password: string | null;
-      //     passwordResetNonce: string | null;
-      //     passwordResetCreatedAt: string | null;
-      //     twoFactorAuthenticationEnabled: number;
-      //     twoFactorAuthenticationSecret: string | null;
-      //     twoFactorAuthenticationRecoveryCodes: string | null;
-      //     avatarColor:
-      //       | "red"
-      //       | "orange"
-      //       | "amber"
-      //       | "yellow"
-      //       | "lime"
-      //       | "green"
-      //       | "emerald"
-      //       | "teal"
-      //       | "cyan"
-      //       | "sky"
-      //       | "blue"
-      //       | "indigo"
-      //       | "violet"
-      //       | "purple"
-      //       | "fuchsia"
-      //       | "pink"
-      //       | "rose";
-      //     avatarImage: string | null;
-      //     userRole:
-      //       | "userRoleSystemAdministrator"
-      //       | "userRoleStaff"
-      //       | "userRoleUser";
-      //     lastSeenOnlineAt: string;
-      //     darkMode:
-      //       | "userDarkModeSystem"
-      //       | "userDarkModeLight"
-      //       | "userDarkModeDark";
-      //     sidebarWidth: number;
-      //     emailNotificationsForAllMessages: number;
-      //     emailNotificationsForMessagesIncludingMentions: number;
-      //     emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-      //     emailNotificationsForMessagesInConversationsThatYouStarted: number;
-      //     userAnonymityPreferred:
-      //       | "userAnonymityPreferredNone"
-      //       | "userAnonymityPreferredCourseParticipationRoleStudents"
-      //       | "userAnonymityPreferredCourseParticipationRoleInstructors";
-      //     mostRecentlyVisitedCourseParticipation: number | null;
-      //   }>(
-      //     sql`
-      //       select
-      //         "id",
-      //         "publicId",
-      //         "name",
-      //         "email",
-      //         "emailVerificationEmail",
-      //         "emailVerificationNonce",
-      //         "emailVerificationCreatedAt",
-      //         "password",
-      //         "passwordResetNonce",
-      //         "passwordResetCreatedAt",
-      //         "twoFactorAuthenticationEnabled",
-      //         "twoFactorAuthenticationSecret",
-      //         "twoFactorAuthenticationRecoveryCodes",
-      //         "avatarColor",
-      //         "avatarImage",
-      //         "userRole",
-      //         "lastSeenOnlineAt",
-      //         "darkMode",
-      //         "sidebarWidth",
-      //         "emailNotificationsForAllMessages",
-      //         "emailNotificationsForMessagesIncludingMentions",
-      //         "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-      //         "emailNotificationsForMessagesInConversationsThatYouStarted",
-      //         "userAnonymityPreferred",
-      //         "mostRecentlyVisitedCourseParticipation"
-      //       from "users"
-      //       where "email" = ${attributes.email};
-      //     `,
-      //   );
-      //   request.state.user ??= application.database.get<{
-      //     id: number;
-      //     publicId: string;
-      //     name: string;
-      //     email: string;
-      //     emailVerificationEmail: string | null;
-      //     emailVerificationNonce: string | null;
-      //     emailVerificationCreatedAt: string | null;
-      //     password: string | null;
-      //     passwordResetNonce: string | null;
-      //     passwordResetCreatedAt: string | null;
-      //     twoFactorAuthenticationEnabled: number;
-      //     twoFactorAuthenticationSecret: string | null;
-      //     twoFactorAuthenticationRecoveryCodes: string | null;
-      //     avatarColor:
-      //       | "red"
-      //       | "orange"
-      //       | "amber"
-      //       | "yellow"
-      //       | "lime"
-      //       | "green"
-      //       | "emerald"
-      //       | "teal"
-      //       | "cyan"
-      //       | "sky"
-      //       | "blue"
-      //       | "indigo"
-      //       | "violet"
-      //       | "purple"
-      //       | "fuchsia"
-      //       | "pink"
-      //       | "rose";
-      //     avatarImage: string | null;
-      //     userRole:
-      //       | "userRoleSystemAdministrator"
-      //       | "userRoleStaff"
-      //       | "userRoleUser";
-      //     lastSeenOnlineAt: string;
-      //     darkMode:
-      //       | "userDarkModeSystem"
-      //       | "userDarkModeLight"
-      //       | "userDarkModeDark";
-      //     sidebarWidth: number;
-      //     emailNotificationsForAllMessages: number;
-      //     emailNotificationsForMessagesIncludingMentions: number;
-      //     emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-      //     emailNotificationsForMessagesInConversationsThatYouStarted: number;
-      //     userAnonymityPreferred:
-      //       | "userAnonymityPreferredNone"
-      //       | "userAnonymityPreferredCourseParticipationRoleStudents"
-      //       | "userAnonymityPreferredCourseParticipationRoleInstructors";
-      //     mostRecentlyVisitedCourseParticipation: number | null;
-      //   }>(
-      //     sql`
-      //       select * from "users" where "id" = ${
-      //         application.database.run(
-      //           sql`
-      //             insert into "users" (
-      //               "publicId",
-      //               "name",
-      //               "nameSearch",
-      //               "email",
-      //               "emailVerificationEmail",
-      //               "emailVerificationNonce",
-      //               "emailVerificationCreatedAt",
-      //               "password",
-      //               "passwordResetNonce",
-      //               "passwordResetCreatedAt",
-      //               "twoFactorAuthenticationEnabled",
-      //               "twoFactorAuthenticationSecret",
-      //               "twoFactorAuthenticationRecoveryCodes",
-      //               "avatarColor",
-      //               "avatarImage",
-      //               "userRole",
-      //               "lastSeenOnlineAt",
-      //               "darkMode",
-      //               "sidebarWidth",
-      //               "emailNotificationsForAllMessages",
-      //               "emailNotificationsForMessagesIncludingMentions",
-      //               "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-      //               "emailNotificationsForMessagesInConversationsThatYouStarted",
-      //               "userAnonymityPreferred",
-      //               "mostRecentlyVisitedCourseParticipation"
-      //             )
-      //             values (
-      //               ${cryptoRandomString({ length: 20, type: "numeric" })},
-      //               ${attributes.name!},
-      //               ${utilities
-      //                 .tokenize(attributes.name!)
-      //                 .map((tokenWithPosition) => tokenWithPosition.token)
-      //                 .join(" ")},
-      //               ${attributes.email},
-      //               ${null},
-      //               ${null},
-      //               ${null},
-      //               ${null},
-      //               ${null},
-      //               ${null},
-      //               ${Number(false)},
-      //               ${null},
-      //               ${null},
-      //               ${
-      //                 [
-      //                   "red",
-      //                   "orange",
-      //                   "amber",
-      //                   "yellow",
-      //                   "lime",
-      //                   "green",
-      //                   "emerald",
-      //                   "teal",
-      //                   "cyan",
-      //                   "sky",
-      //                   "blue",
-      //                   "indigo",
-      //                   "violet",
-      //                   "purple",
-      //                   "fuchsia",
-      //                   "pink",
-      //                   "rose",
-      //                 ][Math.floor(Math.random() * 17)]
-      //               },
-      //               ${null},
-      //               ${
-      //                 application.database.get<{ count: number }>(
-      //                   sql`
-      //                     select count(*) as "count" from "users";
-      //                   `,
-      //                 )!.count === 0
-      //                   ? "userRoleSystemAdministrator"
-      //                   : "userRoleUser"
-      //               },
-      //               ${new Date().toISOString()},
-      //               ${"userDarkModeSystem"},
-      //               ${80 * 4},
-      //               ${Number(false)},
-      //               ${Number(true)},
-      //               ${Number(true)},
-      //               ${Number(true)},
-      //               ${"userAnonymityPreferredNone"},
-      //               ${null}
-      //             );
-      //           `,
-      //         ).lastInsertRowid
-      //       };
-      //     `,
-      //   )!;
-      // });
-      // request.state.userSession = application.database.get<{
-      //   id: number;
-      //   publicId: string;
-      //   user: number;
-      //   createdAt: string;
-      //   needsTwoFactorAuthentication: number;
-      //   samlIdentifier: string | null;
-      //   samlSessionIndex: string | null;
-      //   samlProfile: string | null;
-      // }>(
-      //   sql`
-      //     select * from "userSessions" where "id" = ${
-      //       application.database.run(
-      //         sql`
-      //           insert into "userSessions" (
-      //             "publicId",
-      //             "user",
-      //             "createdAt",
-      //             "needsTwoFactorAuthentication",
-      //             "samlIdentifier",
-      //             "samlSessionIndex",
-      //             "samlProfile"
-      //           )
-      //           values (
-      //             ${cryptoRandomString({
-      //               length: 100,
-      //               type: "alphanumeric",
-      //             })},
-      //             ${request.state.user!.id},
-      //             ${new Date().toISOString()},
-      //             ${Number(false)},
-      //             ${saml.identifier},
-      //             ${profile.sessionIndex},
-      //             ${JSON.stringify(profile)}
-      //           );
-      //         `,
-      //       ).lastInsertRowid
-      //     };
-      //   `,
-      // )!;
-      // response.setCookie("session", request.state.userSession.publicId);
-      // application.database.run(
-      //   sql`
-      //     insert into "_backgroundJobs" (
-      //       "type",
-      //       "startAt",
-      //       "parameters"
-      //     )
-      //     values (
-      //       'email',
-      //       ${new Date().toISOString()},
-      //       ${JSON.stringify({
-      //         to: request.state.user!.email,
-      //         subject: "Sign in",
-      //         html: html`
-      //           <p>
-      //             Someone signed in to Courselore with the following email
-      //             address:
-      //             <code>${request.state.user!.email}</code>
-      //           </p>
-      //           <p>
-      //             If it was not you, please report the issue to
-      //             <a
-      //               href="mailto:${application.configuration
-      //                 .systemAdministratorEmail ??
-      //               "system-administrator@courselore.org"}?${new URLSearchParams(
-      //                 {
-      //                   subject: "Potential impersonation",
-      //                   body: `Email: ${request.state.user!.email}`,
-      //                 },
-      //               )
-      //                 .toString()
-      //                 .replaceAll("+", "%20")}"
-      //               >${application.configuration.systemAdministratorEmail ??
-      //               "system-administrator@courselore.org"}</a
-      //             >
-      //           </p>
-      //         `,
-      //       })}
-      //     );
-      //   `,
-      // );
-      // response.redirect(redirect);
+      try {
+        const assertion = await saml.saml.validatePostRequestAsync(
+          request.body,
+        );
+        const sessionProfile = JSON.parse(
+          request.state.userSession.samlProfile,
+        );
+        if (
+          assertion.loggedOut !== true ||
+          assertion.profile === undefined ||
+          assertion.profile === null ||
+          assertion.profile.issuer !== saml.configuration.options.idpIssuer ||
+          typeof assertion.profile.nameID !== "string" ||
+          assertion.profile.nameID.trim() === "" ||
+          assertion.profile.nameID !== sessionProfile.nameID ||
+          typeof assertion.profile.sessionIndex !== "string" ||
+          assertion.profile.sessionIndex.trim() === "" ||
+          assertion.profile.sessionIndex !== sessionProfile.sessionIndex
+        )
+          throw new Error();
+      } catch (error) {
+        request.log("ERROR", String(error));
+        response.setFlash(html`
+          <div class="flash--red">
+            Something went wrong. Please try signing in again.
+          </div>
+        `);
+        response.redirect("/TODO");
+        return;
+      }
+      application.database.run(
+        sql`
+          delete from "userSessions" where "id" = ${request.state.userSession.id};
+        `,
+      );
+      response.deleteCookie("session");
+      response.redirect("TODO");
     },
   });
 };
