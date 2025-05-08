@@ -3446,7 +3446,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (typeof request.pathname.samlIdentifier !== "string") return;
       if (
-        request.state.user !== undefined ||
+        request.state.user === undefined ||
         typeof request.body.SAMLRequest !== "string"
       ) {
         response.redirect("/");
