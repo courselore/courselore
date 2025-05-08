@@ -1961,6 +1961,112 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "GET",
+    pathname: "/authentication/set-two-factor-authentication",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        !(
+          request.state.user.userRole === "userRoleSystemAdministrator" &&
+          Boolean(request.state.user.twoFactorAuthenticationEnabled) === false
+        )
+      )
+        return;
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Set two-factor authentication · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Set two-factor authentication
+              </div>
+              <div
+                type="form"
+                method="POST"
+                action="/settings/two-factor-authentication"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Password confirmation
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="password"
+                      name="passwordConfirmation"
+                      required
+                      minlength="8"
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                    />
+                  </div>
+                </label>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--blue"
+                  >
+                    Enable two-factor authentication
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
     pathname: "/authentication/sign-in/two-factor-authentication",
     handler: (
       request: serverTypes.Request<
