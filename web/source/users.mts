@@ -1941,7 +1941,7 @@ export default async (application: Application): Promise<void> => {
     handler: async (
       request: serverTypes.Request<
         {},
-        {},
+        { redirect: string },
         {},
         { passwordConfirmation: string },
         Application["types"]["states"]["Authentication"]
@@ -1959,6 +1959,11 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.startsWith("/")
+      )
+        delete request.search.redirect;
+      if (
         !(await argon2.verify(
           request.state.user.password!,
           request.body.passwordConfirmation,
@@ -1968,7 +1973,7 @@ export default async (application: Application): Promise<void> => {
         response.setFlash(html`
           <div class="flash--red">Invalid “Password confirmation”.</div>
         `);
-        response.redirect("/settings");
+        response.redirect(request.search.redirect ?? "/settings");
         return;
       }
       request.state.user.twoFactorAuthenticationSecret =
@@ -1987,7 +1992,9 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.redirect();
+      response.redirect(
+        `/settings/two-factor-authentication${request.URL.search}`,
+      );
     },
   });
 
@@ -2081,7 +2088,8 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="POST"
-                action="/settings/two-factor-authentication/enable"
+                action="/settings/two-factor-authentication/enable${request.URL
+                  .search}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -2147,7 +2155,7 @@ export default async (application: Application): Promise<void> => {
     handler: async (
       request: serverTypes.Request<
         {},
-        {},
+        { redirect: string },
         {},
         { twoFactorAuthenticationConfirmation: string },
         Application["types"]["states"]["Authentication"]
@@ -2168,6 +2176,11 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.startsWith("/")
+      )
+        delete request.search.redirect;
+      if (
         new OTPAuth.TOTP({
           secret: request.state.user.twoFactorAuthenticationSecret,
         }).validate({
@@ -2179,7 +2192,9 @@ export default async (application: Application): Promise<void> => {
             Invalid “Two-factor authentication code”.
           </div>
         `);
-        response.redirect("/settings/two-factor-authentication");
+        response.redirect(
+          `/settings/two-factor-authentication${request.URL.search}`,
+        );
         return;
       }
       request.state.user.twoFactorAuthenticationEnabled = Number(true);
@@ -2209,7 +2224,7 @@ export default async (application: Application): Promise<void> => {
           Two-factor authentication enabled successfully.
         </div>
       `);
-      response.redirect("/settings");
+      response.redirect(request.search.redirect ?? "/settings");
     },
   });
 

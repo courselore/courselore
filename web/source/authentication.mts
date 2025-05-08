@@ -344,7 +344,7 @@ export default async (application: Application): Promise<void> => {
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false &&
         !request.URL.pathname.match(
           new RegExp(
-            "(?:^/authentication/set-two-factor-authentication)|(?:^/settings/two-factor-authentication$)",
+            "(?:^/authentication/set-two-factor-authentication(?:$|/))|(?:^/settings/two-factor-authentication(?:$|/))",
           ),
         )
       ) {
@@ -2005,7 +2005,8 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="POST"
-                action="/settings/two-factor-authentication"
+                action="/settings/two-factor-authentication${request.URL
+                  .search}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
