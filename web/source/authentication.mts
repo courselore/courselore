@@ -329,11 +329,11 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.state.user.password !== "string" &&
         !request.URL.pathname.match(
-          new RegExp("^/authentication/password(?:$|/)"),
+          new RegExp("^/authentication/set-password(?:$|/)"),
         )
       ) {
         response.redirect(
-          `/authentication/password?${new URLSearchParams({
+          `/authentication/set-password?${new URLSearchParams({
             redirect: request.URL.pathname + request.URL.search,
           }).toString()}`,
         );
@@ -3392,6 +3392,198 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       response.redirect(redirect);
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: "/authentication/set-password",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        request.state.user.password !== undefined
+      )
+        return;
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Set password · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Set password
+              </div>
+              <div
+                type="form"
+                method="POST"
+                action="/authentication/set-password${request.URL.search}"
+                css="${css`
+                  padding: var(--size--2) var(--size--0);
+                  border-bottom: var(--border-width--1) solid
+                    light-dark(
+                      var(--color--slate--200),
+                      var(--color--slate--800)
+                    );
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Password
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="password"
+                      name="password"
+                      required
+                      minlength="8"
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                    />
+                  </div>
+                </label>
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Password confirmation
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="password"
+                      required
+                      minlength="8"
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                      javascript="${javascript`
+                        this.onvalidate = () => {
+                          if (this.value !== this.closest('[type~="form"]').querySelector('[name="password"]').value)
+                            throw new javascript.ValidationError("“Password” and “Password confirmation” don’t match.");
+                        };
+                      `}"
+                    />
+                  </div>
+                </label>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--blue"
+                  >
+                    Set password
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: "/authentication/set-password",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        { redirect: string },
+        {},
+        { password: string },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        request.state.user.password !== undefined
+      )
+        return;
+      if (
+        typeof request.body.password !== "string" ||
+        request.body.password.length < 8
+      )
+        throw "validation";
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.startsWith("/")
+      )
+        delete request.search.redirect;
+      request.state.user.password = await argon2.hash(
+        request.body.password,
+        application.privateConfiguration.argon2,
+      );
+      application.database.run(
+        sql`
+          update "users"
+          set "password" = ${request.state.user.password}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">The password was set successfully.</div>
+      `);
+      response.redirect(request.search.redirect ?? "/");
     },
   });
 
