@@ -67,7 +67,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (request.state.user === undefined) return;
+      if (
+        request.state.systemOptions === undefined ||
+        request.state.user === undefined
+      )
+        return;
       const courseParticipation = application.database.get<{
         course: number;
       }>(
@@ -88,18 +92,94 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       );
-      if (courseParticipation === undefined) return;
-      const course = application.database.get<{
-        publicId: number;
-      }>(
-        sql`
+      if (courseParticipation !== undefined) {
+        const course = application.database.get<{
+          publicId: number;
+        }>(
+          sql`
           select "publicId"
           from "courses"
           where "id" = ${courseParticipation.course};
         `,
+        );
+        if (course === undefined) throw new Error();
+        response.redirect(`/courses/${course.publicId}`);
+        return;
+      }
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Welcome to Courselore! · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Welcome to Courselore!
+              </div>
+              <div
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                $${(request.state.systemOptions.userRolesWhoMayCreateCourses ===
+                  "userRoleUser" &&
+                  (request.state.user.userRole === "userRoleUser" ||
+                    request.state.user.userRole === "userRoleStaff" ||
+                    request.state.user.userRole ===
+                      "userRoleSystemAdministrator")) ||
+                (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+                  "userRoleStaff" &&
+                  (request.state.user.userRole === "userRoleStaff" ||
+                    request.state.user.userRole ===
+                      "userRoleSystemAdministrator")) ||
+                (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+                  "userRoleSystemAdministrator" &&
+                  request.state.user.userRole === "userRoleSystemAdministrator")
+                  ? html`
+                      <div>
+                        <a
+                          href="/courses/new"
+                          class="button button--rectangle button--blue"
+                          >Create a new course</a
+                        >
+                      </div>
+                    `
+                  : html``}
+                <div>
+                  <button
+                    type="button"
+                    class="button button--rectangle button--transparent"
+                    javascript="${javascript`
+                      javascript.popover({ element: this, trigger: "click" });
+                    `}"
+                  >
+                    Join an existing course
+                  </button>
+                  <div type="popover">
+                    To join an existing course you must receive an invitation
+                    from the instructors, either via an invitation link or via
+                    email.
+                  </div>
+                </div>
+              </div>
+            </div>
+          `,
+        }),
       );
-      if (course === undefined) throw new Error();
-      response.redirect(`/courses/${course.publicId}`);
     },
   });
 
