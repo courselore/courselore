@@ -1,5 +1,6 @@
 import * as serverTypes from "@radically-straightforward/server";
 import QRCode from "qrcode";
+import cryptoRandomString from "crypto-random-string";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
@@ -67,6 +68,300 @@ export type ApplicationCourses = {
 };
 
 export default async (application: Application): Promise<void> => {
+  application.server?.push({
+    method: "GET",
+    pathname: "/courses/new",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.systemOptions === undefined ||
+        request.state.user === undefined ||
+        !(
+          (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+            "userRoleUser" &&
+            (request.state.user.userRole === "userRoleUser" ||
+              request.state.user.userRole === "userRoleStaff" ||
+              request.state.user.userRole === "userRoleSystemAdministrator")) ||
+          (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+            "userRoleStaff" &&
+            (request.state.user.userRole === "userRoleStaff" ||
+              request.state.user.userRole === "userRoleSystemAdministrator")) ||
+          (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+            "userRoleSystemAdministrator" &&
+            request.state.user.userRole === "userRoleSystemAdministrator")
+        )
+      )
+        return;
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html` <title>New course · Courselore</title> `,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                New course
+              </div>
+              <div
+                type="form"
+                method="POST"
+                action="/courses"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Name
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                    />
+                  </div>
+                </label>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--blue"
+                  >
+                    Create course
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: "/courses",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { name: string },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.systemOptions === undefined ||
+        request.state.user === undefined ||
+        !(
+          (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+            "userRoleUser" &&
+            (request.state.user.userRole === "userRoleUser" ||
+              request.state.user.userRole === "userRoleStaff" ||
+              request.state.user.userRole === "userRoleSystemAdministrator")) ||
+          (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+            "userRoleStaff" &&
+            (request.state.user.userRole === "userRoleStaff" ||
+              request.state.user.userRole === "userRoleSystemAdministrator")) ||
+          (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+            "userRoleSystemAdministrator" &&
+            request.state.user.userRole === "userRoleSystemAdministrator")
+        )
+      )
+        return;
+      if (
+        typeof request.body.name !== "string" ||
+        request.body.name.trim() === ""
+      )
+        throw "validation";
+      request.state.course = application.database.get<{
+        id: number;
+        publicId: string;
+        name: string;
+        information: string | null;
+        invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+        invitationLinkCourseParticipationRoleInstructorsToken: string;
+        invitationLinkCourseParticipationRoleStudentsEnabled: number;
+        invitationLinkCourseParticipationRoleStudentsToken: string;
+        courseConversationRequiresTagging: number;
+        courseParticipationRoleStudentsAnonymityAllowed:
+          | "courseParticipationRoleStudentsAnonymityAllowedNone"
+          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+        courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
+        courseParticipationRoleStudentsMayAttachImages: number;
+        courseState: "courseStateActive" | "courseStateArchived";
+        courseConversationsNextPublicId: number;
+      }>(
+        sql`
+            select * from "courses" where "id" = ${
+              application.database.run(
+                sql`
+                insert into "courses" (
+                  "publicId",
+                  "name",
+                  "information",
+                  "invitationLinkCourseParticipationRoleInstructorsEnabled",
+                  "invitationLinkCourseParticipationRoleInstructorsToken",
+                  "invitationLinkCourseParticipationRoleStudentsEnabled",
+                  "invitationLinkCourseParticipationRoleStudentsToken",
+                  "courseConversationRequiresTagging",
+                  "courseParticipationRoleStudentsAnonymityAllowed",
+                  "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
+                  "courseParticipationRoleStudentsMayAttachImages",
+                  "courseState",
+                  "courseConversationsNextPublicId"
+                )
+                values (
+                  ${cryptoRandomString({ length: 10, type: "numeric" })},
+                  ${request.body.name},
+                  ${null},
+                  ${Number(false)},
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${Number(false)},
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${Number(true)},
+                  ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
+                  ${Number(true)},
+                  ${Number(true)},
+                  ${"courseStateActive"},
+                  ${1}
+                );
+              `,
+              ).lastInsertRowid
+            };
+          `,
+      )!;
+      request.state.courseParticipation = application.database.get<{
+        id: number;
+        publicId: string;
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
+        decorationColor:
+          | "red"
+          | "orange"
+          | "amber"
+          | "yellow"
+          | "lime"
+          | "green"
+          | "emerald"
+          | "teal"
+          | "cyan"
+          | "sky"
+          | "blue"
+          | "indigo"
+          | "violet"
+          | "purple"
+          | "fuchsia"
+          | "pink"
+          | "rose";
+        mostRecentlyVisitedCourseConversation: number | null;
+      }>(
+        sql`
+            select * from "courseParticipations" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "courseParticipations" (
+                    "publicId",
+                    "user",
+                    "course",
+                    "courseParticipationRole",
+                    "decorationColor",
+                    "mostRecentlyVisitedCourseConversation"
+                  )
+                  values (
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${request.state.user.id},
+                    ${request.state.course.id},
+                    ${"courseParticipationRoleInstructor"},
+                    ${
+                      [
+                        "red",
+                        "orange",
+                        "amber",
+                        "yellow",
+                        "lime",
+                        "green",
+                        "emerald",
+                        "teal",
+                        "cyan",
+                        "sky",
+                        "blue",
+                        "indigo",
+                        "violet",
+                        "purple",
+                        "fuchsia",
+                        "pink",
+                        "rose",
+                      ][
+                        application.database.get<{ count: number }>(
+                          sql`
+                            select count(*) as "count"
+                            from "courseParticipations"
+                            where "user" = ${request.state.user.id};
+                          `,
+                        )!.count % 17
+                      ]
+                    },
+                    ${null}
+                  );
+                `,
+              ).lastInsertRowid
+            };
+          `,
+      )!;
+      response.redirect(`/courses/${request.state.course.publicId}`);
+    },
+  });
+
   application.server?.push({
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)(?:$|/)"),
     handler: (
