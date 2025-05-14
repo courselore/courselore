@@ -619,8 +619,8 @@ export default async (application: Application): Promise<void> => {
                           <a
                             key="course-selector ${course.publicId}"
                             href="/courses/${course.publicId}"
-                            class="button button--rectangle button--transparent ${request.URL.pathname.startsWith(
-                              `/courses/${course.publicId}/`,
+                            class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                              new RegExp(`^/courses/${course.publicId}(?:$|/)`),
                             )
                               ? "button--blue"
                               : ""} button--dropdown-menu"
