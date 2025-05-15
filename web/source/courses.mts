@@ -602,7 +602,7 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="/courses/${request.state.course.publicId}/settings"
                     class="button button--rectangle button--blue"
-                    >Course settings</a
+                    >Configure the course</a
                   >
                 </div>
                 <div>
