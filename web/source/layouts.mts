@@ -760,6 +760,48 @@ export default async (application: Application): Promise<void> => {
                           </a>
                         `;
                       })}
+                    <hr class="separator" />
+                    $${request.state.systemOptions !== undefined &&
+                    ((request.state.systemOptions
+                      .userRolesWhoMayCreateCourses === "userRoleUser" &&
+                      (request.state.user.userRole === "userRoleUser" ||
+                        request.state.user.userRole === "userRoleStaff" ||
+                        request.state.user.userRole ===
+                          "userRoleSystemAdministrator")) ||
+                      (request.state.systemOptions
+                        .userRolesWhoMayCreateCourses === "userRoleStaff" &&
+                        (request.state.user.userRole === "userRoleStaff" ||
+                          request.state.user.userRole ===
+                            "userRoleSystemAdministrator")) ||
+                      (request.state.systemOptions
+                        .userRolesWhoMayCreateCourses ===
+                        "userRoleSystemAdministrator" &&
+                        request.state.user.userRole ===
+                          "userRoleSystemAdministrator"))
+                      ? html`
+                          <a
+                            href="/courses/new"
+                            class="button button--rectangle button--transparent button--dropdown-menu"
+                            >Create a new course</a
+                          >
+                        `
+                      : html``}
+                    <div>
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                        javascript="${javascript`
+                          javascript.popover({ element: this, trigger: "click" });
+                        `}"
+                      >
+                        Join an existing course
+                      </button>
+                      <div type="popover">
+                        To join an existing course you must receive an
+                        invitation from the instructors, either via an
+                        invitation link or via email.
+                      </div>
+                    </div>
                   </div>
                 `
               : request.state.user !== undefined &&
