@@ -554,9 +554,69 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       );
-      if (courseConversation === undefined) return;
-      response.redirect(
-        `/courses/${request.state.course.publicId}/conversations/${courseConversation.publicId}`,
+      if (courseConversation !== undefined) {
+        response.redirect(
+          `/courses/${request.state.course.publicId}/conversations/${courseConversation.publicId}`,
+        );
+        return;
+      }
+      if (
+        request.state.courseParticipation.courseParticipationRole ===
+        "courseParticipationRoleStudent"
+      ) {
+        response.redirect(
+          `/courses/${request.state.course.publicId}/conversations/new`,
+        );
+        return;
+      }
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>${request.state.course.name} · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                ${request.state.course.name}
+              </div>
+              <div
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <div>
+                  <a
+                    href="/courses/${request.state.course.publicId}/settings"
+                    class="button button--rectangle button--blue"
+                    >Course settings</a
+                  >
+                </div>
+                <div>
+                  <a
+                    href="/courses/${request.state.course
+                      .publicId}/conversations/new"
+                    class="button button--rectangle button--transparent"
+                    >Start the first conversation</a
+                  >
+                </div>
+              </div>
+            </div>
+          `,
+        }),
       );
     },
   });
