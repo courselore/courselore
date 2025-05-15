@@ -1029,7 +1029,7 @@ export default async (application: Application): Promise<void> => {
                       </summary>
                       <div
                         type="form"
-                        method="PUT"
+                        method="PATCH"
                         action="/courses/${request.state.course
                           .publicId}/settings/tags"
                         css="${css`
@@ -2174,7 +2174,7 @@ export default async (application: Application): Promise<void> => {
                                   </summary>
                                   <div
                                     type="form"
-                                    method="PUT"
+                                    method="PATCH"
                                     action="/courses/${request.state.course
                                       .publicId}/settings/invitation-emails"
                                     css="${css`
@@ -2394,7 +2394,7 @@ export default async (application: Application): Promise<void> => {
                       </summary>
                       <div
                         type="form"
-                        method="PUT"
+                        method="PATCH"
                         action="/courses/${request.state.course
                           .publicId}/settings/participations"
                         css="${css`

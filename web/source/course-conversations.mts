@@ -3796,7 +3796,7 @@ export default async (application: Application): Promise<void> => {
                                             <div
                                               key="courseConversationMessage--main--content--show--footer--like"
                                               type="form"
-                                              method="PUT"
+                                              method="POST"
                                               action="/courses/${request.state
                                                 .course!
                                                 .publicId}/conversations/${request

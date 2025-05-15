@@ -1436,7 +1436,7 @@ ${value}</textarea
       element.outerHTML = html`
         <div
           type="form"
-          method="PUT"
+          method="PATCH"
           action="/courses/${course.publicId}/conversations/${courseConversation.publicId}/messages/${courseConversationMessage.publicId}/polls/${String(
             elementIndex,
           )}"
