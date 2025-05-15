@@ -1288,7 +1288,9 @@ export default async (application: Application): Promise<void> => {
                                         javascript="${javascript`
                                           this.onclick = () => {
                                             this.closest('[type~="form"]').isModified = true;
+                                            const courseConversationsTags = this.closest('[key~="courseConversationsTags"]');
                                             this.closest('[key~="courseConversationsTag"]').remove();
+                                            courseConversationsTags.hidden = courseConversationsTags.children.length === 0;
                                           };
                                         `}"
                                       >
@@ -1308,6 +1310,10 @@ export default async (application: Application): Promise<void> => {
                                 flex-direction: column;
                                 gap: var(--size--4);
                               `}"
+                              $${request.state.courseConversationsTags
+                                .length === 0
+                                ? html`hidden`
+                                : html``}
                             >
                               $${request.state.courseConversationsTags.map(
                                 (courseConversationsTag) =>
@@ -1333,6 +1339,7 @@ export default async (application: Application): Promise<void> => {
                                 javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[type~="form"]').isModified = true;
+                                    this.closest('[type~="form"]').querySelector('[key~="courseConversationsTags"]').hidden = false;
                                     javascript.execute(
                                       this.closest('[type~="form"]')
                                         .querySelector('[key~="courseConversationsTags"]')
