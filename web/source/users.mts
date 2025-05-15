@@ -248,7 +248,7 @@ export default async (application: Application): Promise<void> => {
                 <div
                   type="form"
                   method="PATCH"
-                  action="/settings"
+                  action="/settings/general-settings"
                   enctype="multipart/form-data"
                   css="${css`
                     padding: var(--size--2) var(--size--0);
@@ -1635,7 +1635,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "PATCH",
-    pathname: "/settings",
+    pathname: "/settings/general-settings",
     handler: async (
       request: serverTypes.Request<
         {},
@@ -1696,7 +1696,7 @@ export default async (application: Application): Promise<void> => {
       response.setFlash(html`
         <div class="flash--green">General settings updated successfully.</div>
       `);
-      response.redirect();
+      response.redirect("/settings");
     },
   });
 
