@@ -100,7 +100,8 @@ export default async (application: Application): Promise<void> => {
             sql`
               select true from "sqlite_sequence" where "name" = 'userSessions';
             `,
-          ) !== undefined
+          ) !== undefined ||
+          request.liveConnection !== undefined
         )
           return;
         const userSession = application.database.get<{
