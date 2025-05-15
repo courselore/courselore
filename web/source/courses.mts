@@ -3005,7 +3005,7 @@ export default async (application: Application): Promise<void> => {
           if (!request.body.tags!.includes(courseConversationsTag.publicId)) {
             application.database.run(
               sql`
-                delete from "courseConversationTaggings" where "courseConversationsTag" = ${courseConversationsTag.publicId};
+                delete from "courseConversationTaggings" where "courseConversationsTag" = ${courseConversationsTag.id};
               `,
             );
             application.database.run(
