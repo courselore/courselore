@@ -2935,10 +2935,86 @@ export default async (application: Application): Promise<void> => {
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
         request.state.courseParticipation.courseParticipationRole !==
-          "courseParticipationRoleInstructor"
+          "courseParticipationRoleInstructor" ||
+        request.state.courseConversationsTags === undefined
       )
         return;
-      // if (TODO) throw "validation";
+      request.body.tags ??= [];
+      if (
+        !Array.isArray(request.body.tags) ||
+        request.body.tags.some(
+          (tag) =>
+            typeof tag !== "string" ||
+            tag.trim() === "" ||
+            typeof request.body[`tags[${tag}].name`] !== "string" ||
+            request.body[`tags[${tag}].name`]!.trim() === "",
+        )
+      )
+        throw "validation";
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            update "courses"
+            set "courseConversationRequiresTagging" = ${Number(request.body.courseConversationRequiresTagging === "on")}
+            where "id" = ${request.state.course!.id};
+          `,
+        );
+        for (const [
+          order,
+          courseConversationsTagPublicId,
+        ] of request.body.tags!.entries()) {
+          const courseConversationsTag =
+            request.state.courseConversationsTags!.find(
+              (courseConversationsTag) =>
+                courseConversationsTagPublicId ===
+                courseConversationsTag.publicId,
+            );
+          if (courseConversationsTag === undefined)
+            application.database.run(
+              sql`
+                insert into "courseConversationsTags" (
+                  "publicId",
+                  "course",
+                  "order",
+                  "name",
+                  "privateToCourseParticipationRoleInstructors"
+                )
+                values (
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${request.state.course!.id},
+                  ${order},
+                  ${request.body[`tags[${courseConversationsTagPublicId}].name`]},
+                  ${Number(request.body[`tags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
+                );
+              `,
+            );
+          else
+            application.database.run(
+              sql`
+                update "courseConversationsTags"
+                set
+                  "order" = ${order},
+                  "name" = ${request.body[`tags[${courseConversationsTagPublicId}].name`]},
+                  "privateToCourseParticipationRoleInstructors" = ${Number(request.body[`tags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
+                where "id" = ${courseConversationsTag.id};
+              `,
+            );
+        }
+        for (const courseConversationsTag of request.state
+          .courseConversationsTags!)
+          if (!request.body.tags!.includes(courseConversationsTag.publicId)) {
+            application.database.run(
+              sql`
+                delete from "courseConversationTaggings" where "courseConversationsTag" = ${courseConversationsTag.publicId};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseConversationsTags" where "id" = ${courseConversationsTag.id};
+              `,
+            );
+          }
+      });
       response.setFlash(html`
         <div class="flash--green">Conversation tags updated successfully.</div>
       `);
