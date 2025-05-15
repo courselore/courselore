@@ -3418,7 +3418,7 @@ export default async (application: Application): Promise<void> => {
                                               request.state.courseConversation!
                                                 .publicId
                                             }/messages/${courseConversationMessage.publicId}/view`}, {
-                                              method: "PUT",
+                                              method: "POST",
                                               headers: { "CSRF-Protection": "true" },
                                             });
                                           }, { root: this.closest('[key~="main--main"]') });

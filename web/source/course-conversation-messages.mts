@@ -102,7 +102,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
-    method: "PUT",
+    method: "POST",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/view$",
     ),
