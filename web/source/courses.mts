@@ -2924,4 +2924,35 @@ export default async (application: Application): Promise<void> => {
       response.redirect(`/courses/${request.state.course.publicId}/settings`);
     },
   });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/settings/tags$"),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseConversationRequiresTagging: "on";
+          tags: string[];
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      // if (TODO) throw "validation";
+      response.setFlash(html`
+        <div class="flash--green">Conversation tags updated successfully.</div>
+      `);
+      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
 };
