@@ -92,6 +92,58 @@ export type ApplicationAuthentication = {
 };
 
 export default async (application: Application): Promise<void> => {
+  if (application.configuration.environment === "development")
+    application.server?.push({
+      handler: (request, response) => {
+        if (
+          application.database.get<{ seq: number }>(
+            sql`
+              select true from "sqlite_sequence" where "name" = 'userSessions';
+            `,
+          ) !== undefined
+        )
+          return;
+        const userSession = application.database.get<{
+          id: number;
+          publicId: string;
+          user: number;
+          createdAt: string;
+          needsTwoFactorAuthentication: number;
+          samlIdentifier: string | null;
+          samlProfile: string | null;
+        }>(
+          sql`
+            select * from "userSessions" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "userSessions" (
+                    "publicId",
+                    "user",
+                    "createdAt",
+                    "needsTwoFactorAuthentication",
+                    "samlIdentifier",
+                    "samlProfile"
+                  )
+                  values (
+                    ${cryptoRandomString({
+                      length: 100,
+                      type: "alphanumeric",
+                    })},
+                    ${1},
+                    ${new Date().toISOString()},
+                    ${Number(false)},
+                    ${null},
+                    ${null}
+                  );
+                `,
+              ).lastInsertRowid
+            };
+          `,
+        )!;
+        response.setCookie("session", userSession.publicId);
+      },
+    });
+
   application.server?.push({
     handler: (
       request: serverTypes.Request<
@@ -340,6 +392,7 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       if (
+        application.configuration.environment !== "development" &&
         request.state.user.userRole === "userRoleSystemAdministrator" &&
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false &&
         !request.URL.pathname.match(
