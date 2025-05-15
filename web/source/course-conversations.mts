@@ -1276,7 +1276,35 @@ export default async (application: Application): Promise<void> => {
       }
       prefill = { ...prefill, ...request.search };
       response.end(
-        courseConversationsLayout({
+        (application.database.get(
+          sql`
+            select true
+            from "courseConversations"
+            where
+              "course" = ${request.state.course.id} and (
+                "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                $${
+                  request.state.courseParticipation.courseParticipationRole ===
+                  "courseParticipationRoleInstructor"
+                    ? sql`
+                        or
+                        "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                      `
+                    : sql``
+                }
+                or (
+                  select true
+                  from "courseConversationParticipations"
+                  where
+                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                )
+              )
+            limit 1;
+          `,
+        ) === undefined
+          ? application.layouts.main
+          : courseConversationsLayout)({
           request,
           response,
           head: html`
