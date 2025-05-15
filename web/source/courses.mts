@@ -2936,6 +2936,11 @@ export default async (application: Application): Promise<void> => {
         {
           courseConversationRequiresTagging: "on";
           tags: string[];
+          [tagsId: `tags[${string}].id`]: string;
+          [tagsName: `tags[${string}].name`]: string;
+          [
+            tagsPrivateToCourseParticipationRoleInstructors: `tags[${string}].privateToCourseParticipationRoleInstructors`
+          ]: "on";
         },
         Application["types"]["states"]["Course"]
       >,
