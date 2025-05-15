@@ -1149,20 +1149,6 @@ export default async (application: Application): Promise<void> => {
                                     : html``}
                                 />
                                 <input
-                                  type="hidden"
-                                  name="tags[${courseConversationsTag?.publicId ??
-                                  "{tag}"}].id"
-                                  value="${courseConversationsTag?.publicId ??
-                                  ""}"
-                                  $${courseConversationsTag === undefined
-                                    ? html`
-                                        javascript="${javascript`
-                                          this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="tags[]"]').getAttribute("value")));
-                                        `}"
-                                      `
-                                    : html``}
-                                />
-                                <input
                                   type="text"
                                   name="tags[${courseConversationsTag?.publicId ??
                                   "{tag}"}].name"
@@ -2936,7 +2922,6 @@ export default async (application: Application): Promise<void> => {
         {
           courseConversationRequiresTagging: "on";
           tags: string[];
-          [tagsId: `tags[${string}].id`]: string;
           [tagsName: `tags[${string}].name`]: string;
           [
             tagsPrivateToCourseParticipationRoleInstructors: `tags[${string}].privateToCourseParticipationRoleInstructors`
