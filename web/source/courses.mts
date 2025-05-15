@@ -1520,26 +1520,6 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               />
                               <div
-                                key="invitationLinkToken--QRCode--show--input"
-                                hidden
-                              >
-                                $${(
-                                  await QRCode.toString(
-                                    `https://${
-                                      application.configuration.hostname
-                                    }/courses/${
-                                      request.state.course.publicId
-                                    }/invitations/${
-                                      request.state.course
-                                        .invitationLinkCourseParticipationRoleInstructorsToken
-                                    }`,
-                                    { type: "svg", margin: 0 },
-                                  )
-                                )
-                                  .replace("#000000", "currentColor")
-                                  .replace("#ffffff", "transparent")}
-                              </div>
-                              <div
                                 css="${css`
                                   font-size: var(--font-size--3);
                                   line-height: var(--font-size--3--line-height);
@@ -1703,6 +1683,26 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                 </div>
                               </div>
+                              <div
+                                key="invitationLinkToken--QRCode--show--input"
+                                hidden
+                              >
+                                $${(
+                                  await QRCode.toString(
+                                    `https://${
+                                      application.configuration.hostname
+                                    }/courses/${
+                                      request.state.course.publicId
+                                    }/invitations/${
+                                      request.state.course
+                                        .invitationLinkCourseParticipationRoleInstructorsToken
+                                    }`,
+                                    { type: "svg", margin: 0 },
+                                  )
+                                )
+                                  .replace("#000000", "currentColor")
+                                  .replace("#ffffff", "transparent")}
+                              </div>
                             </div>
                             <div
                               key="invitationLink"
@@ -1771,26 +1771,6 @@ export default async (application: Application): Promise<void> => {
                                   };
                                 `}"
                               />
-                              <div
-                                key="invitationLinkToken--QRCode--show--input"
-                                hidden
-                              >
-                                $${(
-                                  await QRCode.toString(
-                                    `https://${
-                                      application.configuration.hostname
-                                    }/courses/${
-                                      request.state.course.publicId
-                                    }/invitations/${
-                                      request.state.course
-                                        .invitationLinkCourseParticipationRoleStudentsToken
-                                    }`,
-                                    { type: "svg", margin: 0 },
-                                  )
-                                )
-                                  .replace("#000000", "currentColor")
-                                  .replace("#ffffff", "transparent")}
-                              </div>
                               <div
                                 css="${css`
                                   font-size: var(--font-size--3);
@@ -1954,6 +1934,26 @@ export default async (application: Application): Promise<void> => {
                                     </div>
                                   </div>
                                 </div>
+                              </div>
+                              <div
+                                key="invitationLinkToken--QRCode--show--input"
+                                hidden
+                              >
+                                $${(
+                                  await QRCode.toString(
+                                    `https://${
+                                      application.configuration.hostname
+                                    }/courses/${
+                                      request.state.course.publicId
+                                    }/invitations/${
+                                      request.state.course
+                                        .invitationLinkCourseParticipationRoleStudentsToken
+                                    }`,
+                                    { type: "svg", margin: 0 },
+                                  )
+                                )
+                                  .replace("#000000", "currentColor")
+                                  .replace("#ffffff", "transparent")}
                               </div>
                             </div>
                             <div
