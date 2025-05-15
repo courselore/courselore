@@ -2146,19 +2146,32 @@ export default async (application: Application): Promise<void> => {
                 Scan the following QR code with your two-factor authentication
                 application on your phone, for example, Google Authenticator.
               </p>
-              <div>
-                $${(
-                  await QRCode.toString(
-                    new OTPAuth.TOTP({
-                      issuer: `Courselore (${application.configuration.hostname})`,
-                      label: request.state.user.email,
-                      secret: request.state.user.twoFactorAuthenticationSecret,
-                    }).toString(),
-                    { type: "svg", margin: 0 },
+              <div
+                css="${css`
+                  display: flex;
+                  justify-content: center;
+                `}"
+              >
+                <div
+                  css="${css`
+                    max-width: var(--size--48);
+                    width: 100%;
+                  `}"
+                >
+                  $${(
+                    await QRCode.toString(
+                      new OTPAuth.TOTP({
+                        issuer: `Courselore (${application.configuration.hostname})`,
+                        label: request.state.user.email,
+                        secret:
+                          request.state.user.twoFactorAuthenticationSecret,
+                      }).toString(),
+                      { type: "svg", margin: 0 },
+                    )
                   )
-                )
-                  .replace("#000000", "currentColor")
-                  .replace("#ffffff", "transparent")}
+                    .replace("#000000", "currentColor")
+                    .replace("#ffffff", "transparent")}
+                </div>
               </div>
               <hr class="separator" />
               <p>
