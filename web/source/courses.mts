@@ -701,7 +701,7 @@ export default async (application: Application): Promise<void> => {
                         type="form"
                         method="PATCH"
                         action="/courses/${request.state.course
-                          .publicId}/settings"
+                          .publicId}/settings/general-settings"
                         css="${css`
                           padding: var(--size--2) var(--size--0);
                           border-bottom: var(--border-width--1) solid
@@ -767,10 +767,9 @@ export default async (application: Application): Promise<void> => {
                           >
                             <input
                               type="text"
-                              name="name"
+                              name="information"
                               placeholder="Year / Term / Institution / Code / …"
                               value="${request.state.course.information ?? ""}"
-                              required
                               maxlength="2000"
                               class="input--text"
                               css="${css`
@@ -2850,6 +2849,72 @@ export default async (application: Application): Promise<void> => {
           `,
         }),
       );
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/general-settings$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          name: string;
+          information: string;
+          courseParticipationRoleStudentsAnonymityAllowed:
+            | "courseParticipationRoleStudentsAnonymityAllowedNone"
+            | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+            | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+          courseParticipationRoleStudentsMayHavePrivateCourseConversations: "on";
+          courseParticipationRoleStudentsMayAttachImages: "on";
+          courseState: "courseStateActive" | "courseStateArchived";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      if (
+        typeof request.body.name !== "string" ||
+        request.body.name.trim() === "" ||
+        typeof request.body.information !== "string" ||
+        (request.body.courseParticipationRoleStudentsAnonymityAllowed !==
+          "courseParticipationRoleStudentsAnonymityAllowedNone" &&
+          request.body.courseParticipationRoleStudentsAnonymityAllowed !==
+            "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
+          request.body.courseParticipationRoleStudentsAnonymityAllowed !==
+            "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors") ||
+        (request.body.courseState !== "courseStateActive" &&
+          request.body.courseState !== "courseStateArchived")
+      )
+        throw "validation";
+      application.database.run(
+        sql`
+          update "courses"
+          set
+            "name" = ${request.body.name},
+            "information" = ${request.body.information.trim() !== "" ? request.body.information : null},
+            "courseParticipationRoleStudentsAnonymityAllowed" = ${request.body.courseParticipationRoleStudentsAnonymityAllowed},
+            "courseParticipationRoleStudentsMayHavePrivateCourseConversations" = ${Number(request.body.courseParticipationRoleStudentsMayHavePrivateCourseConversations === "on")},
+            "courseParticipationRoleStudentsMayAttachImages" = ${Number(request.body.courseParticipationRoleStudentsMayAttachImages === "on")},
+            "courseState" = ${request.body.courseState}
+          where "id" = ${request.state.course.id};
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">General settings updated successfully.</div>
+      `);
+      response.redirect(`/courses/${request.state.course.publicId}/settings`);
     },
   });
 };
