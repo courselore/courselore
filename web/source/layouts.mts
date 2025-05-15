@@ -536,7 +536,7 @@ export default async (application: Application): Promise<void> => {
                       align-items: center;
                     `}"
                     javascript="${javascript`
-                      javascript.popover({ element: this, trigger: "click" });
+                      javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
                     `}"
                   >
                     <div
@@ -561,12 +561,22 @@ export default async (application: Application): Promise<void> => {
                     <a
                       href="/courses/${request.state.course.publicId}"
                       class="button button--rectangle button--transparent button--dropdown-menu"
+                      javascript="${javascript`
+                        this.onclick = () => {
+                          document.querySelector("body").click();
+                        };
+                      `}"
                     >
                       Conversations
                     </a>
                     <a
                       href="/courses/${request.state.course.publicId}/settings"
                       class="button button--rectangle button--transparent button--dropdown-menu"
+                      javascript="${javascript`
+                        this.onclick = () => {
+                          document.querySelector("body").click();
+                        };
+                      `}"
                     >
                       Course settings
                     </a>
@@ -627,6 +637,11 @@ export default async (application: Application): Promise<void> => {
                             css="${css`
                               display: flex;
                               gap: var(--size--2);
+                            `}"
+                            javascript="${javascript`
+                              this.onclick = () => {
+                                document.querySelector("body").click();
+                              };
                             `}"
                           >
                             <div
@@ -782,6 +797,11 @@ export default async (application: Application): Promise<void> => {
                           <a
                             href="/courses/new"
                             class="button button--rectangle button--transparent button--dropdown-menu"
+                            javascript="${javascript`
+                              this.onclick = () => {
+                                document.querySelector("body").click();
+                              };
+                            `}"
                             >Create a new course</a
                           >
                         `
