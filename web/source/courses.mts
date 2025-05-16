@@ -1,10 +1,12 @@
 import * as serverTypes from "@radically-straightforward/server";
 import QRCode from "qrcode";
 import cryptoRandomString from "crypto-random-string";
+import emailAddresses from "email-addresses";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
+import * as utilities from "@radically-straightforward/utilities";
 import { Application } from "./index.mjs";
 
 export type ApplicationCourses = {
@@ -3369,78 +3371,147 @@ export default async (application: Application): Promise<void> => {
         )
       )
         delete request.search.redirect;
-      application.database.run(
-        sql`
-          insert into "courseParticipations" (
-            "publicId",
-            "user",
-            "course",
-            "courseParticipationRole",
-            "decorationColor",
-            "mostRecentlyVisitedCourseConversation"
-          )
-          values (
-            ${cryptoRandomString({ length: 20, type: "numeric" })},
-            ${request.state.user.id},
-            ${request.state.courseInvitation.id},
-            ${
-              Boolean(
-                request.state.courseInvitation
-                  .invitationLinkCourseParticipationRoleInstructorsEnabled,
-              ) &&
-              request.state.courseInvitation
-                .invitationLinkCourseParticipationRoleInstructorsToken ===
-                request.pathname.invitationLinkToken
-                ? "courseParticipationRoleInstructor"
-                : Boolean(
-                      request.state.courseInvitation
-                        .invitationLinkCourseParticipationRoleStudentsEnabled,
-                    ) &&
-                    request.state.courseInvitation
-                      .invitationLinkCourseParticipationRoleStudentsToken ===
-                      request.pathname.invitationLinkToken
-                  ? "courseParticipationRoleStudent"
-                  : (() => {
-                      throw new Error();
-                    })()
-            },
-            ${
-              [
-                "red",
-                "orange",
-                "amber",
-                "yellow",
-                "lime",
-                "green",
-                "emerald",
-                "teal",
-                "cyan",
-                "sky",
-                "blue",
-                "indigo",
-                "violet",
-                "purple",
-                "fuchsia",
-                "pink",
-                "rose",
-              ][
-                application.database.get<{ count: number }>(
-                  sql`
-                    select count(*) as "count"
-                    from "courseParticipations"
-                    where "user" = ${request.state.user.id};
-                  `,
-                )!.count % 17
-              ]
-            },
-            ${null}
-          );
-        `,
-      );
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            insert into "courseParticipations" (
+              "publicId",
+              "user",
+              "course",
+              "courseParticipationRole",
+              "decorationColor",
+              "mostRecentlyVisitedCourseConversation"
+            )
+            values (
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${request.state.user!.id},
+              ${request.state.courseInvitation!.id},
+              ${
+                Boolean(
+                  request.state.courseInvitation!
+                    .invitationLinkCourseParticipationRoleInstructorsEnabled,
+                ) &&
+                request.state.courseInvitation!
+                  .invitationLinkCourseParticipationRoleInstructorsToken ===
+                  request.pathname.invitationLinkToken
+                  ? "courseParticipationRoleInstructor"
+                  : Boolean(
+                        request.state.courseInvitation!
+                          .invitationLinkCourseParticipationRoleStudentsEnabled,
+                      ) &&
+                      request.state.courseInvitation!
+                        .invitationLinkCourseParticipationRoleStudentsToken ===
+                        request.pathname.invitationLinkToken
+                    ? "courseParticipationRoleStudent"
+                    : (() => {
+                        throw new Error();
+                      })()
+              },
+              ${
+                [
+                  "red",
+                  "orange",
+                  "amber",
+                  "yellow",
+                  "lime",
+                  "green",
+                  "emerald",
+                  "teal",
+                  "cyan",
+                  "sky",
+                  "blue",
+                  "indigo",
+                  "violet",
+                  "purple",
+                  "fuchsia",
+                  "pink",
+                  "rose",
+                ][
+                  application.database.get<{ count: number }>(
+                    sql`
+                      select count(*) as "count"
+                      from "courseParticipations"
+                      where "user" = ${request.state.user!.id};
+                    `,
+                  )!.count % 17
+                ]
+              },
+              ${null}
+            );
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseInvitationEmails"
+            where
+              "course" = ${request.state.courseInvitation!.id} and
+              "email" = ${request.state.user!.email};
+          `,
+        );
+      });
       response.redirect(
         request.search.redirect ??
           `/courses/${request.state.courseInvitation.publicId}`,
       );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/invitation-emails$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+          courseInvitationEmails: string;
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      if (
+        (request.body.courseParticipationRole !==
+          "courseParticipationRoleInstructor" &&
+          request.body.courseParticipationRole !==
+            "courseParticipationRoleStudent") ||
+        typeof request.body.courseInvitationEmails !== "string" ||
+        request.body.courseInvitationEmails.trim() === ""
+      )
+        throw "validation";
+      const addresses = emailAddresses.parseAddressList(
+        request.body.courseInvitationEmails.replaceAll(/\n+/g, " , "),
+      );
+      if (
+        addresses === null ||
+        addresses.length === 0 ||
+        addresses.some(
+          (address) =>
+            address.type !== "mailbox" ||
+            address.address.match(utilities.emailRegExp) === null,
+        )
+      )
+        throw "validation";
+      for (const address of addresses) {
+        // TODO
+      }
+      response.setFlash(html`
+        <div class="flash--green">Invitation emails sent successfully.</div>
+      `);
+      response.redirect(`/courses/${request.state.course.publicId}/settings`);
     },
   });
 };
