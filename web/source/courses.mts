@@ -3119,4 +3119,37 @@ export default async (application: Application): Promise<void> => {
       response.redirect(`/courses/${request.state.course.publicId}/settings`);
     },
   });
+
+  application.server?.push({
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/invitations/(?<courseInvitationPublicId>[0-9]+)(?:$|/)",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        { coursePublicId: string },
+        { redirect: string },
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (typeof request.pathname.coursePublicId !== "string") return;
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.match(
+          new RegExp(`^/courses/${request.pathname.coursePublicId}(?:$|/)`),
+        )
+      )
+        delete request.search.redirect;
+      if (request.state.course !== undefined) {
+        response.redirect(
+          request.search.redirect ??
+            `/courses/${request.state.course.publicId}`,
+        );
+        return;
+      }
+      // TODO
+    },
+  });
 };
