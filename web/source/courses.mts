@@ -3156,7 +3156,7 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      const course = application.database.get<{
+      request.state.course = application.database.get<{
         id: number;
         publicId: string;
         name: string;
@@ -3196,20 +3196,52 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (
-        course === undefined ||
+        request.state.course !== undefined &&
         !(
           (Boolean(
-            course.invitationLinkCourseParticipationRoleInstructorsEnabled,
+            request.state.course
+              .invitationLinkCourseParticipationRoleInstructorsEnabled,
           ) &&
-            course.invitationLinkCourseParticipationRoleInstructorsToken ===
+            request.state.course
+              .invitationLinkCourseParticipationRoleInstructorsToken ===
               request.pathname.invitationLinkToken) ||
           (Boolean(
-            course.invitationLinkCourseParticipationRoleStudentsEnabled,
+            request.state.course
+              .invitationLinkCourseParticipationRoleStudentsEnabled,
           ) &&
-            course.invitationLinkCourseParticipationRoleStudentsToken ===
+            request.state.course
+              .invitationLinkCourseParticipationRoleStudentsToken ===
               request.pathname.invitationLinkToken)
         )
-      ) {
+      )
+        delete request.state.course;
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/invitations/(?<invitationLinkToken>[0-9]+)(?:$|/)",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {
+          coursePublicId: string;
+          invitationLinkToken: string;
+        },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.coursePublicId !== "string" ||
+        typeof request.pathname.invitationLinkToken !== "string"
+      )
+        return;
+      if (request.state.course === undefined) {
         response.end(
           application.layouts.main({
             request,
@@ -3244,7 +3276,9 @@ export default async (application: Application): Promise<void> => {
           request,
           response,
           head: html`
-            <title>Invitation link · ${course.name} · Courselore</title>
+            <title>
+              Invitation link · ${request.state.course.name} · Courselore
+            </title>
           `,
           body: html`
             <div
@@ -3285,7 +3319,7 @@ export default async (application: Application): Promise<void> => {
                     type="submit"
                     class="button button--rectangle button--blue"
                   >
-                    Join “${course.name}”
+                    Join “${request.state.course.name}”
                   </button>
                 </div>
               </div>
