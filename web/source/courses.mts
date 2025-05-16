@@ -454,7 +454,10 @@ export default async (application: Application): Promise<void> => {
             "course" = ${request.state.course.id};
         `,
       );
-      if (request.state.courseParticipation === undefined) return;
+      if (request.state.courseParticipation === undefined) {
+        delete request.state.course;
+        return;
+      }
       application.database.run(
         sql`
           update "users"
