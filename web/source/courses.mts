@@ -1431,7 +1431,7 @@ export default async (application: Application): Promise<void> => {
                             type="form"
                             method="PATCH"
                             action="/courses/${request.state.course
-                              .publicId}/settings"
+                              .publicId}/settings/invitation-links"
                             css="${css`
                               padding: var(--size--2) var(--size--0);
                               border-bottom: var(--border-width--1) solid
@@ -1622,9 +1622,9 @@ export default async (application: Application): Promise<void> => {
                                   </button>
                                   <div
                                     type="form popover"
-                                    method="PATCH"
+                                    method="POST"
                                     action="/courses/${request.state.course
-                                      .publicId}/settings"
+                                      .publicId}/settings/invitation-links/renew"
                                     css="${css`
                                       display: flex;
                                       flex-direction: column;
@@ -1885,9 +1885,9 @@ export default async (application: Application): Promise<void> => {
                                   </button>
                                   <div
                                     type="form popover"
-                                    method="PATCH"
+                                    method="POST"
                                     action="/courses/${request.state.course
-                                      .publicId}/settings"
+                                      .publicId}/settings/invitation-links/renew"
                                     css="${css`
                                       display: flex;
                                       flex-direction: column;
@@ -3017,6 +3017,101 @@ export default async (application: Application): Promise<void> => {
       });
       response.setFlash(html`
         <div class="flash--green">Conversation tags updated successfully.</div>
+      `);
+      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/invitation-links$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          invitationLinkCourseParticipationRoleInstructorsEnabled: "on";
+          invitationLinkCourseParticipationRoleStudentsEnabled: "on";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      application.database.run(
+        sql`
+          update "courses"
+          set
+            "invitationLinkCourseParticipationRoleInstructorsEnabled" = ${Number(request.body.invitationLinkCourseParticipationRoleInstructorsEnabled === "on")},
+            "invitationLinkCourseParticipationRoleStudentsEnabled" = ${Number(request.body.invitationLinkCourseParticipationRoleStudentsEnabled === "on")}
+          where "id" = ${request.state.course.id};
+        `,
+      );
+      response.setFlash(html`
+        <div class="flash--green">Invitation links updated successfully.</div>
+      `);
+      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/invitation-links/renew$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          renewInvitationLinkCourseParticipationRoleInstructorsToken: "true";
+          renewInvitationLinkCourseParticipationRoleStudentsToken: "true";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      if (
+        request.body
+          .renewInvitationLinkCourseParticipationRoleInstructorsToken === "true"
+      )
+        application.database.run(
+          sql`
+            update "courses"
+            set "invitationLinkCourseParticipationRoleInstructorsToken" = ${cryptoRandomString({ length: 20, type: "numeric" })}
+            where "id" = ${request.state.course.id};
+          `,
+        );
+      if (
+        request.body.renewInvitationLinkCourseParticipationRoleStudentsToken ===
+        "true"
+      )
+        application.database.run(
+          sql`
+            update "courses"
+            set "invitationLinkCourseParticipationRoleStudentsToken" = ${cryptoRandomString({ length: 20, type: "numeric" })}
+            where "id" = ${request.state.course.id};
+          `,
+        );
+      response.setFlash(html`
+        <div class="flash--green">Invitation link renewed successfully.</div>
       `);
       response.redirect(`/courses/${request.state.course.publicId}/settings`);
     },
