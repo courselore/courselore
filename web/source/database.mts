@@ -2499,10 +2499,9 @@ export default async (application: Application): Promise<void> => {
             "publicId" text not null unique,
             "course" integer not null references "courses",
             "email" text not null,
-            "courseParticipationRole" text not null
+            "courseParticipationRole" text not null,
+            unique ("course", "email")
           ) strict;
-          create index "index_courseInvitationEmails_course" on "courseInvitationEmails" ("course");
-          create index "index_courseInvitationEmails_email" on "courseInvitationEmails" ("email");
           
           create table "courseParticipations" (
             "id" integer primary key autoincrement,
