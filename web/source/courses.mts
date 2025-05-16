@@ -3302,7 +3302,7 @@ export default async (application: Application): Promise<void> => {
                 method="POST"
                 action="/courses/${request.pathname
                   .coursePublicId}/invitations/${request.pathname
-                  .invitationLinkToken}"
+                  .invitationLinkToken}${request.URL.search}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -3326,6 +3326,112 @@ export default async (application: Application): Promise<void> => {
             </div>
           `,
         }),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/invitations/(?<invitationLinkToken>[0-9]+)(?:$|/)",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {
+          coursePublicId: string;
+          invitationLinkToken: string;
+        },
+        { redirect: string },
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.coursePublicId !== "string" ||
+        typeof request.pathname.invitationLinkToken !== "string" ||
+        request.state.user === undefined ||
+        request.state.course === undefined
+      )
+        return;
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.match(
+          new RegExp(`^/courses/${request.state.course.publicId}(?:$|/)`),
+        )
+      )
+        delete request.search.redirect;
+      application.database.run(
+        sql`
+          insert into "courseParticipations" (
+            "publicId",
+            "user",
+            "course",
+            "courseParticipationRole",
+            "decorationColor",
+            "mostRecentlyVisitedCourseConversation"
+          )
+          values (
+            ${cryptoRandomString({ length: 20, type: "numeric" })},
+            ${request.state.user.id},
+            ${request.state.course.id},
+            ${
+              Boolean(
+                request.state.course
+                  .invitationLinkCourseParticipationRoleInstructorsEnabled,
+              ) &&
+              request.state.course
+                .invitationLinkCourseParticipationRoleInstructorsToken ===
+                request.pathname.invitationLinkToken
+                ? "courseParticipationRoleInstructor"
+                : Boolean(
+                      request.state.course
+                        .invitationLinkCourseParticipationRoleStudentsEnabled,
+                    ) &&
+                    request.state.course
+                      .invitationLinkCourseParticipationRoleStudentsToken ===
+                      request.pathname.invitationLinkToken
+                  ? "courseParticipationRoleStudent"
+                  : (() => {
+                      throw new Error();
+                    })()
+            },
+            ${
+              [
+                "red",
+                "orange",
+                "amber",
+                "yellow",
+                "lime",
+                "green",
+                "emerald",
+                "teal",
+                "cyan",
+                "sky",
+                "blue",
+                "indigo",
+                "violet",
+                "purple",
+                "fuchsia",
+                "pink",
+                "rose",
+              ][
+                application.database.get<{ count: number }>(
+                  sql`
+                    select count(*) as "count"
+                    from "courseParticipations"
+                    where "user" = ${request.state.user.id};
+                  `,
+                )!.count % 17
+              ]
+            },
+            ${null}
+          );
+        `,
+      );
+      response.redirect(
+        request.search.redirect ?? `/courses/${request.state.course.publicId}`,
       );
     },
   });
