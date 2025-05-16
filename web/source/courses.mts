@@ -3206,8 +3206,9 @@ export default async (application: Application): Promise<void> => {
           where "publicId" = ${request.pathname.coursePublicId};
         `,
       );
+      if (request.state.courseInvitation === undefined) return;
+      // TODO: Add these conditions to the query above
       if (
-        request.state.courseInvitation !== undefined &&
         !(
           (Boolean(
             request.state.courseInvitation
@@ -3627,6 +3628,353 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">Invitation emails sent successfully.</div>
       `);
       response.redirect(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  type StateCourseInvitationEmail = Application["types"]["states"]["Course"] & {
+    courseInvitation: Application["types"]["states"]["Course"]["course"];
+    courseInvitationEmail: {
+      id: number;
+      publicId: string;
+      email: string;
+      courseParticipationRole:
+        | "courseParticipationRoleInstructor"
+        | "courseParticipationRoleStudent";
+    };
+  };
+
+  application.server?.push({
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<courseInvitationEmailPublicId>[0-9]+)(?:$|/)",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {
+          coursePublicId: string;
+          courseInvitationEmailPublicId: string;
+        },
+        { redirect: string },
+        {},
+        {},
+        StateCourseInvitationEmail
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.coursePublicId !== "string" ||
+        typeof request.pathname.courseInvitationEmailPublicId !== "string" ||
+        request.state.user === undefined
+      )
+        return;
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.match(
+          new RegExp(`^/courses/${request.pathname.coursePublicId}(?:$|/)`),
+        )
+      )
+        delete request.search.redirect;
+      if (request.state.course !== undefined) {
+        response.redirect(
+          request.search.redirect ??
+            `/courses/${request.state.course.publicId}`,
+        );
+        return;
+      }
+      request.state.courseInvitation = application.database.get<{
+        id: number;
+        publicId: string;
+        name: string;
+        information: string | null;
+        invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+        invitationLinkCourseParticipationRoleInstructorsToken: string;
+        invitationLinkCourseParticipationRoleStudentsEnabled: number;
+        invitationLinkCourseParticipationRoleStudentsToken: string;
+        courseConversationRequiresTagging: number;
+        courseParticipationRoleStudentsAnonymityAllowed:
+          | "courseParticipationRoleStudentsAnonymityAllowedNone"
+          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+        courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
+        courseParticipationRoleStudentsMayAttachImages: number;
+        courseState: "courseStateActive" | "courseStateArchived";
+        courseConversationsNextPublicId: number;
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "name",
+            "information",
+            "invitationLinkCourseParticipationRoleInstructorsEnabled",
+            "invitationLinkCourseParticipationRoleInstructorsToken",
+            "invitationLinkCourseParticipationRoleStudentsEnabled",
+            "invitationLinkCourseParticipationRoleStudentsToken",
+            "courseConversationRequiresTagging",
+            "courseParticipationRoleStudentsAnonymityAllowed",
+            "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
+            "courseParticipationRoleStudentsMayAttachImages",
+            "courseState",
+            "courseConversationsNextPublicId"
+          from "courses"
+          where "publicId" = ${request.pathname.coursePublicId};
+        `,
+      );
+      if (request.state.courseInvitation === undefined) return;
+      request.state.courseInvitationEmail = application.database.get<{
+        id: number;
+        publicId: string;
+        email: string;
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "email",
+            "courseParticipationRole"
+          from "courseInvitationEmails"
+          where
+            "publicId" = ${request.pathname.courseInvitationEmailPublicId} and
+            "course" = ${request.state.courseInvitation.id} and
+            "email" = ${request.state.user.email};
+        `,
+      );
+      if (request.state.courseInvitationEmail === undefined) return;
+    },
+  });
+
+  // TODO: Continue from here
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<courseInvitationEmailPublicId>[0-9]+)(?:$|/)",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {
+          coursePublicId: string;
+          courseInvitationEmailPublicId: string;
+        },
+        {},
+        {},
+        {},
+        StateCourseInvitationEmail
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.coursePublicId !== "string" ||
+        typeof request.pathname.courseInvitationEmailPublicId !== "string"
+      )
+        return;
+      if (request.state.courseInvitation === undefined) {
+        response.end(
+          application.layouts.main({
+            request,
+            response,
+            head: html`<title>Invalid invitation link · Courselore</title>`,
+            body: html`
+              <div
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--2);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-size: var(--font-size--4);
+                    line-height: var(--font-size--4--line-height);
+                    font-weight: 800;
+                  `}"
+                >
+                  Invalid invitation link
+                </div>
+                <div>Please contact the course instructors.</div>
+              </div>
+            `,
+          }),
+        );
+        return;
+      }
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`
+            <title>
+              Invitation link · ${request.state.courseInvitation.name} ·
+              Courselore
+            </title>
+          `,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Invitation link
+              </div>
+              <div
+                type="form"
+                method="POST"
+                action="/courses/${request.pathname
+                  .coursePublicId}/invitation-emails/${request.pathname
+                  .courseInvitationEmailPublicId}${request.URL.search}"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--blue"
+                  >
+                    Join “${request.state.courseInvitation.name}”
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<courseInvitationEmailPublicId>[0-9]+)(?:$|/)",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {
+          coursePublicId: string;
+          courseInvitationEmailPublicId: string;
+        },
+        { redirect: string },
+        {},
+        {},
+        StateCourseInvitationEmail
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.coursePublicId !== "string" ||
+        typeof request.pathname.courseInvitationEmailPublicId !== "string" ||
+        request.state.user === undefined ||
+        request.state.courseInvitation === undefined
+      )
+        return;
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.match(
+          new RegExp(
+            `^/courses/${request.state.courseInvitation.publicId}(?:$|/)`,
+          ),
+        )
+      )
+        delete request.search.redirect;
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            insert into "courseParticipations" (
+              "publicId",
+              "user",
+              "course",
+              "courseParticipationRole",
+              "decorationColor",
+              "mostRecentlyVisitedCourseConversation"
+            )
+            values (
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${request.state.user!.id},
+              ${request.state.courseInvitation!.id},
+              ${
+                Boolean(
+                  request.state.courseInvitation!
+                    .invitationLinkCourseParticipationRoleInstructorsEnabled,
+                ) &&
+                request.state.courseInvitation!
+                  .invitationLinkCourseParticipationRoleInstructorsToken ===
+                  request.pathname.courseInvitationEmailPublicId
+                  ? "courseParticipationRoleInstructor"
+                  : Boolean(
+                        request.state.courseInvitation!
+                          .invitationLinkCourseParticipationRoleStudentsEnabled,
+                      ) &&
+                      request.state.courseInvitation!
+                        .invitationLinkCourseParticipationRoleStudentsToken ===
+                        request.pathname.courseInvitationEmailPublicId
+                    ? "courseParticipationRoleStudent"
+                    : (() => {
+                        throw new Error();
+                      })()
+              },
+              ${
+                [
+                  "red",
+                  "orange",
+                  "amber",
+                  "yellow",
+                  "lime",
+                  "green",
+                  "emerald",
+                  "teal",
+                  "cyan",
+                  "sky",
+                  "blue",
+                  "indigo",
+                  "violet",
+                  "purple",
+                  "fuchsia",
+                  "pink",
+                  "rose",
+                ][
+                  application.database.get<{ count: number }>(
+                    sql`
+                      select count(*) as "count"
+                      from "courseParticipations"
+                      where "user" = ${request.state.user!.id};
+                    `,
+                  )!.count % 17
+                ]
+              },
+              ${null}
+            );
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseInvitationEmails"
+            where
+              "course" = ${request.state.courseInvitation!.id} and
+              "email" = ${request.state.user!.email};
+          `,
+        );
+      });
+      response.redirect(
+        request.search.redirect ??
+          `/courses/${request.state.courseInvitation.publicId}`,
+      );
     },
   });
 };
