@@ -2040,6 +2040,11 @@ export default async (application: Application): Promise<void> => {
                               flex-direction: column;
                               gap: var(--size--4);
                             `}"
+                            javascript="${javascript`
+                              this.onsubmit = () => {
+                                javascript.reset(this);
+                              };
+                            `}"
                           >
                             <div
                               css="${css`
@@ -3506,7 +3511,117 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       for (const address of addresses) {
-        // TODO
+        const userEmail =
+          address.type === "mailbox"
+            ? address.address
+            : (() => {
+                throw new Error();
+              })();
+        if (
+          application.database.get(
+            sql`
+              select true
+              from "courseParticipations"
+              join "users" on
+                "courseParticipations"."user" = "users"."id" and
+                "users"."email" = ${userEmail}
+              where "courseParticipations"."course" = ${request.state.course.id};
+            `,
+          ) !== undefined ||
+          application.database.get(
+            sql`
+              select true
+              from "courseInvitationEmails"
+              where
+                "courseInvitationEmails"."course" = ${request.state.course.id} and
+                "courseInvitationEmails"."email" = ${userEmail};
+            `,
+          ) !== undefined
+        )
+          continue;
+        const courseInvitationEmail = application.database.get<{
+          id: number;
+          publicId: string;
+          email: string;
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+        }>(
+          sql`
+            select * from "courseInvitationEmails" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "courseInvitationEmails" (
+                    "publicId",
+                    "course",
+                    "email",
+                    "courseParticipationRole"
+                  )
+                  values (
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${request.state.course.id},
+                    ${userEmail},
+                    ${request.body.courseParticipationRole}
+                  );
+                `,
+              ).lastInsertRowid
+            };
+          `,
+        )!;
+        application.database.run(
+          sql`
+            insert into "_backgroundJobs" (
+              "type",
+              "startAt",
+              "parameters"
+            )
+            values (
+              'email',
+              ${new Date().toISOString()},
+              ${JSON.stringify({
+                to: userEmail,
+                subject: `Invitation · ${request.state.course.name}`,
+                html: html`
+                  <p>
+                    You’re invited to join the course
+                    “${request.state.course.name}” on Courselore with the
+                    following email address:
+                    <code>${userEmail}</code>
+                  </p>
+                  <p>
+                    If you wish to join, please follow this invitation link:
+                    <a
+                      href="https://${application.configuration
+                        .hostname}/courses/${request.state.course
+                        .publicId}/invitation-emails/${courseInvitationEmail.publicId}"
+                      >https://${application.configuration
+                        .hostname}/courses/${request.state.course
+                        .publicId}/invitation-emails/${courseInvitationEmail.publicId}</a
+                    >
+                  </p>
+                  <p>
+                    If you believe that this was a mistake, please report the
+                    issue to
+                    <a
+                      href="mailto:${application.configuration
+                        .systemAdministratorEmail ??
+                      "system-administrator@courselore.org"}?${new URLSearchParams(
+                        {
+                          subject: "Potential invitation issue",
+                          body: `Course: ${request.state.course.publicId}\n\nEmail: ${userEmail}`,
+                        },
+                      )
+                        .toString()
+                        .replaceAll("+", "%20")}"
+                      >${application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"}</a
+                    >
+                  </p>
+                `,
+              })}
+            );
+          `,
+        );
       }
       response.setFlash(html`
         <div class="flash--green">Invitation emails sent successfully.</div>
