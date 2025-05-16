@@ -3122,11 +3122,14 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/invitations/(?<courseInvitationPublicId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/invitations/(?<invitationLinkToken>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
-        { coursePublicId: string },
+        {
+          coursePublicId: string;
+          invitationLinkToken: string;
+        },
         { redirect: string },
         {},
         {},
@@ -3134,7 +3137,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (typeof request.pathname.coursePublicId !== "string") return;
+      if (
+        typeof request.pathname.coursePublicId !== "string" ||
+        typeof request.pathname.invitationLinkToken !== "string"
+      )
+        return;
       if (
         typeof request.search.redirect === "string" &&
         !request.search.redirect.match(
@@ -3149,7 +3156,143 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      // TODO
+      const course = application.database.get<{
+        id: number;
+        publicId: string;
+        name: string;
+        information: string | null;
+        invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+        invitationLinkCourseParticipationRoleInstructorsToken: string;
+        invitationLinkCourseParticipationRoleStudentsEnabled: number;
+        invitationLinkCourseParticipationRoleStudentsToken: string;
+        courseConversationRequiresTagging: number;
+        courseParticipationRoleStudentsAnonymityAllowed:
+          | "courseParticipationRoleStudentsAnonymityAllowedNone"
+          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+        courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
+        courseParticipationRoleStudentsMayAttachImages: number;
+        courseState: "courseStateActive" | "courseStateArchived";
+        courseConversationsNextPublicId: number;
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "name",
+            "information",
+            "invitationLinkCourseParticipationRoleInstructorsEnabled",
+            "invitationLinkCourseParticipationRoleInstructorsToken",
+            "invitationLinkCourseParticipationRoleStudentsEnabled",
+            "invitationLinkCourseParticipationRoleStudentsToken",
+            "courseConversationRequiresTagging",
+            "courseParticipationRoleStudentsAnonymityAllowed",
+            "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
+            "courseParticipationRoleStudentsMayAttachImages",
+            "courseState",
+            "courseConversationsNextPublicId"
+          from "courses"
+          where "publicId" = ${request.pathname.coursePublicId};
+        `,
+      );
+      if (
+        course === undefined ||
+        !(
+          (Boolean(
+            course.invitationLinkCourseParticipationRoleInstructorsEnabled,
+          ) &&
+            course.invitationLinkCourseParticipationRoleInstructorsToken ===
+              request.pathname.invitationLinkToken) ||
+          (Boolean(
+            course.invitationLinkCourseParticipationRoleStudentsEnabled,
+          ) &&
+            course.invitationLinkCourseParticipationRoleStudentsToken ===
+              request.pathname.invitationLinkToken)
+        )
+      ) {
+        response.end(
+          application.layouts.main({
+            request,
+            response,
+            head: html`<title>Invalid invitation link · Courselore</title>`,
+            body: html`
+              <div
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--2);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-size: var(--font-size--4);
+                    line-height: var(--font-size--4--line-height);
+                    font-weight: 800;
+                  `}"
+                >
+                  Invalid invitation link
+                </div>
+                <div>Please contact the course instructors.</div>
+              </div>
+            `,
+          }),
+        );
+        return;
+      }
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`
+            <title>Invitation link · ${course.name} · Courselore</title>
+          `,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Invitation link
+              </div>
+              <div
+                type="form"
+                method="POST"
+                action="/courses/${request.pathname
+                  .coursePublicId}/invitations/${request.pathname
+                  .invitationLinkToken}"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--blue"
+                  >
+                    Join “${course.name}”
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+        }),
+      );
     },
   });
 };
