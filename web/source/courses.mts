@@ -3120,6 +3120,10 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  type StateCourseInvitation = Application["types"]["states"]["Course"] & {
+    courseInvitation: Application["types"]["states"]["Course"]["course"];
+  };
+
   application.server?.push({
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/invitations/(?<invitationLinkToken>[0-9]+)(?:$|/)",
@@ -3133,7 +3137,7 @@ export default async (application: Application): Promise<void> => {
         { redirect: string },
         {},
         {},
-        Application["types"]["states"]["Course"]
+        StateCourseInvitation
       >,
       response,
     ) => {
@@ -3156,7 +3160,7 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      request.state.course = application.database.get<{
+      request.state.courseInvitation = application.database.get<{
         id: number;
         publicId: string;
         name: string;
@@ -3196,25 +3200,25 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (
-        request.state.course !== undefined &&
+        request.state.courseInvitation !== undefined &&
         !(
           (Boolean(
-            request.state.course
+            request.state.courseInvitation
               .invitationLinkCourseParticipationRoleInstructorsEnabled,
           ) &&
-            request.state.course
+            request.state.courseInvitation
               .invitationLinkCourseParticipationRoleInstructorsToken ===
               request.pathname.invitationLinkToken) ||
           (Boolean(
-            request.state.course
+            request.state.courseInvitation
               .invitationLinkCourseParticipationRoleStudentsEnabled,
           ) &&
-            request.state.course
+            request.state.courseInvitation
               .invitationLinkCourseParticipationRoleStudentsToken ===
               request.pathname.invitationLinkToken)
         )
       )
-        delete request.state.course;
+        delete request.state.courseInvitation;
     },
   });
 
@@ -3232,7 +3236,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["Course"]
+        StateCourseInvitation
       >,
       response,
     ) => {
@@ -3241,7 +3245,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.pathname.invitationLinkToken !== "string"
       )
         return;
-      if (request.state.course === undefined) {
+      if (request.state.courseInvitation === undefined) {
         response.end(
           application.layouts.main({
             request,
@@ -3277,7 +3281,8 @@ export default async (application: Application): Promise<void> => {
           response,
           head: html`
             <title>
-              Invitation link · ${request.state.course.name} · Courselore
+              Invitation link · ${request.state.courseInvitation.name} ·
+              Courselore
             </title>
           `,
           body: html`
@@ -3319,7 +3324,7 @@ export default async (application: Application): Promise<void> => {
                     type="submit"
                     class="button button--rectangle button--blue"
                   >
-                    Join “${request.state.course.name}”
+                    Join “${request.state.courseInvitation.name}”
                   </button>
                 </div>
               </div>
@@ -3344,7 +3349,7 @@ export default async (application: Application): Promise<void> => {
         { redirect: string },
         {},
         {},
-        Application["types"]["states"]["Course"]
+        StateCourseInvitation
       >,
       response,
     ) => {
@@ -3352,13 +3357,15 @@ export default async (application: Application): Promise<void> => {
         typeof request.pathname.coursePublicId !== "string" ||
         typeof request.pathname.invitationLinkToken !== "string" ||
         request.state.user === undefined ||
-        request.state.course === undefined
+        request.state.courseInvitation === undefined
       )
         return;
       if (
         typeof request.search.redirect === "string" &&
         !request.search.redirect.match(
-          new RegExp(`^/courses/${request.state.course.publicId}(?:$|/)`),
+          new RegExp(
+            `^/courses/${request.state.courseInvitation.publicId}(?:$|/)`,
+          ),
         )
       )
         delete request.search.redirect;
@@ -3375,21 +3382,21 @@ export default async (application: Application): Promise<void> => {
           values (
             ${cryptoRandomString({ length: 20, type: "numeric" })},
             ${request.state.user.id},
-            ${request.state.course.id},
+            ${request.state.courseInvitation.id},
             ${
               Boolean(
-                request.state.course
+                request.state.courseInvitation
                   .invitationLinkCourseParticipationRoleInstructorsEnabled,
               ) &&
-              request.state.course
+              request.state.courseInvitation
                 .invitationLinkCourseParticipationRoleInstructorsToken ===
                 request.pathname.invitationLinkToken
                 ? "courseParticipationRoleInstructor"
                 : Boolean(
-                      request.state.course
+                      request.state.courseInvitation
                         .invitationLinkCourseParticipationRoleStudentsEnabled,
                     ) &&
-                    request.state.course
+                    request.state.courseInvitation
                       .invitationLinkCourseParticipationRoleStudentsToken ===
                       request.pathname.invitationLinkToken
                   ? "courseParticipationRoleStudent"
@@ -3431,7 +3438,8 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       response.redirect(
-        request.search.redirect ?? `/courses/${request.state.course.publicId}`,
+        request.search.redirect ??
+          `/courses/${request.state.courseInvitation.publicId}`,
       );
     },
   });
