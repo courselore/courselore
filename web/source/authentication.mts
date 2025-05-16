@@ -369,7 +369,9 @@ export default async (application: Application): Promise<void> => {
         request.state.user.email ===
           request.state.user.emailVerificationEmail &&
         !request.URL.pathname.match(
-          new RegExp("^/authentication/email-verification(?:$|/)"),
+          new RegExp(
+            "(?:^/authentication/email-verification(?:$|/))|(?:^/authentication/sign-out(?:$|/))",
+          ),
         )
       ) {
         response.redirect(
@@ -382,7 +384,9 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.state.user.password !== "string" &&
         !request.URL.pathname.match(
-          new RegExp("^/authentication/set-password(?:$|/)"),
+          new RegExp(
+            "(?:^/authentication/set-password(?:$|/))|(?:^/authentication/sign-out(?:$|/))",
+          ),
         )
       ) {
         response.redirect(
