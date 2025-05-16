@@ -207,8 +207,8 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.userSession === undefined) {
-        if (request.liveConnection === undefined)
-          response.deleteCookie("session");
+        if (request.liveConnection !== undefined) return;
+        response.deleteCookie("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect(
             `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
@@ -225,8 +225,8 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         delete request.state.userSession;
-        if (request.liveConnection === undefined)
-          response.deleteCookie("session");
+        if (request.liveConnection !== undefined) return;
+        response.deleteCookie("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect(
             `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
