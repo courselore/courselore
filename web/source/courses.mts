@@ -3203,30 +3203,20 @@ export default async (application: Application): Promise<void> => {
             "courseState",
             "courseConversationsNextPublicId"
           from "courses"
-          where "publicId" = ${request.pathname.coursePublicId};
+          where
+            "publicId" = ${request.pathname.coursePublicId} and (
+              (
+                "invitationLinkCourseParticipationRoleInstructorsEnabled" = true and
+                "invitationLinkCourseParticipationRoleInstructorsToken" = ${request.pathname.invitationLinkToken}
+              ) or
+              (
+                "invitationLinkCourseParticipationRoleStudentsEnabled" = true and
+                "invitationLinkCourseParticipationRoleStudentsToken" = ${request.pathname.invitationLinkToken}
+              )
+            );
         `,
       );
       if (request.state.courseInvitation === undefined) return;
-      // TODO: Add these conditions to the query above
-      if (
-        !(
-          (Boolean(
-            request.state.courseInvitation
-              .invitationLinkCourseParticipationRoleInstructorsEnabled,
-          ) &&
-            request.state.courseInvitation
-              .invitationLinkCourseParticipationRoleInstructorsToken ===
-              request.pathname.invitationLinkToken) ||
-          (Boolean(
-            request.state.courseInvitation
-              .invitationLinkCourseParticipationRoleStudentsEnabled,
-          ) &&
-            request.state.courseInvitation
-              .invitationLinkCourseParticipationRoleStudentsToken ===
-              request.pathname.invitationLinkToken)
-        )
-      )
-        delete request.state.courseInvitation;
     },
   });
 
