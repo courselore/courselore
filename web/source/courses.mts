@@ -3975,7 +3975,7 @@ export default async (application: Application): Promise<void> => {
             from "courseInvitationEmails"
             where
               "course" = ${request.state.course!.id}
-            order by "id" desc;
+            order by "id" asc;
           `,
         )) {
           if (
@@ -4008,6 +4008,153 @@ export default async (application: Application): Promise<void> => {
       response.setFlash(html`
         <div class="flash--green">
           Pending invitation emails updated successfully.
+        </div>
+      `);
+      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          [
+            courseParticipationsCourseParticipationRole: `courseParticipations[${string}].courseParticipationRole`
+          ]:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      application.database.executeTransaction(() => {
+        for (const courseParticipation of application.database.all<{
+          id: number;
+          publicId: string;
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+          decorationColor:
+            | "red"
+            | "orange"
+            | "amber"
+            | "yellow"
+            | "lime"
+            | "green"
+            | "emerald"
+            | "teal"
+            | "cyan"
+            | "sky"
+            | "blue"
+            | "indigo"
+            | "violet"
+            | "purple"
+            | "fuchsia"
+            | "pink"
+            | "rose";
+          mostRecentlyVisitedCourseConversation: number | null;
+        }>(
+          sql`
+            select
+              "id",
+              "publicId",
+              "courseParticipationRole",
+              "decorationColor",
+              "mostRecentlyVisitedCourseConversation"
+            from "courseParticipations"
+            where "course" = ${request.state.course!.id}
+            order by "id" asc;
+          `,
+        )) {
+          if (
+            request.body[
+              `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
+            ] === "courseParticipationRoleInstructor" ||
+            request.body[
+              `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
+            ] === "courseParticipationRoleStudent"
+          )
+            application.database.run(
+              sql`
+                update "courseParticipations"
+                set "courseParticipationRole" = ${
+                  request.body[
+                    `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
+                  ]
+                }
+                where "id" = ${courseParticipation.id};
+              `,
+            );
+          else {
+            application.database.run(
+              sql`
+                update "users"
+                set "mostRecentlyVisitedCourseParticipation" = null
+                where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseConversationMessages"
+                set "createdByCourseParticipation" = null
+                where "createdByCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseConversationMessageViews"
+                set "courseParticipation" = null
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseConversationMessageLikes"
+                set "courseParticipation" = null
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseConversationMessageEmailNotificationDeliveries" where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseParticipations" where "id" = ${courseParticipation.id};
+              `,
+            );
+          }
+        }
+      });
+      response.setFlash(html`
+        <div class="flash--green">
+          Course participants updated successfully.
         </div>
       `);
       response.redirect(`/courses/${request.state.course.publicId}/settings`);
