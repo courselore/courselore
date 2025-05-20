@@ -2753,7 +2753,7 @@ export default async (application: Application): Promise<void> => {
                       type="form popover"
                       method="DELETE"
                       action="/courses/${request.state.course
-                        .publicId}/participation"
+                        .publicId}/settings/participation"
                       css="${css`
                         display: flex;
                         flex-direction: column;
@@ -4158,6 +4158,85 @@ export default async (application: Application): Promise<void> => {
         </div>
       `);
       response.redirect(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.server?.push({
+    method: "DELETE",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participation$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined
+      )
+        return;
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            update "users"
+            set "mostRecentlyVisitedCourseParticipation" = null
+            where "mostRecentlyVisitedCourseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationParticipations" where "courseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            update "courseConversationMessages"
+            set "createdByCourseParticipation" = null
+            where "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            update "courseConversationMessageViews"
+            set "courseParticipation" = null
+            where "courseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            update "courseConversationMessageLikes"
+            set "courseParticipation" = null
+            where "courseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationMessageEmailNotificationDeliveries" where "courseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseParticipations" where "id" = ${request.state.courseParticipation!.id};
+          `,
+        );
+      });
+      response.setFlash(html`
+        <div class="flash--green">
+          You removed yourself from “${request.state.course.name}” successfully.
+        </div>
+      `);
+      response.redirect("/");
     },
   });
 };
