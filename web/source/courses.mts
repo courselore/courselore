@@ -2077,7 +2077,7 @@ export default async (application: Application): Promise<void> => {
                             </div>
                             <textarea
                               name="courseInvitationEmails"
-                              placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, …`}"
+                              placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, ...`}"
                               required
                               maxlength="50000"
                               class="input--text"
