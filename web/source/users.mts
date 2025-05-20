@@ -2507,7 +2507,8 @@ export default async (application: Application): Promise<void> => {
           sql`
             select "id"
             from "courseParticipations"
-            where "user" = ${request.state.user!.id};
+            where "user" = ${request.state.user!.id}
+            order by "id" asc;
           `,
         )) {
           application.database.run(
