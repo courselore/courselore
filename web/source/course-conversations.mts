@@ -2015,6 +2015,79 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  // TODO: Continue here
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/conversations$"),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          title: string;
+          courseConversationType:
+            | "courseConversationTypeNote"
+            | "courseConversationTypeQuestion";
+          courseConversationVisibility:
+            | "courseConversationVisibilityEveryone"
+            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseConversationVisibilityCourseConversationParticipations";
+          pinned: "false" | "true";
+          announcement: "on";
+          tags: string[];
+          content: string;
+          courseConversationMessageAnonymity:
+            | "courseConversationMessageAnonymityNone"
+            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+            | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        request.state.course === undefined ||
+        request.state.course.courseState !== "courseStateActive" ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseConversationsTags === undefined
+      )
+        return;
+      if (1 + 1 === 2) throw new Error();
+      const courseConversation = application.database.get<{
+        id: number;
+        publicId: string;
+        courseConversationType:
+          | "courseConversationTypeNote"
+          | "courseConversationTypeQuestion";
+        questionResolved: number;
+        courseConversationVisibility:
+          | "courseConversationVisibilityEveryone"
+          | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+          | "courseConversationVisibilityCourseConversationParticipations";
+        pinned: number;
+        title: string;
+      }>(
+        sql`
+          select * from "courseConversations" where "id" = ${
+            application.database.run(
+              sql`
+                insert into "courseConversations" (
+                )
+                values (
+                );
+              `,
+            ).lastInsertRowid
+          };
+        `,
+      )!;
+      response.redirect(
+        `/courses/${request.state.course.publicId}/conversations/${courseConversation.publicId}`,
+      );
+    },
+  });
+
   application.server?.push({
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)(?:$|/)",
