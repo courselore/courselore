@@ -3622,7 +3622,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   type StateCourseInvitationEmail = Application["types"]["states"]["Course"] & {
-    courseInvitation: Application["types"]["states"]["Course"]["course"];
+    invitationCourse: Application["types"]["states"]["Course"]["course"];
     courseInvitationEmail: {
       id: number;
       publicId: string;
@@ -3670,7 +3670,7 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      request.state.courseInvitation = application.database.get<{
+      request.state.invitationCourse = application.database.get<{
         id: number;
         publicId: string;
         name: string;
@@ -3709,7 +3709,7 @@ export default async (application: Application): Promise<void> => {
           where "publicId" = ${request.pathname.coursePublicId};
         `,
       );
-      if (request.state.courseInvitation === undefined) return;
+      if (request.state.invitationCourse === undefined) return;
       request.state.courseInvitationEmail = application.database.get<{
         id: number;
         publicId: string;
@@ -3727,7 +3727,7 @@ export default async (application: Application): Promise<void> => {
           from "courseInvitationEmails"
           where
             "publicId" = ${request.pathname.courseInvitationEmailPublicId} and
-            "course" = ${request.state.courseInvitation.id} and
+            "course" = ${request.state.invitationCourse.id} and
             "email" = ${request.state.user.email};
         `,
       );
@@ -3759,7 +3759,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.pathname.courseInvitationEmailPublicId !== "string"
       )
         return;
-      if (request.state.courseInvitation === undefined) {
+      if (request.state.invitationCourse === undefined) {
         response.end(
           application.layouts.main({
             request,
@@ -3795,7 +3795,7 @@ export default async (application: Application): Promise<void> => {
           response,
           head: html`
             <title>
-              Invitation link · ${request.state.courseInvitation.name} ·
+              Invitation link · ${request.state.invitationCourse.name} ·
               Courselore
             </title>
           `,
@@ -3838,7 +3838,7 @@ export default async (application: Application): Promise<void> => {
                     type="submit"
                     class="button button--rectangle button--blue"
                   >
-                    Join “${request.state.courseInvitation.name}”
+                    Join “${request.state.invitationCourse.name}”
                   </button>
                 </div>
               </div>
@@ -3871,14 +3871,14 @@ export default async (application: Application): Promise<void> => {
         typeof request.pathname.coursePublicId !== "string" ||
         typeof request.pathname.courseInvitationEmailPublicId !== "string" ||
         request.state.user === undefined ||
-        request.state.courseInvitation === undefined
+        request.state.invitationCourse === undefined
       )
         return;
       if (
         typeof request.search.redirect === "string" &&
         !request.search.redirect.match(
           new RegExp(
-            `^/courses/${request.state.courseInvitation.publicId}(?:$|/)`,
+            `^/courses/${request.state.invitationCourse.publicId}(?:$|/)`,
           ),
         )
       )
@@ -3897,21 +3897,21 @@ export default async (application: Application): Promise<void> => {
             values (
               ${cryptoRandomString({ length: 20, type: "numeric" })},
               ${request.state.user!.id},
-              ${request.state.courseInvitation!.id},
+              ${request.state.invitationCourse!.id},
               ${
                 Boolean(
-                  request.state.courseInvitation!
+                  request.state.invitationCourse!
                     .invitationLinkCourseParticipationRoleInstructorsEnabled,
                 ) &&
-                request.state.courseInvitation!
+                request.state.invitationCourse!
                   .invitationLinkCourseParticipationRoleInstructorsToken ===
                   request.pathname.courseInvitationEmailPublicId
                   ? "courseParticipationRoleInstructor"
                   : Boolean(
-                        request.state.courseInvitation!
+                        request.state.invitationCourse!
                           .invitationLinkCourseParticipationRoleStudentsEnabled,
                       ) &&
-                      request.state.courseInvitation!
+                      request.state.invitationCourse!
                         .invitationLinkCourseParticipationRoleStudentsToken ===
                         request.pathname.courseInvitationEmailPublicId
                     ? "courseParticipationRoleStudent"
@@ -3956,14 +3956,14 @@ export default async (application: Application): Promise<void> => {
           sql`
             delete from "courseInvitationEmails"
             where
-              "course" = ${request.state.courseInvitation!.id} and
+              "course" = ${request.state.invitationCourse!.id} and
               "email" = ${request.state.user!.email};
           `,
         );
       });
       response.redirect(
         request.search.redirect ??
-          `/courses/${request.state.courseInvitation.publicId}`,
+          `/courses/${request.state.invitationCourse.publicId}`,
       );
     },
   });
