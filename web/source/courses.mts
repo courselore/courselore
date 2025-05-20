@@ -2134,7 +2134,7 @@ export default async (application: Application): Promise<void> => {
                                   "courseParticipationRole"
                                 from "courseInvitationEmails"
                                 where "course" = ${request.state.course.id}
-                                order by "id" asc;
+                                order by "id" desc;
                               `,
                             );
                           return 0 < courseInvitationEmails.length
@@ -2208,16 +2208,6 @@ export default async (application: Application): Promise<void> => {
                                             gap: var(--size--1);
                                           `}"
                                         >
-                                          <input
-                                            type="hidden"
-                                            name="courseInvitationEmails[]"
-                                            value="${courseInvitationEmail.publicId}"
-                                          />
-                                          <input
-                                            type="hidden"
-                                            name="courseInvitationEmails[${courseInvitationEmail.publicId}].id"
-                                            value="${courseInvitationEmail.publicId}"
-                                          />
                                           <div
                                             css="${css`
                                               font-family:
@@ -2501,16 +2491,6 @@ export default async (application: Application): Promise<void> => {
                                     gap: var(--size--1);
                                   `}"
                                 >
-                                  <input
-                                    type="hidden"
-                                    name="courseParticipations[]"
-                                    value="${courseParticipation.publicId}"
-                                  />
-                                  <input
-                                    type="hidden"
-                                    name="courseParticipations[${courseParticipation.publicId}].id"
-                                    value="${courseParticipation.publicId}"
-                                  />
                                   <div>
                                     <span
                                       css="${css`
@@ -3946,6 +3926,91 @@ export default async (application: Application): Promise<void> => {
         request.search.redirect ??
           `/courses/${request.state.invitationCourse.publicId}`,
       );
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/invitation-emails$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          [
+            courseInvitationEmailsCourseParticipationRole: `courseInvitationEmails[${string}].courseParticipationRole`
+          ]:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      application.database.executeTransaction(() => {
+        for (const courseInvitationEmail of application.database.all<{
+          id: number;
+          publicId: string;
+          email: string;
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+        }>(
+          sql`
+            select
+              "id",
+              "publicId",
+              "email",
+              "courseParticipationRole"
+            from "courseInvitationEmails"
+            where
+              "course" = ${request.state.course!.id}
+            order by "id" desc;
+          `,
+        )) {
+          if (
+            request.body[
+              `courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole`
+            ] === "courseParticipationRoleInstructor" ||
+            request.body[
+              `courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole`
+            ] === "courseParticipationRoleStudent"
+          )
+            application.database.run(
+              sql`
+                update "courseInvitationEmails"
+                set "courseParticipationRole" = ${
+                  request.body[
+                    `courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole`
+                  ]
+                }
+                where "id" = ${courseInvitationEmail.id};
+              `,
+            );
+          else
+            application.database.run(
+              sql`
+                delete from "courseInvitationEmails" where "id" = ${courseInvitationEmail.id};
+              `,
+            );
+        }
+      });
+      response.setFlash(html`
+        <div class="flash--green">
+          Pending invitation emails updated successfully.
+        </div>
+      `);
+      response.redirect(`/courses/${request.state.course.publicId}/settings`);
     },
   });
 };
