@@ -3873,7 +3873,8 @@ export default async (application: Application): Promise<void> => {
         typeof request.pathname.coursePublicId !== "string" ||
         typeof request.pathname.courseInvitationEmailPublicId !== "string" ||
         request.state.user === undefined ||
-        request.state.invitationCourse === undefined
+        request.state.invitationCourse === undefined ||
+        request.state.courseInvitationEmail === undefined
       )
         return;
       if (
@@ -3900,27 +3901,7 @@ export default async (application: Application): Promise<void> => {
               ${cryptoRandomString({ length: 20, type: "numeric" })},
               ${request.state.user!.id},
               ${request.state.invitationCourse!.id},
-              ${
-                Boolean(
-                  request.state.invitationCourse!
-                    .invitationLinkCourseParticipationRoleInstructorsEnabled,
-                ) &&
-                request.state.invitationCourse!
-                  .invitationLinkCourseParticipationRoleInstructorsToken ===
-                  request.pathname.courseInvitationEmailPublicId
-                  ? "courseParticipationRoleInstructor"
-                  : Boolean(
-                        request.state.invitationCourse!
-                          .invitationLinkCourseParticipationRoleStudentsEnabled,
-                      ) &&
-                      request.state.invitationCourse!
-                        .invitationLinkCourseParticipationRoleStudentsToken ===
-                        request.pathname.courseInvitationEmailPublicId
-                    ? "courseParticipationRoleStudent"
-                    : (() => {
-                        throw new Error();
-                      })()
-              },
+              ${request.state.courseInvitationEmail!.courseParticipationRole},
               ${
                 [
                   "red",
@@ -3957,9 +3938,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             delete from "courseInvitationEmails"
-            where
-              "course" = ${request.state.invitationCourse!.id} and
-              "email" = ${request.state.user!.email};
+            where "id" = ${request.state.courseInvitationEmail!.id};
           `,
         );
       });
