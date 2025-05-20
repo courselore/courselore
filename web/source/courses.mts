@@ -3735,7 +3735,6 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  // TODO: Continue from here
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
@@ -3759,7 +3758,10 @@ export default async (application: Application): Promise<void> => {
         typeof request.pathname.courseInvitationEmailPublicId !== "string"
       )
         return;
-      if (request.state.invitationCourse === undefined) {
+      if (
+        request.state.invitationCourse === undefined ||
+        request.state.courseInvitationEmail === undefined
+      ) {
         response.end(
           application.layouts.main({
             request,
