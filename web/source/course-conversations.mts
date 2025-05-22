@@ -2094,7 +2094,20 @@ export default async (application: Application): Promise<void> => {
               request.body.courseConversationMessageAnonymity !==
                 "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
               request.body.courseConversationMessageAnonymity !==
-                "courseConversationMessageAnonymityCourseParticipationRoleInstructors")))
+                "courseConversationMessageAnonymityCourseParticipationRoleInstructors") ||
+            (request.body.courseConversationMessageAnonymity ===
+              "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+              request.state.course
+                .courseParticipationRoleStudentsAnonymityAllowed ===
+                "courseParticipationRoleStudentsAnonymityAllowedNone") ||
+            (request.body.courseConversationMessageAnonymity ===
+              "courseConversationMessageAnonymityCourseParticipationRoleInstructors" &&
+              (request.state.course
+                .courseParticipationRoleStudentsAnonymityAllowed ===
+                "courseParticipationRoleStudentsAnonymityAllowedNone" ||
+                request.state.course
+                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                  "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"))))
       )
         throw "validation";
       let courseConversation: {
