@@ -2056,7 +2056,47 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversationsTags === undefined
       )
         return;
-      // TODO: Validation
+      request.body.tags ??= [];
+      if (
+        typeof request.body.title !== "string" ||
+        request.body.title.trim() === "" ||
+        (request.body.courseConversationType !== "courseConversationTypeNote" &&
+          request.body.courseConversationType !==
+            "courseConversationTypeQuestion") ||
+        (request.body.courseConversationVisibility !==
+          "courseConversationVisibilityEveryone" &&
+          request.body.courseConversationVisibility !==
+            "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+          request.body.courseConversationVisibility !==
+            "courseConversationVisibilityCourseConversationParticipations") ||
+        (request.body.pinned === "true" &&
+          request.state.courseParticipation.courseParticipationRole !==
+            "courseParticipationRoleInstructor") ||
+        !Array.isArray(request.body.tags) ||
+        (Boolean(request.state.course.courseConversationRequiresTagging) &&
+          0 < request.state.courseConversationsTags.length &&
+          request.body.tags.length === 0) ||
+        request.body.tags.some(
+          (tag) =>
+            typeof tag !== "string" ||
+            !request.state.courseConversationsTags!.some(
+              (courseConversationsTag) =>
+                tag === courseConversationsTag.publicId,
+            ),
+        ) ||
+        typeof request.body.content !== "string" ||
+        request.body.content.trim() === "" ||
+        (typeof request.body.courseConversationMessageAnonymity === "string" &&
+          (request.state.courseParticipation.courseParticipationRole !==
+            "courseParticipationRoleStudent" ||
+            (request.body.courseConversationMessageAnonymity !==
+              "courseConversationMessageAnonymityNone" &&
+              request.body.courseConversationMessageAnonymity !==
+                "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+              request.body.courseConversationMessageAnonymity !==
+                "courseConversationMessageAnonymityCourseParticipationRoleInstructors")))
+      )
+        throw "validation";
       let courseConversation: {
         id: number;
         publicId: string;
@@ -2126,6 +2166,19 @@ export default async (application: Application): Promise<void> => {
             where "id" = ${request.state.course!.id};
           `,
         );
+        for (const tag of request.body.tags!)
+          application.database.run(
+            sql`
+              insert into "courseConversationTaggings" (
+                "courseConversation",
+                "courseConversationsTag"
+              )
+              values (
+                ${courseConversation.id},
+                ${request.state.courseConversationsTags!.find((courseConversationsTag) => tag === courseConversationsTag.publicId)!.id}
+              );
+            `,
+          );
         application.database.run(
           sql`
             insert into "courseConversationMessages" (
