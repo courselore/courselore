@@ -2725,11 +2725,6 @@ export default async (application: Application): Promise<void> => {
           "courselore",
           application.privateConfiguration.argon2,
         );
-        const stopWords = new Set(
-          natural.stopwords.map((stopWord) =>
-            utilities.normalizeToken(stopWord),
-          ),
-        );
         const [user, ...users] = Array.from(
           { length: 151 },
           (value, userIndex) => {
@@ -3203,7 +3198,8 @@ export default async (application: Application): Promise<void> => {
                           ${courseConversationMessageContent},
                           ${utilities
                             .tokenize(courseConversationMessageContent, {
-                              stopWords,
+                              stopWords:
+                                application.privateConfiguration.stopWords,
                               stem: (token) =>
                                 natural.PorterStemmer.stem(token),
                             })

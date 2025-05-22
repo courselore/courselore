@@ -1,4 +1,7 @@
 import * as serverTypes from "@radically-straightforward/server";
+import * as utilities from "@radically-straightforward/utilities";
+import cryptoRandomString from "crypto-random-string";
+import natural from "natural";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
@@ -2015,7 +2018,6 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  // TODO: Continue here
   application.server?.push({
     method: "POST",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/conversations$"),
@@ -2054,8 +2056,8 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversationsTags === undefined
       )
         return;
-      if (1 + 1 === 2) throw new Error();
-      const courseConversation = application.database.get<{
+      // TODO: Validation
+      let courseConversation: {
         id: number;
         publicId: string;
         courseConversationType:
@@ -2068,22 +2070,99 @@ export default async (application: Application): Promise<void> => {
           | "courseConversationVisibilityCourseConversationParticipations";
         pinned: number;
         title: string;
-      }>(
-        sql`
-          select * from "courseConversations" where "id" = ${
-            application.database.run(
-              sql`
-                insert into "courseConversations" (
-                )
-                values (
-                );
-              `,
-            ).lastInsertRowid
-          };
-        `,
-      )!;
+      };
+      application.database.executeTransaction(() => {
+        courseConversation = application.database.get<{
+          id: number;
+          publicId: string;
+          courseConversationType:
+            | "courseConversationTypeNote"
+            | "courseConversationTypeQuestion";
+          questionResolved: number;
+          courseConversationVisibility:
+            | "courseConversationVisibilityEveryone"
+            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseConversationVisibilityCourseConversationParticipations";
+          pinned: number;
+          title: string;
+        }>(
+          sql`
+            select * from "courseConversations" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "courseConversations" (
+                    "publicId",
+                    "course",
+                    "courseConversationType",
+                    "questionResolved",
+                    "courseConversationVisibility",
+                    "pinned",
+                    "title",
+                    "titleSearch"
+                  )
+                  values (
+                    ${String(request.state.course!.courseConversationsNextPublicId)},
+                    ${request.state.course!.id},
+                    ${request.body.courseConversationType},
+                    ${Number(false)},
+                    ${request.body.courseConversationVisibility},
+                    ${Number(request.body.pinned === "true")},
+                    ${request.body.title},
+                    ${utilities
+                      .tokenize(request.body.title!)
+                      .map((tokenWithPosition) => tokenWithPosition.token)
+                      .join(" ")}
+                  );
+                `,
+              ).lastInsertRowid
+            };
+          `,
+        )!;
+        request.state.course!.courseConversationsNextPublicId++;
+        application.database.run(
+          sql`
+            update "courses"
+            set "courseConversationsNextPublicId" = ${request.state.course!.courseConversationsNextPublicId}
+            where "id" = ${request.state.course!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            insert into "courseConversationMessages" (
+              "publicId",
+              "courseConversation",
+              "createdAt",
+              "updatedAt",
+              "createdByCourseParticipation",
+              "courseConversationMessageType",
+              "courseConversationMessageVisibility",
+              "courseConversationMessageAnonymity",
+              "content",
+              "contentSearch"
+            )
+            values (
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${courseConversation.id},
+              ${new Date().toISOString()},
+              ${null},
+              ${request.state.courseParticipation!.id},
+              ${"courseConversationMessageTypeMessage"},
+              ${"courseConversationMessageVisibilityEveryone"},
+              ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
+              ${request.body.content},
+              ${utilities
+                .tokenize(request.body.content!, {
+                  stopWords: application.privateConfiguration.stopWords,
+                  stem: (token) => natural.PorterStemmer.stem(token),
+                })
+                .map((tokenWithPosition) => tokenWithPosition.token)
+                .join(" ")}
+            );
+          `,
+        );
+      });
       response.redirect(
-        `/courses/${request.state.course.publicId}/conversations/${courseConversation.publicId}`,
+        `/courses/${request.state.course.publicId}/conversations/${courseConversation!.publicId}`,
       );
     },
   });

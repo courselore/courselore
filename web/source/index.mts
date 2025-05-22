@@ -8,6 +8,7 @@ import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
 import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
+import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
 import database, { ApplicationDatabase } from "./database.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
@@ -60,6 +61,7 @@ export type Application = {
   privateConfiguration: {
     ports: number[];
     argon2: argon2.Options;
+    stopWords: Set<string>;
   };
   server: undefined | ReturnType<typeof server>;
   layouts: {};
@@ -98,6 +100,9 @@ application.privateConfiguration.argon2 = {
   timeCost: 3,
   parallelism: 1,
 };
+application.privateConfiguration.stopWords = new Set(
+  natural.stopwords.map((stopWord) => utilities.normalizeToken(stopWord)),
+);
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
