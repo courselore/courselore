@@ -24,6 +24,7 @@ export type ApplicationCourseConversationMessageContent = {
     }: {
       course: {
         id: number;
+        publicId: string;
       };
       courseParticipation: {
         id: number;
@@ -33,6 +34,7 @@ export type ApplicationCourseConversationMessageContent = {
       };
       courseConversation?: {
         id: number;
+        publicId: string;
         courseConversationVisibility:
           | "courseConversationVisibilityEveryone"
           | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
