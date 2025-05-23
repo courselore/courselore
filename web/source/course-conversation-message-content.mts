@@ -667,7 +667,7 @@ export default async (application: Application): Promise<void> => {
                     this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]').setAttribute("state", "loading");
                     this.abortController = new AbortController();
                     javascript.mount(
-                      this.closest('[key~="key="courseConversationMessageContentEditor""]').querySelector('[key~="courseConversationMessageContentEditor--preview"]'),
+                      this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--preview"]'),
                       await (
                         await fetch(
                           ${`/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}/messages/preview`}, {
@@ -680,7 +680,9 @@ export default async (application: Application): Promise<void> => {
                       ).text()
                     );
                     this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]').setAttribute("state", "preview");
-                  } catch {}
+                  } catch (error) {
+                    if (error.name !== "AbortError") throw error;
+                  }
                 else {
                   this.abortController?.abort();
                   this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]').removeAttribute("state");
