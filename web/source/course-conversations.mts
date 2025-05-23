@@ -4907,40 +4907,50 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"))))
       )
         throw "validation";
-      application.database.run(
-        sql`
-          insert into "courseConversationMessages" (
-            "publicId",
-            "courseConversation",
-            "createdAt",
-            "updatedAt",
-            "createdByCourseParticipation",
-            "courseConversationMessageType",
-            "courseConversationMessageVisibility",
-            "courseConversationMessageAnonymity",
-            "content",
-            "contentSearch"
-          )
-          values (
-            ${cryptoRandomString({ length: 20, type: "numeric" })},
-            ${request.state.courseConversation.id},
-            ${new Date().toISOString()},
-            ${null},
-            ${request.state.courseParticipation.id},
-            ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
-            ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
-            ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
-            ${request.body.content},
-            ${utilities
-              .tokenize(request.body.content, {
-                stopWords: application.privateConfiguration.stopWords,
-                stem: (token) => natural.PorterStemmer.stem(token),
-              })
-              .map((tokenWithPosition) => tokenWithPosition.token)
-              .join(" ")}
-          );
-        `,
-      );
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            insert into "courseConversationMessages" (
+              "publicId",
+              "courseConversation",
+              "createdAt",
+              "updatedAt",
+              "createdByCourseParticipation",
+              "courseConversationMessageType",
+              "courseConversationMessageVisibility",
+              "courseConversationMessageAnonymity",
+              "content",
+              "contentSearch"
+            )
+            values (
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${request.state.courseConversation!.id},
+              ${new Date().toISOString()},
+              ${null},
+              ${request.state.courseParticipation!.id},
+              ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
+              ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
+              ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
+              ${request.body.content},
+              ${utilities
+                .tokenize(request.body.content!, {
+                  stopWords: application.privateConfiguration.stopWords,
+                  stem: (token) => natural.PorterStemmer.stem(token),
+                })
+                .map((tokenWithPosition) => tokenWithPosition.token)
+                .join(" ")}
+            );
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationMessageDrafts"
+            where
+              "courseConversation" = ${request.state.courseConversation!.id} and
+              "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+      });
       response.redirect(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
