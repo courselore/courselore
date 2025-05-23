@@ -4443,6 +4443,11 @@ export default async (application: Application): Promise<void> => {
                         flex-direction: column;
                         gap: var(--size--2);
                       `}"
+                      javascript="${javascript`
+                        this.onsubmit = () => {
+                          javascript.reset(this);
+                        };
+                      `}"
                     >
                       $${application.partials.courseConversationMessageContentEditor(
                         {
