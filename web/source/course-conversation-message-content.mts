@@ -660,6 +660,32 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              this.onclick = async () => {
+                if (this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]').getAttribute("state") === null)
+                  try {
+                    if (!javascript.validate(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]'))) return;
+                    this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]').setAttribute("state", "loading");
+                    this.abortController = new AbortController();
+                    javascript.mount(
+                      this.closest('[key~="key="courseConversationMessageContentEditor""]').querySelector('[key~="courseConversationMessageContentEditor--preview"]'),
+                      await (
+                        await fetch(
+                          ${`/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}/messages/preview`}, {
+                            method: "POST",
+                            headers: { "CSRF-Protection": "true" },
+                            body: new URLSearchParams(serialize(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]'))),
+                            signal: this.abortController.signal,
+                          }
+                        )
+                      ).text()
+                    );
+                    this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]').setAttribute("state", "preview");
+                  } catch {}
+                else {
+                  this.abortController?.abort();
+                  this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]').removeAttribute("state");
+                }
+              };
             `}"
           >
             <i class="bi bi-eyeglasses"></i>
