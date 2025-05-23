@@ -668,7 +668,7 @@ export default async (application: Application): Promise<void> => {
                     this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]').setAttribute("state", "loading");
                     this.abortController = new AbortController();
                     javascript.mount(
-                      this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--preview"]'),
+                      this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--preview"]').firstElementChild,
                       await (
                         await fetch(
                           ${`/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}/messages/preview`}, {
@@ -767,7 +767,7 @@ ${courseConversationMessageContent}</textarea
             }
           `}"
         >
-          TODO
+          <div></div>
         </div>
       </div>
     </div>
