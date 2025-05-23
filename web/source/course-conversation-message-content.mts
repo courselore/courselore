@@ -8,6 +8,7 @@ import { DOMParser } from "linkedom";
 import GitHubSlugger from "github-slugger";
 import katex from "katex";
 import * as shiki from "shiki";
+import * as serverTypes from "@radically-straightforward/server";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
@@ -673,7 +674,7 @@ export default async (application: Application): Promise<void> => {
                           ${`/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}/messages/preview`}, {
                             method: "POST",
                             headers: { "CSRF-Protection": "true" },
-                            body: new URLSearchParams(serialize(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]'))),
+                            body: new URLSearchParams(javascript.serialize(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--main"]'))),
                             signal: this.abortController.signal,
                           }
                         )
@@ -771,6 +772,50 @@ ${courseConversationMessageContent}</textarea
       </div>
     </div>
   `;
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)(?:/conversations/(?<courseConversationPublicId>[0-9]+))?/messages/preview$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        { courseConversationPublicId: string },
+        {},
+        {},
+        { content: string },
+        Application["types"]["states"]["CourseConversationMessage"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        (typeof request.pathname.courseConversationPublicId === "string" &&
+          request.state.courseConversation === undefined)
+      )
+        return;
+      if (
+        typeof request.body.content !== "string" ||
+        request.body.content.trim() === ""
+      )
+        throw "validation";
+      response.end(
+        await application.partials.courseConversationMessageContentProcessor({
+          course: request.state.course,
+          courseParticipation: request.state.courseParticipation,
+          courseConversation: request.state.courseConversation ?? {
+            publicId: "preview",
+          },
+          courseConversationMessage: {
+            publicId: "preview",
+            createdByCourseParticipation: request.state.courseParticipation.id,
+            content: request.body.content,
+          },
+        }),
+      );
+    },
+  });
 
   application.partials.courseConversationMessageContentProcessor = async ({
     course,
