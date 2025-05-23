@@ -1808,7 +1808,7 @@ export default async (application: Application): Promise<void> => {
                       {
                         course: request.state.course,
                         courseParticipation: request.state.courseParticipation,
-                        value:
+                        courseConversationMessageContent:
                           typeof prefill.content === "string"
                             ? prefill.content
                             : undefined,

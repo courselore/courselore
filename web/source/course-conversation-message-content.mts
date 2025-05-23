@@ -20,7 +20,7 @@ export type ApplicationCourseConversationMessageContent = {
       course,
       courseParticipation,
       courseConversation,
-      value,
+      courseConversationMessageContent,
     }: {
       course: {
         id: number;
@@ -40,7 +40,7 @@ export type ApplicationCourseConversationMessageContent = {
           | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
           | "courseConversationVisibilityCourseConversationParticipations";
       };
-      value?: string;
+      courseConversationMessageContent?: string;
     }) => HTML;
     courseConversationMessageContentProcessor: ({
       course,
@@ -77,7 +77,7 @@ export default async (application: Application): Promise<void> => {
     course,
     courseParticipation,
     courseConversation,
-    value = "",
+    courseConversationMessageContent = "",
   }) => html`
     <div
       key="courseConversationMessageContentEditor"
@@ -702,7 +702,7 @@ export default async (application: Application): Promise<void> => {
             }
           `}"
         >
-${value}</textarea
+${courseConversationMessageContent}</textarea
         >
         <div
           key="courseConversationMessageContentEditor--loading"
