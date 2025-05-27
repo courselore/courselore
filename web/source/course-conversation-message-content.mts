@@ -759,6 +759,7 @@ ${courseConversationMessageContent}</textarea
         <div
           key="courseConversationMessageContentEditor--preview"
           css="${css`
+            min-width: var(--size--0);
             [key~="courseConversationMessageContentEditor--main"]:not(
                 [state~="preview"]
               )
