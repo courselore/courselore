@@ -696,10 +696,9 @@ export default async (application: Application): Promise<void> => {
           <div type="popover">Preview</div>
           <button
             type="button"
-            class="button button--square button--icon button--blue"
+            class="button button--square button--icon button--transparent button--blue"
             css="${css`
-              margin: calc(var(--size---1) - var(--border-width--1))
-                var(--size---1);
+              border: none;
               [key~="courseConversationMessageContentEditor"]:not([state]) & {
                 display: none;
               }
