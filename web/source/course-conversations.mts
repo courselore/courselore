@@ -4455,6 +4455,16 @@ export default async (application: Application): Promise<void> => {
                           courseParticipation:
                             request.state.courseParticipation,
                           courseConversation: request.state.courseConversation,
+                          courseConversationMessageContent:
+                            application.database.get<{ content: string }>(
+                              sql`
+                                select "content"
+                                from "courseConversationMessageDrafts"
+                                where
+                                  "courseConversation" = ${request.state.courseConversation.id} and
+                                  "createdByCourseParticipation" = ${request.state.courseParticipation.id};
+                              `,
+                            )?.content,
                         },
                       )}
                       <div
