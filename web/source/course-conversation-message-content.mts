@@ -44,6 +44,7 @@ export type ApplicationCourseConversationMessageContent = {
       };
       courseConversationMessage?: {
         publicId: string;
+        content: string;
       };
       courseConversationMessageContent?: string;
     }) => HTML;
@@ -86,7 +87,8 @@ export default async (application: Application): Promise<void> => {
     course,
     courseParticipation,
     courseConversation,
-    courseConversationMessageContent = "",
+    courseConversationMessage,
+    courseConversationMessageContent = courseConversationMessage?.content ?? "",
   }) => html`
     <div
       key="courseConversationMessageContentEditor"
@@ -683,7 +685,7 @@ export default async (application: Application): Promise<void> => {
                     this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--preview"]').firstElementChild,
                     await (
                       await fetch(
-                        ${`/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}/messages/preview`}, {
+                        ${`/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}/messages${courseConversationMessage !== undefined ? `/${courseConversationMessage.publicId}` : ""}/preview`}, {
                           method: "POST",
                           headers: { "CSRF-Protection": "true" },
                           body: new URLSearchParams(javascript.serialize(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]'))),
@@ -853,7 +855,10 @@ ${courseConversationMessageContent}</textarea
     courseParticipation,
     courseConversation,
     courseConversationMessage,
-    courseConversationMessageContent,
+    courseConversationMessageContent = courseConversationMessage?.content ??
+      (() => {
+        throw new Error();
+      })(),
     preview = false,
   }) => {
     const processedMarkdown = (
@@ -872,13 +877,7 @@ ${courseConversationMessageContent}</textarea
                 node.properties.dataPosition = JSON.stringify(node.position);
         })
         .use(rehypeStringify, { allowDangerousHtml: true })
-        .process(
-          courseConversationMessageContent ??
-            courseConversationMessage?.content ??
-            (() => {
-              throw new Error();
-            })(),
-        )
+        .process(courseConversationMessageContent)
     ).value;
     if (typeof processedMarkdown !== "string") throw new Error();
     const document = new DOMParser()
