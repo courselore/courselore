@@ -698,7 +698,8 @@ export default async (application: Application): Promise<void> => {
             type="button"
             class="button button--square button--icon button--blue"
             css="${css`
-              margin: calc(var(--size---1) - var(--border-width--1)) var(--size---1);
+              margin: calc(var(--size---1) - var(--border-width--1))
+                var(--size---1);
               [key~="courseConversationMessageContentEditor"]:not([state]) & {
                 display: none;
               }
