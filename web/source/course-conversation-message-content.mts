@@ -21,6 +21,7 @@ export type ApplicationCourseConversationMessageContent = {
       course,
       courseParticipation,
       courseConversation,
+      courseConversationMessage,
       courseConversationMessageContent,
     }: {
       course: {
@@ -40,6 +41,9 @@ export type ApplicationCourseConversationMessageContent = {
           | "courseConversationVisibilityEveryone"
           | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
           | "courseConversationVisibilityCourseConversationParticipations";
+      };
+      courseConversationMessage?: {
+        publicId: string;
       };
       courseConversationMessageContent?: string;
     }) => HTML;
