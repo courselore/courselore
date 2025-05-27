@@ -48,6 +48,8 @@ export type ApplicationCourseConversationMessageContent = {
       courseParticipation,
       courseConversation,
       courseConversationMessage,
+      courseConversationMessageContent,
+      preview,
     }: {
       course: {
         id: number;
@@ -61,14 +63,16 @@ export type ApplicationCourseConversationMessageContent = {
           | "courseParticipationRoleInstructor"
           | "courseParticipationRoleStudent";
       };
-      courseConversation: {
+      courseConversation?: {
         publicId: string;
       };
-      courseConversationMessage: {
+      courseConversationMessage?: {
         publicId: string;
         createdByCourseParticipation: number | null;
         content: string;
       };
+      courseConversationMessageContent?: string;
+      preview?: boolean;
     }) => Promise<HTML>;
   };
 };
@@ -797,11 +801,14 @@ ${courseConversationMessageContent}</textarea
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)(?:/conversations/(?<courseConversationPublicId>[0-9]+))?/messages/preview$",
+      "^/courses/(?<coursePublicId>[0-9]+)(?:/conversations/(?<courseConversationPublicId>[0-9]+))?/messages(?:/(?<courseConversationMessagePublicId>[0-9]+))?/preview$",
     ),
     handler: async (
       request: serverTypes.Request<
-        { courseConversationPublicId: string },
+        {
+          courseConversationPublicId: string;
+          courseConversationMessagePublicId: string;
+        },
         {},
         {},
         { content: string },
@@ -813,7 +820,10 @@ ${courseConversationMessageContent}</textarea
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
         (typeof request.pathname.courseConversationPublicId === "string" &&
-          request.state.courseConversation === undefined)
+          request.state.courseConversation === undefined) ||
+        (typeof request.pathname.courseConversationMessagePublicId ===
+          "string" &&
+          request.state.courseConversationMessage === undefined)
       )
         return;
       if (
@@ -825,14 +835,10 @@ ${courseConversationMessageContent}</textarea
         await application.partials.courseConversationMessageContentProcessor({
           course: request.state.course,
           courseParticipation: request.state.courseParticipation,
-          courseConversation: request.state.courseConversation ?? {
-            publicId: "preview",
-          },
-          courseConversationMessage: {
-            publicId: "preview",
-            createdByCourseParticipation: request.state.courseParticipation.id,
-            content: request.body.content,
-          },
+          courseConversation: request.state.courseConversation,
+          courseConversationMessage: request.state.courseConversationMessage,
+          courseConversationMessageContent: request.body.content,
+          preview: true,
         }),
       );
     },
@@ -843,6 +849,8 @@ ${courseConversationMessageContent}</textarea
     courseParticipation,
     courseConversation,
     courseConversationMessage,
+    courseConversationMessageContent,
+    preview = false,
   }) => {
     const processedMarkdown = (
       await unified()
@@ -860,7 +868,13 @@ ${courseConversationMessageContent}</textarea
                 node.properties.dataPosition = JSON.stringify(node.position);
         })
         .use(rehypeStringify, { allowDangerousHtml: true })
-        .process(courseConversationMessage.content)
+        .process(
+          courseConversationMessageContent ??
+            courseConversationMessage?.content ??
+            (() => {
+              throw new Error();
+            })(),
+        )
     ).value;
     if (typeof processedMarkdown !== "string") throw new Error();
     const document = new DOMParser()
@@ -870,7 +884,8 @@ ${courseConversationMessageContent}</textarea
           <html>
             <body>
               <div
-                key="courseConversationMessageContent ${courseConversationMessage.publicId}"
+                key="courseConversationMessageContent ${courseConversationMessage?.publicId ??
+                ""}"
                 css="${css`
                   h1,
                   h2,

@@ -14,6 +14,7 @@ export type ApplicationCourseConversationMessages = {
           publicId: string;
           createdAt: string;
           updatedAt: string | null;
+          createdByCourseParticipation: number | null;
           courseConversationMessageType:
             | "courseConversationMessageTypeMessage"
             | "courseConversationMessageTypeAnswer"
@@ -57,6 +58,7 @@ export default async (application: Application): Promise<void> => {
         publicId: string;
         createdAt: string;
         updatedAt: string | null;
+        createdByCourseParticipation: number | null;
         courseConversationMessageType:
           | "courseConversationMessageTypeMessage"
           | "courseConversationMessageTypeAnswer"
@@ -76,6 +78,7 @@ export default async (application: Application): Promise<void> => {
               "publicId",
               "createdAt",
               "updatedAt",
+              "createdByCourseParticipation",
               "courseConversationMessageType",
               "courseConversationMessageVisibility",
               "courseConversationMessageAnonymity",
