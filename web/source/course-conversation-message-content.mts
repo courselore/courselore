@@ -1379,9 +1379,14 @@ ${courseConversationMessageContent}</textarea
             "beforeend",
             html`
               <details
-                css="${css`
-                  margin: var(--size--0);
-                `}"
+                css="${pollOption.votes.length === 0
+                  ? css`
+                      margin: var(--size--0);
+                    `
+                  : css`
+                      margin: var(--size--1) var(--size--0) var(--size--0)
+                        var(--size--0);
+                    `}"
               >
                 <summary
                   css="${css`
@@ -1390,7 +1395,7 @@ ${courseConversationMessageContent}</textarea
                     position: relative;
                   `}"
                 >
-                  $${0 < votesCount
+                  $${0 < pollOption.votes.length
                     ? html`
                         <div
                           style="width: ${String(
