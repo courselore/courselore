@@ -1286,13 +1286,14 @@ ${courseConversationMessageContent}</textarea
     for (const element of document.querySelectorAll("a")) {
       const url = new URL(
         element.getAttribute("href"),
-        `https://${application.configuration.hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}`,
+        `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
       );
       if (
+        preview ||
         !(
           url.protocol === "https:" &&
           url.hostname === application.configuration.hostname &&
-          url.pathname.startsWith(`/courses/${course.publicId}/`)
+          url.pathname.match(new RegExp(`^/courses/${course.publicId}(?:$|/)`))
         )
       )
         element.setAttribute("target", "_blank");
@@ -1346,7 +1347,7 @@ ${courseConversationMessageContent}</textarea
         pollOption.querySelector("input").setAttribute("required", "");
         if (pollOption.votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
-        if (course.courseState === "courseStateActive") {
+        if (!preview && course.courseState === "courseStateActive") {
           pollOption.innerHTML = html`
             <label
               class="button button--rectangle button--transparent"
@@ -1366,7 +1367,7 @@ ${courseConversationMessageContent}</textarea
         courseParticipation.courseParticipationRole ===
           "courseParticipationRoleInstructor" ||
         courseParticipation.id ===
-          courseConversationMessage.createdByCourseParticipation ||
+          courseConversationMessage?.createdByCourseParticipation ||
         element.querySelector("input:checked") !== null ||
         course.courseState === "courseStateArchived"
       )
@@ -1520,7 +1521,7 @@ ${courseConversationMessageContent}</textarea
             `,
           );
         }
-      if (course.courseState === "courseStateActive")
+      if (!preview && course.courseState === "courseStateActive")
         element.insertAdjacentHTML(
           "beforeend",
           html`
@@ -1549,11 +1550,16 @@ ${courseConversationMessageContent}</textarea
         );
       element.outerHTML = html`
         <div
-          type="form"
-          method="PATCH"
-          action="/courses/${course.publicId}/conversations/${courseConversation.publicId}/messages/${courseConversationMessage.publicId}/polls/${String(
-            elementIndex,
-          )}"
+          $${!preview &&
+          courseConversation !== undefined &&
+          courseConversationMessage !== undefined
+            ? html`
+                type="form" method="PATCH"
+                action="/courses/${course.publicId}/conversations/${courseConversation.publicId}/messages/${courseConversationMessage.publicId}/polls/${String(
+                  elementIndex,
+                )}"
+              `
+            : html``}
         >
           $${element.innerHTML}
         </div>
@@ -1659,7 +1665,7 @@ ${courseConversationMessageContent}</textarea
       const githubSlugger = new GitHubSlugger();
       for (const element of document.querySelectorAll("[id]")) {
         const originalId = element.getAttribute("id");
-        const newId = `${courseConversationMessage.publicId}--${githubSlugger.slug(originalId)}`;
+        const newId = `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(originalId)}`;
         element.setAttribute("id", newId);
         for (const element of document.querySelectorAll(
           `a[href="#${originalId}"]`,
@@ -1671,7 +1677,7 @@ ${courseConversationMessageContent}</textarea
       )) {
         const id =
           element.getAttribute("id") ??
-          `${courseConversationMessage.publicId}--${githubSlugger.slug(element.textContent)}`;
+          `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(element.textContent)}`;
         element.setAttribute("id", id);
         element.insertAdjacentHTML(
           "afterbegin",
