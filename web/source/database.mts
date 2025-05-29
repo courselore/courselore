@@ -3441,7 +3441,7 @@ export default async (application: Application): Promise<void> => {
 
                       <p id="an-id-defined-by-the-user">${examples.text({ model: textExamples, length: 1 })}</p>
 
-                      <a href="#an-id-defined-by-the-user">An achor that points to that id</a>
+                      <a href="#an-id-defined-by-the-user">An anchor that points to that id</a>
 
                       # Cross-Site Scripting
 

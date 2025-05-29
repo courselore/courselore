@@ -1289,11 +1289,14 @@ ${courseConversationMessageContent}</textarea
         `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
       );
       if (
-        preview ||
         !(
           url.protocol === "https:" &&
           url.hostname === application.configuration.hostname &&
-          url.pathname.match(new RegExp(`^/courses/${course.publicId}(?:$|/)`))
+          url.pathname.match(
+            new RegExp(
+              `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
+            ),
+          )
         )
       )
         element.setAttribute("target", "_blank");
@@ -1550,16 +1553,13 @@ ${courseConversationMessageContent}</textarea
         );
       element.outerHTML = html`
         <div
-          $${!preview &&
-          courseConversation !== undefined &&
-          courseConversationMessage !== undefined
-            ? html`
-                type="form" method="PATCH"
-                action="/courses/${course.publicId}/conversations/${courseConversation.publicId}/messages/${courseConversationMessage.publicId}/polls/${String(
-                  elementIndex,
-                )}"
-              `
-            : html``}
+          type="form"
+          method="PATCH"
+          action="/courses/${course.publicId}${courseConversation !== undefined
+            ? `/conversations/${courseConversation.publicId}`
+            : ""}${courseConversationMessage !== undefined
+            ? `/messages/${courseConversationMessage.publicId}`
+            : ""}/polls/${String(elementIndex)}"
         >
           $${element.innerHTML}
         </div>
