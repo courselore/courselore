@@ -1871,13 +1871,12 @@ ${courseConversationMessageContent}</textarea
     })(document);
     for (const element of document.querySelectorAll("a")) {
       if (element.getAttribute("href") !== element.textContent) continue;
-      const match = element
-        .getAttribute("href")
-        .match(
-          new RegExp(
-            `^https://${application.configuration.hostname.replaceAll(".", "\\.")}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
-          ),
-        );
+      const match = element.getAttribute("href").match(
+        new RegExp(
+          // @ts-expect-error
+          `^https://${RegExp.escape(application.configuration.hostname)}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
+        ),
+      );
       if (match === null) continue;
       const mentionCourseConversation = application.database.get<{
         id: number;
