@@ -724,24 +724,17 @@ export default async (application: Application): Promise<void> => {
             <i class="bi bi-eyeglasses"></i>
           </button>
           <div type="popover">Preview</div>
-          <button
-            type="button"
+          <a
+            href="/courses/${course.publicId}/help/content"
+            target="_blank"
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
-              javascript.popover({
-                element: this,
-                target: this.nextElementSibling.nextElementSibling,
-                trigger: "click",
-                remainOpenWhileFocused: true,
-                placement: "top-end",
-              });
             `}"
           >
             <i class="bi bi-question-circle"></i>
-          </button>
+          </a>
           <div type="popover">Help</div>
-          <div type="popover">HELP CONTENT</div>
         </div>
       </div>
       <div
