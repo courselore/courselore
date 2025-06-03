@@ -192,7 +192,13 @@ export default async (application: Application): Promise<void> => {
               display: flex;
             `}"
             javascript="${javascript`
+              const popover = javascript.popover({
+                element: this.querySelector("label"),
+                target: this.querySelector("label").nextElementSibling.nextElementSibling,
+                trigger: "none",
+              });
               this.onchange = utilities.foregroundJob(async () => {
+                popover.showPopover();
                 const responseText = await (
                   await fetch(
                     this.getAttribute("action"), {
@@ -206,6 +212,7 @@ export default async (application: Application): Promise<void> => {
                 element.focus();
                 element.selectionStart = element.selectionEnd;
                 document.execCommand("insertText", false, responseText);
+                popover.hidePopover();
               });
             `}"
           >
@@ -219,6 +226,19 @@ export default async (application: Application): Promise<void> => {
               <input type="file" name="attachment" hidden />
             </label>
             <div type="popover">Attachment</div>
+            <div type="popover">
+              <div
+                css="${css`
+                  color: light-dark(
+                    var(--color--slate--600),
+                    var(--color--slate--400)
+                  );
+                  animation: var(--animation--pulse);
+                `}"
+              >
+                <i class="bi bi-three-dots"></i>
+              </div>
+            </div>
           </div>
           <button
             type="button"
