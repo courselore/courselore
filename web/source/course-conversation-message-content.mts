@@ -200,13 +200,25 @@ export default async (application: Application): Promise<void> => {
             key="courseConversationMessageContentEditor--attachment"
             type="form"
             method="POST"
-            action="TODO"
+            action="/courses/${course.publicId}/messages/attachments"
             enctype="multipart/form-data"
             hidden
             javascript="${javascript`
-              this.onchange = () => {
-                console.log("ATTACHMENT FORM SUBMISSION");
-              };
+              this.onchange = utilities.foregroundJob(async () => {
+                const responseText = await (
+                  await fetch(
+                    this.getAttribute("action"), {
+                      method: this.getAttribute("method"),
+                      headers: { "CSRF-Protection": "true" },
+                      body: javascript.serialize(this),
+                    }
+                  )
+                ).text();
+                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                element.focus();
+                element.selectionStart = element.selectionEnd;
+                document.execCommand("insertText", false, responseText);
+              });
             `}"
           >
             <input type="file" name="attachment" />
@@ -804,6 +816,31 @@ ${courseConversationMessageContent}</textarea
       </div>
     </div>
   `;
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/messages/attachments$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { attachment: serverTypes.RequestBodyFile },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined
+      )
+        return;
+      if (typeof request.body.attachment !== "object") throw "validation";
+      response.end("TODO");
+    },
+  });
 
   application.server?.push({
     method: "POST",
