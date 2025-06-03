@@ -873,10 +873,15 @@ ${courseConversationMessageContent}</textarea
         request.body.attachment.mimeType === "image/jpeg" ||
         request.body.attachment.mimeType === "image/png"
       ) {
-        await sharp(absolutePath, { autoOrient: true })
-          .resize(1280, 1280 /* var(--size--320) */)
-          .toFile(`${absolutePath}.webp`);
-        response.end(`![/${relativePath}](/${relativePath}.webp)`);
+        const image = sharp(absolutePath, { autoOrient: true }).resize({
+          width: 1280,
+          withoutEnlargement: true,
+        });
+        const metadata = await image.metadata();
+        await image.toFile(`${absolutePath}.webp`);
+        response.end(
+          `[<img src="/${relativePath}.webp" width="${Math.floor(metadata.width / 2)}" height="${Math.floor(metadata.height / 2)}" />](/${relativePath})`,
+        );
         return;
       }
       response.end(`[attachment](/${relativePath})`);
