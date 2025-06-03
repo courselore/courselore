@@ -183,26 +183,14 @@ export default async (application: Application): Promise<void> => {
             <i class="bi bi-link"></i>
           </button>
           <div type="popover">Link</div>
-          <button
-            type="button"
-            class="button button--square button--icon button--transparent"
-            javascript="${javascript`
-              javascript.popover({ element: this });
-              this.onclick = () => {
-                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--attachment"] input[name="attachment"]').click();
-              };
-            `}"
-          >
-            <i class="bi bi-paperclip"></i>
-          </button>
-          <div type="popover">Attachment</div>
           <div
-            key="courseConversationMessageContentEditor--attachment"
             type="form"
             method="POST"
             action="/courses/${course.publicId}/messages/attachments"
             enctype="multipart/form-data"
-            hidden
+            css="${css`
+              display: flex;
+            `}"
             javascript="${javascript`
               this.onchange = utilities.foregroundJob(async () => {
                 const responseText = await (
@@ -221,7 +209,16 @@ export default async (application: Application): Promise<void> => {
               });
             `}"
           >
-            <input type="file" name="attachment" />
+            <label
+              class="button button--square button--icon button--transparent"
+              javascript="${javascript`
+                javascript.popover({ element: this });
+              `}"
+            >
+              <i class="bi bi-paperclip"></i>
+              <input type="file" name="attachment" hidden />
+            </label>
+            <div type="popover">Attachment</div>
           </div>
           <button
             type="button"
