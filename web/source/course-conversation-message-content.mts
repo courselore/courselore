@@ -13,6 +13,7 @@ import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
+import { dedent as markdown } from "@radically-straightforward/utilities";
 import { Application } from "./index.mjs";
 
 export type ApplicationCourseConversationMessageContent = {
@@ -725,7 +726,7 @@ export default async (application: Application): Promise<void> => {
           </button>
           <div type="popover">Preview</div>
           <a
-            href="/courses/${course.publicId}/help/content"
+            href="/courses/${course.publicId}/help/message-formatting"
             target="_blank"
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
@@ -845,6 +846,526 @@ ${courseConversationMessageContent}</textarea
           courseConversationMessage: request.state.courseConversationMessage,
           courseConversationMessageContent: request.body.content,
           preview: true,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/help/message-formatting$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { content: string },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined
+      )
+        return;
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html` <title>Message formatting · Help · Courselore</title> `,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Help · Message formatting
+              </div>
+              $${await application.partials.courseConversationMessageContentProcessor(
+                {
+                  course: request.state.course,
+                  courseParticipation: request.state.courseParticipation,
+                  courseConversationMessageContent: markdown`
+<table>
+<thead>
+<tr>
+<th>You write…</th>
+<th>…and it shows up as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+
+~~~
+**Bold**
+~~~
+
+</td>
+<td>
+
+**Bold**
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+_Italics_
+~~~
+
+</td>
+<td>
+
+_Italics_
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+<u>Underline</u>
+~~~
+
+</td>
+<td>
+
+<u>Underline</u>
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+[Link](https://courselore.org)
+~~~
+
+</td>
+<td>
+
+[Link](https://courselore.org)
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+$E=mc^2$
+~~~
+
+</td>
+<td>
+
+$E=mc^2$ ([Mathematics support](https://katex.org/docs/supported))
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+\`Code\`
+~~~
+
+</td>
+<td>
+
+\`Code\`
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+<ins>Insertion</ins>
+~~~
+
+</td>
+<td>
+
+<ins>Insertion</ins>
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+~~Deletion~~
+~~~
+
+</td>
+<td>
+
+~~Deletion~~
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+<sup>Superscript</sup>
+~~~
+
+</td>
+<td>
+
+<sup>Superscript</sup>
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+<sub>Subscript</sub>
+~~~
+
+</td>
+<td>
+
+<sub>Subscript</sub>
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+# Heading level 1
+~~~
+
+</td>
+<td>
+
+# Heading level 1
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+## Heading level 2
+~~~
+
+</td>
+<td>
+
+## Heading level 2
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+### Heading level 3
+~~~
+
+</td>
+<td>
+
+### Heading level 3
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+#### Heading level 4
+~~~
+
+</td>
+<td>
+
+#### Heading level 4
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+##### Heading level 5
+~~~
+
+</td>
+<td>
+
+##### Heading level 5
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+###### Heading level 6
+~~~
+
+</td>
+<td>
+
+###### Heading level 6
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+An example of a
+
+---
+
+separator
+~~~
+
+</td>
+<td>
+
+An example of a
+
+---
+
+separator
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+- An
+- example
+- of
+- an
+- unordered
+- list
+~~~
+
+</td>
+<td>
+
+- An
+- example
+- of
+- an
+- unordered
+- list
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+1. An
+2. example
+3. of
+4. an
+5. ordered
+6. list
+~~~
+
+</td>
+<td>
+
+1. An
+2. example
+3. of
+4. an
+5. ordered
+6. list
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+- [ ] An
+- [ ] example
+- [x] of
+- [ ] a
+- [x] tasklist
+~~~
+
+</td>
+<td>
+
+- [ ] An
+- [ ] example
+- [x] of
+- [ ] a
+- [x] tasklist
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+> An example of a blockquote.
+~~~
+
+</td>
+<td>
+
+> An example of a blockquote.
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+| An  | example | of  |
+| --- | ------- | --- |
+| a   | table   |     |
+~~~
+
+</td>
+<td>
+
+| An  | example | of  |
+| --- | ------- | --- |
+| a   | table   |     |
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+<details>
+<summary>
+An example of concealed content
+</summary>
+
+See more content here.
+
+</details>
+~~~
+
+</td>
+<td>
+
+<details>
+<summary>
+An example of concealed content
+</summary>
+
+See more content here.
+
+</details>
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+An example of a footnote[^1].
+
+[^1]: This is the content of a footnote.
+~~~
+
+</td>
+<td>
+
+An example of a footnote[^1].
+
+[^1]: This is the content of a footnote.
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+$$
+L = \\frac{1}{2} \\rho v^2 S C_L
+$$
+~~~
+
+</td>
+<td>
+
+$$
+L = \\frac{1}{2} \\rho v^2 S C_L
+$$
+
+([Mathematics support](https://katex.org/docs/supported))
+
+</td>
+</tr>
+<tr>
+<td>
+
+~~~
+\`\`\`javascript
+const hello = "world";
+\`\`\`
+~~~
+
+</td>
+<td>
+
+~~~javascript
+const hello = "world";
+~~~
+
+([Syntax highlighting support](https://shiki.style/languages))
+
+</td>
+</tr>
+</tbody>
+</table>
+                  `,
+                  preview: true,
+                },
+              )}
+              $${await application.partials.courseConversationMessageContentProcessor(
+                {
+                  course: request.state.course,
+                  courseParticipation: request.state.courseParticipation,
+                  courseConversationMessageContent: markdown`
+---
+
+You may also use the buttons on the message content editor to attach files/images/videos, create polls, \`@mention\` other course participants, \`#refer\` to other conversations and messages, and preview the message before sending it.
+
+**Try it**
+                  `,
+                  preview: true,
+                },
+              )}
+              $${application.partials.courseConversationMessageContentEditor({
+                course: request.state.course,
+                courseParticipation: request.state.courseParticipation,
+              })}
+            </div>
+          `,
         }),
       );
     },
@@ -1052,6 +1573,10 @@ ${courseConversationMessageContent}</textarea
                     &[align="right"] {
                       text-align: right;
                     }
+                  }
+
+                  th {
+                    font-weight: 500;
                   }
 
                   details {
