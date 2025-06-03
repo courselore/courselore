@@ -1,3 +1,5 @@
+import path from "node:path";
+import fs from "node:fs/promises";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -8,6 +10,8 @@ import { DOMParser } from "linkedom";
 import GitHubSlugger from "github-slugger";
 import katex from "katex";
 import * as shiki from "shiki";
+import cryptoRandomString from "crypto-random-string";
+import sharp from "sharp";
 import * as serverTypes from "@radically-straightforward/server";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
@@ -211,7 +215,7 @@ export default async (application: Application): Promise<void> => {
                 const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
                 element.focus();
                 element.selectionStart = element.selectionEnd;
-                document.execCommand("insertText", false, responseText);
+                document.execCommand("insertText", false, (0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : "") + responseText + " ");
                 popover.hidePopover();
               });
             `}"
@@ -855,7 +859,27 @@ ${courseConversationMessageContent}</textarea
       )
         return;
       if (typeof request.body.attachment !== "object") throw "validation";
-      response.end("TODO");
+      const relativePath = `files/${cryptoRandomString({
+        length: 20,
+        characters: "abcdefghijklmnopqrstuvwxyz0123456789",
+      })}/${request.body.attachment.filename}`;
+      const absolutePath = path.join(
+        application.configuration.dataDirectory,
+        relativePath,
+      );
+      await fs.mkdir(path.dirname(absolutePath), { recursive: true });
+      await fs.rename(request.body.attachment.path, absolutePath);
+      if (
+        request.body.attachment.mimeType === "image/jpeg" ||
+        request.body.attachment.mimeType === "image/png"
+      ) {
+        await sharp(absolutePath, { autoOrient: true })
+          .resize(1280, 1280 /* var(--size--320) */)
+          .toFile(`${absolutePath}.webp`);
+        response.end(`![/${relativePath}](/${relativePath}.webp)`);
+        return;
+      }
+      response.end(`[attachment](/${relativePath})`);
     },
   });
 
