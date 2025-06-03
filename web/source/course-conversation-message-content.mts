@@ -883,6 +883,9 @@ ${courseConversationMessageContent}</textarea
                 flex-direction: column;
                 gap: var(--size--2);
               `}"
+              javascript="${javascript`
+                this.isModified = false;
+              `}"
             >
               <div
                 css="${css`
