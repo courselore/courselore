@@ -885,7 +885,7 @@ ${courseConversationMessageContent}</textarea
             height <= 0
           )
             throw new Error();
-          if (1280 < width) {
+          if (1280 /* var(--size--320) */ < width) {
             const factor = 1280 / width;
             width = Math.floor(width * factor);
             height = Math.floor(height * factor);
