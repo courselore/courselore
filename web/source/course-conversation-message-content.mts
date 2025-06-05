@@ -869,20 +869,36 @@ ${courseConversationMessageContent}</textarea
       );
       await fs.mkdir(path.dirname(absolutePath), { recursive: true });
       await fs.rename(request.body.attachment.path, absolutePath);
-      if (
-        request.body.attachment.mimeType === "image/jpeg" ||
-        request.body.attachment.mimeType === "image/png"
-      ) {
-        const image = sharp(absolutePath, { autoOrient: true }).resize({
-          width: 1280,
-          withoutEnlargement: true,
-        });
-        const metadata = await image.metadata();
-        await image.toFile(`${absolutePath}.webp`);
-        response.end(
-          `[<img src="/${relativePath}.webp" width="${Math.floor(metadata.width / 2)}" height="${Math.floor(metadata.height / 2)}" />](/${relativePath})`,
-        );
-      } else response.end(`[attachment](/${relativePath})`);
+      try {
+        if (
+          request.body.attachment.mimeType === "image/jpeg" ||
+          request.body.attachment.mimeType === "image/png"
+        ) {
+          let image = sharp(absolutePath, { autoOrient: true });
+          const metadata = await image.metadata();
+          let width = metadata.width;
+          let height = metadata.height;
+          if (
+            typeof width !== "number" ||
+            width <= 0 ||
+            typeof height !== "number" ||
+            height <= 0
+          )
+            throw new Error();
+          if (1280 < width) {
+            const factor = 1280 / width;
+            width = Math.floor(width * factor);
+            height = Math.floor(height * factor);
+            image = image.resize(width, height);
+          }
+          await image.toFile(`${absolutePath}.webp`);
+          response.end(
+            `[<img src="/${relativePath}.webp" width="${width}" height="${height}" />](/${relativePath})`,
+          );
+          return;
+        }
+      } catch {}
+      response.end(`[attachment](/${relativePath})`);
     },
   });
 
