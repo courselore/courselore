@@ -882,9 +882,7 @@ ${courseConversationMessageContent}</textarea
         response.end(
           `[<img src="/${relativePath}.webp" width="${Math.floor(metadata.width / 2)}" height="${Math.floor(metadata.height / 2)}" />](/${relativePath})`,
         );
-        return;
-      }
-      response.end(`[attachment](/${relativePath})`);
+      } else response.end(`[attachment](/${relativePath})`);
     },
   });
 
