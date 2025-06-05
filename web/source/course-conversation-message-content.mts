@@ -1608,6 +1608,7 @@ You may also use the buttons on the message content editor to attach files/image
                       var(--color--white)
                     );
                     max-width: 100%;
+                    height: auto;
                     border-radius: var(--border-radius--1);
                   }
 
