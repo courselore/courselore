@@ -874,26 +874,14 @@ ${courseConversationMessageContent}</textarea
           request.body.attachment.mimeType === "image/jpeg" ||
           request.body.attachment.mimeType === "image/png"
         ) {
-          let image = sharp(absolutePath, { autoOrient: true });
-          const metadata = await image.metadata();
-          let width = metadata.width;
-          let height = metadata.height;
-          if (
-            typeof width !== "number" ||
-            width <= 0 ||
-            typeof height !== "number" ||
-            height <= 0
-          )
-            throw new Error();
-          if (1280 /* var(--size--320) */ < width) {
-            const factor = 1280 / width;
-            width = Math.floor(width * factor);
-            height = Math.floor(height * factor);
-            image = image.resize(width, height);
-          }
-          await image.toFile(`${absolutePath}.webp`);
+          const image = await sharp(absolutePath, { autoOrient: true })
+            .resize({
+              width: 1280 /* var(--size--320) */,
+              withoutEnlargement: true,
+            })
+            .toFile(`${absolutePath}.webp`);
           response.end(
-            `[<img src="/${relativePath}.webp" width="${width}" height="${height}" />](/${relativePath})`,
+            `[<img src="/${relativePath}.webp" width="${Math.floor(image.width / 2)}" height="${Math.floor(image.height / 2)}" />](/${relativePath})`,
           );
           return;
         }
