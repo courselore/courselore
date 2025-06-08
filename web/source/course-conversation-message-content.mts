@@ -884,6 +884,14 @@ ${courseConversationMessageContent}</textarea
             `[<img src="/${relativePath}.webp" width="${Math.floor(image.width / 2)}" height="${Math.floor(image.height / 2)}" />](/${relativePath})`,
           );
           return;
+        } else if (
+          request.body.attachment.mimeType === "image/gif" &&
+          1 <
+            ((await sharp(absolutePath, { animated: true }).metadata()).pages ??
+              0)
+        ) {
+          // TODO
+          return;
         }
       } catch {}
       response.end(`[attachment](/${relativePath})`);
