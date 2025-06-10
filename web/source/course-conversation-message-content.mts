@@ -803,10 +803,48 @@ export default async (application: Application): Promise<void> => {
           css="${css`
             font-family: "Roboto Mono Variable", var(--font-family--monospace);
             height: var(--size--44);
+            border-bottom-left-radius: var(--border-radius--1);
+            border-bottom-right-radius: var(--border-radius--1);
+            transition-property: var(--transition-property--colors);
+            transition-duration: var(--transition-duration--150);
+            transition-timing-function: var(
+              --transition-timing-function--ease-in-out
+            );
+            &[state~="dragging"] {
+              background-color: light-dark(
+                var(--color--blue--200),
+                var(--color--blue--800)
+              );
+            }
             [key~="courseConversationMessageContentEditor"][state] & {
               display: none;
             }
           `}"
+          $${!(
+            Boolean(
+              course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+            ) === false &&
+            courseParticipation.courseParticipationRole ===
+              "courseParticipationRoleStudent"
+          )
+            ? html`
+                javascript="${javascript`
+                  this.ondragenter = () => {
+                    javascript.stateAdd(this, "dragging");
+                  };
+                  this.ondragleave = () => {
+                    javascript.stateRemove(this, "dragging");
+                  };
+                  this.ondragover = (event) => {
+                    event.preventDefault();
+                  };
+                  this.ondrop = (event) => {
+                    event.preventDefault();
+                    javascript.stateRemove(this, "dragging");
+                  };
+                `}"
+              `
+            : html``}
         >
 ${courseConversationMessageContent}</textarea
         >
