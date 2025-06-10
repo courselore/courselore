@@ -839,8 +839,9 @@ export default async (application: Application): Promise<void> => {
                     event.preventDefault();
                   };
                   this.ondrop = (event) => {
-                    event.preventDefault();
                     javascript.stateRemove(this, "dragging");
+                    if (event.dataTransfer.files.length === 0) return;
+                    event.preventDefault();
                     this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachment"]').files = event.dataTransfer.files;
                     this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachment"]').dispatchEvent(
                       new Event("change", {
