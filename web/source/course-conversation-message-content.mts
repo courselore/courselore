@@ -34,6 +34,7 @@ export type ApplicationCourseConversationMessageContent = {
       course: {
         id: number;
         publicId: string;
+        courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
       };
       courseParticipation: {
         id: number;
@@ -189,63 +190,73 @@ export default async (application: Application): Promise<void> => {
             <i class="bi bi-link"></i>
           </button>
           <div type="popover">Link</div>
-          <div
-            type="form"
-            method="POST"
-            action="/courses/${course.publicId}/messages/attachments"
-            enctype="multipart/form-data"
-            css="${css`
-              display: flex;
-            `}"
-            javascript="${javascript`
-              const popover = javascript.popover({
-                element: this.querySelector("label"),
-                target: this.querySelector("label").nextElementSibling.nextElementSibling,
-                trigger: "none",
-              });
-              this.onchange = utilities.foregroundJob(async () => {
-                popover.showPopover();
-                const responseText = await (
-                  await fetch(
-                    this.getAttribute("action"), {
-                      method: this.getAttribute("method"),
-                      headers: { "CSRF-Protection": "true" },
-                      body: javascript.serialize(this),
-                    }
-                  )
-                ).text();
-                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
-                element.focus();
-                element.selectionStart = element.selectionEnd;
-                document.execCommand("insertText", false, (0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : "") + responseText + " ");
-                popover.hidePopover();
-              });
-            `}"
-          >
-            <label
-              class="button button--square button--icon button--transparent"
-              javascript="${javascript`
-                javascript.popover({ element: this });
-              `}"
-            >
-              <i class="bi bi-paperclip"></i>
-              <input type="file" name="attachment" hidden />
-            </label>
-            <div type="popover">Attachment</div>
-            <div type="popover">
-              <div
-                css="${css`
-                  color: light-dark(
-                    var(--color--slate--600),
-                    var(--color--slate--400)
-                  );
-                  animation: var(--animation--pulse);
-                `}"
-              >
-                <i class="bi bi-three-dots"></i>
-              </div>
-            </div>
-          </div>
+          $${!(
+            Boolean(
+              course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+            ) === false &&
+            courseParticipation.courseParticipationRole ===
+              "courseParticipationRoleStudent"
+          )
+            ? html`
+                <div
+                  type="form"
+                  method="POST"
+                  action="/courses/${course.publicId}/messages/attachments"
+                  enctype="multipart/form-data"
+                  css="${css`
+                    display: flex;
+                  `}"
+                  javascript="${javascript`
+                    const popover = javascript.popover({
+                      element: this.querySelector("label"),
+                      target: this.querySelector("label").nextElementSibling.nextElementSibling,
+                      trigger: "none",
+                    });
+                    this.onchange = utilities.foregroundJob(async () => {
+                      popover.showPopover();
+                      const responseText = await (
+                        await fetch(
+                          this.getAttribute("action"), {
+                            method: this.getAttribute("method"),
+                            headers: { "CSRF-Protection": "true" },
+                            body: javascript.serialize(this),
+                          }
+                        )
+                      ).text();
+                      const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                      element.focus();
+                      element.selectionStart = element.selectionEnd;
+                      document.execCommand("insertText", false, (0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : "") + responseText + " ");
+                      popover.hidePopover();
+                    });
+                  `}"
+                >
+                  <label
+                    class="button button--square button--icon button--transparent"
+                    javascript="${javascript`
+                      javascript.popover({ element: this });
+                    `}"
+                  >
+                    <i class="bi bi-paperclip"></i>
+                    <input type="file" name="attachment" hidden />
+                  </label>
+                  <div type="popover">Attachment</div>
+                  <div type="popover">
+                    <div
+                      css="${css`
+                        color: light-dark(
+                          var(--color--slate--600),
+                          var(--color--slate--400)
+                        );
+                        animation: var(--animation--pulse);
+                      `}"
+                    >
+                      <i class="bi bi-three-dots"></i>
+                    </div>
+                  </div>
+                </div>
+              `
+            : html``}
           <button
             type="button"
             class="button button--square button--icon button--transparent"
@@ -857,7 +868,13 @@ ${courseConversationMessageContent}</textarea
     ) => {
       if (
         request.state.course === undefined ||
-        request.state.courseParticipation === undefined
+        request.state.courseParticipation === undefined ||
+        (Boolean(
+          request.state.course
+            .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+        ) === false &&
+          request.state.courseParticipation.courseParticipationRole ===
+            "courseParticipationRoleStudent")
       )
         return;
       if (typeof request.body.attachment !== "object") throw "validation";
