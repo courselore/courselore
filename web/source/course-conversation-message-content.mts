@@ -1,5 +1,7 @@
 import path from "node:path";
 import fs from "node:fs/promises";
+import childProcess from "node:child_process";
+import util from "node:util";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -872,28 +874,59 @@ ${courseConversationMessageContent}</textarea
       try {
         if (
           request.body.attachment.mimeType === "image/jpeg" ||
-          request.body.attachment.mimeType === "image/png"
+          request.body.attachment.mimeType === "image/png" ||
+          request.body.attachment.mimeType === "image/gif"
         ) {
-          const image = await sharp(absolutePath, { autoOrient: true })
+          const image = sharp(absolutePath, { autoOrient: true });
+          const metadata = await image.metadata();
+          if (
+            request.body.attachment.mimeType === "image/gif" &&
+            typeof metadata.width === "number" &&
+            0 < metadata.width &&
+            typeof metadata.height === "number" &&
+            0 < metadata.height &&
+            typeof metadata.pages === "number" &&
+            1 < metadata.pages
+          ) {
+            const ratio = Math.min(
+              1280 /* var(--size--320) */ / metadata.width,
+              1,
+            );
+            const width = Math.floor((metadata.width * ratio) / 2) * 2;
+            const height = Math.floor((metadata.height * ratio) / 2) * 2;
+            await util.promisify(childProcess.execFile)(
+              "./node_modules/.bin/ffmpeg",
+              [
+                "-i",
+                absolutePath,
+                "-movflags",
+                "faststart",
+                "-pix_fmt",
+                "yuv420p",
+                "-vf",
+                `scale=${width}:${height}`,
+                `${absolutePath}.mp4`,
+              ],
+            );
+            response.end(
+              `[<video src="/${relativePath}.mp4" width="${Math.floor(width / 2)}" height="${Math.floor(height / 2)}" />](/${relativePath})`,
+            );
+            return;
+          }
+          const thumbnail = await image
             .resize({
               width: 1280 /* var(--size--320) */,
               withoutEnlargement: true,
             })
             .toFile(`${absolutePath}.webp`);
           response.end(
-            `[<img src="/${relativePath}.webp" width="${Math.floor(image.width / 2)}" height="${Math.floor(image.height / 2)}" />](/${relativePath})`,
+            `[<img src="/${relativePath}.webp" width="${Math.floor(thumbnail.width / 2)}" height="${Math.floor(thumbnail.height / 2)}" />](/${relativePath})`,
           );
           return;
-        } else if (
-          request.body.attachment.mimeType === "image/gif" &&
-          1 <
-            ((await sharp(absolutePath, { animated: true }).metadata()).pages ??
-              0)
-        ) {
-          // TODO
-          return;
         }
-      } catch {}
+      } catch (error) {
+        request.log("ERROR", String(error));
+      }
       response.end(`[attachment](/${relativePath})`);
     },
   });
