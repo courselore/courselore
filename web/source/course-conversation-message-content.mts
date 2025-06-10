@@ -238,7 +238,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <i class="bi bi-paperclip"></i>
-                    <input type="file" name="attachment" hidden />
+                    <input type="file" name="attachments[]" multiple hidden />
                   </label>
                   <div type="popover">Attachment</div>
                   <div type="popover">
@@ -842,8 +842,8 @@ export default async (application: Application): Promise<void> => {
                     javascript.stateRemove(this, "dragging");
                     if (event.dataTransfer.files.length === 0) return;
                     event.preventDefault();
-                    this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachment"]').files = event.dataTransfer.files;
-                    this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachment"]').dispatchEvent(
+                    this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.dataTransfer.files;
+                    this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(
                       new Event("change", {
                         bubbles: true,
                         cancelable: false,
@@ -908,7 +908,7 @@ ${courseConversationMessageContent}</textarea
         {},
         {},
         {},
-        { attachment: serverTypes.RequestBodyFile },
+        { attachments: serverTypes.RequestBodyFile[] },
         Application["types"]["states"]["Course"]
       >,
       response,
@@ -924,74 +924,85 @@ ${courseConversationMessageContent}</textarea
             "courseParticipationRoleStudent")
       )
         return;
-      if (typeof request.body.attachment !== "object") throw "validation";
-      const relativePath = `files/${cryptoRandomString({
-        length: 20,
-        characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-      })}/${path.basename(request.body.attachment.path)}`;
-      const absolutePath = path.join(
-        application.configuration.dataDirectory,
-        relativePath,
-      );
-      await fs.mkdir(path.dirname(absolutePath), { recursive: true });
-      await fs.rename(request.body.attachment.path, absolutePath);
-      try {
-        if (
-          request.body.attachment.mimeType === "image/jpeg" ||
-          request.body.attachment.mimeType === "image/png" ||
-          request.body.attachment.mimeType === "image/gif"
-        ) {
-          const image = sharp(absolutePath, { autoOrient: true });
-          const metadata = await image.metadata();
+      request.body.attachments ??= [];
+      if (
+        !Array.isArray(request.body.attachments) ||
+        request.body.attachments.some(
+          (attachment) => typeof attachment !== "object",
+        )
+      )
+        throw "validation";
+      const markdown = new Array<string>();
+      for (const attachment of request.body.attachments) {
+        const relativePath = `files/${cryptoRandomString({
+          length: 20,
+          characters: "abcdefghijklmnopqrstuvwxyz0123456789",
+        })}/${path.basename(attachment.path)}`;
+        const absolutePath = path.join(
+          application.configuration.dataDirectory,
+          relativePath,
+        );
+        await fs.mkdir(path.dirname(absolutePath), { recursive: true });
+        await fs.rename(attachment.path, absolutePath);
+        try {
           if (
-            request.body.attachment.mimeType === "image/gif" &&
-            typeof metadata.width === "number" &&
-            0 < metadata.width &&
-            typeof metadata.height === "number" &&
-            0 < metadata.height &&
-            typeof metadata.pages === "number" &&
-            1 < metadata.pages
+            attachment.mimeType === "image/jpeg" ||
+            attachment.mimeType === "image/png" ||
+            attachment.mimeType === "image/gif"
           ) {
-            const ratio = Math.min(
-              1280 /* var(--size--320) */ / metadata.width,
-              1,
+            const image = sharp(absolutePath, { autoOrient: true });
+            const metadata = await image.metadata();
+            if (
+              attachment.mimeType === "image/gif" &&
+              typeof metadata.width === "number" &&
+              0 < metadata.width &&
+              typeof metadata.height === "number" &&
+              0 < metadata.height &&
+              typeof metadata.pages === "number" &&
+              1 < metadata.pages
+            ) {
+              const ratio = Math.min(
+                1280 /* var(--size--320) */ / metadata.width,
+                1,
+              );
+              const width = Math.floor((metadata.width * ratio) / 2) * 2;
+              const height = Math.floor((metadata.height * ratio) / 2) * 2;
+              await util.promisify(childProcess.execFile)(
+                path.join(import.meta.dirname, "../node_modules/.bin/ffmpeg"),
+                [
+                  "-i",
+                  absolutePath,
+                  "-movflags",
+                  "faststart",
+                  "-pix_fmt",
+                  "yuv420p",
+                  "-vf",
+                  `scale=${width}:${height}`,
+                  `${absolutePath}.mp4`,
+                ],
+              );
+              markdown.push(
+                `[<video src="/${relativePath}.mp4" width="${Math.floor(width / 2)}" height="${Math.floor(height / 2)}"></video>](/${relativePath})`,
+              );
+              continue;
+            }
+            const thumbnail = await image
+              .resize({
+                width: 1280 /* var(--size--320) */,
+                withoutEnlargement: true,
+              })
+              .toFile(`${absolutePath}.webp`);
+            markdown.push(
+              `[<img src="/${relativePath}.webp" width="${Math.floor(thumbnail.width / 2)}" height="${Math.floor(thumbnail.height / 2)}" />](/${relativePath})`,
             );
-            const width = Math.floor((metadata.width * ratio) / 2) * 2;
-            const height = Math.floor((metadata.height * ratio) / 2) * 2;
-            await util.promisify(childProcess.execFile)(
-              path.join(import.meta.dirname, "../node_modules/.bin/ffmpeg"),
-              [
-                "-i",
-                absolutePath,
-                "-movflags",
-                "faststart",
-                "-pix_fmt",
-                "yuv420p",
-                "-vf",
-                `scale=${width}:${height}`,
-                `${absolutePath}.mp4`,
-              ],
-            );
-            response.end(
-              `[<video src="/${relativePath}.mp4" width="${Math.floor(width / 2)}" height="${Math.floor(height / 2)}"></video>](/${relativePath})`,
-            );
-            return;
+            continue;
           }
-          const thumbnail = await image
-            .resize({
-              width: 1280 /* var(--size--320) */,
-              withoutEnlargement: true,
-            })
-            .toFile(`${absolutePath}.webp`);
-          response.end(
-            `[<img src="/${relativePath}.webp" width="${Math.floor(thumbnail.width / 2)}" height="${Math.floor(thumbnail.height / 2)}" />](/${relativePath})`,
-          );
-          return;
+        } catch (error) {
+          request.log("ERROR", String(error));
         }
-      } catch (error) {
-        request.log("ERROR", String(error));
+        markdown.push(`[Attachment](/${relativePath})`);
       }
-      response.end(`[attachment](/${relativePath})`);
+      response.end(markdown.join("\n\n"));
     },
   });
 
