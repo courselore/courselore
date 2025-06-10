@@ -2630,7 +2630,7 @@ export default async (application: Application): Promise<void> => {
       $${typeof user === "object" && typeof user.avatarImage === "string"
         ? html`
             <img
-              src="${user.avatarImage}"
+              src="${encodeURI(user.avatarImage)}"
               loading="lazy"
               css="${css`
                 background-color: light-dark(
