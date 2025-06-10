@@ -2489,7 +2489,7 @@ export default async (application: Application): Promise<void> => {
             "courseConversationRequiresTagging" integer not null,
             "courseParticipationRoleStudentsAnonymityAllowed" text not null,
             "courseParticipationRoleStudentsMayHavePrivateCourseConversations" integer not null,
-            "courseParticipationRoleStudentsMayAttachImages" integer not null,
+            "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent" integer not null,
             "courseState" text not null,
             "courseConversationsNextPublicId" integer not null
           ) strict;
@@ -2866,7 +2866,7 @@ export default async (application: Application): Promise<void> => {
                       "courseConversationRequiresTagging",
                       "courseParticipationRoleStudentsAnonymityAllowed",
                       "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
-                      "courseParticipationRoleStudentsMayAttachImages",
+                      "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
                       "courseState",
                       "courseConversationsNextPublicId"
                     )
