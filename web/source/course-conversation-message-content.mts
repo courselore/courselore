@@ -909,7 +909,7 @@ ${courseConversationMessageContent}</textarea
               ],
             );
             response.end(
-              `[<video src="/${relativePath}.mp4" width="${Math.floor(width / 2)}" height="${Math.floor(height / 2)}" />](/${relativePath})`,
+              `[<video src="/${encodeURI(relativePath)}.mp4" width="${Math.floor(width / 2)}" height="${Math.floor(height / 2)}"></video>](/${encodeURI(relativePath)})`,
             );
             return;
           }
@@ -920,14 +920,14 @@ ${courseConversationMessageContent}</textarea
             })
             .toFile(`${absolutePath}.webp`);
           response.end(
-            `[<img src="/${relativePath}.webp" width="${Math.floor(thumbnail.width / 2)}" height="${Math.floor(thumbnail.height / 2)}" />](/${relativePath})`,
+            `[<img src="/${encodeURI(relativePath)}.webp" width="${Math.floor(thumbnail.width / 2)}" height="${Math.floor(thumbnail.height / 2)}" />](/${encodeURI(relativePath)})`,
           );
           return;
         }
       } catch (error) {
         request.log("ERROR", String(error));
       }
-      response.end(`[attachment](/${relativePath})`);
+      response.end(`[attachment](/${encodeURI(relativePath)})`);
     },
   });
 
