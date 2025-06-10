@@ -895,7 +895,7 @@ ${courseConversationMessageContent}</textarea
             const width = Math.floor((metadata.width * ratio) / 2) * 2;
             const height = Math.floor((metadata.height * ratio) / 2) * 2;
             await util.promisify(childProcess.execFile)(
-              "./node_modules/.bin/ffmpeg",
+              path.join(import.meta.dirname, "../node_modules/.bin/ffmpeg"),
               [
                 "-i",
                 absolutePath,
