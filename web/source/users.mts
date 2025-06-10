@@ -1671,7 +1671,7 @@ export default async (application: Application): Promise<void> => {
         const relativePath = `files/${cryptoRandomString({
           length: 20,
           characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-        })}/${request.body.avatarImage.filename}`;
+        })}/${path.basename(request.body.avatarImage.path)}`;
         const absolutePath = path.join(
           application.configuration.dataDirectory,
           relativePath,
@@ -2630,7 +2630,7 @@ export default async (application: Application): Promise<void> => {
       $${typeof user === "object" && typeof user.avatarImage === "string"
         ? html`
             <img
-              src="${encodeURI(user.avatarImage)}"
+              src="${user.avatarImage}"
               loading="lazy"
               css="${css`
                 background-color: light-dark(

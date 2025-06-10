@@ -881,7 +881,7 @@ ${courseConversationMessageContent}</textarea
       const relativePath = `files/${cryptoRandomString({
         length: 20,
         characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-      })}/${request.body.attachment.filename}`;
+      })}/${path.basename(request.body.attachment.path)}`;
       const absolutePath = path.join(
         application.configuration.dataDirectory,
         relativePath,
@@ -926,7 +926,7 @@ ${courseConversationMessageContent}</textarea
               ],
             );
             response.end(
-              `[<video src="/${encodeURI(relativePath)}.mp4" width="${Math.floor(width / 2)}" height="${Math.floor(height / 2)}"></video>](/${encodeURI(relativePath)})`,
+              `[<video src="/${relativePath}.mp4" width="${Math.floor(width / 2)}" height="${Math.floor(height / 2)}"></video>](/${relativePath})`,
             );
             return;
           }
@@ -937,14 +937,14 @@ ${courseConversationMessageContent}</textarea
             })
             .toFile(`${absolutePath}.webp`);
           response.end(
-            `[<img src="/${encodeURI(relativePath)}.webp" width="${Math.floor(thumbnail.width / 2)}" height="${Math.floor(thumbnail.height / 2)}" />](/${encodeURI(relativePath)})`,
+            `[<img src="/${relativePath}.webp" width="${Math.floor(thumbnail.width / 2)}" height="${Math.floor(thumbnail.height / 2)}" />](/${relativePath})`,
           );
           return;
         }
       } catch (error) {
         request.log("ERROR", String(error));
       }
-      response.end(`[attachment](/${encodeURI(relativePath)})`);
+      response.end(`[attachment](/${relativePath})`);
     },
   });
 
