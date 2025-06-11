@@ -2078,7 +2078,10 @@ You may also use the buttons on the message content editor to attach files/image
         votesCount += pollOption.votes.length;
         pollOption
           .querySelector("input")
-          .setAttribute("name", "courseConversationMessagePollOptions[]");
+          .setAttribute(
+            "name",
+            "courseConversationMessageContentPollOptions[]",
+          );
         pollOption
           .querySelector("input")
           .setAttribute("value", pollOptionIndex);
@@ -2163,7 +2166,7 @@ You may also use the buttons on the message content editor to attach files/image
                 >
                   $${pollOption.votes.map(
                     (voteCourseParticipationPublicId: string) => {
-                      const courseConversationMessagePollOptionVoteCourseParticipation =
+                      const courseConversationMessageContentPollOptionVoteCourseParticipation =
                         application.database.get<{
                           user: number;
                           courseParticipationRole:
@@ -2180,8 +2183,8 @@ You may also use the buttons on the message content editor to attach files/image
                               "course" = ${course.id};
                           `,
                         );
-                      const courseConversationMessagePollOptionVoteUser =
-                        courseConversationMessagePollOptionVoteCourseParticipation !==
+                      const courseConversationMessageContentPollOptionVoteUser =
+                        courseConversationMessageContentPollOptionVoteCourseParticipation !==
                         undefined
                           ? application.database.get<{
                               publicId: string;
@@ -2215,7 +2218,7 @@ You may also use the buttons on the message content editor to attach files/image
                                   "avatarImage",
                                   "lastSeenOnlineAt"
                                 from "users"
-                                where "id" = ${courseConversationMessagePollOptionVoteCourseParticipation.user};
+                                where "id" = ${courseConversationMessageContentPollOptionVoteCourseParticipation.user};
                               `,
                             )
                           : undefined;
@@ -2228,7 +2231,7 @@ You may also use the buttons on the message content editor to attach files/image
                         >
                           $${application.partials.userAvatar({
                             user:
-                              courseConversationMessagePollOptionVoteUser ??
+                              courseConversationMessageContentPollOptionVoteUser ??
                               "courseParticipationDeleted",
                           })}
                           <div
@@ -2236,8 +2239,8 @@ You may also use the buttons on the message content editor to attach files/image
                               margin-top: var(--size--0-5);
                             `}"
                           >
-                            ${courseConversationMessagePollOptionVoteUser?.name ??
-                            "Deleted course participant"}$${courseConversationMessagePollOptionVoteCourseParticipation?.courseParticipationRole ===
+                            ${courseConversationMessageContentPollOptionVoteUser?.name ??
+                            "Deleted course participant"}$${courseConversationMessageContentPollOptionVoteCourseParticipation?.courseParticipationRole ===
                             "courseParticipationRoleInstructor"
                               ? html`<span
                                   css="${css`

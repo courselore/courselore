@@ -3355,16 +3355,16 @@ export default async (application: Application): Promise<void> => {
 
                       - [ ] Banana
                       - [ ] <votes>${(() => {
-                        const courseParticipationsForCourseConversationMessagePollOptionVotes =
+                        const courseParticipationsForcourseConversationMessageContentPollOptionVotes =
                           [...courseParticipations];
                         return JSON.stringify(
                           Array.from(
                             { length: 3 + Math.floor(Math.random() * 5) },
                             () =>
-                              courseParticipationsForCourseConversationMessagePollOptionVotes.splice(
+                              courseParticipationsForcourseConversationMessageContentPollOptionVotes.splice(
                                 Math.floor(
                                   Math.random() *
-                                    courseParticipationsForCourseConversationMessagePollOptionVotes.length,
+                                    courseParticipationsForcourseConversationMessageContentPollOptionVotes.length,
                                 ),
                                 1,
                               )[0].publicId,
@@ -3372,16 +3372,16 @@ export default async (application: Application): Promise<void> => {
                         );
                       })()}</votes> Pyjamas
                       - [ ] <votes>${(() => {
-                        const courseParticipationsForCourseConversationMessagePollOptionVotes =
+                        const courseParticipationsForcourseConversationMessageContentPollOptionVotes =
                           [...courseParticipations];
                         return JSON.stringify(
                           Array.from(
                             { length: 30 + Math.floor(Math.random() * 10) },
                             () =>
-                              courseParticipationsForCourseConversationMessagePollOptionVotes.splice(
+                              courseParticipationsForcourseConversationMessageContentPollOptionVotes.splice(
                                 Math.floor(
                                   Math.random() *
-                                    courseParticipationsForCourseConversationMessagePollOptionVotes.length,
+                                    courseParticipationsForcourseConversationMessageContentPollOptionVotes.length,
                                 ),
                                 1,
                               )[0].publicId,
