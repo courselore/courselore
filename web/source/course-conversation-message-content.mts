@@ -1016,6 +1016,12 @@ ${courseConversationMessageContent}</textarea
               `<video src="/${relativePath}" width="${Number(width) / 2}" height="${Number(height) / 2}"></video>`,
             );
             continue;
+          } else if (
+            attachment.mimeType === "audio/mpeg" ||
+            attachment.mimeType === "audio/x-wav"
+          ) {
+            markdown.push(`<audio src="/${relativePath}"></audio>`);
+            continue;
           }
         } catch (error) {
           request.log("ERROR", String(error));
