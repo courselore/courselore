@@ -2719,7 +2719,7 @@ You may also use the buttons on the message content editor to ${
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/polls/(?<courseConversationMessageContentPollIndex>[0-9]+)$",
     ),
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         { courseConversationMessageContentPollIndex: number },
         {},
