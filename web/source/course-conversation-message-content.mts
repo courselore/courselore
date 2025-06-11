@@ -1562,7 +1562,19 @@ const hello = "world";
                   courseConversationMessageContent: markdown`
 ---
 
-You may also use the buttons on the message content editor to attach files/images/videos, create polls, \`@mention\` other course participants, \`#refer\` to other conversations and messages, and preview the message before sending it.
+You may also use the buttons on the message content editor to ${
+                    !(
+                      Boolean(
+                        request.state.course
+                          .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+                      ) === false &&
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                        "courseParticipationRoleStudent"
+                    )
+                      ? "attach files/images/videos, "
+                      : ""
+                  }create polls, \`@mention\` other course participants, \`#refer\` to other conversations and messages, and preview the message before sending it.
 
 **Try it**
                   `,
