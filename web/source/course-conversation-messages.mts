@@ -158,6 +158,34 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/polls/(?<courseConversationMessageContentPollIndex>[0-9]+)$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        { courseConversationMessageContentPollIndex: number },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["CourseConversationMessage"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseConversation === undefined ||
+        request.state.courseConversationMessage === undefined
+      )
+        return;
+      // TODO
+      response.redirect(
+        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/like$",
     ),
     handler: (
