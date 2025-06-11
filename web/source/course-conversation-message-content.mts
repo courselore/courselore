@@ -829,10 +829,12 @@ export default async (application: Application): Promise<void> => {
           )
             ? html`
                 javascript="${javascript`
-                  this.ondragenter = () => {
+                  this.ondragenter = (event) => {
+                    event.preventDefault();
                     javascript.stateAdd(this, "dragging");
                   };
-                  this.ondragleave = () => {
+                  this.ondragleave = (event) => {
+                    event.preventDefault();
                     javascript.stateRemove(this, "dragging");
                   };
                   this.ondragover = (event) => {
