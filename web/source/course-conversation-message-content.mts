@@ -1744,7 +1744,8 @@ You may also use the buttons on the message content editor to ${
                   }
 
                   img,
-                  video {
+                  video,
+                  audio {
                     background-color: light-dark(
                       var(--color--white),
                       var(--color--white)
@@ -1904,7 +1905,7 @@ You may also use the buttons on the message content editor to ${
           ) ||
           (child.nodeType === child.ELEMENT_NODE &&
             (!child.matches(
-              "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, a, code, ins, del, sup, sub, br, img, video, ul, ol, li, input, poll, votes, blockquote, table, thead, tbody, tr, th, td, details, summary, pre",
+              "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, a, code, ins, del, sup, sub, br, img, video, audio, ul, ol, li, input, poll, votes, blockquote, table, thead, tbody, tr, th, td, details, summary, pre",
             ) ||
               (child.matches("a") &&
                 (() => {
@@ -1922,8 +1923,8 @@ You may also use the buttons on the message content editor to ${
                     return true;
                   }
                 })()) ||
-              (child.matches("img, video") &&
-                ((() => {
+              (child.matches("img, video, audio") &&
+                (() => {
                   try {
                     const url = new URL(
                       child.getAttribute("src"),
@@ -1935,9 +1936,10 @@ You may also use the buttons on the message content editor to ${
                   } catch {
                     return true;
                   }
-                })() ||
-                  (typeof child.getAttribute("width") === "string" &&
-                    !child.getAttribute("width").match(/^\d+$/)) ||
+                })()) ||
+              (child.matches("img, video") &&
+                ((typeof child.getAttribute("width") === "string" &&
+                  !child.getAttribute("width").match(/^\d+$/)) ||
                   (typeof child.getAttribute("height") === "string" &&
                     !child.getAttribute("height").match(/^\d+$/)))) ||
               (child.matches("ul, ol") &&
@@ -2030,10 +2032,9 @@ You may also use the buttons on the message content editor to ${
                   .match(
                     /^(?:language-math math-inline)|(?:language-math math-display)|(?:language-[a-z0-9\-+#]+)$/,
                   )) ||
+              (child.matches("img, video, audio") && attributeName === "src") ||
               (child.matches("img, video") &&
-                (attributeName === "src" ||
-                  attributeName === "width" ||
-                  attributeName === "height")) ||
+                (attributeName === "width" || attributeName === "height")) ||
               (child.matches("img") && attributeName === "alt") ||
               (child.matches("input") &&
                 (attributeName === "type" ||
@@ -2070,7 +2071,7 @@ You may also use the buttons on the message content editor to ${
         element.setAttribute("target", "_blank");
       element.setAttribute("class", "link");
     }
-    for (const element of document.querySelectorAll("img, video")) {
+    for (const element of document.querySelectorAll("img, video, audio")) {
       const url = new URL(
         element.getAttribute("src"),
         `https://${application.configuration.hostname}`,
@@ -2095,6 +2096,10 @@ You may also use the buttons on the message content editor to ${
         element.setAttribute("controls", "");
         element.setAttribute("preload", "metadata");
       }
+    for (const element of document.querySelectorAll("audio")) {
+      element.setAttribute("controls", "");
+      element.setAttribute("preload", "metadata");
+    }
     for (const element of document.querySelectorAll("input"))
       element.setAttribute("class", "input--checkbox");
     for (const [elementIndex, element] of [
