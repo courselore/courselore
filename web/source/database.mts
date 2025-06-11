@@ -3313,11 +3313,17 @@ export default async (application: Application): Promise<void> => {
 
                       <video src="/development/video-example.mp4"></video>
 
-                      # Image/Video Proxy
+                      # Audio
+
+                      <audio src="/development/audio-example.mp3"></audio>
+
+                      # Image/Video/Audio Proxy
 
                       ![Proxied image](https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg)
 
                       <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+
+                      <audio src="https://1cb2b4ea-084b-4282-9796-d397d4a2cc4d.mdnplay.dev/shared-assets/audio/t-rex-roar.mp3"></audio>
 
                       # Lists
 
