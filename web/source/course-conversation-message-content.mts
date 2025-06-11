@@ -1001,6 +1001,21 @@ ${courseConversationMessageContent}</textarea
               `[<img src="/${relativePath}.webp" width="${Math.floor(thumbnail.width / 2)}" height="${Math.floor(thumbnail.height / 2)}" />](/${relativePath})`,
             );
             continue;
+          } else if (attachment.mimeType === "video/mp4") {
+            const { width, height } = (
+              await util
+                .promisify(childProcess.execFile)(
+                  path.join(import.meta.dirname, "../node_modules/.bin/ffmpeg"),
+                  ["-i", absolutePath],
+                )
+                .catch((error) => error)
+            ).stderr.match(
+              /Video:.*?, (?<width>[0-9]+)x(?<height>[0-9]+),/,
+            )!.groups!;
+            markdown.push(
+              `<video src="/${relativePath}" width="${Number(width) / 2}" height="${Number(height) / 2}"></video>`,
+            );
+            continue;
           }
         } catch (error) {
           request.log("ERROR", String(error));
