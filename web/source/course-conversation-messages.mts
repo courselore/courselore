@@ -156,7 +156,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
-    method: "POST",
+    method: "PATCH",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/polls/(?<courseConversationMessageContentPollIndex>[0-9]+)$",
     ),

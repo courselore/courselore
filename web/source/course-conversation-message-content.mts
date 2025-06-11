@@ -2294,7 +2294,7 @@ You may also use the buttons on the message content editor to attach files/image
       element.outerHTML = html`
         <div
           type="form"
-          method="POST"
+          method="PATCH"
           action="/courses/${course.publicId}${courseConversation !== undefined
             ? `/conversations/${courseConversation.publicId}`
             : ""}${courseConversationMessage !== undefined
