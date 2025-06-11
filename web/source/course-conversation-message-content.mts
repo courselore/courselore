@@ -830,20 +830,23 @@ export default async (application: Application): Promise<void> => {
             ? html`
                 javascript="${javascript`
                   this.ondragenter = (event) => {
+                    if (!event.dataTransfer.types.includes("Files")) return;
                     event.preventDefault();
                     javascript.stateAdd(this, "dragging");
                   };
                   this.ondragleave = (event) => {
+                    if (!event.dataTransfer.types.includes("Files")) return;
                     event.preventDefault();
                     javascript.stateRemove(this, "dragging");
                   };
                   this.ondragover = (event) => {
+                    if (!event.dataTransfer.types.includes("Files")) return;
                     event.preventDefault();
                   };
                   this.ondrop = (event) => {
-                    javascript.stateRemove(this, "dragging");
                     if (event.dataTransfer.files.length === 0) return;
                     event.preventDefault();
+                    javascript.stateRemove(this, "dragging");
                     this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.dataTransfer.files;
                     this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(
                       new Event("change", {
