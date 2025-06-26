@@ -7,6 +7,7 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
+import rehypeRaw from "rehype-raw";
 import rehypeStringify from "rehype-stringify";
 import { DOMParser } from "linkedom";
 import GitHubSlugger from "github-slugger";
@@ -1633,6 +1634,7 @@ You may also use the buttons on the message content editor to ${
         .use(remarkGfm, { singleTilde: false })
         .use(remarkMath)
         .use(remarkRehype, { allowDangerousHtml: true, clobberPrefix: "" })
+        .use(rehypeRaw)
         .use(
           () =>
             function addPosition(root: any) {
@@ -1649,7 +1651,7 @@ You may also use the buttons on the message content editor to ${
                 }
             },
         )
-        .use(rehypeStringify, { allowDangerousHtml: true })
+        .use(rehypeStringify)
         .process(courseConversationMessageContent)
     ).value;
     if (typeof processedMarkdown !== "string") throw new Error();
