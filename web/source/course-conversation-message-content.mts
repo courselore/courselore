@@ -1633,15 +1633,22 @@ You may also use the buttons on the message content editor to ${
         .use(remarkGfm, { singleTilde: false })
         .use(remarkMath)
         .use(remarkRehype, { allowDangerousHtml: true, clobberPrefix: "" })
-        .use(() => (root: any) => {
-          if (Array.isArray(root?.children))
-            for (const node of root.children)
-              if (
-                typeof node.properties === "object" &&
-                typeof node.position === "object"
-              )
-                node.properties.dataPosition = JSON.stringify(node.position);
-        })
+        .use(
+          () =>
+            function addPosition(root: any) {
+              if (Array.isArray(root?.children))
+                for (const node of root.children) {
+                  if (
+                    typeof node.properties === "object" &&
+                    typeof node.position === "object"
+                  )
+                    node.properties.dataPosition = JSON.stringify(
+                      node.position,
+                    );
+                  addPosition(node);
+                }
+            },
+        )
         .use(rehypeStringify, { allowDangerousHtml: true })
         .process(courseConversationMessageContent)
     ).value;
@@ -2027,6 +2034,7 @@ You may also use the buttons on the message content editor to ${
         for (const attributeName of child.getAttributeNames())
           if (
             !(
+              attributeName === "data-position" ||
               (child.matches("a") && attributeName === "href") ||
               (child.matches("code") &&
                 attributeName === "class" &&
