@@ -172,6 +172,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.course === undefined ||
+        request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
         request.state.courseConversation === undefined ||
         request.state.courseConversationMessage === undefined
@@ -225,6 +226,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.course === undefined ||
+        request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
         request.state.courseConversation === undefined ||
         request.state.courseConversationMessage === undefined

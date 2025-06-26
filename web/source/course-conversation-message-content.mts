@@ -920,6 +920,7 @@ ${courseConversationMessageContent}</textarea
     ) => {
       if (
         request.state.course === undefined ||
+        request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
         (Boolean(
           request.state.course
@@ -1052,6 +1053,7 @@ ${courseConversationMessageContent}</textarea
     ) => {
       if (
         request.state.course === undefined ||
+        request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
         (typeof request.pathname.courseConversationPublicId === "string" &&
           request.state.courseConversation === undefined) ||
@@ -1095,6 +1097,7 @@ ${courseConversationMessageContent}</textarea
     ) => {
       if (
         request.state.course === undefined ||
+        request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined
       )
         return;
@@ -2731,6 +2734,7 @@ You may also use the buttons on the message content editor to ${
     ) => {
       if (
         request.state.course === undefined ||
+        request.state.course.courseState === "courseStateArchived" ||
         request.state.courseConversation === undefined ||
         request.state.courseConversationMessage === undefined
       )
