@@ -2442,15 +2442,26 @@ You may also use the buttons on the message content editor to ${
           strict: false,
         });
     }
-    for (const element of document.querySelectorAll('code[class^="language-"]'))
-      (element.parentElement.matches("pre")
+    for (const element of document.querySelectorAll(
+      'code[class^="language-"]',
+    )) {
+      const targetElement = element.parentElement.matches("pre")
         ? element.parentElement
-        : element
-      ).outerHTML = await shiki.codeToHtml(element.textContent, {
-        lang: element.getAttribute("class").slice("language-".length),
-        themes: { light: "light-plus", dark: "dark-plus" },
-        defaultColor: false,
-      });
+        : element;
+      targetElement.insertAdjacentHTML(
+        "afterend",
+        await shiki.codeToHtml(element.textContent, {
+          lang: element.getAttribute("class").slice("language-".length),
+          themes: { light: "light-plus", dark: "dark-plus" },
+          defaultColor: false,
+        }),
+      );
+      targetElement.nextElementSibling.setAttribute(
+        "data-position",
+        targetElement.getAttribute("data-position"),
+      );
+      targetElement.remove();
+    }
     {
       const githubSlugger = new GitHubSlugger();
       for (const element of document.querySelectorAll("[id]")) {
