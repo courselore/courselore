@@ -1642,7 +1642,10 @@ You may also use the buttons on the message content editor to ${
                 typeof root.properties === "object" &&
                 typeof root.position === "object"
               )
-                root.properties.dataPosition = JSON.stringify(root.position);
+                root.properties.dataPosition = JSON.stringify({
+                  start: root.position.start.offset,
+                  end: root.position.end.offset,
+                });
               if (Array.isArray(root.children))
                 for (const node of root.children) addPosition(node);
             },
