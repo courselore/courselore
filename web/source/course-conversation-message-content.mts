@@ -1637,18 +1637,14 @@ You may also use the buttons on the message content editor to ${
         .use(rehypeRaw)
         .use(
           () =>
-            function addPosition(root: any) {
-              if (Array.isArray(root?.children))
-                for (const node of root.children) {
-                  if (
-                    typeof node.properties === "object" &&
-                    typeof node.position === "object"
-                  )
-                    node.properties.dataPosition = JSON.stringify(
-                      node.position,
-                    );
-                  addPosition(node);
-                }
+            function addPosition(root: any): void {
+              if (
+                typeof root.properties === "object" &&
+                typeof root.position === "object"
+              )
+                root.properties.dataPosition = JSON.stringify(root.position);
+              if (Array.isArray(root.children))
+                for (const node of root.children) addPosition(node);
             },
         )
         .use(rehypeStringify)
@@ -2388,7 +2384,7 @@ You may also use the buttons on the message content editor to ${
           >
             <i class="bi bi-chevron-right"></i>
           </span>
-          <span> </span>
+          <span></span>
         `,
       );
     }
