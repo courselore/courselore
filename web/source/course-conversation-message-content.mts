@@ -2125,9 +2125,19 @@ You may also use the buttons on the message content editor to ${
         votesElement?.remove();
         pollOption.votes =
           votesElement === null ? [] : JSON.parse(votesElement.textContent);
+        pollOption.setAttribute("data-votes", JSON.stringify(pollOption.votes));
         pollOption.setAttribute(
-          "data-position-votes",
-          votesElement?.getAttribute("data-position") ?? "undefined",
+          "data-votes-position",
+          votesElement?.getAttribute("data-position") ??
+            (() => {
+              const position = JSON.parse(
+                pollOption.getAttribute("data-position"),
+              );
+              return JSON.stringify({
+                start: position.start + "- [ ]".length,
+                end: position.start + "- [ ]".length,
+              });
+            })(),
         );
         votesCount += pollOption.votes.length;
         pollOption
@@ -2748,22 +2758,96 @@ You may also use the buttons on the message content editor to ${
     ),
     handler: async (
       request: serverTypes.Request<
-        { courseConversationMessageContentPollIndex: number },
+        { courseConversationMessageContentPollIndex: string },
         {},
         {},
-        {},
+        { courseConversationMessageContentPollOptions: string[] },
         Application["types"]["states"]["CourseConversationMessage"]
       >,
       response,
     ) => {
       if (
+        typeof request.pathname.courseConversationMessageContentPollIndex !==
+          "string" ||
         request.state.course === undefined ||
         request.state.course.courseState === "courseStateArchived" ||
+        request.state.courseParticipation === undefined ||
         request.state.courseConversation === undefined ||
         request.state.courseConversationMessage === undefined
       )
         return;
-      // TODO
+      request.body.courseConversationMessageContentPollOptions ??= [];
+      if (
+        !Array.isArray(
+          request.body.courseConversationMessageContentPollOptions,
+        ) ||
+        request.body.courseConversationMessageContentPollOptions.length === 0 ||
+        request.body.courseConversationMessageContentPollOptions.some(
+          (courseConversationMessageContentPollOption) =>
+            !courseConversationMessageContentPollOption.match(/^[0-9]+$/),
+        )
+      )
+        throw "validation";
+      const document = new DOMParser()
+        .parseFromString(
+          html`
+            <!doctype html>
+            <html>
+              <body>
+                $${await application.partials.courseConversationMessageContentProcessor(
+                  {
+                    course: request.state.course,
+                    courseParticipation: request.state.courseParticipation,
+                    courseConversation: request.state.courseConversation,
+                    courseConversationMessage:
+                      request.state.courseConversationMessage,
+                  },
+                )}
+              </body>
+            </html>
+          `,
+          "text/html",
+        )
+        .querySelector("div");
+      for (const [
+        courseConversationMessageContentPollOptionIndex,
+        courseConversationMessageContentPollOption,
+      ] of [
+        document
+          .querySelectorAll('[type~="poll"]')
+          [
+            Number(request.pathname.courseConversationMessageContentPollIndex)
+          ]?.querySelectorAll("[data-votes]") ?? [],
+      ]
+        .reverse()
+        .entries()) {
+        const votes = new Set(
+          JSON.parse(
+            courseConversationMessageContentPollOption.getAttribute(
+              "data-votes",
+            ),
+          ),
+        );
+        if (
+          request.body.courseConversationMessageContentPollOptions.includes(
+            String(courseConversationMessageContentPollOptionIndex),
+          )
+        )
+          votes.add(request.state.courseParticipation.publicId);
+        else votes.delete(request.state.courseParticipation.publicId);
+        const position = JSON.parse(
+          courseConversationMessageContentPollOption.getAttribute(
+            "data-votes-position",
+          ),
+        );
+        request.state.courseConversationMessage.content =
+          request.state.courseConversationMessage.content.slice(
+            0,
+            position.start,
+          ) +
+          html`<votes>${JSON.stringify([...votes])}</votes>` +
+          request.state.courseConversationMessage.content.slice(position.end);
+      }
       response.redirect(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
