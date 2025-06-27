@@ -2125,6 +2125,10 @@ You may also use the buttons on the message content editor to ${
         votesElement?.remove();
         pollOption.votes =
           votesElement === null ? [] : JSON.parse(votesElement.textContent);
+        pollOption.setAttribute(
+          "data-position-votes",
+          votesElement?.getAttribute("data-position") ?? "undefined",
+        );
         votesCount += pollOption.votes.length;
         pollOption
           .querySelector("input")
@@ -2346,7 +2350,7 @@ You may also use the buttons on the message content editor to ${
         );
       element.outerHTML = html`
         <div
-          type="form"
+          type="form poll"
           method="PATCH"
           action="/courses/${course.publicId}${courseConversation !== undefined
             ? `/conversations/${courseConversation.publicId}`
