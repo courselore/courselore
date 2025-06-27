@@ -2770,7 +2770,7 @@ You may also use the buttons on the message content editor to ${
         typeof request.pathname.courseConversationMessageContentPollIndex !==
           "string" ||
         request.state.course === undefined ||
-        request.state.course.courseState === "courseStateArchived" ||
+        request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
         request.state.courseConversation === undefined ||
         request.state.courseConversationMessage === undefined
