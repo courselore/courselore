@@ -21,6 +21,8 @@ import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import { dedent as markdown } from "@radically-straightforward/utilities";
+import * as utilities from "@radically-straightforward/utilities";
+import natural from "natural";
 import { Application } from "./index.mjs";
 
 export type ApplicationCourseConversationMessageContent = {
@@ -2863,6 +2865,21 @@ You may also use the buttons on the message content editor to ${
           html`<votes>${JSON.stringify([...votes])}</votes>` +
           request.state.courseConversationMessage.content.slice(position.end);
       }
+      application.database.run(
+        sql`
+          update "courseConversationMessages"
+          set
+            "content" = ${request.state.courseConversationMessage.content},
+            "contentSearch" = ${utilities
+              .tokenize(request.state.courseConversationMessage.content, {
+                stopWords: application.privateConfiguration.stopWords,
+                stem: (token) => natural.PorterStemmer.stem(token),
+              })
+              .map((tokenWithPosition) => tokenWithPosition.token)
+              .join(" ")}
+          where "id" = ${request.state.courseConversationMessage.id};
+        `,
+      );
       response.redirect(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
