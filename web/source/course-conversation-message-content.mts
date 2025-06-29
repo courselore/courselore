@@ -2828,11 +2828,11 @@ You may also use the buttons on the message content editor to ${
         courseConversationMessageContentPollOptionIndex,
         courseConversationMessageContentPollOption,
       ] of [
-        document
+        ...(document
           .querySelectorAll('[type~="poll"]')
           [
             Number(request.pathname.courseConversationMessageContentPollIndex)
-          ]?.querySelectorAll("[data-votes]") ?? [],
+          ]?.querySelectorAll("[data-votes]") ?? []),
       ]
         .reverse()
         .entries()) {
