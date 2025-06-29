@@ -63,7 +63,7 @@ export type ApplicationCourseConversationMessageContent = {
       courseConversation,
       courseConversationMessage,
       courseConversationMessageContent,
-      preview,
+      mode,
     }: {
       course: {
         id: number;
@@ -86,7 +86,10 @@ export type ApplicationCourseConversationMessageContent = {
         content: string;
       };
       courseConversationMessageContent?: string;
-      preview?: boolean;
+      mode?:
+        | "normal"
+        | "preview"
+        | "programmaticEditingOfCourseConversationMessageContent";
     }) => Promise<HTML>;
   };
 };
@@ -1075,7 +1078,7 @@ ${courseConversationMessageContent}</textarea
           courseConversation: request.state.courseConversation,
           courseConversationMessage: request.state.courseConversationMessage,
           courseConversationMessageContent: request.body.content,
-          preview: true,
+          mode: "preview",
         }),
       );
     },
@@ -1577,7 +1580,7 @@ const hello = "world";
 </tbody>
 </table>
                   `,
-                  preview: true,
+                  mode: "preview",
                 },
               )}
               $${await application.partials.courseConversationMessageContentProcessor(
@@ -1603,7 +1606,7 @@ You may also use the buttons on the message content editor to ${
 
 **Try it**
                   `,
-                  preview: true,
+                  mode: "preview",
                 },
               )}
               $${application.partials.courseConversationMessageContentEditor({
@@ -1626,7 +1629,7 @@ You may also use the buttons on the message content editor to ${
       (() => {
         throw new Error();
       })(),
-    preview = false,
+    mode = "normal",
   }) => {
     const processedMarkdown = (
       await unified()
@@ -2152,7 +2155,7 @@ You may also use the buttons on the message content editor to ${
         pollOption.querySelector("input").setAttribute("required", "");
         if (pollOption.votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
-        if (!preview && course.courseState === "courseStateActive") {
+        if (mode === "normal" && course.courseState === "courseStateActive") {
           pollOption.innerHTML = html`
             <label
               class="button button--rectangle button--transparent"
@@ -2331,7 +2334,7 @@ You may also use the buttons on the message content editor to ${
             `,
           );
         }
-      if (!preview && course.courseState === "courseStateActive")
+      if (mode === "normal" && course.courseState === "courseStateActive")
         element.insertAdjacentHTML(
           "beforeend",
           html`
@@ -2801,6 +2804,7 @@ You may also use the buttons on the message content editor to ${
                     courseConversation: request.state.courseConversation,
                     courseConversationMessage:
                       request.state.courseConversationMessage,
+                    mode: "programmaticEditingOfCourseConversationMessageContent",
                   },
                 )}
               </body>
