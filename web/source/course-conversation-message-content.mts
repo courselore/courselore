@@ -2141,10 +2141,15 @@ You may also use the buttons on the message content editor to ${
                 const position = JSON.parse(
                   pollOption.getAttribute("data-position"),
                 );
-                return JSON.stringify({
-                  start: position.start + "- [ ]".length,
-                  end: position.start + "- [ ]".length,
-                });
+                const votesStart =
+                  position.start +
+                  (courseConversationMessageContent
+                    .slice(position.start)
+                    .match(/^-\s+\[[\sx]+\]\s+/)?.[0]?.length ??
+                    (() => {
+                      throw new Error();
+                    })());
+                return JSON.stringify({ start: votesStart, end: votesStart });
               })(),
           );
         }
