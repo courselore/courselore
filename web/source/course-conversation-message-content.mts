@@ -2128,20 +2128,25 @@ You may also use the buttons on the message content editor to ${
         votesElement?.remove();
         pollOption.votes =
           votesElement === null ? [] : JSON.parse(votesElement.textContent);
-        pollOption.setAttribute("data-votes", JSON.stringify(pollOption.votes));
-        pollOption.setAttribute(
-          "data-votes-position",
-          votesElement?.getAttribute("data-position") ??
-            (() => {
-              const position = JSON.parse(
-                pollOption.getAttribute("data-position"),
-              );
-              return JSON.stringify({
-                start: position.start + "- [ ]".length,
-                end: position.start + "- [ ]".length,
-              });
-            })(),
-        );
+        if (mode === "programmaticEditingOfCourseConversationMessageContent") {
+          pollOption.setAttribute(
+            "data-votes",
+            JSON.stringify(pollOption.votes),
+          );
+          pollOption.setAttribute(
+            "data-votes-position",
+            votesElement?.getAttribute("data-position") ??
+              (() => {
+                const position = JSON.parse(
+                  pollOption.getAttribute("data-position"),
+                );
+                return JSON.stringify({
+                  start: position.start + "- [ ]".length,
+                  end: position.start + "- [ ]".length,
+                });
+              })(),
+          );
+        }
         votesCount += pollOption.votes.length;
         pollOption
           .querySelector("input")
