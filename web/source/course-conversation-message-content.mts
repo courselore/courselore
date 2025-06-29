@@ -1643,7 +1643,8 @@ You may also use the buttons on the message content editor to ${
             function addPosition(root: any): void {
               if (
                 typeof root.properties === "object" &&
-                typeof root.position === "object"
+                typeof root.position?.start?.offset === "number" &&
+                typeof root.position?.end?.offset === "number"
               )
                 root.properties.dataPosition = JSON.stringify({
                   start: root.position.start.offset,
