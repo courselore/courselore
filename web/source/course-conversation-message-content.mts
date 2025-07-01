@@ -2128,33 +2128,10 @@ You may also use the buttons on the message content editor to ${
         ...element.children[0].children,
       ].entries()) {
         const votesElement = pollOption.querySelector("votes");
-        votesElement?.remove();
+        if (mode !== "programmaticEditingOfCourseConversationMessageContent")
+          votesElement?.remove();
         pollOption.votes =
           votesElement === null ? [] : JSON.parse(votesElement.textContent);
-        if (mode === "programmaticEditingOfCourseConversationMessageContent") {
-          pollOption.setAttribute(
-            "data-votes",
-            JSON.stringify(pollOption.votes),
-          );
-          pollOption.setAttribute(
-            "data-votes-position",
-            votesElement?.getAttribute("data-position") ??
-              (() => {
-                const position = JSON.parse(
-                  pollOption.getAttribute("data-position"),
-                );
-                const votesStart =
-                  position.start +
-                  (courseConversationMessageContent
-                    .slice(position.start)
-                    .match(/^-\s+\[[\sx]+\]\s+/)?.[0]?.length ??
-                    (() => {
-                      throw new Error();
-                    })());
-                return JSON.stringify({ start: votesStart, end: votesStart });
-              })(),
-          );
-        }
         votesCount += pollOption.votes.length;
         pollOption
           .querySelector("input")
@@ -2835,14 +2812,12 @@ You may also use the buttons on the message content editor to ${
             .querySelectorAll('[type~="poll"]')
             [
               Number(request.pathname.courseConversationMessageContentPollIndex)
-            ]?.querySelectorAll("[data-votes]") ?? []
+            ]?.querySelectorAll(":scope > ul > li") ?? []
         ).entries(),
       ].reverse()) {
         const votes = new Set(
           JSON.parse(
-            courseConversationMessageContentPollOption.getAttribute(
-              "data-votes",
-            ),
+            courseConversationMessageContentPollOption.querySelector("votes")?.textContent ?? "[]",
           ),
         );
         if (
