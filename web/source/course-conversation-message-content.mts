@@ -2815,10 +2815,12 @@ You may also use the buttons on the message content editor to ${
             ]?.querySelectorAll(":scope > ul > li") ?? []
         ).entries(),
       ].reverse()) {
+        const votesElement =
+          courseConversationMessageContentPollOption.querySelector("votes");
         const votes = new Set(
-          JSON.parse(
-            courseConversationMessageContentPollOption.querySelector("votes")?.textContent ?? "[]",
-          ),
+          votesElement !== null
+            ? JSON.parse(votesElement.textContent)
+            : undefined,
         );
         if (
           request.body.courseConversationMessageContentPollOptions.includes(
@@ -2827,11 +2829,25 @@ You may also use the buttons on the message content editor to ${
         )
           votes.add(request.state.courseParticipation.publicId);
         else votes.delete(request.state.courseParticipation.publicId);
-        const position = JSON.parse(
-          courseConversationMessageContentPollOption.getAttribute(
-            "data-votes-position",
-          ),
-        );
+        const position =
+          votesElement !== null
+            ? JSON.parse(votesElement.getAttribute("data-position"))
+            : (() => {
+                const position = JSON.parse(
+                  courseConversationMessageContentPollOption.getAttribute(
+                    "data-position",
+                  ),
+                );
+                const votesStart =
+                  position.start +
+                  (request.state.courseConversationMessage.content
+                    .slice(position.start)
+                    .match(/^-\s+\[[\sx]+\]\s+/)?.[0]?.length ??
+                    (() => {
+                      throw new Error();
+                    })());
+                return { start: votesStart, end: votesStart };
+              })();
         request.state.courseConversationMessage.content =
           request.state.courseConversationMessage.content.slice(
             0,
