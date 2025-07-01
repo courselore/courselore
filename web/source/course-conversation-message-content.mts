@@ -2830,14 +2830,14 @@ You may also use the buttons on the message content editor to ${
         courseConversationMessageContentPollOptionIndex,
         courseConversationMessageContentPollOption,
       ] of [
-        ...(document
-          .querySelectorAll('[type~="poll"]')
-          [
-            Number(request.pathname.courseConversationMessageContentPollIndex)
-          ]?.querySelectorAll("[data-votes]") ?? []),
-      ]
-        .reverse()
-        .entries()) {
+        ...(
+          document
+            .querySelectorAll('[type~="poll"]')
+            [
+              Number(request.pathname.courseConversationMessageContentPollIndex)
+            ]?.querySelectorAll("[data-votes]") ?? []
+        ).entries(),
+      ].reverse()) {
         const votes = new Set(
           JSON.parse(
             courseConversationMessageContentPollOption.getAttribute(
