@@ -4449,24 +4449,40 @@ export default async (application: Application): Promise<void> => {
                         };
                       `}"
                     >
-                      $${application.partials.courseConversationMessageContentEditor(
-                        {
-                          course: request.state.course,
-                          courseParticipation:
-                            request.state.courseParticipation,
-                          courseConversation: request.state.courseConversation,
-                          courseConversationMessageContent:
-                            application.database.get<{ content: string }>(
-                              sql`
+                      <div
+                        javascript="${javascript`
+                          this.isModified = false;
+                          this.onchange = utilities.foregroundJob(async () => {
+                            await fetch(${`/courses/${
+                              request.state.course.publicId
+                            }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {
+                              method: "POST",
+                              headers: { "CSRF-Protection": "true" },
+                              body: new URLSearchParams(javascript.serialize(this)),
+                            });
+                          });
+                        `}"
+                      >
+                        $${application.partials.courseConversationMessageContentEditor(
+                          {
+                            course: request.state.course,
+                            courseParticipation:
+                              request.state.courseParticipation,
+                            courseConversation:
+                              request.state.courseConversation,
+                            courseConversationMessageContent:
+                              application.database.get<{ content: string }>(
+                                sql`
                                 select "content"
                                 from "courseConversationMessageDrafts"
                                 where
                                   "courseConversation" = ${request.state.courseConversation.id} and
                                   "createdByCourseParticipation" = ${request.state.courseParticipation.id};
                               `,
-                            )?.content,
-                        },
-                      )}
+                              )?.content,
+                          },
+                        )}
+                      </div>
                       <div
                         css="${css`
                           font-size: var(--font-size--3);

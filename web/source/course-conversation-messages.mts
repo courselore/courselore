@@ -40,6 +40,60 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/draft$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { content: string },
+        Application["types"]["states"]["CourseConversation"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.course.courseState !== "courseStateActive" ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseConversation === undefined
+      )
+        return;
+      if (typeof request.body.content !== "string") throw "validation";
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            delete from "courseConversationMessageDrafts"
+            where
+              "courseConversation" = ${request.state.courseConversation!.id} and
+              "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        if (request.body.content!.trim() !== "")
+          application.database.run(
+            sql`
+              insert into "courseConversationMessageDrafts" (
+                "courseConversation",
+                "createdByCourseParticipation",
+                "createdAt",
+                "content"
+              )
+              values (
+                ${request.state.courseConversation!.id},
+                ${request.state.courseParticipation!.id},
+                ${new Date().toISOString()},
+                ${request.body.content}
+              );
+            `,
+          );
+      });
+      response.end();
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages$",
     ),
     handler: (
