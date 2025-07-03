@@ -4516,12 +4516,10 @@ export default async (application: Application): Promise<void> => {
                                         );
                                         if (user === undefined)
                                           throw new Error();
-                                        return html`
-                                          ${user.name}${courseParticipation.courseParticipationRole ===
-                                          "courseParticipationRoleInstructor"
-                                            ? " (instructor)"
-                                            : ""}
-                                        `;
+                                        return html`${user.name}${courseParticipation.courseParticipationRole ===
+                                        "courseParticipationRoleInstructor"
+                                          ? " (instructor)"
+                                          : ""}`;
                                       })
                                       .join(", ")}
                                   </div>
