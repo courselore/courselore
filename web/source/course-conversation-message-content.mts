@@ -91,6 +91,7 @@ export type ApplicationCourseConversationMessageContent = {
       mode?:
         | "normal"
         | "preview"
+        | "textContent"
         | "programmaticEditingOfCourseConversationMessageContent";
     }) => Promise<HTML>;
   };
@@ -2162,14 +2163,15 @@ You may also use the buttons on the message content editor to ${
         }
       }
       if (
-        courseParticipation.courseParticipationRole ===
+        mode !== "textContent" &&
+        (courseParticipation.courseParticipationRole ===
           "courseParticipationRoleInstructor" ||
-        courseParticipation.id ===
-          courseConversationMessage?.createdByCourseParticipation ||
-        element.querySelector("input:checked") !== null ||
-        course.courseState === "courseStateArchived"
+          courseParticipation.id ===
+            courseConversationMessage?.createdByCourseParticipation ||
+          element.querySelector("input:checked") !== null ||
+          course.courseState === "courseStateArchived")
       )
-        for (const pollOption of element.children[0].children) {
+        for (const pollOption of element.children[0].children)
           pollOption.insertAdjacentHTML(
             "beforeend",
             html`
@@ -2323,7 +2325,6 @@ You may also use the buttons on the message content editor to ${
               </details>
             `,
           );
-        }
       if (mode === "normal" && course.courseState === "courseStateActive")
         element.insertAdjacentHTML(
           "beforeend",
@@ -2365,12 +2366,13 @@ You may also use the buttons on the message content editor to ${
         </div>
       `;
     }
-    for (const element of document.querySelectorAll("details"))
-      if (!element.firstElementChild.matches("summary"))
-        element.insertAdjacentHTML(
-          "afterbegin",
-          html`<summary>See more</summary>`,
-        );
+    if (mode !== "textContent")
+      for (const element of document.querySelectorAll("details"))
+        if (!element.firstElementChild.matches("summary"))
+          element.insertAdjacentHTML(
+            "afterbegin",
+            html`<summary>See more</summary>`,
+          );
     for (const element of document.querySelectorAll("summary")) {
       element.setAttribute(
         "class",
@@ -2437,20 +2439,24 @@ You may also use the buttons on the message content editor to ${
     }
     {
       const katexMacros = {};
-      for (const element of document.querySelectorAll("code.language-math"))
-        (element.matches(".math-display") &&
-        element.parentElement.matches("pre")
-          ? element.parentElement
-          : element
-        ).outerHTML = katex.renderToString(element.textContent, {
-          displayMode: element.matches(".math-display"),
-          output: "html",
-          throwOnError: false,
-          macros: katexMacros,
-          maxSize: 25,
-          maxExpand: 10,
-          strict: false,
-        });
+      for (const element of document.querySelectorAll("code.language-math")) {
+        const targetElement =
+          element.matches(".math-display") &&
+          element.parentElement.matches("pre")
+            ? element.parentElement
+            : element;
+        if (mode !== "textContent")
+          targetElement.outerHTML = katex.renderToString(element.textContent, {
+            displayMode: element.matches(".math-display"),
+            output: "html",
+            throwOnError: false,
+            macros: katexMacros,
+            maxSize: 25,
+            maxExpand: 10,
+            strict: false,
+          });
+        else targetElement.remove();
+      }
     }
     for (const element of document.querySelectorAll(
       'code[class^="language-"]',
@@ -2741,7 +2747,7 @@ You may also use the buttons on the message content editor to ${
       if (mentionCourseConversationMessage === undefined) continue;
       element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
     }
-    return document.outerHTML;
+    return mode !== "textContent" ? document.outerHTML : document.textContent;
   };
 
   application.server?.push({
