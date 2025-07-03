@@ -2021,7 +2021,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/conversations$"),
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {},
@@ -2124,6 +2124,13 @@ export default async (application: Application): Promise<void> => {
         pinned: number;
         title: string;
       };
+      const contentTextContent =
+        await application.partials.courseConversationMessageContentProcessor({
+          course: request.state.course,
+          courseParticipation: request.state.courseParticipation,
+          courseConversationMessageContent: request.body.content,
+          mode: "textContent",
+        });
       application.database.executeTransaction(() => {
         courseConversation = application.database.get<{
           id: number;
@@ -2217,7 +2224,7 @@ export default async (application: Application): Promise<void> => {
               ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
               ${request.body.content},
               ${utilities
-                .tokenize(request.body.content!, {
+                .tokenize(contentTextContent, {
                   stopWords: application.privateConfiguration.stopWords,
                   stem: (token) => natural.PorterStemmer.stem(token),
                 })
