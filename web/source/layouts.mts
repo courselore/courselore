@@ -299,7 +299,8 @@ export default async (application: Application): Promise<void> => {
               `
             : css``}"
       javascript="${javascript`
-        javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
+        if (${response.statusCode === 200})
+          javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
       `}"
     >
       <head>
