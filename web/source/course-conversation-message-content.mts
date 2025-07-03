@@ -72,7 +72,7 @@ export type ApplicationCourseConversationMessageContent = {
         publicId: string;
         courseState: "courseStateActive" | "courseStateArchived";
       };
-      courseParticipation: {
+      courseParticipation?: {
         id: number;
         publicId: string;
         courseParticipationRole:
@@ -2144,7 +2144,10 @@ You may also use the buttons on the message content editor to ${
           .querySelector("input")
           .setAttribute("value", pollOptionIndex);
         pollOption.querySelector("input").setAttribute("required", "");
-        if (pollOption.votes.includes(courseParticipation.publicId))
+        if (
+          courseParticipation !== undefined &&
+          pollOption.votes.includes(courseParticipation.publicId)
+        )
           pollOption.querySelector("input").setAttribute("checked", "");
         if (mode === "normal" && course.courseState === "courseStateActive") {
           pollOption.innerHTML = html`
@@ -2164,10 +2167,11 @@ You may also use the buttons on the message content editor to ${
       }
       if (
         mode !== "textContent" &&
-        (courseParticipation.courseParticipationRole ===
-          "courseParticipationRoleInstructor" ||
-          courseParticipation.id ===
-            courseConversationMessage?.createdByCourseParticipation ||
+        ((courseParticipation !== undefined &&
+          (courseParticipation.courseParticipationRole ===
+            "courseParticipationRoleInstructor" ||
+            courseParticipation.id ===
+              courseConversationMessage?.createdByCourseParticipation)) ||
           element.querySelector("input:checked") !== null ||
           course.courseState === "courseStateArchived")
       )
@@ -2579,7 +2583,8 @@ You may also use the buttons on the message content editor to ${
                 );
                 if (mentionUser === undefined) throw new Error();
                 return html`<strong
-                  $${courseParticipation.id === mentionCourseParticipation.id
+                  $${courseParticipation !== undefined &&
+                  courseParticipation.id === mentionCourseParticipation.id
                     ? html`class="highlight"`
                     : html``}
                   >@${mentionUser.name}${mentionCourseParticipation.courseParticipationRole ===
@@ -2612,21 +2617,29 @@ You may also use the buttons on the message content editor to ${
                       "course" = ${course.id} and (
                         "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
                         $${
+                          courseParticipation !== undefined &&
                           courseParticipation.courseParticipationRole ===
-                          "courseParticipationRoleInstructor"
+                            "courseParticipationRoleInstructor"
                             ? sql`
                                 or
                                 "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
                               `
                             : sql``
                         }
-                        or (
-                          select true
-                          from "courseConversationParticipations"
-                          where
-                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                            "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
-                        )
+                        $${
+                          courseParticipation !== undefined
+                            ? sql`
+                                or (
+                                  select true
+                                  from "courseConversationParticipations"
+                                  where
+                                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                    "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                                )
+                              `
+                            : sql``
+                        }
+                        
                       );
                   `,
                 );
@@ -2647,11 +2660,12 @@ You may also use the buttons on the message content editor to ${
                       where
                         "publicId" = ${courseConversationMessagePublicId} and
                         "courseConversation" = ${mentionCourseConversation.id} $${
-                          courseParticipation.courseParticipationRole !==
-                          "courseParticipationRoleInstructor"
+                          courseParticipation === undefined ||
+                          courseParticipation.courseParticipationRole ===
+                            "courseParticipationRoleStudent"
                             ? sql`
                                 and
-                                "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone'
                               `
                             : sql``
                         };
@@ -2702,21 +2716,28 @@ You may also use the buttons on the message content editor to ${
             "course" = ${course.id} and (
               "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
               $${
+                courseParticipation !== undefined &&
                 courseParticipation.courseParticipationRole ===
-                "courseParticipationRoleInstructor"
+                  "courseParticipationRoleInstructor"
                   ? sql`
                       or
                       "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
                     `
                   : sql``
               }
-              or (
-                select true
-                from "courseConversationParticipations"
-                where
-                  "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                  "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
-              )
+              $${
+                courseParticipation !== undefined
+                  ? sql`
+                      or (
+                        select true
+                        from "courseConversationParticipations"
+                        where
+                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                          "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                      )
+                    `
+                  : sql``
+              }
             );
         `,
       );
@@ -2734,11 +2755,12 @@ You may also use the buttons on the message content editor to ${
           where
             "publicId" = ${match.groups.courseConversationMessagePublicId} and
             "courseConversation" = ${mentionCourseConversation.id} $${
-              courseParticipation.courseParticipationRole !==
-              "courseParticipationRoleInstructor"
+              courseParticipation === undefined ||
+              courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleStudent"
                 ? sql`
                     and
-                    "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                    "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone'
                   `
                 : sql``
             };

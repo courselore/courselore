@@ -2127,7 +2127,6 @@ export default async (application: Application): Promise<void> => {
       const contentTextContent =
         await application.partials.courseConversationMessageContentProcessor({
           course: request.state.course,
-          courseParticipation: request.state.courseParticipation,
           courseConversationMessageContent: request.body.content,
           mode: "textContent",
         });

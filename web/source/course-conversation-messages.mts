@@ -174,8 +174,6 @@ export default async (application: Application): Promise<void> => {
       const contentTextContent =
         await application.partials.courseConversationMessageContentProcessor({
           course: request.state.course,
-          courseParticipation: request.state.courseParticipation,
-          courseConversation: request.state.courseConversation,
           courseConversationMessageContent: request.body.content,
           mode: "textContent",
         });
