@@ -4449,6 +4449,86 @@ export default async (application: Application): Promise<void> => {
                         };
                       `}"
                     >
+                      $${request.state.courseParticipation
+                        .courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                        ? (() => {
+                            const drafts = application.database.all<{
+                              createdByCourseParticipation: number;
+                            }>(
+                              sql`
+                                select "createdByCourseParticipation"
+                                from "courseConversationMessageDrafts"
+                                where
+                                  "courseConversation" = ${request.state.courseConversation.id} and
+                                  "createdByCourseParticipation" != ${request.state.courseParticipation.id} and
+                                  ${new Date(Date.now() - 2 * 60 * 1000).toISOString()} < "createdAt"
+                                order by "createdAt" asc;
+                              `,
+                            );
+                            return 0 < drafts.length
+                              ? html`
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--green--500),
+                                        var(--color--green--500)
+                                      );
+                                    `}"
+                                  >
+                                    <span
+                                      css="${css`
+                                        font-weight: 600;
+                                      `}"
+                                      >Typing:</span
+                                    >
+                                    $${drafts
+                                      .map((draft) => {
+                                        const courseParticipation =
+                                          application.database.get<{
+                                            user: number;
+                                            courseParticipationRole:
+                                              | "courseParticipationRoleInstructor"
+                                              | "courseParticipationRoleStudent";
+                                          }>(
+                                            sql`
+                                              select
+                                                "user",
+                                                "courseParticipationRole"
+                                              from "courseParticipations"
+                                              where "id" = ${draft.createdByCourseParticipation};
+                                            `,
+                                          );
+                                        if (courseParticipation === undefined)
+                                          throw new Error();
+                                        const user = application.database.get<{
+                                          name: string;
+                                        }>(
+                                          sql`
+                                              select "name"
+                                              from "users"
+                                              where "id" = ${courseParticipation.user};
+                                            `,
+                                        );
+                                        if (user === undefined)
+                                          throw new Error();
+                                        return html`
+                                          ${user.name}${courseParticipation.courseParticipationRole ===
+                                          "courseParticipationRoleInstructor"
+                                            ? " (instructor)"
+                                            : ""}
+                                        `;
+                                      })
+                                      .join(", ")}
+                                  </div>
+                                `
+                              : html``;
+                          })()
+                        : html``}
                       <div
                         javascript="${javascript`
                           this.isModified = false;
