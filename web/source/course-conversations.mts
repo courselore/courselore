@@ -3559,6 +3559,9 @@ export default async (application: Application): Promise<void> => {
                               .state.course!.publicId}/conversations/${request
                               .state.courseConversation!
                               .publicId}/messages/${courseConversationMessage.publicId}"
+                            data-content="${JSON.stringify(
+                              courseConversationMessage.content,
+                            )}"
                             css="${css`
                               display: flex;
                               gap: var(--size--2);
@@ -3881,8 +3884,14 @@ export default async (application: Application): Promise<void> => {
                                             type="button"
                                             class="button button--rectangle button--transparent button--dropdown-menu"
                                             javascript="${javascript`
-                                              this.onclick = async () => {
-                                                alert("TODO");
+                                              this.onclick = () => {
+                                                const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--textarea"]');
+                                                element.focus();
+                                                element.click();
+                                                const previousSelectionEnd = element.selectionEnd;
+                                                element.selectionStart = element.selectionEnd;
+                                                document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + ${`> Reply to #${request.state.courseConversation!.publicId}/${courseConversationMessage.publicId}\n>\n> `} + JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).replaceAll("\\n", "\\n> ") + "\\n\\n");
+                                                element.selectionEnd = previousSelectionEnd;
                                               };
                                             `}"
                                           >
