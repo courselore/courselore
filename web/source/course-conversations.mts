@@ -3997,6 +3997,20 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <div
                                   key="courseConversationMessage--main--content--show--content"
+                                  javascript="${javascript`
+                                    // TODO
+                                    this.onpointerup = () => {
+                                      const selection = document.getSelection();
+                                      const anchor = javascript.
+                                      if (
+                                        selection.anchorNode === null ||
+                                        !this.contains(selection.anchorNode) ||
+                                        selection.focusNode === null ||
+                                        !this.contains(selection.focusNode)
+                                      ) return;
+
+                                    };
+                                  `}"
                                 >
                                   $${await application.partials.courseConversationMessageContentProcessor(
                                     {
