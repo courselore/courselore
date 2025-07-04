@@ -4434,6 +4434,77 @@ export default async (application: Application): Promise<void> => {
                       }),
                   );
                 })()}
+                <div
+                  key="courseConversationMessage latencyCompensation"
+                  hidden
+                  css="${css`
+                    display: flex;
+                    gap: var(--size--2);
+                    animation: var(--animation--pulse);
+                  `}"
+                  javascript="${javascript`
+                    this.hidden = true;
+                  `}"
+                >
+                  <div key="courseConversationMessage--sidebar">
+                    <div key="courseConversationMessage--sidebar--userAvatar">
+                      $${application.partials.userAvatar({
+                        user: request.state.user,
+                        size: 9,
+                      })}
+                    </div>
+                  </div>
+                  <div
+                    key="courseConversationMessage--main"
+                    css="${css`
+                      flex: 1;
+                      min-width: var(--size--0);
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--1);
+                    `}"
+                  >
+                    <div
+                      key="courseConversationMessage--main--header"
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        color: light-dark(
+                          var(--color--slate--600),
+                          var(--color--slate--400)
+                        );
+                        display: flex;
+                        gap: var(--size--2);
+                      `}"
+                    >
+                      <div
+                        key="courseConversationMessage--main--header--byline"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      >
+                        <span
+                          css="${css`
+                            font-weight: 600;
+                          `}"
+                          >${request.state.user.name}</span
+                        > · Sending…
+                      </div>
+                    </div>
+                    <div
+                      key="courseConversationMessage--main--content--show"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--1);
+                      `}"
+                    >
+                      <div
+                        key="courseConversationMessage--main--content--show--content"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
               </div>
               $${request.state.course.courseState === "courseStateActive"
                 ? html`
@@ -4451,6 +4522,8 @@ export default async (application: Application): Promise<void> => {
                       `}"
                       javascript="${javascript`
                         this.onsubmit = () => {
+                          this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value;
+                          this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
                           javascript.reset(this);
                         };
                       `}"
