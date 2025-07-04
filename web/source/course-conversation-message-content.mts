@@ -2404,7 +2404,7 @@ You may also use the buttons on the message content editor to ${
         `,
       );
     }
-    if (document.lastElementChild.footnotes === true) {
+    if (document.lastElementChild?.footnotes === true) {
       const footnotes = document.lastElementChild;
       for (const element of footnotes.querySelectorAll("a:last-child"))
         if (
