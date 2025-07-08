@@ -4001,14 +4001,14 @@ export default async (application: Application): Promise<void> => {
                                     const popover = javascript.popover({
                                       element: {
                                         getBoundingClientRect: () => ({
-                                          width: 0,
-                                          height: 0,
-                                          x: this.pointerupEvent.clientX,
-                                          y: this.pointerupEvent.clientY,
-                                          top: this.pointerupEvent.clientY,
-                                          left: this.pointerupEvent.clientX,
-                                          right: this.pointerupEvent.clientX,
-                                          bottom: this.pointerupEvent.clientY,
+                                          width: 20,
+                                          height: 20,
+                                          x: this.pointerupEvent.clientX - 10,
+                                          y: this.pointerupEvent.clientY - 10,
+                                          top: this.pointerupEvent.clientY - 10,
+                                          right: this.pointerupEvent.clientX + 10,
+                                          bottom: this.pointerupEvent.clientY + 10,
+                                          left: this.pointerupEvent.clientX - 10,
                                         }),
                                       },
                                       target: this.nextElementSibling,
