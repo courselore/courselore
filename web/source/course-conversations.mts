@@ -4000,15 +4000,11 @@ export default async (application: Application): Promise<void> => {
                                   javascript="${javascript`
                                     const popover = javascript.popover({
                                       element: {
-                                        getBoundingClientRect: () => ({
-                                          width: 20,
-                                          height: 20,
+                                        getBoundingClientRect: () => DOMRect.fromRect({
                                           x: this.pointerupEvent.clientX - 10,
                                           y: this.pointerupEvent.clientY - 10,
-                                          top: this.pointerupEvent.clientY - 10,
-                                          right: this.pointerupEvent.clientX + 10,
-                                          bottom: this.pointerupEvent.clientY + 10,
-                                          left: this.pointerupEvent.clientX - 10,
+                                          width: 20,
+                                          height: 20,
                                         }),
                                       },
                                       target: this.nextElementSibling,
