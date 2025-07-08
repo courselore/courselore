@@ -4000,34 +4000,41 @@ export default async (application: Application): Promise<void> => {
                                   javascript="${javascript`
                                     const popover = javascript.popover({ element: this, trigger: "none" });
                                     this.onpointerup = () => {
-                                      const selection = document.getSelection();
-                                      if (
-                                        selection === null ||
-                                        selection.anchorNode === null ||
-                                        !this.contains(selection.anchorNode) ||
-                                        selection.focusNode === null ||
-                                        !this.contains(selection.focusNode)
-                                      ) return;
-                                      const anchor = javascript.parents(selection.anchorNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
-                                      const focus = javascript.parents(selection.focusNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
-                                      if (anchor === undefined || focus === undefined) return;
-                                      const anchorPosition = JSON.parse(anchor.getAttribute("data-position"));
-                                      const focusPosition = JSON.parse(focus.getAttribute("data-position"));
-                                      const start = Math.min(anchorPosition.start, focusPosition.start);
-                                      const end = Math.max(anchorPosition.end, focusPosition.end);
-                                      if (start === end) return;
-                                      console.log(JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end));
-                                      popover.showPopover();
-                                      const abortController = new AbortController();
-                                      for (const eventType of ["pointerdown", "keydown"])
-                                        document.addEventListener(
-                                          eventType,
-                                          () => {
-                                            abortController.abort();
-                                            popover.hidePopover();
-                                          },
-                                          { signal: abortController.signal },
-                                        );
+                                      window.setTimeout(() => {
+                                        const selection = document.getSelection();
+                                        if (
+                                          selection === null ||
+                                          selection.anchorNode === null ||
+                                          !this.contains(selection.anchorNode) ||
+                                          typeof selection.anchorOffset !== "number" ||
+                                          selection.focusNode === null ||
+                                          !this.contains(selection.focusNode) ||
+                                          typeof selection.focusOffset !== "number" || (
+                                            selection.anchorNode.nodeType === selection.anchorNode.TEXT_NODE &&
+                                            selection.anchorNode === selection.focusNode &&
+                                            selection.anchorOffset === selection.focusOffset
+                                          )
+                                        ) return;
+                                        const anchorElement = javascript.parents(selection.anchorNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
+                                        const focusElement = javascript.parents(selection.focusNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
+                                        if (anchorElement === undefined || focusElement === undefined) return;
+                                        const anchorPosition = JSON.parse(anchorElement.getAttribute("data-position"));
+                                        const focusPosition = JSON.parse(focusElement.getAttribute("data-position"));
+                                        const start = Math.min(anchorPosition.start, focusPosition.start);
+                                        const end = Math.max(anchorPosition.end, focusPosition.end);
+                                        // console.log(JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end));
+                                        popover.showPopover();
+                                        const abortController = new AbortController();
+                                        for (const eventType of ["pointerdown", "keydown"])
+                                          document.addEventListener(
+                                            eventType,
+                                            () => {
+                                              abortController.abort();
+                                              popover.hidePopover();
+                                            },
+                                            { signal: abortController.signal },
+                                          );
+                                      });
                                     };
                                   `}"
                                 >
