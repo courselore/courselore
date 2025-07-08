@@ -3998,6 +3998,7 @@ export default async (application: Application): Promise<void> => {
                                 <div
                                   key="courseConversationMessage--main--content--show--content"
                                   javascript="${javascript`
+                                    const popover = javascript.popover({ element: this, trigger: "none" });
                                     this.onpointerup = () => {
                                       const selection = document.getSelection();
                                       if (
@@ -4015,6 +4016,7 @@ export default async (application: Application): Promise<void> => {
                                       const start = Math.min(anchorPosition.start, focusPosition.start);
                                       const end = Math.max(anchorPosition.end, focusPosition.end);
                                       console.log(JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end));
+                                      popover.showPopover();
                                     };
                                   `}"
                                 >
@@ -4028,6 +4030,26 @@ export default async (application: Application): Promise<void> => {
                                       courseConversationMessage,
                                     },
                                   )}
+                                </div>
+                                <div
+                                  type="popover"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--2);
+                                  `}"
+                                >
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        console.log("TODO");
+                                      };
+                                    `}"
+                                  >
+                                    Quote reply
+                                  </button>
                                 </div>
                                 $${(() => {
                                   let courseConversationMessageMainContentShowFooterHTML = html``;
