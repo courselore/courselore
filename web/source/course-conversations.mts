@@ -4015,8 +4015,19 @@ export default async (application: Application): Promise<void> => {
                                       const focusPosition = JSON.parse(focus.getAttribute("data-position"));
                                       const start = Math.min(anchorPosition.start, focusPosition.start);
                                       const end = Math.max(anchorPosition.end, focusPosition.end);
+                                      if (start === end) return;
                                       console.log(JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end));
                                       popover.showPopover();
+                                      const abortController = new AbortController();
+                                      for (const eventType of ["pointerdown", "keydown"])
+                                        document.addEventListener(
+                                          eventType,
+                                          () => {
+                                            abortController.abort();
+                                            popover.hidePopover();
+                                          },
+                                          { signal: abortController.signal },
+                                        );
                                     };
                                   `}"
                                 >
