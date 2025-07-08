@@ -4018,19 +4018,30 @@ export default async (application: Application): Promise<void> => {
                                           selection.isCollapsed ||
                                           selection.anchorNode === null ||
                                           !this.contains(selection.anchorNode) ||
-                                          typeof selection.anchorOffset !== "number" ||
                                           selection.focusNode === null ||
-                                          !this.contains(selection.focusNode) ||
-                                          typeof selection.focusOffset !== "number"
+                                          !this.contains(selection.focusNode)
                                         ) return;
-                                        const anchorElement = javascript.parents(selection.anchorNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
-                                        const focusElement = javascript.parents(selection.focusNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
-                                        if (anchorElement === undefined || focusElement === undefined) return;
-                                        const anchorPosition = JSON.parse(anchorElement.getAttribute("data-position"));
-                                        const focusPosition = JSON.parse(focusElement.getAttribute("data-position"));
-                                        const start = Math.min(anchorPosition.start, focusPosition.start);
-                                        const end = Math.max(anchorPosition.end, focusPosition.end);
-                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end);
+                                        let startNode;
+                                        let endNode;
+                                        const anchorNodeDocumentPositionComparedToFocusNodeDocumentPosition = selection.anchorNode.compareDocumentPosition(selection.focusNode);
+                                        if (
+                                          selection.anchorNode === selection.focusNode ||
+                                          anchorNodeDocumentPositionComparedToFocusNodeDocumentPosition & selection.anchorNode.DOCUMENT_POSITION_FOLLOWING
+                                        ) {
+                                          startNode = selection.anchorNode;
+                                          endNode = selection.focusNode;
+                                        } else if (anchorNodeDocumentPositionComparedToFocusNodeDocumentPosition & selection.anchorNode.DOCUMENT_POSITION_PRECEDING) {
+                                          startNode = selection.focusNode;
+                                          endNode = selection.anchorNode;
+                                        }
+                                        else return;
+                                        const startElement = javascript.parents(startNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
+                                        const endElement = javascript.parents(endNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
+                                        if (startElement === undefined || endElement === undefined) return;
+                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(
+                                          JSON.parse(startElement.getAttribute("data-position")).start,
+                                          JSON.parse(endElement.getAttribute("data-position")).end,
+                                        );
                                         this.pointerupEvent = event;
                                         popover.showPopover();
                                         const abortController = new AbortController();
