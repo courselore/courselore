@@ -4063,7 +4063,13 @@ export default async (application: Application): Promise<void> => {
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
                                       this.onclick = () => {
-                                        console.log(this.quote);
+                                        const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--textarea"]');
+                                        element.focus();
+                                        element.click();
+                                        const previousSelectionEnd = element.selectionEnd;
+                                        element.selectionStart = element.selectionEnd;
+                                        document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + "> " + this.quote.replaceAll("\\n", "\\n> ") + "\\n\\n");
+                                        element.selectionEnd = previousSelectionEnd;
                                       };
                                     `}"
                                   >
