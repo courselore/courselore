@@ -3998,8 +3998,23 @@ export default async (application: Application): Promise<void> => {
                                 <div
                                   key="courseConversationMessage--main--content--show--content"
                                   javascript="${javascript`
-                                    const popover = javascript.popover({ element: this, trigger: "none" });
-                                    this.onpointerup = () => {
+                                    const popover = javascript.popover({
+                                      element: {
+                                        getBoundingClientRect: () => ({
+                                          width: 0,
+                                          height: 0,
+                                          x: this.pointerupEvent.clientX,
+                                          y: this.pointerupEvent.clientY,
+                                          top: this.pointerupEvent.clientY,
+                                          left: this.pointerupEvent.clientX,
+                                          right: this.pointerupEvent.clientX,
+                                          bottom: this.pointerupEvent.clientY,
+                                        }),
+                                      },
+                                      target: this.nextElementSibling,
+                                      trigger: "none",
+                                    });
+                                    this.onpointerup = (event) => {
                                       window.setTimeout(() => {
                                         const selection = document.getSelection();
                                         if (
@@ -4020,6 +4035,7 @@ export default async (application: Application): Promise<void> => {
                                         const start = Math.min(anchorPosition.start, focusPosition.start);
                                         const end = Math.max(anchorPosition.end, focusPosition.end);
                                         this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end);
+                                        this.pointerupEvent = event;
                                         popover.showPopover();
                                         const abortController = new AbortController();
                                         for (const eventType of ["pointerdown", "keydown"])
