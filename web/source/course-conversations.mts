@@ -3891,7 +3891,7 @@ export default async (application: Application): Promise<void> => {
                                                 const previousSelectionEnd = element.selectionEnd;
                                                 element.selectionStart = element.selectionEnd;
                                                 document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + ${`> Reply to #${request.state.courseConversation!.publicId}/${courseConversationMessage.publicId}\n>\n> `} + JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).replaceAll("\\n", "\\n> ") + "\\n\\n");
-                                                element.selectionEnd = previousSelectionEnd;
+                                                element.selectionStart = element.selectionEnd = previousSelectionEnd;
                                               };
                                             `}"
                                           >
@@ -4004,16 +4004,13 @@ export default async (application: Application): Promise<void> => {
                                         const selection = document.getSelection();
                                         if (
                                           selection === null ||
+                                          selection.isCollapsed ||
                                           selection.anchorNode === null ||
                                           !this.contains(selection.anchorNode) ||
                                           typeof selection.anchorOffset !== "number" ||
                                           selection.focusNode === null ||
                                           !this.contains(selection.focusNode) ||
-                                          typeof selection.focusOffset !== "number" || (
-                                            selection.anchorNode.nodeType === selection.anchorNode.TEXT_NODE &&
-                                            selection.anchorNode === selection.focusNode &&
-                                            selection.anchorOffset === selection.focusOffset
-                                          )
+                                          typeof selection.focusOffset !== "number"
                                         ) return;
                                         const anchorElement = javascript.parents(selection.anchorNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
                                         const focusElement = javascript.parents(selection.focusNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
@@ -4069,7 +4066,7 @@ export default async (application: Application): Promise<void> => {
                                         const previousSelectionEnd = element.selectionEnd;
                                         element.selectionStart = element.selectionEnd;
                                         document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + "> " + this.quote.replaceAll("\\n", "\\n> ") + "\\n\\n");
-                                        element.selectionEnd = previousSelectionEnd;
+                                        element.selectionStart = element.selectionEnd = previousSelectionEnd;
                                       };
                                     `}"
                                   >
