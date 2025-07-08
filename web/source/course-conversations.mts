@@ -3998,17 +3998,23 @@ export default async (application: Application): Promise<void> => {
                                 <div
                                   key="courseConversationMessage--main--content--show--content"
                                   javascript="${javascript`
-                                    // TODO
                                     this.onpointerup = () => {
                                       const selection = document.getSelection();
-                                      const anchor = javascript.
                                       if (
+                                        selection === null ||
                                         selection.anchorNode === null ||
                                         !this.contains(selection.anchorNode) ||
                                         selection.focusNode === null ||
                                         !this.contains(selection.focusNode)
                                       ) return;
-
+                                      const anchor = javascript.parents(selection.anchorNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
+                                      const focus = javascript.parents(selection.focusNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
+                                      if (anchor === undefined || focus === undefined) return;
+                                      const anchorPosition = JSON.parse(anchor.getAttribute("data-position"));
+                                      const focusPosition = JSON.parse(focus.getAttribute("data-position"));
+                                      const start = Math.min(anchorPosition.start, focusPosition.start);
+                                      const end = Math.max(anchorPosition.end, focusPosition.end);
+                                      console.log(JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end));
                                     };
                                   `}"
                                 >
