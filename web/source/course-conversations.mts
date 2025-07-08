@@ -4022,7 +4022,7 @@ export default async (application: Application): Promise<void> => {
                                         const focusPosition = JSON.parse(focusElement.getAttribute("data-position"));
                                         const start = Math.min(anchorPosition.start, focusPosition.start);
                                         const end = Math.max(anchorPosition.end, focusPosition.end);
-                                        // console.log(JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end));
+                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end);
                                         popover.showPopover();
                                         const abortController = new AbortController();
                                         for (const eventType of ["pointerdown", "keydown"])
@@ -4058,11 +4058,12 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <button
+                                    key="quoteReply"
                                     type="button"
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
                                       this.onclick = () => {
-                                        console.log("TODO");
+                                        console.log(this.quote);
                                       };
                                     `}"
                                   >
