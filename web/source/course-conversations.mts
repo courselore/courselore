@@ -4038,10 +4038,10 @@ export default async (application: Application): Promise<void> => {
                                         const startElement = javascript.parents(startNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
                                         const endElement = javascript.parents(endNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
                                         if (startElement === undefined || endElement === undefined) return;
-                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(
-                                          JSON.parse(startElement.getAttribute("data-position")).start,
-                                          JSON.parse(endElement.getAttribute("data-position")).end,
-                                        );
+                                        const start = JSON.parse(startElement.getAttribute("data-position")).start;
+                                        const end = JSON.parse(endElement.getAttribute("data-position")).end;
+                                        if (end <= start) return;
+                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end);
                                         this.pointerupEvent = event;
                                         popover.showPopover();
                                         const abortController = new AbortController();
