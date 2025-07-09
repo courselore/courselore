@@ -4040,8 +4040,8 @@ export default async (application: Application): Promise<void> => {
                                           endNode = selection.anchorNode;
                                         }
                                         else return;
-                                        const startElement = javascript.parents(startNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
-                                        const endElement = javascript.parents(endNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
+                                        const startElement = javascript.parents(startNode).reverse().find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
+                                        const endElement = javascript.parents(endNode).reverse().find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
                                         if (startElement === undefined || endElement === undefined) return;
                                         const start = JSON.parse(startElement.getAttribute("data-position")).start;
                                         const end = JSON.parse(endElement.getAttribute("data-position")).end;
