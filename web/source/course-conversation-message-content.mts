@@ -759,6 +759,7 @@ export default async (application: Application): Promise<void> => {
           </button>
           <div type="popover">Preview</div>
           <button
+            key="courseConversationMessageContentEditor--preview--disable"
             type="button"
             class="button button--square button--icon button--transparent button--blue"
             css="${css`
