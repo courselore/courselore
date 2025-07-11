@@ -3998,51 +3998,51 @@ export default async (application: Application): Promise<void> => {
                                 <div
                                   key="courseConversationMessage--main--content--show--content"
                                   javascript="${javascript`
+                                    let popoverElementBoundingClientRect;
                                     const popover = javascript.popover({
-                                      element: {
-                                        getBoundingClientRect: () => DOMRect.fromRect({
-                                          x: this.pointerupEvent.clientX - 10,
-                                          y: this.pointerupEvent.clientY - 10,
-                                          width: 20,
-                                          height: 20,
-                                        }),
-                                      },
+                                      element: { getBoundingClientRect: () => popoverElementBoundingClientRect },
                                       target: this.nextElementSibling,
                                       trigger: "none",
                                     });
                                     this.onpointerup = (event) => {
                                       window.setTimeout(() => {
                                         const selection = document.getSelection();
-                                        if (
-                                          selection === null ||
-                                          selection.isCollapsed ||
-                                          selection.anchorNode === null ||
-                                          !this.contains(selection.anchorNode) ||
-                                          selection.focusNode === null ||
-                                          !this.contains(selection.focusNode)
-                                        ) return;
+                                        if (selection === null) return;
                                         let startNode;
                                         let endNode;
-                                        const anchorNodeDocumentPositionComparedToFocusNodeDocumentPosition = selection.anchorNode.compareDocumentPosition(selection.focusNode);
-                                        if (
-                                          selection.anchorNode === selection.focusNode ||
-                                          anchorNodeDocumentPositionComparedToFocusNodeDocumentPosition & selection.anchorNode.DOCUMENT_POSITION_FOLLOWING
-                                        ) {
-                                          startNode = selection.anchorNode;
-                                          endNode = selection.focusNode;
-                                        } else if (anchorNodeDocumentPositionComparedToFocusNodeDocumentPosition & selection.anchorNode.DOCUMENT_POSITION_PRECEDING) {
-                                          startNode = selection.focusNode;
-                                          endNode = selection.anchorNode;
+                                        for (let rangeIndex = 0; rangeIndex < selection.rangeCount; rangeIndex++) {
+                                          const range = selection.getRangeAt(rangeIndex);
+                                          if (range.collapsed) continue;
+                                          if (
+                                            startNode === undefined ||
+                                            range.startContainer.compareDocumentPosition(startNode) & range.startContainer.DOCUMENT_POSITION_FOLLOWING
+                                          )
+                                            startNode = range.startContainer;
+                                          if (
+                                            endNode === undefined ||
+                                            endNode.compareDocumentPosition(range.endContainer) & endNode.DOCUMENT_POSITION_FOLLOWING
+                                          )
+                                            endNode = range.endContainer;
                                         }
-                                        else return;
-                                        const startElement = javascript.parents(startNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
-                                        const endElement = javascript.parents(endNode).find((element) => element.nodeType === element.ELEMENT_NODE && element.getAttribute("data-position") !== null);
-                                        if (startElement === undefined || endElement === undefined) return;
-                                        const start = JSON.parse(startElement.getAttribute("data-position")).start;
-                                        const end = JSON.parse(endElement.getAttribute("data-position")).end;
-                                        if (end <= start) return;
-                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(start, end);
-                                        this.pointerupEvent = event;
+                                        if (
+                                          startNode === undefined ||
+                                          !this.contains(startNode) ||
+                                          endNode === undefined ||
+                                          !this.contains(endNode)
+                                        ) return;
+                                        const startElement = (startNode.nodeType === startNode.ELEMENT_NODE ? startNode : startNode.parentElement).closest("[data-position]");
+                                        const endElement = (endNode.nodeType === endNode.ELEMENT_NODE ? endNode : endNode.parentElement).closest("[data-position]");
+                                        if (startElement === null || endElement === null) return;
+                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(
+                                          JSON.parse(startElement.getAttribute("data-position")).start,
+                                          JSON.parse(endElement.getAttribute("data-position")).end,
+                                        );
+                                        popoverElementBoundingClientRect = DOMRect.fromRect({
+                                          x: event.clientX - 10,
+                                          y: event.clientY - 10,
+                                          width: 20,
+                                          height: 20,
+                                        });
                                         popover.showPopover();
                                         const abortController = new AbortController();
                                         for (const eventType of ["pointerdown", "keydown"])
