@@ -3997,11 +3997,6 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <div
                                   key="courseConversationMessage--main--content--show--content"
-                                  css="${css`
-                                    * {
-                                      user-select: auto;
-                                    }
-                                  `}"
                                   javascript="${javascript`
                                     const popover = javascript.popover({
                                       element: {
