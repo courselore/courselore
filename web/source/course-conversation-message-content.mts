@@ -1644,18 +1644,23 @@ You may also use the buttons on the message content editor to ${
         .use(rehypeRaw)
         .use(
           () =>
-            function addPosition(root: any): void {
+            function addPosition(node: any): void {
               if (
-                typeof root.properties === "object" &&
-                typeof root.position?.start?.offset === "number" &&
-                typeof root.position?.end?.offset === "number"
+                typeof node.properties === "object" &&
+                typeof node.position?.start?.offset === "number" &&
+                typeof node.position?.end?.offset === "number"
               )
-                root.properties.dataPosition = JSON.stringify({
-                  start: root.position.start.offset,
-                  end: root.position.end.offset,
+                node.properties.dataPosition = JSON.stringify({
+                  start: node.position.start.offset,
+                  end: node.position.end.offset,
                 });
-              if (Array.isArray(root.children))
-                for (const node of root.children) addPosition(node);
+              if (
+                (node.type === "root" ||
+                  mode ===
+                    "programmaticEditingOfCourseConversationMessageContent") &&
+                Array.isArray(node.children)
+              )
+                for (const child of node.children) addPosition(child);
             },
         )
         .use(rehypeStringify)
