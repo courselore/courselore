@@ -720,7 +720,17 @@ export default async (application: Application): Promise<void> => {
             gap: var(--size--2);
           `}"
         >
-          <label>
+          <label
+            javascript="${javascript`
+              this.onchange = () => {
+                if (this.querySelector("input").checked)
+                  this.querySelector("div").classList.add("button--blue");
+                else
+                  this.querySelector("div").classList.remove("button--blue");
+              };
+              this.onchange();
+            `}"
+          >
             <input
               key="courseConversationMessageContentEditor--richTextClipboard"
               type="checkbox"
@@ -729,24 +739,7 @@ export default async (application: Application): Promise<void> => {
             <div
               class="button button--square button--icon button--transparent"
               css="${css`
-                :checked + & {
-                  display: none;
-                }
-              `}"
-              javascript="${javascript`
-                javascript.popover({ element: this });
-              `}"
-            >
-              <i class="bi bi-clipboard-data"></i>
-            </div>
-            <div type="popover">Rich-text clipboard</div>
-            <div
-              class="button button--square button--icon button--transparent button--blue"
-              css="${css`
                 border: none;
-                :not(:checked) + * + * + & {
-                  display: none;
-                }
               `}"
               javascript="${javascript`
                 javascript.popover({ element: this });
