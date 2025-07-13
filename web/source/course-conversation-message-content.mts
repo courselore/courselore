@@ -720,6 +720,42 @@ export default async (application: Application): Promise<void> => {
             gap: var(--size--2);
           `}"
         >
+          <label>
+            <input
+              key="courseConversationMessageContentEditor--richTextClipboard"
+              type="checkbox"
+              hidden
+            />
+            <div
+              class="button button--square button--icon button--transparent"
+              css="${css`
+                :checked + & {
+                  display: none;
+                }
+              `}"
+              javascript="${javascript`
+                javascript.popover({ element: this });
+              `}"
+            >
+              <i class="bi bi-clipboard-data"></i>
+            </div>
+            <div type="popover">Rich-text clipboard</div>
+            <div
+              class="button button--square button--icon button--transparent button--blue"
+              css="${css`
+                border: none;
+                :not(:checked) + * + * + & {
+                  display: none;
+                }
+              `}"
+              javascript="${javascript`
+                javascript.popover({ element: this });
+              `}"
+            >
+              <i class="bi bi-clipboard-data"></i>
+            </div>
+            <div type="popover">Rich-text clipboard</div>
+          </label>
           <button
             type="button"
             class="button button--square button--icon button--transparent"
@@ -842,7 +878,10 @@ export default async (application: Application): Promise<void> => {
                 );
                 return;
               }
-              if (event.clipboardData.types.includes("text/html")) {
+              if (
+                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--richTextClipboard"]').checked &&
+                event.clipboardData.types.includes("text/html")
+              ) {
                 event.preventDefault();
                 document.execCommand(
                   "insertText",
