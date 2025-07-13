@@ -828,45 +828,57 @@ export default async (application: Application): Promise<void> => {
               display: none;
             }
           `}"
-          $${!(
-            Boolean(
-              course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
-            ) === false &&
-            courseParticipation.courseParticipationRole ===
-              "courseParticipationRoleStudent"
-          )
-            ? html`
-                javascript="${javascript`
-                  this.ondragenter = (event) => {
-                    if (!event.dataTransfer.types.includes("Files")) return;
-                    event.preventDefault();
-                    javascript.stateAdd(this, "dragging");
-                  };
-                  this.ondragleave = (event) => {
-                    if (!event.dataTransfer.types.includes("Files")) return;
-                    event.preventDefault();
-                    javascript.stateRemove(this, "dragging");
-                  };
-                  this.ondragover = (event) => {
-                    if (!event.dataTransfer.types.includes("Files")) return;
-                    event.preventDefault();
-                  };
-                  this.ondrop = (event) => {
-                    if (event.dataTransfer.files.length === 0) return;
-                    event.preventDefault();
-                    javascript.stateRemove(this, "dragging");
-                    this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.dataTransfer.files;
-                    this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(
-                      new Event("change", {
-                        bubbles: true,
-                        cancelable: false,
-                        composed: false,
-                      }),
-                    );
-                  };
-                `}"
-              `
-            : html``}
+          javascript="${javascript`
+            this.onpaste = (event) => {
+              if (0 < event.clipboardData.files.length) {
+                event.preventDefault();
+                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.clipboardData.files;
+                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(
+                  new Event("change", {
+                    bubbles: true,
+                    cancelable: false,
+                    composed: false,
+                  }),
+                );
+                return;
+              }
+            };
+            if (${!(
+              Boolean(
+                course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+              ) === false &&
+              courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleStudent"
+            )}) {
+              this.ondragenter = (event) => {
+                if (!event.dataTransfer.types.includes("Files")) return;
+                event.preventDefault();
+                javascript.stateAdd(this, "dragging");
+              };
+              this.ondragleave = (event) => {
+                if (!event.dataTransfer.types.includes("Files")) return;
+                event.preventDefault();
+                javascript.stateRemove(this, "dragging");
+              };
+              this.ondragover = (event) => {
+                if (!event.dataTransfer.types.includes("Files")) return;
+                event.preventDefault();
+              };
+              this.ondrop = (event) => {
+                if (event.dataTransfer.files.length === 0) return;
+                event.preventDefault();
+                javascript.stateRemove(this, "dragging");
+                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.dataTransfer.files;
+                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(
+                  new Event("change", {
+                    bubbles: true,
+                    cancelable: false,
+                    composed: false,
+                  }),
+                );
+              };
+            }
+          `}"
         >
 ${courseConversationMessageContent}</textarea
         >
