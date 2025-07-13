@@ -829,7 +829,7 @@ export default async (application: Application): Promise<void> => {
             }
           `}"
           javascript="${javascript`
-            this.onpaste = (event) => {
+            this.onpaste = async (event) => {
               if (0 < event.clipboardData.files.length) {
                 event.preventDefault();
                 this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.clipboardData.files;
@@ -839,6 +839,23 @@ export default async (application: Application): Promise<void> => {
                     cancelable: false,
                     composed: false,
                   }),
+                );
+                return;
+              }
+              if (event.clipboardData.types.includes("text/html")) {
+                event.preventDefault();
+                document.execCommand(
+                  "insertText",
+                  false,
+                  (
+                    await unified()
+                      .use(rehypeParse, { fragment: true })
+                      .use(rehypeRemark, { document: false })
+                      .use(remarkGfm, { singleTilde: false })
+                      .use(remarkMath)
+                      .use(remarkStringify)
+                      .process(event.clipboardData.getData("text/html"))
+                  ).value
                 );
                 return;
               }

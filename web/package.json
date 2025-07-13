@@ -45,6 +45,9 @@
     "bootstrap-icons": "^1.13.1",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
+    "rehype-parse": "^9.0.1",
+    "rehype-remark": "^10.0.1",
+    "remark-stringify": "^11.0.0",
     "typescript": "^5.8.3"
   },
   "prettier": {}
