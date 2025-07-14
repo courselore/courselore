@@ -4711,7 +4711,7 @@ export default async (application: Application): Promise<void> => {
                       <div
                         javascript="${javascript`
                           this.isModified = false;
-                          this.onchange = utilities.foregroundJob(async () => {
+                          this.oninput = utilities.foregroundJob(async () => {
                             await fetch(${`/courses/${
                               request.state.course.publicId
                             }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {
