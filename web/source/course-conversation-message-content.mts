@@ -767,56 +767,47 @@ export default async (application: Application): Promise<void> => {
             type="button"
             class="button button--square button--icon button--transparent"
             css="${css`
-              [key~="courseConversationMessageContentEditor"][state] & {
-                display: none;
-              }
+              border: none;
             `}"
             javascript="${javascript`
               javascript.popover({ element: this });
               this.onclick = async () => {
-                try {
-                  if (!javascript.validate(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]'))) return;
-                  this.closest('[key~="courseConversationMessageContentEditor"]').setAttribute("state", "loading");
-                  this.closest('[key~="courseConversationMessageContentEditor"]').abortController = new AbortController();
-                  javascript.mount(
-                    this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--preview"]').firstElementChild,
-                    await (
-                      await fetch(
-                        ${`/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}/messages${courseConversationMessage !== undefined ? `/${courseConversationMessage.publicId}` : ""}/preview`}, {
-                          method: "POST",
-                          headers: { "CSRF-Protection": "true" },
-                          body: new URLSearchParams(javascript.serialize(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]'))),
-                          signal: this.closest('[key~="courseConversationMessageContentEditor"]').abortController.signal,
-                        }
-                      )
-                    ).text()
-                  );
-                  this.closest('[key~="courseConversationMessageContentEditor"]').setAttribute("state", "preview");
-                } catch (error) {
-                  if (error.name !== "AbortError") throw error;
+                if (this.closest('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === null)
+                  try {
+                    if (!javascript.validate(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]'))) return;
+                    this.closest('[key~="courseConversationMessageContentEditor"]').setAttribute("state", "loading");
+                    this.updateClass();
+                    this.abortController = new AbortController();
+                    javascript.mount(
+                      this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--preview"]').firstElementChild,
+                      await (
+                        await fetch(
+                          ${`/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}/messages${courseConversationMessage !== undefined ? `/${courseConversationMessage.publicId}` : ""}/preview`}, {
+                            method: "POST",
+                            headers: { "CSRF-Protection": "true" },
+                            body: new URLSearchParams(javascript.serialize(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]'))),
+                            signal: this.abortController.signal,
+                          }
+                        )
+                      ).text()
+                    );
+                    this.closest('[key~="courseConversationMessageContentEditor"]').setAttribute("state", "preview");
+                  } catch (error) {
+                    if (error.name !== "AbortError") throw error;
+                  }
+                else {
+                  this.abortController.abort();
+                  this.closest('[key~="courseConversationMessageContentEditor"]').removeAttribute("state");
+                  this.updateClass();
                 }
               };
-            `}"
-          >
-            <i class="bi bi-eyeglasses"></i>
-          </button>
-          <div type="popover">Preview</div>
-          <button
-            key="courseConversationMessageContentEditor--preview--disable"
-            type="button"
-            class="button button--square button--icon button--transparent button--blue"
-            css="${css`
-              border: none;
-              [key~="courseConversationMessageContentEditor"]:not([state]) & {
-                display: none;
-              }
-            `}"
-            javascript="${javascript`
-              javascript.popover({ element: this });
-              this.onclick = async () => {
-                this.closest('[key~="courseConversationMessageContentEditor"]').abortController?.abort();
-                this.closest('[key~="courseConversationMessageContentEditor"]').removeAttribute("state");
+              this.updateClass = () => {
+                if (typeof this.closest('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
+                  this.classList.add("button--blue");
+                else
+                  this.classList.remove("button--blue");
               };
+              this.updateClass();
             `}"
           >
             <i class="bi bi-eyeglasses"></i>
