@@ -3559,9 +3559,6 @@ export default async (application: Application): Promise<void> => {
                               .state.course!.publicId}/conversations/${request
                               .state.courseConversation!
                               .publicId}/messages/${courseConversationMessage.publicId}"
-                            data-content="${JSON.stringify(
-                              courseConversationMessage.content,
-                            )}"
                             css="${css`
                               display: flex;
                               gap: var(--size--2);
@@ -3577,17 +3574,16 @@ export default async (application: Application): Promise<void> => {
                                   margin: var(--size---2);
                                 `
                               : css``}"
-                            $${request.search.message ===
-                            courseConversationMessage.publicId
-                              ? html`
-                                  javascript="${javascript`
-                                    if (this.scrolled === undefined) {
-                                      this.scrollIntoView({ block: "center" });
-                                      this.scrolled = true;
-                                    }
-                                  `}"
-                                `
-                              : html``}
+                            javascript="${javascript`
+                              this.content = ${courseConversationMessage.content};
+                              if (${
+                                request.search.message ===
+                                courseConversationMessage.publicId
+                              } && this.scrolled === undefined) {
+                                this.scrollIntoView({ block: "center" });
+                                this.scrolled = true;
+                              }
+                            `}"
                           >
                             <div key="courseConversationMessage--sidebar">
                               <div
@@ -3890,7 +3886,7 @@ export default async (application: Application): Promise<void> => {
                                                 element.click();
                                                 const previousSelectionEnd = element.selectionEnd;
                                                 element.selectionStart = element.selectionEnd;
-                                                document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + ${`> Reply to #${request.state.courseConversation!.publicId}/${courseConversationMessage.publicId}\n>\n> `} + JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).replaceAll("\\n", "\\n> ") + "\\n\\n");
+                                                document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + ${`> Reply to #${request.state.courseConversation!.publicId}/${courseConversationMessage.publicId}\n>\n> `} + this.closest('[key~="courseConversationMessage"]').content.replaceAll("\\n", "\\n> ") + "\\n\\n");
                                                 element.selectionStart = element.selectionEnd = previousSelectionEnd;
                                               };
                                             `}"
@@ -4033,7 +4029,7 @@ export default async (application: Application): Promise<void> => {
                                         const startElement = (startNode.nodeType === startNode.ELEMENT_NODE ? startNode : startNode.parentElement).closest("[data-position]");
                                         const endElement = (endNode.nodeType === endNode.ELEMENT_NODE ? endNode : endNode.parentElement).closest("[data-position]");
                                         if (startElement === null || endElement === null) return;
-                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = JSON.parse(this.closest('[key~="courseConversationMessage"]').getAttribute("data-content")).slice(
+                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = this.closest('[key~="courseConversationMessage"]').content.slice(
                                           JSON.parse(startElement.getAttribute("data-position")).start,
                                           JSON.parse(endElement.getAttribute("data-position")).end,
                                         );
