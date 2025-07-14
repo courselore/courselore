@@ -747,25 +747,20 @@ export default async (application: Application): Promise<void> => {
             >
               <i class="bi bi-clipboard-data"></i>
             </div>
-            <div
-              type="popover"
-              css="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--size--2);
-              `}"
-            >
-              <div
+            <div type="popover">
+              Rich-text clipboard
+              <span
                 css="${css`
-                  font-weight: 600;
+                  font-size: var(--font-size--3);
+                  line-height: var(--font-size--3--line-height);
+                  color: light-dark(
+                    var(--color--slate--600),
+                    var(--color--slate--400)
+                  );
                 `}"
+                >(Enable this option to paste spreadsheets, formatted web pages,
+                and so forth.)</span
               >
-                Rich-text clipboard
-              </div>
-              <div>
-                Enable this option to paste spreadsheets, formatted web pages,
-                and so forth.
-              </div>
             </div>
           </label>
           <button
