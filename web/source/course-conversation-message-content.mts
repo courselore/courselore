@@ -764,6 +764,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </label>
           <button
+            key="courseConversationMessageContentEditor--preview--button"
             type="button"
             class="button button--square button--icon button--transparent"
             css="${css`
