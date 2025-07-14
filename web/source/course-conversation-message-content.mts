@@ -2975,6 +2975,14 @@ You may also use the buttons on the message content editor to ${
       response.redirect(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+          }),
+        });
     },
   });
 };

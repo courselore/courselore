@@ -2841,7 +2841,7 @@ export default async (application: Application): Promise<void> => {
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/general-settings$",
     ),
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {},
@@ -2899,6 +2899,14 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">General settings updated successfully.</div>
       `);
       response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
+          }),
+        });
     },
   });
 
@@ -3010,6 +3018,14 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">Conversation tags updated successfully.</div>
       `);
       response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
+          }),
+        });
     },
   });
 
@@ -4159,6 +4175,14 @@ export default async (application: Application): Promise<void> => {
         </div>
       `);
       response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
+          }),
+        });
     },
   });
 
@@ -4238,6 +4262,14 @@ export default async (application: Application): Promise<void> => {
         </div>
       `);
       response.redirect("/");
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
+          }),
+        });
     },
   });
 };

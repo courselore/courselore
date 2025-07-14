@@ -60,7 +60,22 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       if (typeof request.body.content !== "string") throw "validation";
+      let sendLiveConnectionUpdates = false;
       application.database.executeTransaction(() => {
+        const existingCourseConversationMessageDraft = application.database.get(
+          sql`
+            select true
+            from "courseConversationMessageDrafts"
+            where
+              "courseConversation" = ${request.state.courseConversation!.id} and
+              "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        sendLiveConnectionUpdates =
+          (existingCourseConversationMessageDraft === undefined &&
+            request.body.content!.trim() !== "") ||
+          (existingCourseConversationMessageDraft !== undefined &&
+            request.body.content!.trim() === "");
         application.database.run(
           sql`
             delete from "courseConversationMessageDrafts"
@@ -88,6 +103,15 @@ export default async (application: Application): Promise<void> => {
           );
       });
       response.end();
+      if (sendLiveConnectionUpdates)
+        for (const port of application.privateConfiguration.ports)
+          fetch(`http://localhost:${port}/__live-connections`, {
+            method: "POST",
+            headers: { "CSRF-Protection": "true" },
+            body: new URLSearchParams({
+              pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+            }),
+          });
     },
   });
 
@@ -224,6 +248,14 @@ export default async (application: Application): Promise<void> => {
       response.redirect(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+          }),
+        });
     },
   });
 
