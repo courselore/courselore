@@ -1702,1147 +1702,1171 @@ You may also use the buttons on the message content editor to ${
       })(),
     mode = "normal",
   }) => {
-    const processedMarkdown = (
-      await unified()
-        .use(remarkParse)
-        .use(remarkGfm, { singleTilde: false })
-        .use(remarkMath)
-        .use(remarkRehype, { allowDangerousHtml: true, clobberPrefix: "" })
-        .use(rehypeRaw)
-        .use(
-          () =>
-            function addPosition(node: any): void {
-              if (
-                typeof node.properties === "object" &&
-                typeof node.position?.start?.offset === "number" &&
-                typeof node.position?.end?.offset === "number"
-              )
-                node.properties.dataPosition = JSON.stringify({
-                  start: node.position.start.offset,
-                  end: node.position.end.offset,
-                });
-              if (
-                (node.type === "root" ||
-                  mode ===
-                    "programmaticEditingOfCourseConversationMessageContent") &&
-                Array.isArray(node.children)
-              )
-                for (const child of node.children) addPosition(child);
-            },
+    return await (mode === "normal"
+      ? application.database.cacheAsync(
+          JSON.stringify({
+            course: course.publicId,
+            courseParticipation: courseParticipation?.publicId,
+            courseConversation: courseConversation?.publicId,
+            courseConversationMessage: courseConversationMessage?.publicId,
+            mode,
+          }),
+          courseConversationMessageContentProcessor,
         )
-        .use(rehypeStringify)
-        .process(courseConversationMessageContent)
-    ).value;
-    if (typeof processedMarkdown !== "string") throw new Error();
-    const document = new DOMParser()
-      .parseFromString(
-        html`
-          <!doctype html>
-          <html>
-            <body>
-              <div
-                key="courseConversationMessageContent ${courseConversationMessage?.publicId ??
-                ""}"
-                css="${css`
-                  h1,
-                  h2,
-                  h3,
-                  h4,
-                  h5,
-                  h6 {
-                    margin: var(--size--4) var(--size--0) var(--size--2)
-                      var(--size--0);
-                  }
-
-                  h1 {
-                    font-weight: 600;
-                  }
-
-                  h2 {
-                    font-style: italic;
-                  }
-
-                  h3,
-                  h4,
-                  h5,
-                  h6 {
-                    font-size: var(--font-size--3);
-                    line-height: var(--font-size--3--line-height);
-                    font-weight: 600;
-                    color: light-dark(
-                      var(--color--slate--600),
-                      var(--color--slate--400)
-                    );
-                  }
-
-                  p + p {
-                    margin-top: var(--size--2);
-                  }
-
-                  hr {
-                    margin: var(--size--2) var(--size--0);
-                    border-bottom: var(--border-width--1) solid
-                      light-dark(
-                        var(--color--slate--200),
-                        var(--color--slate--800)
-                      );
-                  }
-
-                  strong {
-                    font-weight: 600;
-                  }
-
-                  em {
-                    font-style: italic;
-                  }
-
-                  u {
-                    text-decoration: underline;
-                  }
-
-                  code {
-                    font-family:
-                      "Roboto Mono Variable", var(--font-family--monospace);
-                  }
-
-                  ins {
-                    color: light-dark(
-                      var(--color--green--600),
-                      var(--color--green--600)
-                    );
-                  }
-
-                  del {
-                    text-decoration: line-through;
-                    color: light-dark(
-                      var(--color--red--600),
-                      var(--color--red--600)
-                    );
-                  }
-
-                  sup,
-                  sub {
-                    font-size: var(--font-size--2-5);
-                    line-height: var(--font-size--2-5--line-height);
-                  }
-
-                  sup {
-                    vertical-align: var(--size--1);
-                  }
-
-                  sub {
-                    vertical-align: var(--size---1);
-                  }
-
-                  img,
-                  video,
-                  audio {
-                    background-color: light-dark(
-                      var(--color--white),
-                      var(--color--white)
-                    );
-                    max-width: 100%;
-                    height: auto;
-                    border-radius: var(--border-radius--1);
-                  }
-
-                  ul,
-                  ol {
-                    margin: var(--size--2) var(--size--0) var(--size--2)
-                      var(--size--4);
-                  }
-
-                  li + li {
-                    margin-top: var(--size--2);
-                  }
-
-                  ul > li {
-                    list-style: disc;
-                  }
-
-                  ol > li {
-                    list-style: decimal;
-                  }
-
-                  input {
-                    position: absolute;
-                    translate: calc(-100% - var(--size--1)) 20%;
-                  }
-
-                  blockquote {
-                    color: light-dark(
-                      var(--color--slate--600),
-                      var(--color--slate--400)
-                    );
-                    padding-left: calc(var(--size--4) - var(--border-width--4));
-                    border-left: var(--border-width--4) solid
-                      light-dark(
-                        var(--color--slate--200),
-                        var(--color--slate--800)
-                      );
-                    margin: var(--size--2) var(--size--0);
-                  }
-
-                  table {
-                    margin: var(--size--2) var(--size--0);
-                    border-collapse: collapse;
-                  }
-
-                  thead {
-                    border-bottom: var(--border-width--2) solid
-                      light-dark(
-                        var(--color--slate--200),
-                        var(--color--slate--800)
-                      );
-                  }
-
-                  th,
-                  td {
-                    padding: var(--size--1) var(--size--2);
-                    &[align="left"] {
-                      text-align: left;
+      : courseConversationMessageContentProcessor());
+    async function courseConversationMessageContentProcessor() {
+      const processedMarkdown = (
+        await unified()
+          .use(remarkParse)
+          .use(remarkGfm, { singleTilde: false })
+          .use(remarkMath)
+          .use(remarkRehype, { allowDangerousHtml: true, clobberPrefix: "" })
+          .use(rehypeRaw)
+          .use(
+            () =>
+              function addPosition(node: any): void {
+                if (
+                  typeof node.properties === "object" &&
+                  typeof node.position?.start?.offset === "number" &&
+                  typeof node.position?.end?.offset === "number"
+                )
+                  node.properties.dataPosition = JSON.stringify({
+                    start: node.position.start.offset,
+                    end: node.position.end.offset,
+                  });
+                if (
+                  (node.type === "root" ||
+                    mode ===
+                      "programmaticEditingOfCourseConversationMessageContent") &&
+                  Array.isArray(node.children)
+                )
+                  for (const child of node.children) addPosition(child);
+              },
+          )
+          .use(rehypeStringify)
+          .process(courseConversationMessageContent)
+      ).value;
+      if (typeof processedMarkdown !== "string") throw new Error();
+      const document = new DOMParser()
+        .parseFromString(
+          html`
+            <!doctype html>
+            <html>
+              <body>
+                <div
+                  key="courseConversationMessageContent ${courseConversationMessage?.publicId ??
+                  ""}"
+                  css="${css`
+                    h1,
+                    h2,
+                    h3,
+                    h4,
+                    h5,
+                    h6 {
+                      margin: var(--size--4) var(--size--0) var(--size--2)
+                        var(--size--0);
                     }
-                    &[align="center"] {
-                      text-align: center;
+
+                    h1 {
+                      font-weight: 600;
                     }
-                    &[align="right"] {
-                      text-align: right;
+
+                    h2 {
+                      font-style: italic;
                     }
-                  }
 
-                  th {
-                    font-weight: 500;
-                  }
-
-                  details {
-                    margin: var(--size--2) var(--size--0);
-                  }
-
-                  summary {
-                    font-weight: 500;
-                    details[open] > & {
-                      margin-bottom: var(--size--1);
-                    }
-                  }
-
-                  .katex-display {
-                    margin: var(--size--2) var(--size--0);
-                    overflow: auto hidden;
-                    & > .katex > .katex-html {
-                      text-align: center;
-                    }
-                  }
-
-                  pre {
-                    margin: var(--size--2) var(--size--0);
-                  }
-
-                  .shiki {
-                    font-size: var(--font-size--3);
-                    line-height: var(--font-size--3-5--line-height);
-                    padding: var(--size--2) var(--size--4);
-                    border-radius: var(--border-radius--1);
-                    overflow: auto hidden;
-                    &,
-                    & span {
-                      color: light-dark(var(--shiki-light), var(--shiki-dark));
-                      background-color: light-dark(
-                        var(--shiki-light-bg),
-                        var(--shiki-dark-bg)
+                    h3,
+                    h4,
+                    h5,
+                    h6 {
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--600),
+                        var(--color--slate--400)
                       );
                     }
-                  }
 
-                  & > :first-child {
-                    margin-top: var(--size--0);
-                  }
+                    p + p {
+                      margin-top: var(--size--2);
+                    }
 
-                  & > :last-child {
-                    margin-bottom: var(--size--0);
-                  }
-                `}"
-              >
-                $${processedMarkdown}
-              </div>
-            </body>
-          </html>
-        `,
-        "text/html",
-      )
-      .querySelector("div");
-    if (
-      document.lastElementChild !== null &&
-      document.lastElementChild.matches(
-        'section[class="footnotes"][data-footnotes=""]',
-      ) &&
-      document.lastElementChild.children.length === 2 &&
-      document.lastElementChild.children[0].matches(
-        'h2[id="footnote-label"][class="sr-only"]',
-      ) &&
-      document.lastElementChild.children[0].textContent === "Footnotes" &&
-      document.lastElementChild.children[1].matches("ol")
-    ) {
-      document.lastElementChild.replaceWith(
-        document.lastElementChild.children[1],
-      );
-      document.lastElementChild.footnotes = true;
-    }
-    (function sanitize(parent) {
-      for (const child of parent.childNodes) {
-        if (
-          !(
-            child.nodeType === child.ELEMENT_NODE ||
-            child.nodeType === child.TEXT_NODE
-          ) ||
-          (child.nodeType === child.ELEMENT_NODE &&
-            (!child.matches(
-              "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, a, code, ins, del, sup, sub, br, img, video, audio, ul, ol, li, input, poll, votes, blockquote, table, thead, tbody, tr, th, td, details, summary, pre",
-            ) ||
-              (child.matches("a") &&
-                (() => {
-                  try {
-                    const url = new URL(
-                      child.getAttribute("href"),
-                      `https://${application.configuration.hostname}`,
-                    );
-                    return (
-                      url.protocol !== "https:" &&
-                      url.protocol !== "http:" &&
-                      url.protocol !== "mailto:"
-                    );
-                  } catch {
-                    return true;
-                  }
-                })()) ||
-              (child.matches("img, video, audio") &&
-                (() => {
-                  try {
-                    const url = new URL(
-                      child.getAttribute("src"),
-                      `https://${application.configuration.hostname}`,
-                    );
-                    return !(
-                      url.protocol === "https:" || url.protocol === "http:"
-                    );
-                  } catch {
-                    return true;
-                  }
-                })()) ||
-              (child.matches("img, video") &&
-                ((typeof child.getAttribute("width") === "string" &&
-                  !child.getAttribute("width").match(/^\d+$/)) ||
-                  (typeof child.getAttribute("height") === "string" &&
-                    !child.getAttribute("height").match(/^\d+$/)))) ||
-              (child.matches("ul, ol") &&
-                [...child.children].some(
-                  (element) => !element.matches("li"),
-                )) ||
-              (child.matches("li") && !parent.matches("ul, ol")) ||
-              (child.matches("input") &&
-                (!(
-                  parent.matches("li") ||
-                  (parent.matches("p:first-child") &&
-                    parent.parentElement.matches("li"))
-                ) ||
-                  !child.matches(
-                    ':first-child[type="checkbox"][disabled=""]',
-                  ))) ||
-              (child.matches("poll") &&
-                (child.children.length !== 1 ||
-                  !child.children[0].matches("ul") ||
-                  ![...child.children[0].children].every(
-                    (element) =>
-                      element.querySelectorAll("input").length === 1 &&
-                      element.querySelector("input:checked") === null &&
-                      element.querySelectorAll("votes").length <= 1,
-                  ) ||
-                  ![...child.querySelectorAll("votes")].every(
-                    (votesElement) => {
-                      try {
-                        const votes = JSON.parse(votesElement.textContent);
-                        return (
-                          Array.isArray(votes) &&
-                          votes.every(
-                            (vote) =>
-                              typeof vote === "string" && vote.match(/^\d+$/),
-                          )
+                    hr {
+                      margin: var(--size--2) var(--size--0);
+                      border-bottom: var(--border-width--1) solid
+                        light-dark(
+                          var(--color--slate--200),
+                          var(--color--slate--800)
                         );
-                      } catch {
-                        return false;
+                    }
+
+                    strong {
+                      font-weight: 600;
+                    }
+
+                    em {
+                      font-style: italic;
+                    }
+
+                    u {
+                      text-decoration: underline;
+                    }
+
+                    code {
+                      font-family:
+                        "Roboto Mono Variable", var(--font-family--monospace);
+                    }
+
+                    ins {
+                      color: light-dark(
+                        var(--color--green--600),
+                        var(--color--green--600)
+                      );
+                    }
+
+                    del {
+                      text-decoration: line-through;
+                      color: light-dark(
+                        var(--color--red--600),
+                        var(--color--red--600)
+                      );
+                    }
+
+                    sup,
+                    sub {
+                      font-size: var(--font-size--2-5);
+                      line-height: var(--font-size--2-5--line-height);
+                    }
+
+                    sup {
+                      vertical-align: var(--size--1);
+                    }
+
+                    sub {
+                      vertical-align: var(--size---1);
+                    }
+
+                    img,
+                    video,
+                    audio {
+                      background-color: light-dark(
+                        var(--color--white),
+                        var(--color--white)
+                      );
+                      max-width: 100%;
+                      height: auto;
+                      border-radius: var(--border-radius--1);
+                    }
+
+                    ul,
+                    ol {
+                      margin: var(--size--2) var(--size--0) var(--size--2)
+                        var(--size--4);
+                    }
+
+                    li + li {
+                      margin-top: var(--size--2);
+                    }
+
+                    ul > li {
+                      list-style: disc;
+                    }
+
+                    ol > li {
+                      list-style: decimal;
+                    }
+
+                    input {
+                      position: absolute;
+                      translate: calc(-100% - var(--size--1)) 20%;
+                    }
+
+                    blockquote {
+                      color: light-dark(
+                        var(--color--slate--600),
+                        var(--color--slate--400)
+                      );
+                      padding-left: calc(
+                        var(--size--4) - var(--border-width--4)
+                      );
+                      border-left: var(--border-width--4) solid
+                        light-dark(
+                          var(--color--slate--200),
+                          var(--color--slate--800)
+                        );
+                      margin: var(--size--2) var(--size--0);
+                    }
+
+                    table {
+                      margin: var(--size--2) var(--size--0);
+                      border-collapse: collapse;
+                    }
+
+                    thead {
+                      border-bottom: var(--border-width--2) solid
+                        light-dark(
+                          var(--color--slate--200),
+                          var(--color--slate--800)
+                        );
+                    }
+
+                    th,
+                    td {
+                      padding: var(--size--1) var(--size--2);
+                      &[align="left"] {
+                        text-align: left;
                       }
-                    },
-                  ) ||
-                  child.querySelector("poll") !== null)) ||
-              (child.matches("votes") && child.closest("poll") === null) ||
-              (child.matches("table") &&
-                (2 < child.children.length ||
-                  [...child.children].some(
-                    (element) => !element.matches("thead, tbody"),
-                  ))) ||
-              (child.matches("thead") &&
-                (!parent.matches("table") ||
-                  !child.matches(":first-child") ||
-                  1 < child.children.length ||
-                  [...child.children].some(
-                    (element) => !element.matches("tr"),
-                  ))) ||
-              (child.matches("tbody") &&
-                (!parent.matches("table") ||
-                  !child.matches(":last-child") ||
-                  [...child.children].some(
-                    (element) => !element.matches("tr"),
-                  ))) ||
-              (child.matches("tr") &&
-                (!parent.matches("thead, tbody") ||
-                  [...child.children].some(
-                    (element) =>
-                      !element.matches(parent.matches("thead") ? "th" : "td"),
-                  ))) ||
-              (child.matches("th") &&
-                (!parent.matches("tr") ||
-                  !parent.parentElement.matches("thead"))) ||
-              (child.matches("td") &&
-                (!parent.matches("tr") ||
-                  !parent.parentElement.matches("tbody"))) ||
-              (child.matches("summary") &&
-                (!parent.matches("details") ||
-                  !child.matches(":first-child")))))
-        ) {
-          parent.removeChild(child);
-          continue;
-        }
-        if (child.nodeType !== child.ELEMENT_NODE) continue;
-        for (const attributeName of child.getAttributeNames())
+                      &[align="center"] {
+                        text-align: center;
+                      }
+                      &[align="right"] {
+                        text-align: right;
+                      }
+                    }
+
+                    th {
+                      font-weight: 500;
+                    }
+
+                    details {
+                      margin: var(--size--2) var(--size--0);
+                    }
+
+                    summary {
+                      font-weight: 500;
+                      details[open] > & {
+                        margin-bottom: var(--size--1);
+                      }
+                    }
+
+                    .katex-display {
+                      margin: var(--size--2) var(--size--0);
+                      overflow: auto hidden;
+                      & > .katex > .katex-html {
+                        text-align: center;
+                      }
+                    }
+
+                    pre {
+                      margin: var(--size--2) var(--size--0);
+                    }
+
+                    .shiki {
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3-5--line-height);
+                      padding: var(--size--2) var(--size--4);
+                      border-radius: var(--border-radius--1);
+                      overflow: auto hidden;
+                      &,
+                      & span {
+                        color: light-dark(
+                          var(--shiki-light),
+                          var(--shiki-dark)
+                        );
+                        background-color: light-dark(
+                          var(--shiki-light-bg),
+                          var(--shiki-dark-bg)
+                        );
+                      }
+                    }
+
+                    & > :first-child {
+                      margin-top: var(--size--0);
+                    }
+
+                    & > :last-child {
+                      margin-bottom: var(--size--0);
+                    }
+                  `}"
+                >
+                  $${processedMarkdown}
+                </div>
+              </body>
+            </html>
+          `,
+          "text/html",
+        )
+        .querySelector("div");
+      if (
+        document.lastElementChild !== null &&
+        document.lastElementChild.matches(
+          'section[class="footnotes"][data-footnotes=""]',
+        ) &&
+        document.lastElementChild.children.length === 2 &&
+        document.lastElementChild.children[0].matches(
+          'h2[id="footnote-label"][class="sr-only"]',
+        ) &&
+        document.lastElementChild.children[0].textContent === "Footnotes" &&
+        document.lastElementChild.children[1].matches("ol")
+      ) {
+        document.lastElementChild.replaceWith(
+          document.lastElementChild.children[1],
+        );
+        document.lastElementChild.footnotes = true;
+      }
+      (function sanitize(parent) {
+        for (const child of parent.childNodes) {
           if (
             !(
-              attributeName === "data-position" ||
-              (child.matches("a") && attributeName === "href") ||
-              (child.matches("code") &&
-                attributeName === "class" &&
-                child
-                  .getAttribute(attributeName)
-                  .match(
-                    /^(?:language-math math-inline)|(?:language-math math-display)|(?:language-[a-z0-9\-+#]+)$/,
+              child.nodeType === child.ELEMENT_NODE ||
+              child.nodeType === child.TEXT_NODE
+            ) ||
+            (child.nodeType === child.ELEMENT_NODE &&
+              (!child.matches(
+                "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, a, code, ins, del, sup, sub, br, img, video, audio, ul, ol, li, input, poll, votes, blockquote, table, thead, tbody, tr, th, td, details, summary, pre",
+              ) ||
+                (child.matches("a") &&
+                  (() => {
+                    try {
+                      const url = new URL(
+                        child.getAttribute("href"),
+                        `https://${application.configuration.hostname}`,
+                      );
+                      return (
+                        url.protocol !== "https:" &&
+                        url.protocol !== "http:" &&
+                        url.protocol !== "mailto:"
+                      );
+                    } catch {
+                      return true;
+                    }
+                  })()) ||
+                (child.matches("img, video, audio") &&
+                  (() => {
+                    try {
+                      const url = new URL(
+                        child.getAttribute("src"),
+                        `https://${application.configuration.hostname}`,
+                      );
+                      return !(
+                        url.protocol === "https:" || url.protocol === "http:"
+                      );
+                    } catch {
+                      return true;
+                    }
+                  })()) ||
+                (child.matches("img, video") &&
+                  ((typeof child.getAttribute("width") === "string" &&
+                    !child.getAttribute("width").match(/^\d+$/)) ||
+                    (typeof child.getAttribute("height") === "string" &&
+                      !child.getAttribute("height").match(/^\d+$/)))) ||
+                (child.matches("ul, ol") &&
+                  [...child.children].some(
+                    (element) => !element.matches("li"),
                   )) ||
-              (child.matches("img, video, audio") && attributeName === "src") ||
-              (child.matches("img, video") &&
-                (attributeName === "width" || attributeName === "height")) ||
-              (child.matches("img") && attributeName === "alt") ||
-              (child.matches("input") &&
-                (attributeName === "type" ||
-                  attributeName === "disabled" ||
-                  attributeName === "checked")) ||
-              ((child.matches("td") || child.matches("th")) &&
-                attributeName === "align" &&
-                (child.getAttribute(attributeName) === "left" ||
-                  child.getAttribute(attributeName) === "center" ||
-                  child.getAttribute(attributeName) === "right")) ||
-              attributeName === "id"
+                (child.matches("li") && !parent.matches("ul, ol")) ||
+                (child.matches("input") &&
+                  (!(
+                    parent.matches("li") ||
+                    (parent.matches("p:first-child") &&
+                      parent.parentElement.matches("li"))
+                  ) ||
+                    !child.matches(
+                      ':first-child[type="checkbox"][disabled=""]',
+                    ))) ||
+                (child.matches("poll") &&
+                  (child.children.length !== 1 ||
+                    !child.children[0].matches("ul") ||
+                    ![...child.children[0].children].every(
+                      (element) =>
+                        element.querySelectorAll("input").length === 1 &&
+                        element.querySelector("input:checked") === null &&
+                        element.querySelectorAll("votes").length <= 1,
+                    ) ||
+                    ![...child.querySelectorAll("votes")].every(
+                      (votesElement) => {
+                        try {
+                          const votes = JSON.parse(votesElement.textContent);
+                          return (
+                            Array.isArray(votes) &&
+                            votes.every(
+                              (vote) =>
+                                typeof vote === "string" && vote.match(/^\d+$/),
+                            )
+                          );
+                        } catch {
+                          return false;
+                        }
+                      },
+                    ) ||
+                    child.querySelector("poll") !== null)) ||
+                (child.matches("votes") && child.closest("poll") === null) ||
+                (child.matches("table") &&
+                  (2 < child.children.length ||
+                    [...child.children].some(
+                      (element) => !element.matches("thead, tbody"),
+                    ))) ||
+                (child.matches("thead") &&
+                  (!parent.matches("table") ||
+                    !child.matches(":first-child") ||
+                    1 < child.children.length ||
+                    [...child.children].some(
+                      (element) => !element.matches("tr"),
+                    ))) ||
+                (child.matches("tbody") &&
+                  (!parent.matches("table") ||
+                    !child.matches(":last-child") ||
+                    [...child.children].some(
+                      (element) => !element.matches("tr"),
+                    ))) ||
+                (child.matches("tr") &&
+                  (!parent.matches("thead, tbody") ||
+                    [...child.children].some(
+                      (element) =>
+                        !element.matches(parent.matches("thead") ? "th" : "td"),
+                    ))) ||
+                (child.matches("th") &&
+                  (!parent.matches("tr") ||
+                    !parent.parentElement.matches("thead"))) ||
+                (child.matches("td") &&
+                  (!parent.matches("tr") ||
+                    !parent.parentElement.matches("tbody"))) ||
+                (child.matches("summary") &&
+                  (!parent.matches("details") ||
+                    !child.matches(":first-child")))))
+          ) {
+            parent.removeChild(child);
+            continue;
+          }
+          if (child.nodeType !== child.ELEMENT_NODE) continue;
+          for (const attributeName of child.getAttributeNames())
+            if (
+              !(
+                attributeName === "data-position" ||
+                (child.matches("a") && attributeName === "href") ||
+                (child.matches("code") &&
+                  attributeName === "class" &&
+                  child
+                    .getAttribute(attributeName)
+                    .match(
+                      /^(?:language-math math-inline)|(?:language-math math-display)|(?:language-[a-z0-9\-+#]+)$/,
+                    )) ||
+                (child.matches("img, video, audio") &&
+                  attributeName === "src") ||
+                (child.matches("img, video") &&
+                  (attributeName === "width" || attributeName === "height")) ||
+                (child.matches("img") && attributeName === "alt") ||
+                (child.matches("input") &&
+                  (attributeName === "type" ||
+                    attributeName === "disabled" ||
+                    attributeName === "checked")) ||
+                ((child.matches("td") || child.matches("th")) &&
+                  attributeName === "align" &&
+                  (child.getAttribute(attributeName) === "left" ||
+                    child.getAttribute(attributeName) === "center" ||
+                    child.getAttribute(attributeName) === "right")) ||
+                attributeName === "id"
+              )
+            )
+              child.removeAttribute(attributeName);
+          sanitize(child);
+        }
+      })(document);
+      for (const element of document.querySelectorAll("a")) {
+        const url = new URL(
+          element.getAttribute("href"),
+          `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
+        );
+        if (
+          !(
+            url.protocol === "https:" &&
+            url.hostname === application.configuration.hostname &&
+            url.pathname.match(
+              new RegExp(
+                `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
+              ),
             )
           )
-            child.removeAttribute(attributeName);
-        sanitize(child);
-      }
-    })(document);
-    for (const element of document.querySelectorAll("a")) {
-      const url = new URL(
-        element.getAttribute("href"),
-        `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
-      );
-      if (
-        !(
-          url.protocol === "https:" &&
-          url.hostname === application.configuration.hostname &&
-          url.pathname.match(
-            new RegExp(
-              `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
-            ),
-          )
         )
-      )
-        element.setAttribute("target", "_blank");
-      element.setAttribute("class", "link");
-    }
-    for (const element of document.querySelectorAll("img, video, audio")) {
-      const url = new URL(
-        element.getAttribute("src"),
-        `https://${application.configuration.hostname}`,
-      );
-      if (url.hostname !== application.configuration.hostname)
-        element.setAttribute(
-          "src",
-          `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
+          element.setAttribute("target", "_blank");
+        element.setAttribute("class", "link");
+      }
+      for (const element of document.querySelectorAll("img, video, audio")) {
+        const url = new URL(
+          element.getAttribute("src"),
+          `https://${application.configuration.hostname}`,
         );
-    }
-    for (const element of document.querySelectorAll("img"))
-      element.setAttribute("loading", "lazy");
-    for (const element of document.querySelectorAll("video"))
-      if (element.parentElement.matches("a")) {
-        element.setAttribute("autoplay", "");
-        element.setAttribute("disablepictureinpicture", "");
-        element.setAttribute("disableremoteplayback", "");
-        element.setAttribute("loop", "");
-        element.setAttribute("muted", "");
-        element.setAttribute("playsinline", "");
-      } else {
+        if (url.hostname !== application.configuration.hostname)
+          element.setAttribute(
+            "src",
+            `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
+          );
+      }
+      for (const element of document.querySelectorAll("img"))
+        element.setAttribute("loading", "lazy");
+      for (const element of document.querySelectorAll("video"))
+        if (element.parentElement.matches("a")) {
+          element.setAttribute("autoplay", "");
+          element.setAttribute("disablepictureinpicture", "");
+          element.setAttribute("disableremoteplayback", "");
+          element.setAttribute("loop", "");
+          element.setAttribute("muted", "");
+          element.setAttribute("playsinline", "");
+        } else {
+          element.setAttribute("controls", "");
+          element.setAttribute("preload", "metadata");
+        }
+      for (const element of document.querySelectorAll("audio")) {
         element.setAttribute("controls", "");
         element.setAttribute("preload", "metadata");
       }
-    for (const element of document.querySelectorAll("audio")) {
-      element.setAttribute("controls", "");
-      element.setAttribute("preload", "metadata");
-    }
-    for (const element of document.querySelectorAll("input"))
-      element.setAttribute("class", "input--checkbox");
-    for (const [elementIndex, element] of [
-      ...document.querySelectorAll("poll"),
-    ].entries()) {
-      let votesCount = 0;
-      for (const [pollOptionIndex, pollOption] of [
-        ...element.children[0].children,
+      for (const element of document.querySelectorAll("input"))
+        element.setAttribute("class", "input--checkbox");
+      for (const [elementIndex, element] of [
+        ...document.querySelectorAll("poll"),
       ].entries()) {
-        const votesElement = pollOption.querySelector("votes");
-        if (mode !== "programmaticEditingOfCourseConversationMessageContent")
-          votesElement?.remove();
-        pollOption.votes =
-          votesElement === null ? [] : JSON.parse(votesElement.textContent);
-        votesCount += pollOption.votes.length;
-        pollOption
-          .querySelector("input")
-          .setAttribute(
-            "name",
-            "courseConversationMessageContentPollOptions[]",
-          );
-        pollOption
-          .querySelector("input")
-          .setAttribute("value", pollOptionIndex);
-        pollOption.querySelector("input").setAttribute("required", "");
-        if (
-          courseParticipation !== undefined &&
-          pollOption.votes.includes(courseParticipation.publicId)
-        )
-          pollOption.querySelector("input").setAttribute("checked", "");
-        if (mode === "normal" && course.courseState === "courseStateActive") {
-          pollOption.innerHTML = html`
-            <label
-              class="button button--rectangle button--transparent"
-              css="${css`
-                padding-left: var(--size--6);
-                margin-left: var(--size---6);
-                display: block;
-              `}"
-            >
-              $${pollOption.innerHTML}
-            </label>
-          `;
-          pollOption.querySelector("input").removeAttribute("disabled");
-        }
-      }
-      if (
-        mode !== "textContent" &&
-        ((courseParticipation !== undefined &&
-          (courseParticipation.courseParticipationRole ===
-            "courseParticipationRoleInstructor" ||
-            courseParticipation.id ===
-              courseConversationMessage?.createdByCourseParticipation)) ||
-          element.querySelector("input:checked") !== null ||
-          course.courseState === "courseStateArchived")
-      )
-        for (const pollOption of element.children[0].children)
-          pollOption.insertAdjacentHTML(
-            "beforeend",
-            html`
-              <details
-                css="${pollOption.votes.length === 0
-                  ? css`
-                      margin: var(--size--0);
-                    `
-                  : css`
-                      margin: var(--size--1) var(--size--0) var(--size--0)
-                        var(--size--0);
-                    `}"
+        let votesCount = 0;
+        for (const [pollOptionIndex, pollOption] of [
+          ...element.children[0].children,
+        ].entries()) {
+          const votesElement = pollOption.querySelector("votes");
+          if (mode !== "programmaticEditingOfCourseConversationMessageContent")
+            votesElement?.remove();
+          pollOption.votes =
+            votesElement === null ? [] : JSON.parse(votesElement.textContent);
+          votesCount += pollOption.votes.length;
+          pollOption
+            .querySelector("input")
+            .setAttribute(
+              "name",
+              "courseConversationMessageContentPollOptions[]",
+            );
+          pollOption
+            .querySelector("input")
+            .setAttribute("value", pollOptionIndex);
+          pollOption.querySelector("input").setAttribute("required", "");
+          if (
+            courseParticipation !== undefined &&
+            pollOption.votes.includes(courseParticipation.publicId)
+          )
+            pollOption.querySelector("input").setAttribute("checked", "");
+          if (mode === "normal" && course.courseState === "courseStateActive") {
+            pollOption.innerHTML = html`
+              <label
+                class="button button--rectangle button--transparent"
+                css="${css`
+                  padding-left: var(--size--6);
+                  margin-left: var(--size---6);
+                  display: block;
+                `}"
               >
-                <summary
-                  css="${css`
-                    font-size: var(--font-size--3);
-                    line-height: var(--font-size--3--line-height);
-                    position: relative;
-                  `}"
-                >
-                  $${0 < pollOption.votes.length
-                    ? html`
-                        <div
-                          style="width: ${String(
-                            Math.round(
-                              (pollOption.votes.length / votesCount) * 100,
-                            ),
-                          )}%;"
-                          css="${css`
-                            background-color: light-dark(
-                              var(--color--blue--500),
-                              var(--color--blue--500)
-                            );
-                            height: var(--border-width--4);
-                            border-radius: var(--border-radius--round);
-                            position: absolute;
-                            top: var(--size--0);
-                          `}"
-                        ></div>
+                $${pollOption.innerHTML}
+              </label>
+            `;
+            pollOption.querySelector("input").removeAttribute("disabled");
+          }
+        }
+        if (
+          mode !== "textContent" &&
+          ((courseParticipation !== undefined &&
+            (courseParticipation.courseParticipationRole ===
+              "courseParticipationRoleInstructor" ||
+              courseParticipation.id ===
+                courseConversationMessage?.createdByCourseParticipation)) ||
+            element.querySelector("input:checked") !== null ||
+            course.courseState === "courseStateArchived")
+        )
+          for (const pollOption of element.children[0].children)
+            pollOption.insertAdjacentHTML(
+              "beforeend",
+              html`
+                <details
+                  css="${pollOption.votes.length === 0
+                    ? css`
+                        margin: var(--size--0);
                       `
-                    : html``}
-                  ${String(pollOption.votes.length)}
-                  vote${pollOption.votes.length !== 1 ? "s" : ""}
-                </summary>
-                <div
-                  css="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size--2);
-                  `}"
+                    : css`
+                        margin: var(--size--1) var(--size--0) var(--size--0)
+                          var(--size--0);
+                      `}"
                 >
-                  $${pollOption.votes.map(
-                    (voteCourseParticipationPublicId: string) => {
-                      const courseConversationMessageContentPollOptionVoteCourseParticipation =
-                        application.database.get<{
-                          user: number;
-                          courseParticipationRole:
-                            | "courseParticipationRoleInstructor"
-                            | "courseParticipationRoleStudent";
-                        }>(
-                          sql`
-                            select
-                              "user",
-                              "courseParticipationRole"
-                            from "courseParticipations"
-                            where
-                              "publicId" = ${voteCourseParticipationPublicId} and
-                              "course" = ${course.id};
-                          `,
-                        );
-                      const courseConversationMessageContentPollOptionVoteUser =
-                        courseConversationMessageContentPollOptionVoteCourseParticipation !==
-                        undefined
-                          ? application.database.get<{
-                              publicId: string;
-                              name: string;
-                              avatarColor:
-                                | "red"
-                                | "orange"
-                                | "amber"
-                                | "yellow"
-                                | "lime"
-                                | "green"
-                                | "emerald"
-                                | "teal"
-                                | "cyan"
-                                | "sky"
-                                | "blue"
-                                | "indigo"
-                                | "violet"
-                                | "purple"
-                                | "fuchsia"
-                                | "pink"
-                                | "rose";
-                              avatarImage: string | null;
-                              lastSeenOnlineAt: string;
-                            }>(
-                              sql`
-                                select
-                                  "publicId",
-                                  "name",
-                                  "avatarColor",
-                                  "avatarImage",
-                                  "lastSeenOnlineAt"
-                                from "users"
-                                where "id" = ${courseConversationMessageContentPollOptionVoteCourseParticipation.user};
-                              `,
-                            )
-                          : undefined;
-                      return html`
-                        <div
-                          css="${css`
-                            display: flex;
-                            gap: var(--size--2);
-                          `}"
-                        >
-                          $${application.partials.userAvatar({
-                            user:
-                              courseConversationMessageContentPollOptionVoteUser ??
-                              "courseParticipationDeleted",
-                          })}
+                  <summary
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      position: relative;
+                    `}"
+                  >
+                    $${0 < pollOption.votes.length
+                      ? html`
+                          <div
+                            style="width: ${String(
+                              Math.round(
+                                (pollOption.votes.length / votesCount) * 100,
+                              ),
+                            )}%;"
+                            css="${css`
+                              background-color: light-dark(
+                                var(--color--blue--500),
+                                var(--color--blue--500)
+                              );
+                              height: var(--border-width--4);
+                              border-radius: var(--border-radius--round);
+                              position: absolute;
+                              top: var(--size--0);
+                            `}"
+                          ></div>
+                        `
+                      : html``}
+                    ${String(pollOption.votes.length)}
+                    vote${pollOption.votes.length !== 1 ? "s" : ""}
+                  </summary>
+                  <div
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--2);
+                    `}"
+                  >
+                    $${pollOption.votes.map(
+                      (voteCourseParticipationPublicId: string) => {
+                        const courseConversationMessageContentPollOptionVoteCourseParticipation =
+                          application.database.get<{
+                            user: number;
+                            courseParticipationRole:
+                              | "courseParticipationRoleInstructor"
+                              | "courseParticipationRoleStudent";
+                          }>(
+                            sql`
+                              select
+                                "user",
+                                "courseParticipationRole"
+                              from "courseParticipations"
+                              where
+                                "publicId" = ${voteCourseParticipationPublicId} and
+                                "course" = ${course.id};
+                            `,
+                          );
+                        const courseConversationMessageContentPollOptionVoteUser =
+                          courseConversationMessageContentPollOptionVoteCourseParticipation !==
+                          undefined
+                            ? application.database.get<{
+                                publicId: string;
+                                name: string;
+                                avatarColor:
+                                  | "red"
+                                  | "orange"
+                                  | "amber"
+                                  | "yellow"
+                                  | "lime"
+                                  | "green"
+                                  | "emerald"
+                                  | "teal"
+                                  | "cyan"
+                                  | "sky"
+                                  | "blue"
+                                  | "indigo"
+                                  | "violet"
+                                  | "purple"
+                                  | "fuchsia"
+                                  | "pink"
+                                  | "rose";
+                                avatarImage: string | null;
+                                lastSeenOnlineAt: string;
+                              }>(
+                                sql`
+                                  select
+                                    "publicId",
+                                    "name",
+                                    "avatarColor",
+                                    "avatarImage",
+                                    "lastSeenOnlineAt"
+                                  from "users"
+                                  where "id" = ${courseConversationMessageContentPollOptionVoteCourseParticipation.user};
+                                `,
+                              )
+                            : undefined;
+                        return html`
                           <div
                             css="${css`
-                              margin-top: var(--size--0-5);
+                              display: flex;
+                              gap: var(--size--2);
                             `}"
                           >
-                            ${courseConversationMessageContentPollOptionVoteUser?.name ??
-                            "Deleted course participant"}$${courseConversationMessageContentPollOptionVoteCourseParticipation?.courseParticipationRole ===
-                            "courseParticipationRoleInstructor"
-                              ? html`<span
-                                  css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    color: light-dark(
-                                      var(--color--slate--600),
-                                      var(--color--slate--400)
-                                    );
-                                  `}"
-                                >
-                                  (instructor)</span
-                                >`
-                              : html``}
+                            $${application.partials.userAvatar({
+                              user:
+                                courseConversationMessageContentPollOptionVoteUser ??
+                                "courseParticipationDeleted",
+                            })}
+                            <div
+                              css="${css`
+                                margin-top: var(--size--0-5);
+                              `}"
+                            >
+                              ${courseConversationMessageContentPollOptionVoteUser?.name ??
+                              "Deleted course participant"}$${courseConversationMessageContentPollOptionVoteCourseParticipation?.courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
+                                ? html`<span
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                    `}"
+                                  >
+                                    (instructor)</span
+                                  >`
+                                : html``}
+                            </div>
                           </div>
-                        </div>
-                      `;
-                    },
-                  )}
-                </div>
-              </details>
+                        `;
+                      },
+                    )}
+                  </div>
+                </details>
+              `,
+            );
+        if (mode === "normal" && course.courseState === "courseStateActive")
+          element.insertAdjacentHTML(
+            "beforeend",
+            html`
+              <div
+                css="${css`
+                  font-size: var(--font-size--3);
+                  line-height: var(--font-size--3--line-height);
+                  font-weight: 600;
+                  color: light-dark(
+                    var(--color--slate--600),
+                    var(--color--slate--400)
+                  );
+                  margin: var(--size--2) var(--size--0);
+                `}"
+              >
+                <button
+                  type="submit"
+                  class="button button--rectangle button--transparent"
+                >
+                  ${element.querySelector("input:checked") === null
+                    ? "Vote"
+                    : "Update vote"}
+                </button>
+              </div>
             `,
           );
-      if (mode === "normal" && course.courseState === "courseStateActive")
-        element.insertAdjacentHTML(
-          "beforeend",
-          html`
-            <div
-              css="${css`
-                font-size: var(--font-size--3);
-                line-height: var(--font-size--3--line-height);
-                font-weight: 600;
-                color: light-dark(
-                  var(--color--slate--600),
-                  var(--color--slate--400)
-                );
-                margin: var(--size--2) var(--size--0);
-              `}"
-            >
-              <button
-                type="submit"
-                class="button button--rectangle button--transparent"
-              >
-                ${element.querySelector("input:checked") === null
-                  ? "Vote"
-                  : "Update vote"}
-              </button>
-            </div>
-          `,
-        );
-      element.outerHTML = html`
-        <div
-          type="form poll"
-          method="PATCH"
-          action="/courses/${course.publicId}${courseConversation !== undefined
-            ? `/conversations/${courseConversation.publicId}`
-            : ""}${courseConversationMessage !== undefined
-            ? `/messages/${courseConversationMessage.publicId}`
-            : ""}/polls/${String(elementIndex)}"
-        >
-          $${element.innerHTML}
-        </div>
-      `;
-    }
-    if (mode !== "textContent")
-      for (const element of document.querySelectorAll("details"))
-        if (!element.firstElementChild.matches("summary"))
-          element.insertAdjacentHTML(
-            "afterbegin",
-            html`<summary>See more</summary>`,
-          );
-    for (const element of document.querySelectorAll("summary")) {
-      element.setAttribute(
-        "class",
-        "button button--rectangle button--transparent",
-      );
-      element.insertAdjacentHTML(
-        "afterbegin",
-        html`
-          <span
-            css="${css`
-              display: inline-block;
-              transition-property: var(--transition-property--transform);
-              transition-duration: var(--transition-duration--150);
-              transition-timing-function: var(
-                --transition-timing-function--ease-in-out
-              );
-              details[open] > summary > & {
-                rotate: var(--rotate--90);
-              }
-            `}"
+        element.outerHTML = html`
+          <div
+            type="form poll"
+            method="PATCH"
+            action="/courses/${course.publicId}${courseConversation !==
+            undefined
+              ? `/conversations/${courseConversation.publicId}`
+              : ""}${courseConversationMessage !== undefined
+              ? `/messages/${courseConversationMessage.publicId}`
+              : ""}/polls/${String(elementIndex)}"
           >
-            <i class="bi bi-chevron-right"></i>
-          </span>
-          <span></span>
-        `,
-      );
-    }
-    if (document.lastElementChild?.footnotes === true) {
-      const footnotes = document.lastElementChild;
-      for (const element of footnotes.querySelectorAll("a:last-child"))
-        if (
-          typeof element.getAttribute("href") === "string" &&
-          element.getAttribute("href").match(/^#fnref-\d+$/) &&
-          element.textContent.trim() === "↩"
-        ) {
-          element.setAttribute(
-            "class",
-            "button button--square button--transparent",
-          );
-          element.innerHTML = html`<i class="bi bi-arrow-up"></i>`;
-        }
-      footnotes.outerHTML = html`
-        <div
-          css="${css`
-            font-size: var(--font-size--3);
-            line-height: var(--font-size--3--line-height);
-            color: light-dark(
-              var(--color--slate--600),
-              var(--color--slate--400)
+            $${element.innerHTML}
+          </div>
+        `;
+      }
+      if (mode !== "textContent")
+        for (const element of document.querySelectorAll("details"))
+          if (!element.firstElementChild.matches("summary"))
+            element.insertAdjacentHTML(
+              "afterbegin",
+              html`<summary>See more</summary>`,
             );
-            padding-top: var(--size--2);
-            border-top: var(--border-width--1) solid
-              light-dark(var(--color--slate--200), var(--color--slate--800));
-            margin-top: var(--size--2);
-            & > ol {
-              margin-top: var(--size--0);
-              margin-bottom: var(--size--0);
-            }
-          `}"
-        >
-          $${footnotes.outerHTML}
-        </div>
-      `;
-    }
-    {
-      const katexMacros = {};
-      for (const element of document.querySelectorAll("code.language-math")) {
-        const targetElement =
-          element.matches(".math-display") &&
-          element.parentElement.matches("pre")
-            ? element.parentElement
-            : element;
-        if (mode !== "textContent")
-          targetElement.outerHTML = katex.renderToString(element.textContent, {
-            displayMode: element.matches(".math-display"),
-            output: "html",
-            throwOnError: false,
-            macros: katexMacros,
-            maxSize: 25,
-            maxExpand: 10,
-            strict: false,
-          });
-        else targetElement.remove();
-      }
-    }
-    for (const element of document.querySelectorAll(
-      'code[class^="language-"]',
-    )) {
-      const targetElement = element.parentElement.matches("pre")
-        ? element.parentElement
-        : element;
-      targetElement.insertAdjacentHTML(
-        "afterend",
-        await shiki.codeToHtml(element.textContent, {
-          lang: element.getAttribute("class").slice("language-".length),
-          themes: { light: "light-plus", dark: "dark-plus" },
-          defaultColor: false,
-        }),
-      );
-      targetElement.nextElementSibling.setAttribute(
-        "data-position",
-        targetElement.getAttribute("data-position"),
-      );
-      targetElement.remove();
-    }
-    {
-      const githubSlugger = new GitHubSlugger();
-      for (const element of document.querySelectorAll("[id]")) {
-        const originalId = element.getAttribute("id");
-        const newId = `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(originalId)}`;
-        element.setAttribute("id", newId);
-        for (const element of document.querySelectorAll(
-          `a[href="#${originalId}"]`,
-        ))
-          element.setAttribute("href", `#${newId}`);
-      }
-      for (const element of document.querySelectorAll(
-        "h1, h2, h3, h4, h5, h6",
-      )) {
-        const id =
-          element.getAttribute("id") ??
-          `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(element.textContent)}`;
-        element.setAttribute("id", id);
+      for (const element of document.querySelectorAll("summary")) {
+        element.setAttribute(
+          "class",
+          "button button--rectangle button--transparent",
+        );
         element.insertAdjacentHTML(
           "afterbegin",
           html`
-            <a
-              href="#${id}"
-              class="button button--square button--icon button--transparent"
+            <span
               css="${css`
-                font-size: var(--font-size--4-5);
-                color: light-dark(
-                  var(--color--slate--500),
-                  var(--color--slate--500)
-                );
-                margin-left: var(--size--0);
-                display: block;
-                position: absolute;
-                translate: -100%;
-                transition-property:
-                  var(--transition-property--opacity),
-                  var(--transition-property--colors);
+                display: inline-block;
+                transition-property: var(--transition-property--transform);
                 transition-duration: var(--transition-duration--150);
                 transition-timing-function: var(
                   --transition-timing-function--ease-in-out
                 );
-                &:not(:hover, :focus-within, :active) {
-                  background-color: light-dark(
-                    var(--color--white),
-                    var(--color--black)
-                  );
-                }
-                :not(:hover) > & {
-                  opacity: var(--opacity--0);
+                details[open] > summary > & {
+                  rotate: var(--rotate--90);
                 }
               `}"
             >
-              <i class="bi bi-link"></i>
-            </a>
+              <i class="bi bi-chevron-right"></i>
+            </span>
+            <span></span>
           `,
         );
       }
-    }
-    (function mentionsAndReferences(parent) {
-      let previousElementSibling;
-      for (const child of parent.childNodes) {
-        if (child.nodeType === child.ELEMENT_NODE) {
-          if (!child.matches("a, code, .katex")) mentionsAndReferences(child);
-          previousElementSibling = child;
-          continue;
-        }
-        const childTextContentWithMentionsAndReferences =
-          html`${child.textContent}`
-            .replaceAll(
-              /(?<=^|\s)@[a-z\-]+--(?<courseParticipationPublicId>\d+)/g,
-              (match, courseParticipationPublicId) => {
-                const mentionCourseParticipation = application.database.get<{
-                  id: number;
-                  user: number;
-                  courseParticipationRole:
-                    | "courseParticipationRoleInstructor"
-                    | "courseParticipationRoleStudent";
-                }>(
-                  sql`
-                    select
-                      "id",
-                      "user",
-                      "courseParticipationRole"
-                    from "courseParticipations"
-                    where
-                      "publicId" = ${courseParticipationPublicId} and
-                      "course" = ${course.id};
-                  `,
-                );
-                if (mentionCourseParticipation === undefined) return match;
-                const mentionUser = application.database.get<{
-                  name: string;
-                }>(
-                  sql`
-                    select "name"
-                    from "users"
-                    where "id" = ${mentionCourseParticipation.user};
-                  `,
-                );
-                if (mentionUser === undefined) throw new Error();
-                return html`<strong
-                  $${courseParticipation !== undefined &&
-                  courseParticipation.id === mentionCourseParticipation.id
-                    ? html`class="highlight"`
-                    : html``}
-                  >@${mentionUser.name}${mentionCourseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor"
-                    ? " (instructor)"
-                    : ""}</strong
-                >`;
+      if (document.lastElementChild?.footnotes === true) {
+        const footnotes = document.lastElementChild;
+        for (const element of footnotes.querySelectorAll("a:last-child"))
+          if (
+            typeof element.getAttribute("href") === "string" &&
+            element.getAttribute("href").match(/^#fnref-\d+$/) &&
+            element.textContent.trim() === "↩"
+          ) {
+            element.setAttribute(
+              "class",
+              "button button--square button--transparent",
+            );
+            element.innerHTML = html`<i class="bi bi-arrow-up"></i>`;
+          }
+        footnotes.outerHTML = html`
+          <div
+            css="${css`
+              font-size: var(--font-size--3);
+              line-height: var(--font-size--3--line-height);
+              color: light-dark(
+                var(--color--slate--600),
+                var(--color--slate--400)
+              );
+              padding-top: var(--size--2);
+              border-top: var(--border-width--1) solid
+                light-dark(var(--color--slate--200), var(--color--slate--800));
+              margin-top: var(--size--2);
+              & > ol {
+                margin-top: var(--size--0);
+                margin-bottom: var(--size--0);
+              }
+            `}"
+          >
+            $${footnotes.outerHTML}
+          </div>
+        `;
+      }
+      {
+        const katexMacros = {};
+        for (const element of document.querySelectorAll("code.language-math")) {
+          const targetElement =
+            element.matches(".math-display") &&
+            element.parentElement.matches("pre")
+              ? element.parentElement
+              : element;
+          if (mode !== "textContent")
+            targetElement.outerHTML = katex.renderToString(
+              element.textContent,
+              {
+                displayMode: element.matches(".math-display"),
+                output: "html",
+                throwOnError: false,
+                macros: katexMacros,
+                maxSize: 25,
+                maxExpand: 10,
+                strict: false,
               },
-            )
-            .replaceAll(
-              /(?<=^|\s)@(?:everyone|instructors|students)(?![A-Za-z0-9\-])/g,
-              (match) => html`<strong>${match}</strong>`,
-            )
-            .replaceAll(
-              /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseConversationMessagePublicId>\d+))?/g,
-              (
-                match,
-                courseConversationPublicId,
-                courseConversationMessagePublicId,
-              ) => {
-                const mentionCourseConversation = application.database.get<{
-                  id: number;
-                  publicId: string;
-                }>(
-                  sql`
-                    select "id", "publicId"
-                    from "courseConversations"
-                    where
-                      "publicId" = ${courseConversationPublicId} and
-                      "course" = ${course.id} and (
-                        "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                        $${
-                          courseParticipation !== undefined &&
-                          courseParticipation.courseParticipationRole ===
-                            "courseParticipationRoleInstructor"
-                            ? sql`
-                                or
-                                "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                              `
-                            : sql``
-                        }
-                        $${
-                          courseParticipation !== undefined
-                            ? sql`
-                                or (
-                                  select true
-                                  from "courseConversationParticipations"
-                                  where
-                                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                                    "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
-                                )
-                              `
-                            : sql``
-                        }
-                        
-                      );
-                  `,
-                );
-                if (mentionCourseConversation === undefined) return match;
-                if (courseConversationMessagePublicId === undefined)
+            );
+          else targetElement.remove();
+        }
+      }
+      for (const element of document.querySelectorAll(
+        'code[class^="language-"]',
+      )) {
+        const targetElement = element.parentElement.matches("pre")
+          ? element.parentElement
+          : element;
+        targetElement.insertAdjacentHTML(
+          "afterend",
+          await shiki.codeToHtml(element.textContent, {
+            lang: element.getAttribute("class").slice("language-".length),
+            themes: { light: "light-plus", dark: "dark-plus" },
+            defaultColor: false,
+          }),
+        );
+        targetElement.nextElementSibling.setAttribute(
+          "data-position",
+          targetElement.getAttribute("data-position"),
+        );
+        targetElement.remove();
+      }
+      {
+        const githubSlugger = new GitHubSlugger();
+        for (const element of document.querySelectorAll("[id]")) {
+          const originalId = element.getAttribute("id");
+          const newId = `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(originalId)}`;
+          element.setAttribute("id", newId);
+          for (const element of document.querySelectorAll(
+            `a[href="#${originalId}"]`,
+          ))
+            element.setAttribute("href", `#${newId}`);
+        }
+        for (const element of document.querySelectorAll(
+          "h1, h2, h3, h4, h5, h6",
+        )) {
+          const id =
+            element.getAttribute("id") ??
+            `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(element.textContent)}`;
+          element.setAttribute("id", id);
+          element.insertAdjacentHTML(
+            "afterbegin",
+            html`
+              <a
+                href="#${id}"
+                class="button button--square button--icon button--transparent"
+                css="${css`
+                  font-size: var(--font-size--4-5);
+                  color: light-dark(
+                    var(--color--slate--500),
+                    var(--color--slate--500)
+                  );
+                  margin-left: var(--size--0);
+                  display: block;
+                  position: absolute;
+                  translate: -100%;
+                  transition-property:
+                    var(--transition-property--opacity),
+                    var(--transition-property--colors);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--ease-in-out
+                  );
+                  &:not(:hover, :focus-within, :active) {
+                    background-color: light-dark(
+                      var(--color--white),
+                      var(--color--black)
+                    );
+                  }
+                  :not(:hover) > & {
+                    opacity: var(--opacity--0);
+                  }
+                `}"
+              >
+                <i class="bi bi-link"></i>
+              </a>
+            `,
+          );
+        }
+      }
+      (function mentionsAndReferences(parent) {
+        let previousElementSibling;
+        for (const child of parent.childNodes) {
+          if (child.nodeType === child.ELEMENT_NODE) {
+            if (!child.matches("a, code, .katex")) mentionsAndReferences(child);
+            previousElementSibling = child;
+            continue;
+          }
+          const childTextContentWithMentionsAndReferences =
+            html`${child.textContent}`
+              .replaceAll(
+                /(?<=^|\s)@[a-z\-]+--(?<courseParticipationPublicId>\d+)/g,
+                (match, courseParticipationPublicId) => {
+                  const mentionCourseParticipation = application.database.get<{
+                    id: number;
+                    user: number;
+                    courseParticipationRole:
+                      | "courseParticipationRoleInstructor"
+                      | "courseParticipationRoleStudent";
+                  }>(
+                    sql`
+                      select
+                        "id",
+                        "user",
+                        "courseParticipationRole"
+                      from "courseParticipations"
+                      where
+                        "publicId" = ${courseParticipationPublicId} and
+                        "course" = ${course.id};
+                    `,
+                  );
+                  if (mentionCourseParticipation === undefined) return match;
+                  const mentionUser = application.database.get<{
+                    name: string;
+                  }>(
+                    sql`
+                      select "name"
+                      from "users"
+                      where "id" = ${mentionCourseParticipation.user};
+                    `,
+                  );
+                  if (mentionUser === undefined) throw new Error();
+                  return html`<strong
+                    $${courseParticipation !== undefined &&
+                    courseParticipation.id === mentionCourseParticipation.id
+                      ? html`class="highlight"`
+                      : html``}
+                    >@${mentionUser.name}${mentionCourseParticipation.courseParticipationRole ===
+                    "courseParticipationRoleInstructor"
+                      ? " (instructor)"
+                      : ""}</strong
+                  >`;
+                },
+              )
+              .replaceAll(
+                /(?<=^|\s)@(?:everyone|instructors|students)(?![A-Za-z0-9\-])/g,
+                (match) => html`<strong>${match}</strong>`,
+              )
+              .replaceAll(
+                /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseConversationMessagePublicId>\d+))?/g,
+                (
+                  match,
+                  courseConversationPublicId,
+                  courseConversationMessagePublicId,
+                ) => {
+                  const mentionCourseConversation = application.database.get<{
+                    id: number;
+                    publicId: string;
+                  }>(
+                    sql`
+                      select "id", "publicId"
+                      from "courseConversations"
+                      where
+                        "publicId" = ${courseConversationPublicId} and
+                        "course" = ${course.id} and (
+                          "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                          $${
+                            courseParticipation !== undefined &&
+                            courseParticipation.courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
+                              ? sql`
+                                  or
+                                  "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                `
+                              : sql``
+                          }
+                          $${
+                            courseParticipation !== undefined
+                              ? sql`
+                                  or (
+                                    select true
+                                    from "courseConversationParticipations"
+                                    where
+                                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                      "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                                  )
+                                `
+                              : sql``
+                          }
+                          
+                        );
+                    `,
+                  );
+                  if (mentionCourseConversation === undefined) return match;
+                  if (courseConversationMessagePublicId === undefined)
+                    return html`
+                      <a
+                        href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
+                        class="link"
+                        >${match}</a
+                      >
+                    `;
+                  const mentionCourseConversationMessage =
+                    application.database.get<{ publicId: string }>(
+                      sql`
+                        select "publicId"
+                        from "courseConversationMessages"
+                        where
+                          "publicId" = ${courseConversationMessagePublicId} and
+                          "courseConversation" = ${mentionCourseConversation.id} $${
+                            courseParticipation === undefined ||
+                            courseParticipation.courseParticipationRole ===
+                              "courseParticipationRoleStudent"
+                              ? sql`
+                                  and
+                                  "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone'
+                                `
+                              : sql``
+                          };
+                      `,
+                    );
+                  if (mentionCourseConversationMessage === undefined)
+                    return match;
                   return html`
                     <a
-                      href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
+                      href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?message=${mentionCourseConversationMessage.publicId}"
                       class="link"
                       >${match}</a
                     >
                   `;
-                const mentionCourseConversationMessage =
-                  application.database.get<{ publicId: string }>(
-                    sql`
-                      select "publicId"
-                      from "courseConversationMessages"
-                      where
-                        "publicId" = ${courseConversationMessagePublicId} and
-                        "courseConversation" = ${mentionCourseConversation.id} $${
-                          courseParticipation === undefined ||
-                          courseParticipation.courseParticipationRole ===
-                            "courseParticipationRoleStudent"
-                            ? sql`
-                                and
-                                "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone'
-                              `
-                            : sql``
-                        };
-                    `,
-                  );
-                if (mentionCourseConversationMessage === undefined)
-                  return match;
-                return html`
-                  <a
-                    href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?message=${mentionCourseConversationMessage.publicId}"
-                    class="link"
-                    >${match}</a
-                  >
-                `;
-              },
+                },
+              );
+          parent.removeChild(child);
+          if (previousElementSibling === undefined)
+            parent.insertAdjacentHTML(
+              "afterbegin",
+              childTextContentWithMentionsAndReferences,
             );
-        parent.removeChild(child);
-        if (previousElementSibling === undefined)
-          parent.insertAdjacentHTML(
-            "afterbegin",
-            childTextContentWithMentionsAndReferences,
-          );
-        else
-          previousElementSibling.insertAdjacentHTML(
-            "afterend",
-            childTextContentWithMentionsAndReferences,
-          );
-      }
-    })(document);
-    for (const element of document.querySelectorAll("a")) {
-      if (element.getAttribute("href") !== element.textContent) continue;
-      const match = element.getAttribute("href").match(
-        new RegExp(
-          // @ts-expect-error
-          `^https://${RegExp.escape(application.configuration.hostname)}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
-        ),
-      );
-      if (match === null) continue;
-      const mentionCourseConversation = application.database.get<{
-        id: number;
-        publicId: string;
-      }>(
-        sql`
-          select "id", "publicId"
-          from "courseConversations"
-          where
-            "publicId" = ${match.groups.courseConversationPublicId} and
-            "course" = ${course.id} and (
-              "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-              $${
-                courseParticipation !== undefined &&
+          else
+            previousElementSibling.insertAdjacentHTML(
+              "afterend",
+              childTextContentWithMentionsAndReferences,
+            );
+        }
+      })(document);
+      for (const element of document.querySelectorAll("a")) {
+        if (element.getAttribute("href") !== element.textContent) continue;
+        const match = element.getAttribute("href").match(
+          new RegExp(
+            // @ts-expect-error
+            `^https://${RegExp.escape(application.configuration.hostname)}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
+          ),
+        );
+        if (match === null) continue;
+        const mentionCourseConversation = application.database.get<{
+          id: number;
+          publicId: string;
+        }>(
+          sql`
+            select "id", "publicId"
+            from "courseConversations"
+            where
+              "publicId" = ${match.groups.courseConversationPublicId} and
+              "course" = ${course.id} and (
+                "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                $${
+                  courseParticipation !== undefined &&
+                  courseParticipation.courseParticipationRole ===
+                    "courseParticipationRoleInstructor"
+                    ? sql`
+                        or
+                        "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                      `
+                    : sql``
+                }
+                $${
+                  courseParticipation !== undefined
+                    ? sql`
+                        or (
+                          select true
+                          from "courseConversationParticipations"
+                          where
+                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                            "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                        )
+                      `
+                    : sql``
+                }
+              );
+          `,
+        );
+        if (mentionCourseConversation === undefined) continue;
+        if (match.groups.courseConversationMessagePublicId === undefined) {
+          element.textContent = `#${mentionCourseConversation.publicId}`;
+          continue;
+        }
+        const mentionCourseConversationMessage = application.database.get<{
+          publicId: string;
+        }>(
+          sql`
+            select "publicId"
+            from "courseConversationMessages"
+            where
+              "publicId" = ${match.groups.courseConversationMessagePublicId} and
+              "courseConversation" = ${mentionCourseConversation.id} $${
+                courseParticipation === undefined ||
                 courseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor"
+                  "courseParticipationRoleStudent"
                   ? sql`
-                      or
-                      "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                      and
+                      "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone'
                     `
                   : sql``
-              }
-              $${
-                courseParticipation !== undefined
-                  ? sql`
-                      or (
-                        select true
-                        from "courseConversationParticipations"
-                        where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
-                      )
-                    `
-                  : sql``
-              }
-            );
-        `,
-      );
-      if (mentionCourseConversation === undefined) continue;
-      if (match.groups.courseConversationMessagePublicId === undefined) {
-        element.textContent = `#${mentionCourseConversation.publicId}`;
-        continue;
+              };
+          `,
+        );
+        if (mentionCourseConversationMessage === undefined) continue;
+        element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
       }
-      const mentionCourseConversationMessage = application.database.get<{
-        publicId: string;
-      }>(
-        sql`
-          select "publicId"
-          from "courseConversationMessages"
-          where
-            "publicId" = ${match.groups.courseConversationMessagePublicId} and
-            "courseConversation" = ${mentionCourseConversation.id} $${
-              courseParticipation === undefined ||
-              courseParticipation.courseParticipationRole ===
-                "courseParticipationRoleStudent"
-                ? sql`
-                    and
-                    "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone'
-                  `
-                : sql``
-            };
-        `,
-      );
-      if (mentionCourseConversationMessage === undefined) continue;
-      element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
+      return mode !== "textContent" ? document.outerHTML : document.textContent;
     }
-    return mode !== "textContent" ? document.outerHTML : document.textContent;
   };
 
   application.server?.push({
