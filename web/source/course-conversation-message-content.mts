@@ -84,6 +84,7 @@ export type ApplicationCourseConversationMessageContent = {
       };
       courseConversationMessage?: {
         publicId: string;
+        updatedAt: string | null;
         createdByCourseParticipation: number | null;
         content: string;
       };
@@ -1705,11 +1706,14 @@ You may also use the buttons on the message content editor to ${
     return await (mode === "normal"
       ? application.database.cacheAsync(
           JSON.stringify({
-            course: course.publicId,
-            courseParticipation: courseParticipation?.publicId,
-            courseConversation: courseConversation?.publicId,
-            courseConversationMessage: courseConversationMessage?.publicId,
-            mode,
+            version: application.version,
+            coursePublicId: course.publicId,
+            courseParticipationPublicId: courseParticipation?.publicId,
+            courseConversationPublicId: courseConversation?.publicId,
+            courseConversationMessagePublicId:
+              courseConversationMessage?.publicId,
+            courseConversationMessageUpdatedAt:
+              courseConversationMessage?.updatedAt,
           }),
           courseConversationMessageContentProcessor,
         )
