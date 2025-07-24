@@ -3788,7 +3788,7 @@ export default async (application: Application): Promise<void> => {
       ) {
         const saml = samls?.[request.state.userSession.samlIdentifier];
         if (saml === undefined) {
-          response.redirect("/");
+          response.redirect("/", "live-navigation");
           return;
         }
         response.redirect(
@@ -3798,7 +3798,7 @@ export default async (application: Application): Promise<void> => {
             {},
           ),
         );
-      } else response.redirect("/");
+      } else response.redirect("/", "live-navigation");
     },
   });
 
