@@ -3911,22 +3911,18 @@ export default async (application: Application): Promise<void> => {
                                             javascript="${javascript`
                                               this.onclick = async () => {
                                                 if (typeof this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').getAttribute("state") === "string") return;
-                                                try {
-                                                  this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "loading");
-                                                  javascript.mount(
-                                                    this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').firstElementChild,
-                                                    await (
-                                                      await fetch(
-                                                        ${`/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}/messages/${courseConversationMessage.publicId}/edit`}
-                                                      )
-                                                    ).text()
-                                                  );
-                                                  this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "edit");
-                                                  this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').click();
-                                                  this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').focus();
-                                                } catch (error) {
-                                                  if (error.name !== "AbortError") throw error;
-                                                }
+                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "loading");
+                                                javascript.mount(
+                                                  this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').firstElementChild,
+                                                  await (
+                                                    await fetch(
+                                                      ${`/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}/messages/${courseConversationMessage.publicId}/edit`}
+                                                    )
+                                                  ).text()
+                                                );
+                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "edit");
+                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').click();
+                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').focus();
                                               };
                                             `}"
                                           >
