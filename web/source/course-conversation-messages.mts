@@ -402,12 +402,12 @@ export default async (application: Application): Promise<void> => {
               </button>
             </div>
             $${(() => {
-              let courseConversationMessageNewOptionsHTML = html``;
+              let courseConversationMessageEditOptionsHTML = html``;
               if (
                 request.state.courseConversation.courseConversationType ===
                 "courseConversationTypeQuestion"
               )
-                courseConversationMessageNewOptionsHTML += html`
+                courseConversationMessageEditOptionsHTML += html`
                   <button
                     type="button"
                     class="button button--rectangle button--transparent"
@@ -428,7 +428,11 @@ export default async (application: Application): Promise<void> => {
                       name="courseConversationMessageType"
                       value="courseConversationMessageTypeMessage"
                       required
-                      checked
+                      $${request.state.courseConversationMessage
+                        .courseConversationMessageType ===
+                      "courseConversationMessageTypeMessage"
+                        ? html`checked`
+                        : html``}
                       hidden
                     /><span
                       css="${css`
@@ -442,6 +446,11 @@ export default async (application: Application): Promise<void> => {
                       name="courseConversationMessageType"
                       value="courseConversationMessageTypeAnswer"
                       required
+                      $${request.state.courseConversationMessage
+                        .courseConversationMessageType ===
+                      "courseConversationMessageTypeAnswer"
+                        ? html`checked`
+                        : html``}
                       hidden
                     /><span
                       css="${css`
@@ -459,6 +468,11 @@ export default async (application: Application): Promise<void> => {
                       name="courseConversationMessageType"
                       value="courseConversationMessageTypeFollowUpQuestion"
                       required
+                      $${request.state.courseConversationMessage
+                        .courseConversationMessageType ===
+                      "courseConversationMessageTypeFollowUpQuestion"
+                        ? html`checked`
+                        : html``}
                       hidden
                     /><span
                       css="${css`
@@ -520,7 +534,7 @@ export default async (application: Application): Promise<void> => {
                 request.state.courseParticipation.courseParticipationRole ===
                 "courseParticipationRoleInstructor"
               )
-                courseConversationMessageNewOptionsHTML += html`
+                courseConversationMessageEditOptionsHTML += html`
                   <button
                     type="button"
                     class="button button--rectangle button--transparent"
@@ -541,7 +555,11 @@ export default async (application: Application): Promise<void> => {
                       name="courseConversationMessageVisibility"
                       value="courseConversationMessageVisibilityEveryone"
                       required
-                      checked
+                      $${request.state.courseConversationMessage
+                        .courseConversationMessageVisibility ===
+                      "courseConversationMessageVisibilityEveryone"
+                        ? html`checked`
+                        : html``}
                       hidden
                     /><span
                       css="${css`
@@ -555,6 +573,11 @@ export default async (application: Application): Promise<void> => {
                       name="courseConversationMessageVisibility"
                       value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"
                       required
+                      $${request.state.courseConversationMessage
+                        .courseConversationMessageVisibility ===
+                      "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                        ? html`checked`
+                        : html``}
                       hidden
                     /><span
                       css="${css`
@@ -611,7 +634,7 @@ export default async (application: Application): Promise<void> => {
                     .courseParticipationRoleStudentsAnonymityAllowed ===
                     "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors")
               )
-                courseConversationMessageNewOptionsHTML += html`
+                courseConversationMessageEditOptionsHTML += html`
                   <button
                     type="button"
                     class="button button--rectangle button--transparent"
@@ -631,8 +654,12 @@ export default async (application: Application): Promise<void> => {
                       type="radio"
                       name="courseConversationMessageAnonymity"
                       value="courseConversationMessageAnonymityNone"
-                      checked
                       required
+                      $${request.state.courseConversationMessage
+                        .courseConversationMessageAnonymity ===
+                      "courseConversationMessageAnonymityNone"
+                        ? html`checked`
+                        : html``}
                       hidden
                     /><span
                       css="${css`
@@ -646,6 +673,11 @@ export default async (application: Application): Promise<void> => {
                       name="courseConversationMessageAnonymity"
                       value="courseConversationMessageAnonymityCourseParticipationRoleStudents"
                       required
+                      $${request.state.courseConversationMessage
+                        .courseConversationMessageAnonymity ===
+                      "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                        ? html`checked`
+                        : html``}
                       hidden
                     /><span
                       css="${css`
@@ -656,12 +688,20 @@ export default async (application: Application): Promise<void> => {
                       >Anonymous to students</span
                     >$${request.state.course
                       .courseParticipationRoleStudentsAnonymityAllowed ===
-                    "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                      "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors" ||
+                    request.state.courseConversationMessage
+                      .courseConversationMessageAnonymity ===
+                      "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
                       ? html`<input
                             type="radio"
                             name="courseConversationMessageAnonymity"
                             value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"
                             required
+                            $${request.state.courseConversationMessage
+                              .courseConversationMessageAnonymity ===
+                            "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                              ? html`checked`
+                              : html``}
                             hidden
                           /><span
                             css="${css`
@@ -705,7 +745,10 @@ export default async (application: Application): Promise<void> => {
                     </button>
                     $${request.state.course
                       .courseParticipationRoleStudentsAnonymityAllowed ===
-                    "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                      "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors" ||
+                    request.state.courseConversationMessage
+                      .courseConversationMessageAnonymity ===
+                      "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
                       ? html`
                           <button
                             type="button"
@@ -722,7 +765,7 @@ export default async (application: Application): Promise<void> => {
                       : html``}
                   </div>
                 `;
-              return courseConversationMessageNewOptionsHTML !== html``
+              return courseConversationMessageEditOptionsHTML !== html``
                 ? html`
                     <div
                       css="${css`
@@ -734,7 +777,7 @@ export default async (application: Application): Promise<void> => {
                         row-gap: var(--size--2);
                       `}"
                     >
-                      $${courseConversationMessageNewOptionsHTML}
+                      $${courseConversationMessageEditOptionsHTML}
                     </div>
                   `
                 : html``;
