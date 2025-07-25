@@ -4678,6 +4678,8 @@ export default async (application: Application): Promise<void> => {
                         this.onsubmit = () => {
                           this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value;
                           this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
+                          if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
+                            this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
                           javascript.reset(this);
                         };
                       `}"
