@@ -148,7 +148,6 @@ export default async (application: Application): Promise<void> => {
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversationsTags === undefined ||
         request.state.courseConversation === undefined
       )
         return;
@@ -785,6 +784,132 @@ export default async (application: Application): Promise<void> => {
           </div>
         </div>
       `);
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          content: string;
+          courseConversationMessageType:
+            | "courseConversationMessageTypeMessage"
+            | "courseConversationMessageTypeAnswer"
+            | "courseConversationMessageTypeFollowUpQuestion";
+          courseConversationMessageVisibility:
+            | "courseConversationMessageVisibilityEveryone"
+            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+          courseConversationMessageAnonymity:
+            | "courseConversationMessageAnonymityNone"
+            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+            | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+        },
+        Application["types"]["states"]["CourseConversationMessage"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseConversation === undefined ||
+        request.state.courseConversationMessage === undefined ||
+        !(
+          request.state.course!.courseState === "courseStateActive" &&
+          (request.state.courseParticipation!.courseParticipationRole ===
+            "courseParticipationRoleInstructor" ||
+            request.state.courseParticipation!.id ===
+              request.state.courseConversationMessage
+                .createdByCourseParticipation)
+        )
+      )
+        return;
+      if (
+        typeof request.body.content !== "string" ||
+        request.body.content.trim() === "" ||
+        (typeof request.body.courseConversationMessageType === "string" &&
+          (request.state.courseConversation.courseConversationType !==
+            "courseConversationTypeQuestion" ||
+            (request.body.courseConversationMessageType !==
+              "courseConversationMessageTypeMessage" &&
+              request.body.courseConversationMessageType !==
+                "courseConversationMessageTypeAnswer" &&
+              request.body.courseConversationMessageType !==
+                "courseConversationMessageTypeFollowUpQuestion"))) ||
+        (typeof request.body.courseConversationMessageVisibility === "string" &&
+          (request.state.courseParticipation.courseParticipationRole !==
+            "courseParticipationRoleInstructor" ||
+            (request.body.courseConversationMessageVisibility !==
+              "courseConversationMessageVisibilityEveryone" &&
+              request.body.courseConversationMessageVisibility !==
+                "courseConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
+        (typeof request.body.courseConversationMessageAnonymity === "string" &&
+          (request.state.courseParticipation.courseParticipationRole !==
+            "courseParticipationRoleStudent" ||
+            (request.body.courseConversationMessageAnonymity !==
+              "courseConversationMessageAnonymityNone" &&
+              request.body.courseConversationMessageAnonymity !==
+                "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+              request.body.courseConversationMessageAnonymity !==
+                "courseConversationMessageAnonymityCourseParticipationRoleInstructors") ||
+            (request.body.courseConversationMessageAnonymity ===
+              "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+              request.state.course
+                .courseParticipationRoleStudentsAnonymityAllowed ===
+                "courseParticipationRoleStudentsAnonymityAllowedNone") ||
+            (request.body.courseConversationMessageAnonymity ===
+              "courseConversationMessageAnonymityCourseParticipationRoleInstructors" &&
+              (request.state.course
+                .courseParticipationRoleStudentsAnonymityAllowed ===
+                "courseParticipationRoleStudentsAnonymityAllowedNone" ||
+                request.state.course
+                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                  "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"))))
+      )
+        throw "validation";
+      const contentTextContent =
+        await application.partials.courseConversationMessageContentProcessor({
+          course: request.state.course,
+          courseConversationMessageContent: request.body.content,
+          mode: "textContent",
+        });
+      application.database.run(
+        sql`
+          update "courseConversationMessages"
+          set
+            "updatedAt" = ${new Date().toISOString()},
+            "courseConversationMessageType" = ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
+            "courseConversationMessageVisibility" = ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
+            "courseConversationMessageAnonymity" = ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
+            "content" = ${request.body.content},
+            "contentSearch" = ${utilities
+              .tokenize(contentTextContent, {
+                stopWords: application.privateConfiguration.stopWords,
+                stem: (token) => natural.PorterStemmer.stem(token),
+              })
+              .map((tokenWithPosition) => tokenWithPosition.token)
+              .join(" ")}
+          where "id" = ${request.state.courseConversationMessage.id};
+        `,
+      );
+      response.redirect(
+        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+      );
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+          }),
+        });
     },
   });
 
