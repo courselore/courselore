@@ -371,6 +371,12 @@ export default async (application: Application): Promise<void> => {
             flex-direction: column;
             gap: var(--size--2);
           `}"
+          javascript="${javascript`
+            this.onsubmit = () => {
+              this.closest('[key~="courseConversationMessage--main--content--body"]').removeAttribute("state");
+              this.closest('[key~="courseConversationMessage--main--content--edit"]').firstElementChild.innerHTML = "";
+            };
+          `}"
         >
           $${application.partials.courseConversationMessageContentEditor({
             course: request.state.course,
