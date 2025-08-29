@@ -5222,7 +5222,6 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
-        request.state.user === undefined ||
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
