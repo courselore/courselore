@@ -5193,4 +5193,230 @@ export default async (application: Application): Promise<void> => {
       );
     },
   });
+
+  // application.server?.push({
+  //   method: "PATCH",
+  //   pathname: new RegExp(
+  //     "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)$",
+  //   ),
+  //   handler: async (
+  //     request: serverTypes.Request<
+  //       {},
+  //       {},
+  //       {},
+  //       {
+  //         title: string;
+  //         courseConversationType:
+  //           | "courseConversationTypeNote"
+  //           | "courseConversationTypeQuestion";
+  //         questionResolved: "false" | "true";
+  //         courseConversationVisibility:
+  //           | "courseConversationVisibilityEveryone"
+  //           | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+  //           | "courseConversationVisibilityCourseConversationParticipations";
+  //         pinned: "false" | "true";
+  //         tags: string[];
+  //       },
+  //       Application["types"]["states"]["CourseConversation"]
+  //     >,
+  //     response,
+  //   ) => {
+  //     if (
+  //       request.state.user === undefined ||
+  //       request.state.course === undefined ||
+  //       request.state.course.courseState !== "courseStateActive" ||
+  //       request.state.courseParticipation === undefined ||
+  //       request.state.courseConversationsTags === undefined
+  //     )
+  //       return;
+  //     request.body.tags ??= [];
+  //     if (
+  //       typeof request.body.title !== "string" ||
+  //       request.body.title.trim() === "" ||
+  //       (request.body.courseConversationType !== "courseConversationTypeNote" &&
+  //         request.body.courseConversationType !==
+  //           "courseConversationTypeQuestion") ||
+  //       (request.body.courseConversationVisibility !==
+  //         "courseConversationVisibilityEveryone" &&
+  //         request.body.courseConversationVisibility !==
+  //           "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+  //         request.body.courseConversationVisibility !==
+  //           "courseConversationVisibilityCourseConversationParticipations") ||
+  //       (request.body.pinned === "true" &&
+  //         request.state.courseParticipation.courseParticipationRole !==
+  //           "courseParticipationRoleInstructor") ||
+  //       !Array.isArray(request.body.tags) ||
+  //       (Boolean(request.state.course.courseConversationRequiresTagging) &&
+  //         0 < request.state.courseConversationsTags.length &&
+  //         request.body.tags.length === 0) ||
+  //       request.body.tags.some(
+  //         (tag) =>
+  //           typeof tag !== "string" ||
+  //           !request.state.courseConversationsTags!.some(
+  //             (courseConversationsTag) =>
+  //               tag === courseConversationsTag.publicId,
+  //           ),
+  //       ) ||
+  //       typeof request.body.content !== "string" ||
+  //       request.body.content.trim() === "" ||
+  //       (typeof request.body.courseConversationMessageAnonymity === "string" &&
+  //         (request.state.courseParticipation.courseParticipationRole !==
+  //           "courseParticipationRoleStudent" ||
+  //           (request.body.courseConversationMessageAnonymity !==
+  //             "courseConversationMessageAnonymityNone" &&
+  //             request.body.courseConversationMessageAnonymity !==
+  //               "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+  //             request.body.courseConversationMessageAnonymity !==
+  //               "courseConversationMessageAnonymityCourseParticipationRoleInstructors") ||
+  //           (request.body.courseConversationMessageAnonymity ===
+  //             "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+  //             request.state.course
+  //               .courseParticipationRoleStudentsAnonymityAllowed ===
+  //               "courseParticipationRoleStudentsAnonymityAllowedNone") ||
+  //           (request.body.courseConversationMessageAnonymity ===
+  //             "courseConversationMessageAnonymityCourseParticipationRoleInstructors" &&
+  //             (request.state.course
+  //               .courseParticipationRoleStudentsAnonymityAllowed ===
+  //               "courseParticipationRoleStudentsAnonymityAllowedNone" ||
+  //               request.state.course
+  //                 .courseParticipationRoleStudentsAnonymityAllowed ===
+  //                 "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"))))
+  //     )
+  //       throw "validation";
+  //     let courseConversation: {
+  //       id: number;
+  //       publicId: string;
+  //       courseConversationType:
+  //         | "courseConversationTypeNote"
+  //         | "courseConversationTypeQuestion";
+  //       questionResolved: number;
+  //       courseConversationVisibility:
+  //         | "courseConversationVisibilityEveryone"
+  //         | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+  //         | "courseConversationVisibilityCourseConversationParticipations";
+  //       pinned: number;
+  //       title: string;
+  //     };
+  //     const contentTextContent =
+  //       await application.partials.courseConversationMessageContentProcessor({
+  //         course: request.state.course,
+  //         courseConversationMessageContent: request.body.content,
+  //         mode: "textContent",
+  //       });
+  //     application.database.executeTransaction(() => {
+  //       courseConversation = application.database.get<{
+  //         id: number;
+  //         publicId: string;
+  //         courseConversationType:
+  //           | "courseConversationTypeNote"
+  //           | "courseConversationTypeQuestion";
+  //         questionResolved: number;
+  //         courseConversationVisibility:
+  //           | "courseConversationVisibilityEveryone"
+  //           | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+  //           | "courseConversationVisibilityCourseConversationParticipations";
+  //         pinned: number;
+  //         title: string;
+  //       }>(
+  //         sql`
+  //           select * from "courseConversations" where "id" = ${
+  //             application.database.run(
+  //               sql`
+  //                 insert into "courseConversations" (
+  //                   "publicId",
+  //                   "course",
+  //                   "courseConversationType",
+  //                   "questionResolved",
+  //                   "courseConversationVisibility",
+  //                   "pinned",
+  //                   "title",
+  //                   "titleSearch"
+  //                 )
+  //                 values (
+  //                   ${String(request.state.course!.courseConversationsNextPublicId)},
+  //                   ${request.state.course!.id},
+  //                   ${request.body.courseConversationType},
+  //                   ${Number(false)},
+  //                   ${request.body.courseConversationVisibility},
+  //                   ${Number(request.body.pinned === "true")},
+  //                   ${request.body.title},
+  //                   ${utilities
+  //                     .tokenize(request.body.title!)
+  //                     .map((tokenWithPosition) => tokenWithPosition.token)
+  //                     .join(" ")}
+  //                 );
+  //               `,
+  //             ).lastInsertRowid
+  //           };
+  //         `,
+  //       )!;
+  //       request.state.course!.courseConversationsNextPublicId++;
+  //       application.database.run(
+  //         sql`
+  //           update "courses"
+  //           set "courseConversationsNextPublicId" = ${request.state.course!.courseConversationsNextPublicId}
+  //           where "id" = ${request.state.course!.id};
+  //         `,
+  //       );
+  //       for (const tag of request.body.tags!)
+  //         application.database.run(
+  //           sql`
+  //             insert into "courseConversationTaggings" (
+  //               "courseConversation",
+  //               "courseConversationsTag"
+  //             )
+  //             values (
+  //               ${courseConversation.id},
+  //               ${request.state.courseConversationsTags!.find((courseConversationsTag) => tag === courseConversationsTag.publicId)!.id}
+  //             );
+  //           `,
+  //         );
+  //       application.database.run(
+  //         sql`
+  //           insert into "courseConversationMessages" (
+  //             "publicId",
+  //             "courseConversation",
+  //             "createdAt",
+  //             "updatedAt",
+  //             "createdByCourseParticipation",
+  //             "courseConversationMessageType",
+  //             "courseConversationMessageVisibility",
+  //             "courseConversationMessageAnonymity",
+  //             "content",
+  //             "contentSearch"
+  //           )
+  //           values (
+  //             ${cryptoRandomString({ length: 20, type: "numeric" })},
+  //             ${courseConversation.id},
+  //             ${new Date().toISOString()},
+  //             ${null},
+  //             ${request.state.courseParticipation!.id},
+  //             ${"courseConversationMessageTypeMessage"},
+  //             ${"courseConversationMessageVisibilityEveryone"},
+  //             ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
+  //             ${request.body.content},
+  //             ${utilities
+  //               .tokenize(contentTextContent, {
+  //                 stopWords: application.privateConfiguration.stopWords,
+  //                 stem: (token) => natural.PorterStemmer.stem(token),
+  //               })
+  //               .map((tokenWithPosition) => tokenWithPosition.token)
+  //               .join(" ")}
+  //           );
+  //         `,
+  //       );
+  //     });
+  //     response.redirect(
+  //       `/courses/${request.state.course.publicId}/conversations/${courseConversation!.publicId}`,
+  //     );
+  //     for (const port of application.privateConfiguration.ports)
+  //       fetch(`http://localhost:${port}/__live-connections`, {
+  //         method: "POST",
+  //         headers: { "CSRF-Protection": "true" },
+  //         body: new URLSearchParams({
+  //           pathname: `^/courses/${request.state.course.publicId}/conversations(?:$|/)`,
+  //         }),
+  //       });
+  //   },
+  // });
 };
