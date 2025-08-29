@@ -2393,6 +2393,9 @@ export default async (application: Application): Promise<void> => {
                     for (const element of this.querySelectorAll(".hide-on-not-modified"))
                       element.hidden = !javascript.isModified(this);
                   };
+                  window.setTimeout(() => {
+                    this.oninput();
+                  });
                 `}"
               >
                 $${(() => {
