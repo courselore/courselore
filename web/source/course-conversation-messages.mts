@@ -950,6 +950,86 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
+    method: "DELETE",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["CourseConversationMessage"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.course.courseState !== "courseStateActive" ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor" ||
+        request.state.courseConversation === undefined ||
+        request.state.courseConversationMessage === undefined ||
+        request.state.courseConversationMessage.id ===
+          (
+            application.database.get<{ id: number }>(
+              sql`
+                select "id"
+                from "courseConversationMessages"
+                where "courseConversation" = ${request.state.courseConversation.id}
+                order by "id" asc
+                limit 1;
+              `,
+            ) ??
+            (() => {
+              throw new Error();
+            })()
+          ).id
+      )
+        return;
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            delete from "courseConversationMessageViews"
+            where "courseConversationMessage" = ${request.state.courseConversationMessage!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationMessageLikes"
+            where "courseConversationMessage" = ${request.state.courseConversationMessage!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationMessageEmailNotificationDeliveries"
+            where "courseConversationMessage" = ${request.state.courseConversationMessage!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationMessages"
+            where "id" = ${request.state.courseConversationMessage!.id};
+          `,
+        );
+      });
+      response.redirect(
+        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+      );
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+          }),
+        });
+    },
+  });
+
+  application.server?.push({
     method: "POST",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/view$",
