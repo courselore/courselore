@@ -342,17 +342,7 @@ export default async (application: Application): Promise<void> => {
                             "courseConversationMessageAnonymity",
                             "content"
                           from "courseConversationMessages"
-                          where
-                            "courseConversation" = ${courseConversation.id} $${
-                              request.state.courseParticipation!
-                                .courseParticipationRole !==
-                              "courseParticipationRoleInstructor"
-                                ? sql`
-                                    and
-                                    "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                                  `
-                                : sql``
-                            }
+                          where "courseConversation" = ${courseConversation.id}
                           order by "id" asc
                           limit 1;
                         `,
