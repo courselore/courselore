@@ -2410,6 +2410,68 @@ export default async (application: Application): Promise<void> => {
                           };
                         `}"
                       >
+                        $${(() => {
+                          const courseParticipationsCount =
+                            application.database.get<{
+                              count: number;
+                            }>(
+                              sql`
+                                select count(*) as "count"
+                                from "courseParticipations"
+                                where "course" = ${request.state.course.id};
+                              `,
+                            )!.count;
+                          const courseParticipationsInstructorsCount =
+                            application.database.get<{
+                              count: number;
+                            }>(
+                              sql`
+                                select count(*) as "count"
+                                from "courseParticipations"
+                                where
+                                  "course" = ${request.state.course.id} and
+                                  "courseParticipationRole" = ${"courseParticipationRoleInstructor"};
+                              `,
+                            )!.count;
+                          const courseParticipationsStudentsCount =
+                            application.database.get<{
+                              count: number;
+                            }>(
+                              sql`
+                                select count(*) as "count"
+                                from "courseParticipations"
+                                where
+                                  "course" = ${request.state.course.id} and
+                                  "courseParticipationRole" = ${"courseParticipationRoleStudent"};
+                              `,
+                            )!.count;
+                          return html`
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                            >
+                              ${String(courseParticipationsCount)} course
+                              participant${courseParticipationsCount === 1
+                                ? ""
+                                : "s"} ·
+                              ${String(courseParticipationsInstructorsCount)}
+                              instructor${courseParticipationsInstructorsCount ===
+                              1
+                                ? ""
+                                : "s"} ·
+                              ${String(courseParticipationsStudentsCount)}
+                              student${courseParticipationsStudentsCount === 1
+                                ? ""
+                                : "s"}
+                            </div>
+                          `;
+                        })()}
                         $${application.database
                           .all<{
                             id: number;
