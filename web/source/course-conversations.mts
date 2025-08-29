@@ -4803,12 +4803,12 @@ export default async (application: Application): Promise<void> => {
                             courseConversationMessageContent:
                               application.database.get<{ content: string }>(
                                 sql`
-                                select "content"
-                                from "courseConversationMessageDrafts"
-                                where
-                                  "courseConversation" = ${request.state.courseConversation.id} and
-                                  "createdByCourseParticipation" = ${request.state.courseParticipation.id};
-                              `,
+                                  select "content"
+                                  from "courseConversationMessageDrafts"
+                                  where
+                                    "courseConversation" = ${request.state.courseConversation.id} and
+                                    "createdByCourseParticipation" = ${request.state.courseParticipation.id};
+                                `,
                               )?.content,
                           },
                         )}
