@@ -3352,6 +3352,11 @@ export default async (application: Application): Promise<void> => {
                                     <button
                                       type="submit"
                                       class="button button--rectangle button--blue"
+                                      javascript="${javascript`
+                                        this.onclick = () => {
+                                          document.querySelector("body").click();
+                                        };
+                                      `}"
                                     >
                                       Update
                                     </button>
