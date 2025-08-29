@@ -2396,6 +2396,10 @@ export default async (application: Application): Promise<void> => {
                   window.setTimeout(() => {
                     this.oninput();
                   });
+                  this.onsubmit = () => {
+                    this.querySelector('[key~="courseConversation--header--title--show"]').hidden = false;
+                    this.querySelector('[key~="courseConversation--header--title--edit"]').hidden = true;
+                  };
                 `}"
               >
                 $${(() => {
