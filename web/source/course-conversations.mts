@@ -5211,7 +5211,7 @@ export default async (application: Application): Promise<void> => {
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)$",
     ),
-    handler: async (
+    handler: (
       request: serverTypes.Request<
         {},
         {},
@@ -5335,6 +5335,110 @@ export default async (application: Application): Promise<void> => {
       response.redirect(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}/conversations(?:$|/)`,
+          }),
+        });
+    },
+  });
+
+  application.server?.push({
+    method: "DELETE",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["CourseConversation"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.course.courseState !== "courseStateActive" ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor" ||
+        request.state.courseConversation === undefined
+      )
+        return;
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            update "courseParticipations"
+            set "mostRecentlyVisitedCourseConversation" = null
+            where "mostRecentlyVisitedCourseConversation" = ${request.state.courseConversation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationParticipations"
+            where "courseConversation" = ${request.state.courseConversation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationTaggings"
+            where "courseConversation" = ${request.state.courseConversation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseConversationMessageDrafts"
+            where "courseConversation" = ${request.state.courseConversation!.id};
+          `,
+        );
+        for (const courseConversationMessage of application.database.all<{
+          id: number;
+        }>(
+          sql`
+            select "id"
+            from "courseConversationMessages"
+            where "courseConversation" = ${request.state.courseConversation!.id}
+            order by "id" asc;
+          `,
+        )) {
+          application.database.run(
+            sql`
+              delete from "courseConversationMessageViews"
+              where "courseConversationMessage" = ${courseConversationMessage.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseConversationMessageLikes"
+              where "courseConversationMessage" = ${courseConversationMessage.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseConversationMessageEmailNotificationDeliveries"
+              where "courseConversationMessage" = ${courseConversationMessage.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseConversationMessages"
+              where "id" = ${courseConversationMessage.id};
+            `,
+          );
+        }
+        application.database.run(
+          sql`
+            delete from "courseConversations"
+            where "id" = ${request.state.courseConversation!.id};
+          `,
+        );
+      });
+      response.redirect(`/courses/${request.state.course.publicId}`);
       for (const port of application.privateConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
