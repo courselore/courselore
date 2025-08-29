@@ -783,7 +783,7 @@ export default async (application: Application): Promise<void> => {
                             />
                           </div>
                         </label>
-                        <div
+                        <form
                           css="${css`
                             display: flex;
                             flex-direction: column;
@@ -859,7 +859,7 @@ export default async (application: Application): Promise<void> => {
                               to everyone, including instructors
                             </label>
                           </div>
-                        </div>
+                        </form>
                         <div
                           css="${css`
                             display: flex;
@@ -922,7 +922,7 @@ export default async (application: Application): Promise<void> => {
                             </label>
                           </div>
                         </div>
-                        <div
+                        <form
                           css="${css`
                             display: flex;
                             flex-direction: column;
@@ -989,7 +989,7 @@ export default async (application: Application): Promise<void> => {
                               >
                             </label>
                           </div>
-                        </div>
+                        </form>
                         <div
                           css="${css`
                             font-size: var(--font-size--3);
@@ -2047,7 +2047,7 @@ export default async (application: Application): Promise<void> => {
                               };
                             `}"
                           >
-                            <div
+                            <form
                               css="${css`
                                 display: flex;
                                 flex-direction: column;
@@ -2075,7 +2075,7 @@ export default async (application: Application): Promise<void> => {
                                   class="input--radio"
                                 />  Students
                               </label>
-                            </div>
+                            </form>
                             <textarea
                               name="courseInvitationEmails"
                               placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, ...`}"
@@ -2236,90 +2236,92 @@ export default async (application: Application): Promise<void> => {
                                               row-gap: var(--size--2);
                                             `}"
                                           >
-                                            <button
-                                              type="button"
-                                              class="button button--rectangle button--transparent"
-                                              javascript="${javascript`
-                                                javascript.popover({ element: this, trigger: "click" });
-                                              `}"
-                                            >
-                                              <span
-                                                css="${css`
-                                                  color: light-dark(
-                                                    var(--color--slate--500),
-                                                    var(--color--slate--500)
-                                                  );
-                                                `}"
-                                                >Role:</span
-                                              >  <input
-                                                type="radio"
-                                                name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
-                                                value="courseParticipationRoleInstructor"
-                                                required
-                                                $${courseInvitationEmail.courseParticipationRole ===
-                                                "courseParticipationRoleInstructor"
-                                                  ? html`checked`
-                                                  : html``}
-                                                hidden
-                                              /><span
-                                                css="${css`
-                                                  :not(:checked) + & {
-                                                    display: none;
-                                                  }
-                                                `}"
-                                                >Instructor</span
-                                              ><input
-                                                type="radio"
-                                                name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
-                                                value="courseParticipationRoleStudent"
-                                                required
-                                                $${courseInvitationEmail.courseParticipationRole ===
-                                                "courseParticipationRoleStudent"
-                                                  ? html`checked`
-                                                  : html``}
-                                                hidden
-                                              /><span
-                                                css="${css`
-                                                  :not(:checked) + & {
-                                                    display: none;
-                                                  }
-                                                `}"
-                                                >Student</span
-                                              > <i
-                                                class="bi bi-chevron-down"
-                                              ></i>
-                                            </button>
-                                            <div
-                                              type="popover"
-                                              css="${css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--size--2);
-                                              `}"
-                                            >
+                                            <form>
                                               <button
                                                 type="button"
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                class="button button--rectangle button--transparent"
                                                 javascript="${javascript`
-                                                  this.onclick = () => {
-                                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
-                                                  };
+                                                  javascript.popover({ element: this, trigger: "click" });
                                                 `}"
                                               >
-                                                Instructor
+                                                <span
+                                                  css="${css`
+                                                    color: light-dark(
+                                                      var(--color--slate--500),
+                                                      var(--color--slate--500)
+                                                    );
+                                                  `}"
+                                                  >Role:</span
+                                                >  <input
+                                                  type="radio"
+                                                  name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
+                                                  value="courseParticipationRoleInstructor"
+                                                  required
+                                                  $${courseInvitationEmail.courseParticipationRole ===
+                                                  "courseParticipationRoleInstructor"
+                                                    ? html`checked`
+                                                    : html``}
+                                                  hidden
+                                                /><span
+                                                  css="${css`
+                                                    :not(:checked) + & {
+                                                      display: none;
+                                                    }
+                                                  `}"
+                                                  >Instructor</span
+                                                ><input
+                                                  type="radio"
+                                                  name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
+                                                  value="courseParticipationRoleStudent"
+                                                  required
+                                                  $${courseInvitationEmail.courseParticipationRole ===
+                                                  "courseParticipationRoleStudent"
+                                                    ? html`checked`
+                                                    : html``}
+                                                  hidden
+                                                /><span
+                                                  css="${css`
+                                                    :not(:checked) + & {
+                                                      display: none;
+                                                    }
+                                                  `}"
+                                                  >Student</span
+                                                > <i
+                                                  class="bi bi-chevron-down"
+                                                ></i>
                                               </button>
-                                              <button
-                                                type="button"
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                                javascript="${javascript`
-                                                  this.onclick = () => {
-                                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
-                                                  };
+                                              <div
+                                                type="popover"
+                                                css="${css`
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--size--2);
                                                 `}"
                                               >
-                                                Student
-                                              </button>
-                                            </div>
+                                                <button
+                                                  type="button"
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                    this.onclick = () => {
+                                                      this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
+                                                    };
+                                                  `}"
+                                                >
+                                                  Instructor
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                    this.onclick = () => {
+                                                      this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                                    };
+                                                  `}"
+                                                >
+                                                  Student
+                                                </button>
+                                              </div>
+                                            </form>
                                             <button
                                               type="button"
                                               class="button button--rectangle button--transparent"
@@ -2533,88 +2535,90 @@ export default async (application: Application): Promise<void> => {
                                       row-gap: var(--size--2);
                                     `}"
                                   >
-                                    <button
-                                      type="button"
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        javascript.popover({ element: this, trigger: "click" });
-                                      `}"
-                                    >
-                                      <span
-                                        css="${css`
-                                          color: light-dark(
-                                            var(--color--slate--500),
-                                            var(--color--slate--500)
-                                          );
-                                        `}"
-                                        >Role:</span
-                                      >  <input
-                                        type="radio"
-                                        name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
-                                        value="courseParticipationRoleInstructor"
-                                        required
-                                        $${courseParticipation.courseParticipationRole ===
-                                        "courseParticipationRoleInstructor"
-                                          ? html`checked`
-                                          : html``}
-                                        hidden
-                                      /><span
-                                        css="${css`
-                                          :not(:checked) + & {
-                                            display: none;
-                                          }
-                                        `}"
-                                        >Instructor</span
-                                      ><input
-                                        type="radio"
-                                        name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
-                                        value="courseParticipationRoleStudent"
-                                        required
-                                        $${courseParticipation.courseParticipationRole ===
-                                        "courseParticipationRoleStudent"
-                                          ? html`checked`
-                                          : html``}
-                                        hidden
-                                      /><span
-                                        css="${css`
-                                          :not(:checked) + & {
-                                            display: none;
-                                          }
-                                        `}"
-                                        >Student</span
-                                      > <i class="bi bi-chevron-down"></i>
-                                    </button>
-                                    <div
-                                      type="popover"
-                                      css="${css`
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--size--2);
-                                      `}"
-                                    >
+                                    <form>
                                       <button
                                         type="button"
-                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                        class="button button--rectangle button--transparent"
                                         javascript="${javascript`
-                                          this.onclick = () => {
-                                            this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
-                                          };
+                                          javascript.popover({ element: this, trigger: "click" });
                                         `}"
                                       >
-                                        Instructor
+                                        <span
+                                          css="${css`
+                                            color: light-dark(
+                                              var(--color--slate--500),
+                                              var(--color--slate--500)
+                                            );
+                                          `}"
+                                          >Role:</span
+                                        >  <input
+                                          type="radio"
+                                          name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
+                                          value="courseParticipationRoleInstructor"
+                                          required
+                                          $${courseParticipation.courseParticipationRole ===
+                                          "courseParticipationRoleInstructor"
+                                            ? html`checked`
+                                            : html``}
+                                          hidden
+                                        /><span
+                                          css="${css`
+                                            :not(:checked) + & {
+                                              display: none;
+                                            }
+                                          `}"
+                                          >Instructor</span
+                                        ><input
+                                          type="radio"
+                                          name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
+                                          value="courseParticipationRoleStudent"
+                                          required
+                                          $${courseParticipation.courseParticipationRole ===
+                                          "courseParticipationRoleStudent"
+                                            ? html`checked`
+                                            : html``}
+                                          hidden
+                                        /><span
+                                          css="${css`
+                                            :not(:checked) + & {
+                                              display: none;
+                                            }
+                                          `}"
+                                          >Student</span
+                                        > <i class="bi bi-chevron-down"></i>
                                       </button>
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--transparent button--dropdown-menu"
-                                        javascript="${javascript`
-                                          this.onclick = () => {
-                                            this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
-                                          };
+                                      <div
+                                        type="popover"
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--size--2);
                                         `}"
                                       >
-                                        Student
-                                      </button>
-                                    </div>
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = () => {
+                                              this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
+                                            };
+                                          `}"
+                                        >
+                                          Instructor
+                                        </button>
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = () => {
+                                              this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                            };
+                                          `}"
+                                        >
+                                          Student
+                                        </button>
+                                      </div>
+                                    </form>
                                     <button
                                       type="button"
                                       class="button button--rectangle button--transparent"

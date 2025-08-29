@@ -467,7 +467,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       Dark mode
                     </div>
-                    <div
+                    <form
                       css="${css`
                         display: flex;
                         flex-direction: column;
@@ -514,7 +514,7 @@ export default async (application: Application): Promise<void> => {
                           class="input--radio"
                         />  Dark
                       </label>
-                    </div>
+                    </form>
                   </div>
                   <div
                     css="${css`
