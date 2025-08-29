@@ -415,9 +415,25 @@ export default async (application: Application): Promise<void> => {
               </div>
               $${(() => {
                 let courseConversationMessageEditOptionsHTML = html``;
+                const firstCourseConversationMessage =
+                  application.database.get<{
+                    id: number;
+                  }>(
+                    sql`
+                      select "id"
+                      from "courseConversationMessages"
+                      where "courseConversation" = ${request.state.courseConversation.id}
+                      order by "id" asc
+                      limit 1;
+                    `,
+                  );
+                if (firstCourseConversationMessage === undefined)
+                  throw new Error();
                 if (
                   request.state.courseConversation.courseConversationType ===
-                  "courseConversationTypeQuestion"
+                    "courseConversationTypeQuestion" &&
+                  request.state.courseConversationMessage.id !==
+                    firstCourseConversationMessage.id
                 )
                   courseConversationMessageEditOptionsHTML += html`
                     <form>
@@ -546,7 +562,9 @@ export default async (application: Application): Promise<void> => {
                   `;
                 if (
                   request.state.courseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor"
+                    "courseParticipationRoleInstructor" &&
+                  request.state.courseConversationMessage.id !==
+                    firstCourseConversationMessage.id
                 )
                   courseConversationMessageEditOptionsHTML += html`
                     <form>
@@ -867,12 +885,26 @@ export default async (application: Application): Promise<void> => {
         )
       )
         return;
+      const firstCourseConversationMessage = application.database.get<{
+        id: number;
+      }>(
+        sql`
+          select "id"
+          from "courseConversationMessages"
+          where "courseConversation" = ${request.state.courseConversation.id}
+          order by "id" asc
+          limit 1;
+        `,
+      );
+      if (firstCourseConversationMessage === undefined) throw new Error();
       if (
         typeof request.body.content !== "string" ||
         request.body.content.trim() === "" ||
         (typeof request.body.courseConversationMessageType === "string" &&
           (request.state.courseConversation.courseConversationType !==
             "courseConversationTypeQuestion" ||
+            request.state.courseConversationMessage.id ===
+              firstCourseConversationMessage.id ||
             (request.body.courseConversationMessageType !==
               "courseConversationMessageTypeMessage" &&
               request.body.courseConversationMessageType !==
@@ -882,6 +914,8 @@ export default async (application: Application): Promise<void> => {
         (typeof request.body.courseConversationMessageVisibility === "string" &&
           (request.state.courseParticipation.courseParticipationRole !==
             "courseParticipationRoleInstructor" ||
+            request.state.courseConversationMessage.id ===
+              firstCourseConversationMessage.id ||
             (request.body.courseConversationMessageVisibility !==
               "courseConversationMessageVisibilityEveryone" &&
               request.body.courseConversationMessageVisibility !==
