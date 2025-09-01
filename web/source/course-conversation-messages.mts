@@ -210,10 +210,8 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (
-          Boolean(request.state.courseConversation!.questionResolved) ===
-            false &&
           request.body.courseConversationMessageType ===
-            "courseConversationMessageTypeAnswer"
+          "courseConversationMessageTypeAnswer"
         )
           application.database.run(
             sql`
@@ -223,10 +221,8 @@ export default async (application: Application): Promise<void> => {
             `,
           );
         else if (
-          Boolean(request.state.courseConversation!.questionResolved) ===
-            true &&
           request.body.courseConversationMessageType ===
-            "courseConversationMessageTypeFollowUpQuestion"
+          "courseConversationMessageTypeFollowUpQuestion"
         )
           application.database.run(
             sql`
