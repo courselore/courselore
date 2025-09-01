@@ -15,6 +15,7 @@ import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
 } from "./authentication.mjs";
+import homepage from "./homepage.mjs";
 import users, { ApplicationUsers } from "./users.mjs";
 import courses, { ApplicationCourses } from "./courses.mjs";
 import courseConversations, {
@@ -144,6 +145,7 @@ application.server?.push({
   },
 });
 await authentication(application);
+await homepage(application);
 await users(application);
 await courses(application);
 await courseConversations(application);
