@@ -862,6 +862,11 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="https://meta.courselore.org"
                     class="button button--rectangle button--transparent"
+                    css="${css`
+                      @media (max-width: 539px) {
+                        display: none;
+                      }
+                    `}"
                     javascript="${javascript`
                       javascript.popover({ element: this });
                     `}"
@@ -875,6 +880,11 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="https://github.com/courselore/courselore"
                     class="button button--rectangle button--transparent"
+                    css="${css`
+                      @media (max-width: 539px) {
+                        display: none;
+                      }
+                    `}"
                   >
                     Source code
                   </a>
@@ -884,6 +894,50 @@ export default async (application: Application): Promise<void> => {
                   >
                     Sign up / Sign in
                   </a>
+                  <button
+                    type="button"
+                    class="button button--square button--icon button--transparent"
+                    css="${css`
+                      font-size: var(--font-size--5);
+                      line-height: var(--size--0);
+                      @media (min-width: 540px) {
+                        display: none;
+                      }
+                    `}"
+                    javascript="${javascript`
+                      javascript.popover({ element: this, trigger: "click", placement: "bottom-end" });
+                    `}"
+                  >
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                  <div
+                    type="popover"
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--2);
+                    `}"
+                  >
+                    <a
+                      href="https://meta.courselore.org"
+                      class="button button--rectangle button--transparent button--dropdown-menu"
+                      javascript="${javascript`
+                        javascript.popover({ element: this });
+                      `}"
+                    >
+                      Meta Courselore
+                    </a>
+                    <div type="popover">
+                      Use Courselore to talk to Courselore developers and other
+                      Courselore users.
+                    </div>
+                    <a
+                      href="https://github.com/courselore/courselore"
+                      class="button button--rectangle button--transparent button--dropdown-menu"
+                    >
+                      Source code
+                    </a>
+                  </div>
                 </div>
               `
             : html``}
