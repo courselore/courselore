@@ -850,6 +850,43 @@ export default async (application: Application): Promise<void> => {
                   `
                 : html``}
           </div>
+          $${request.URL.pathname === "/" && request.state.user === undefined
+            ? html`
+                <div
+                  css="${css`
+                    display: flex;
+                    gap: var(--size--4);
+                    align-items: baseline;
+                  `}"
+                >
+                  <a
+                    href="/TODO"
+                    class="button button--rectangle button--transparent"
+                    javascript="${javascript`
+                      javascript.popover({ element: this });
+                    `}"
+                  >
+                    Meta Courselore
+                  </a>
+                  <div type="popover">
+                    Use Courselore to talk to Courselore developers and other
+                    Courselore users.
+                  </div>
+                  <a
+                    href="/TODO"
+                    class="button button--rectangle button--transparent"
+                  >
+                    Source code
+                  </a>
+                  <a
+                    href="/authentication"
+                    class="button button--rectangle button--blue"
+                  >
+                    Sign up / Sign in
+                  </a>
+                </div>
+              `
+            : html``}
           $${request.state.user !== undefined
             ? html`
                 <button
@@ -857,7 +894,7 @@ export default async (application: Application): Promise<void> => {
                   type="button"
                   class="button button--square button--transparent"
                   javascript="${javascript`
-                    javascript.popover({ element: this, trigger: "click", placement: "bottom-end" })
+                    javascript.popover({ element: this, trigger: "click", placement: "bottom-end" });
                   `}"
                 >
                   $${application.partials.userAvatar({
