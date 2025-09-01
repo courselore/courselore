@@ -860,7 +860,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <a
-                    href="/TODO"
+                    href="https://meta.courselore.org"
                     class="button button--rectangle button--transparent"
                     javascript="${javascript`
                       javascript.popover({ element: this });
@@ -873,7 +873,7 @@ export default async (application: Application): Promise<void> => {
                     Courselore users.
                   </div>
                   <a
-                    href="/TODO"
+                    href="https://github.com/courselore/courselore"
                     class="button button--rectangle button--transparent"
                   >
                     Source code
