@@ -178,7 +178,10 @@ export default async (application: Application): Promise<void> => {
       );
       if (request.state.systemOptions === undefined) throw new Error();
       if (typeof request.cookies.session !== "string") {
-        if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
+        if (
+          request.URL.pathname !== "/" &&
+          !request.URL.pathname.match(new RegExp("^/authentication(?:$|/)"))
+        )
           response.redirect(
             `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
           );
