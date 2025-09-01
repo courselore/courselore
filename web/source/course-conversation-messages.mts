@@ -209,6 +209,32 @@ export default async (application: Application): Promise<void> => {
               "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
           `,
         );
+        if (
+          Boolean(request.state.courseConversation!.questionResolved) ===
+            false &&
+          request.body.courseConversationMessageType ===
+            "courseConversationMessageTypeAnswer"
+        )
+          application.database.run(
+            sql`
+              update "courseConversations"
+              set "questionResolved" = ${Number(true)}
+              where "id" = ${request.state.courseConversation!.id};
+            `,
+          );
+        else if (
+          Boolean(request.state.courseConversation!.questionResolved) ===
+            true &&
+          request.body.courseConversationMessageType ===
+            "courseConversationMessageTypeFollowUpQuestion"
+        )
+          application.database.run(
+            sql`
+              update "courseConversations"
+              set "questionResolved" = ${Number(false)}
+              where "id" = ${request.state.courseConversation!.id};
+            `,
+          );
         application.database.run(
           sql`
             insert into "courseConversationMessages" (
