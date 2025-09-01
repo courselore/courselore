@@ -856,7 +856,12 @@ export default async (application: Application): Promise<void> => {
                   css="${css`
                     display: flex;
                     gap: var(--size--4);
-                    align-items: baseline;
+                    @media (max-width: 539px) {
+                      align-items: center;
+                    }
+                    @media (min-width: 540px) {
+                      align-items: baseline;
+                    }
                   `}"
                 >
                   <a
@@ -898,8 +903,10 @@ export default async (application: Application): Promise<void> => {
                     type="button"
                     class="button button--square button--icon button--transparent"
                     css="${css`
-                      font-size: var(--font-size--5);
-                      line-height: var(--size--0);
+                      color: light-dark(
+                        var(--color--slate--600),
+                        var(--color--slate--400)
+                      );
                       @media (min-width: 540px) {
                         display: none;
                       }
