@@ -203,6 +203,14 @@ export default async (application: Application): Promise<void> => {
       application.database.executeTransaction(() => {
         application.database.run(
           sql`
+            delete from "courseConversationMessageDrafts"
+            where
+              "courseConversation" = ${request.state.courseConversation!.id} and
+              "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
             insert into "courseConversationMessages" (
               "publicId",
               "courseConversation",
@@ -233,14 +241,6 @@ export default async (application: Application): Promise<void> => {
                 .map((tokenWithPosition) => tokenWithPosition.token)
                 .join(" ")}
             );
-          `,
-        );
-        application.database.run(
-          sql`
-            delete from "courseConversationMessageDrafts"
-            where
-              "courseConversation" = ${request.state.courseConversation!.id} and
-              "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
           `,
         );
       });
