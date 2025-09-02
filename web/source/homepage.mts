@@ -72,6 +72,7 @@ export default async (application: Application): Promise<void> => {
                         var(--color--yellow--200),
                         var(--color--yellow--800)
                       );
+                      opacity: var(--opacity--50);
                     `}"
                   >
                     <svg viewBox="0 0 2000 1000" preserveAspectRatio="none">
