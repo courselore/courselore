@@ -54,7 +54,7 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   flex-direction: column;
                   align-items: center;
-                  gap: var(--size--4);
+                  gap: var(--size--2);
                 `}"
               >
                 <div>Communication platform</div>
