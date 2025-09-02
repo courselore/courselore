@@ -69,8 +69,8 @@ export default async (application: Application): Promise<void> => {
                   <div
                     css="${css`
                       color: light-dark(
-                        var(--color--yellow--200),
-                        var(--color--yellow--800)
+                        var(--color--yellow--300),
+                        var(--color--yellow--700)
                       );
                       opacity: var(--opacity--50);
                       position: relative;
@@ -78,6 +78,7 @@ export default async (application: Application): Promise<void> => {
                   >
                     <svg
                       viewBox="0 0 291.2677 71.839319"
+                      preserveAspectRatio="none"
                       css="${css`
                         width: 100%;
                         height: 100%;
