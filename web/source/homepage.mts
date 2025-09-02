@@ -73,6 +73,7 @@ export default async (application: Application): Promise<void> => {
                         var(--color--yellow--700)
                       );
                       opacity: var(--opacity--50);
+                      margin: -0.2em -1em -0.3em -1em;
                       position: relative;
                     `}"
                   >
