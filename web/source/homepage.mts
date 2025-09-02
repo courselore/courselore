@@ -38,8 +38,6 @@ export default async (application: Application): Promise<void> => {
                   font-family:
                     "Roboto Serif Variable", var(--font-family--serif);
                   font-weight: 900;
-                  font-size: var(--font-size--9);
-                  line-height: var(--font-size--9--line-height);
                   background-image: radial-gradient(
                     light-dark(
                         var(--color--slate--300),
@@ -55,6 +53,14 @@ export default async (application: Application): Promise<void> => {
                   flex-direction: column;
                   align-items: center;
                   gap: var(--size--2);
+                  @media (max-width: 559px) {
+                    font-size: var(--font-size--5);
+                    line-height: var(--font-size--5--line-height);
+                  }
+                  @media (min-width: 560px) {
+                    font-size: var(--font-size--9);
+                    line-height: var(--font-size--9--line-height);
+                  }
                 `}"
               >
                 <div>Communication platform</div>
