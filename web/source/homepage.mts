@@ -121,6 +121,17 @@ export default async (application: Application): Promise<void> => {
                   width="900"
                   height="691"
                   css="${css`
+                    max-width: 100%;
+                    height: auto;
+                    border: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    border-top-left-radius: var(--border-radius--1);
+                    border-top-right-radius: var(--border-radius--1);
+                    border-bottom: none;
+                    box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.25);
                     @media (prefers-color-scheme: dark) {
                       display: none;
                     }
