@@ -82,7 +82,13 @@ export default async (application: Application): Promise<void> => {
                       />
                     </svg>
                   </div>
-                  <div>for education</div>
+                  <div
+                    css="${css`
+                      position: relative;
+                    `}"
+                  >
+                    for education
+                  </div>
                 </div>
               </div>
             </div>
