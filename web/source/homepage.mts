@@ -181,11 +181,11 @@ export default async (application: Application): Promise<void> => {
                     )
                   );
                   min-height: 100vh;
-                  padding: var(--size--44) var(--size--4);
+                  padding: var(--size--20) var(--size--4);
                   display: flex;
                   align-items: center;
                   justify-content: center;
-                  gap: var(--size--14);
+                  gap: var(--size--20);
                 `}"
               >
                 <div
@@ -221,9 +221,9 @@ export default async (application: Application): Promise<void> => {
                       gap: var(--space--2);
                     `}"
                   >
-                    <span>Discourse</span>
                     <span>Slack</span>
                     <span>Discord</span>
+                    <span>Discourse</span>
                     <span
                       css="${css`
                         text-align: center;
