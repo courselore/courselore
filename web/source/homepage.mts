@@ -265,14 +265,25 @@ export default async (application: Application): Promise<void> => {
                     >
                       <i class="bi bi-mortarboard-fill"></i> For instructors
                     </div>
-                    <div>
-                      Forum for announcements, question-and-answer, and
-                      polls.<br />
-                      Fine-grained control of visibility of conversations and
-                      messages.<br />
-                      Easy onboarding of students with a comprehensive and
-                      simple invitation system, and single sign-on with SAML.
-                    </div>
+                    <ul
+                      css="${css`
+                        li {
+                          list-style: disc;
+                        }
+                      `}"
+                    >
+                      <li>
+                        Forum for announcements, question-and-answer, and polls.
+                      </li>
+                      <li>
+                        Fine-grained control of visibility of conversations and
+                        messages.
+                      </li>
+                      <li>
+                        Easy onboarding of students with a comprehensive and
+                        simple invitation system, and single sign-on with SAML.
+                      </li>
+                    </ul>
                   </div>
                   <div>
                     <div
@@ -282,11 +293,20 @@ export default async (application: Application): Promise<void> => {
                     >
                       <i class="bi bi-backpack-fill"></i> For students
                     </div>
-                    <div>
-                      Ask questions anonymously.<br />
-                      Ask questions visible to other students, to help everyone
-                      out, or only to instructors, to protect your privacy.
-                    </div>
+                    <ul
+                      css="${css`
+                        li {
+                          list-style: disc;
+                        }
+                      `}"
+                    >
+                      <li>Ask questions anonymously.<br /></li>
+                      <li>
+                        Ask questions visible to other students, to help
+                        everyone out, or only to instructors, to protect your
+                        privacy.<br />
+                      </li>
+                    </ul>
                   </div>
                   <div>
                     <div
@@ -296,12 +316,22 @@ export default async (application: Application): Promise<void> => {
                     >
                       <i class="bi bi-person-arms-up"></i> For everyone
                     </div>
-                    <div>
-                      Modern and functional design with support for dark mode
-                      and mobile (no need to install an application).<br />
-                      Rich-text messaging with support for Markdown, LaTeX, and
-                      syntax highlighting for code.
-                    </div>
+                    <ul
+                      css="${css`
+                        li {
+                          list-style: disc;
+                        }
+                      `}"
+                    >
+                      <li>
+                        Modern and functional design with support for dark mode
+                        and mobile (no need to install an application).
+                      </li>
+                      <li>
+                        Rich-text messaging with support for Markdown, LaTeX,
+                        and syntax highlighting for code.
+                      </li>
+                    </ul>
                   </div>
                   <div>
                     <div
@@ -311,10 +341,17 @@ export default async (application: Application): Promise<void> => {
                     >
                       <i class="bi bi-gear-fill"></i> For system administrators
                     </div>
-                    <div>
-                      Open-source. Easy to self-host. Free hosted version for a
-                      limited time.
-                    </div>
+                    <ul
+                      css="${css`
+                        li {
+                          list-style: disc;
+                        }
+                      `}"
+                    >
+                      <li>Open-source.</li>
+                      <li>Easy to self-host.</li>
+                      <li>Free hosted version for a limited time.</li>
+                    </ul>
                   </div>
                 </div>
               </div>
