@@ -117,7 +117,7 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </div>
                 <img
-                  src="/${caddy.staticFiles["screenshot--light.png"]}"
+                  src="/${caddy.staticFiles["screenshot--light.webp"]}"
                   width="900"
                   height="691"
                   css="${css`
@@ -140,7 +140,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 />
                 <img
-                  src="/${caddy.staticFiles["screenshot--dark.png"]}"
+                  src="/${caddy.staticFiles["screenshot--dark.webp"]}"
                   width="900"
                   height="691"
                   css="${css`
