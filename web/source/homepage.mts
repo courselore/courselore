@@ -169,16 +169,26 @@ export default async (application: Application): Promise<void> => {
                     var(--color--fuchsia--100),
                     var(--color--fuchsia--900)
                   );
-                  background-image: radial-gradient(
-                    ellipse at top,
-                    light-dark(
-                      var(--color--fuchsia--500),
-                      var(--color--fuchsia--50)
+                  background-image:
+                    radial-gradient(
+                      ellipse at top,
+                      light-dark(
+                        var(--color--violet--800),
+                        var(--color--violet--200)
+                      ),
+                      transparent
                     ),
-                    light-dark(
-                      var(--color--fuchsia--800),
-                      var(--color--fuchsia--200)
-                    )
+                    radial-gradient(
+                      ellipse at bottom,
+                      light-dark(
+                        var(--color--rose--800),
+                        var(--color--rose--200)
+                      ),
+                      transparent
+                    );
+                  background-color: light-dark(
+                    var(--color--fuchsia--800),
+                    var(--color--fuchsia--200)
                   );
                   min-height: 100vh;
                   padding: var(--size--20) var(--size--4);
@@ -240,14 +250,20 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--size--4);
                   `}"
                 >
-                  <div>Courselore is designed by educators for educators.</div>
+                  <div
+                    css="${css`
+                      font-weight: 900;
+                    `}"
+                  >
+                    Courselore is designed by educators for educators.
+                  </div>
                   <div>
                     <div
                       css="${css`
                         font-weight: 900;
                       `}"
                     >
-                      For instructors
+                      <i class="bi bi-mortarboard-fill"></i> For instructors
                     </div>
                     <div>
                       Forum for announcements, question-and-answer, and
@@ -264,7 +280,7 @@ export default async (application: Application): Promise<void> => {
                         font-weight: 900;
                       `}"
                     >
-                      For students
+                      <i class="bi bi-backpack-fill"></i> For students
                     </div>
                     <div>
                       Ask questions anonymously.<br />
@@ -278,7 +294,7 @@ export default async (application: Application): Promise<void> => {
                         font-weight: 900;
                       `}"
                     >
-                      For everyone
+                      <i class="bi bi-person-arms-up"></i> For everyone
                     </div>
                     <div>
                       Modern and functional design with support for dark mode
@@ -293,7 +309,7 @@ export default async (application: Application): Promise<void> => {
                         font-weight: 900;
                       `}"
                     >
-                      For system administrators
+                      <i class="bi bi-gear-fill"></i> For system administrators
                     </div>
                     <div>
                       Open-source. Easy to self-host. Free hosted version for a
