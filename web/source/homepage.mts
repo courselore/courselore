@@ -218,7 +218,6 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       display: inline-flex;
                       flex-direction: column;
-                      gap: var(--space--2);
                     `}"
                   >
                     <span>Slack</span>
@@ -232,7 +231,76 @@ export default async (application: Application): Promise<void> => {
                     ></span>
                   </span>
                 </div>
-                <div>TODO</div>
+                <div
+                  css="${css`
+                    width: 100%;
+                    max-width: var(--size--96);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  <div>Courselore is designed by educators for educators.</div>
+                  <div>
+                    <div
+                      css="${css`
+                        font-weight: 900;
+                      `}"
+                    >
+                      For instructors
+                    </div>
+                    <div>
+                      Forum for announcements, question-and-answer, and
+                      polls.<br />
+                      Fine-grained control of visibility of conversations and
+                      messages.<br />
+                      Easy onboarding of students with a comprehensive and
+                      simple invitation system, and single sign-on with SAML.
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      css="${css`
+                        font-weight: 900;
+                      `}"
+                    >
+                      For students
+                    </div>
+                    <div>
+                      Ask questions anonymously.<br />
+                      Ask questions visible to other students, to help everyone
+                      out, or only to instructors, to protect your privacy.
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      css="${css`
+                        font-weight: 900;
+                      `}"
+                    >
+                      For everyone
+                    </div>
+                    <div>
+                      Modern and functional design with support for dark mode
+                      and mobile (no need to install an application).<br />
+                      Rich-text messaging with support for Markdown, LaTeX, and
+                      syntax highlighting for code.
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      css="${css`
+                        font-weight: 900;
+                      `}"
+                    >
+                      For system administrators
+                    </div>
+                    <div>
+                      Open-source. Easy to self-host. Free hosted version for a
+                      limited time.
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           `,
