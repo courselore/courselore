@@ -130,7 +130,9 @@ export default async (application: Application): Promise<void> => {
                       );
                     border-top-left-radius: var(--border-radius--1);
                     border-top-right-radius: var(--border-radius--1);
-                    border-bottom: none;
+                    && {
+                      border-bottom: none;
+                    }
                     box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.25);
                     @media (prefers-color-scheme: dark) {
                       display: none;
