@@ -255,7 +255,7 @@ export default async (application: Application): Promise<void> => {
                       font-weight: 900;
                     `}"
                   >
-                    Courselore is designed by educators for educators.
+                    Courselore is made by educators, for educators.
                   </div>
                   <div>
                     <div
