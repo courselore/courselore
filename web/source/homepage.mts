@@ -163,6 +163,66 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 />
               </div>
+              <div
+                css="${css`
+                  background-color: light-dark(
+                    var(--color--fuchsia--800),
+                    var(--color--fuchsia--200)
+                  );
+                  padding: var(--size--20) var(--size--4);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: var(--size--10);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-family:
+                      "Roboto Serif Variable", var(--font-family--serif);
+                    font-weight: 900;
+                    @media (max-width: 559px) {
+                      font-size: var(--font-size--5);
+                      line-height: var(--font-size--5--line-height);
+                    }
+                    @media (min-width: 560px) {
+                      font-size: var(--font-size--9);
+                      line-height: var(--font-size--9--line-height);
+                    }
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      color: light-dark(
+                        var(--color--fuchsia--200),
+                        var(--color--fuchsia--800)
+                      );
+                    `}"
+                    >Courselore</span
+                  >
+                  <span
+                    css="${css`
+                      color: light-dark(
+                        var(--color--fuchsia--500),
+                        var(--color--fuchsia--500)
+                      );
+                    `}"
+                    >vs</span
+                  >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      vertical-align: top;
+                    `}"
+                  >
+                    Discourse<br />
+                    Slack<br />
+                    Discord<br />
+                        <i class="bi bi-three-dots-vertical"></i>
+                  </span>
+                </div>
+                <div>TODO</div>
+              </div>
             </div>
           `,
         }),
