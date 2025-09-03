@@ -165,11 +165,18 @@ export default async (application: Application): Promise<void> => {
               </div>
               <div
                 css="${css`
-                  background-color: light-dark(
-                    var(--color--fuchsia--800),
-                    var(--color--fuchsia--200)
+                  background-image: radial-gradient(
+                    ellipse at top,
+                    light-dark(
+                      var(--color--fuchsia--600),
+                      var(--color--fuchsia--50)
+                    ),
+                    light-dark(
+                      var(--color--fuchsia--800),
+                      var(--color--fuchsia--200)
+                    )
                   );
-                  padding: var(--size--20) var(--size--4);
+                  padding: var(--size--44) var(--size--4);
                   display: flex;
                   align-items: center;
                   justify-content: center;
@@ -202,6 +209,7 @@ export default async (application: Application): Promise<void> => {
                   >
                   <span
                     css="${css`
+                      font-weight: 400;
                       color: light-dark(
                         var(--color--fuchsia--500),
                         var(--color--fuchsia--500)
