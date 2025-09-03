@@ -165,6 +165,10 @@ export default async (application: Application): Promise<void> => {
               </div>
               <div
                 css="${css`
+                  color: light-dark(
+                    var(--color--fuchsia--100),
+                    var(--color--fuchsia--900)
+                  );
                   background-image: radial-gradient(
                     ellipse at top,
                     light-dark(
@@ -176,6 +180,7 @@ export default async (application: Application): Promise<void> => {
                       var(--color--fuchsia--200)
                     )
                   );
+                  min-height: 100vh;
                   padding: var(--size--44) var(--size--4);
                   display: flex;
                   align-items: center;
@@ -188,10 +193,6 @@ export default async (application: Application): Promise<void> => {
                     font-family:
                       "Roboto Serif Variable", var(--font-family--serif);
                     font-weight: 900;
-                    color: light-dark(
-                      var(--color--fuchsia--100),
-                      var(--color--fuchsia--900)
-                    );
                     @media (max-width: 559px) {
                       font-size: var(--font-size--5);
                       line-height: var(--font-size--5--line-height);
