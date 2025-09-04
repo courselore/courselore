@@ -201,7 +201,7 @@ export default async (application: Application): Promise<void> => {
                         width="1000"
                         height="1000"
                       >
-                        <filter id="noise">
+                        <filter id="filter">
                           <feTurbulence
                             baseFrequency="0.8"
                             stitchTiles="stitch"
@@ -212,7 +212,7 @@ export default async (application: Application): Promise<void> => {
                           y="0"
                           width="1000"
                           height="1000"
-                          filter="url(#noise)"
+                          filter="url(#filter)"
                           opacity="0.7"
                         />
                       </svg>
