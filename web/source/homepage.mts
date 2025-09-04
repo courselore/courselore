@@ -36,15 +36,17 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 css="${css`
-                  background-image: radial-gradient(
-                    light-dark(
-                        var(--color--slate--300),
-                        var(--color--slate--700)
-                      )
-                      var(--size--px),
-                    transparent var(--size--0)
-                  );
-                  background-size: var(--size--4) var(--size--4);
+                  background-image: url("data:image/svg+xml,${encodeURIComponent(
+                    html`
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                      >
+                        <rect fill="#f00" x="8" y="8" width="1" height="1" />
+                      </svg>
+                    `,
+                  )}");
                   padding: var(--size--20) var(--size--4) var(--size--0)
                     var(--size--4);
                   display: flex;
