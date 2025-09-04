@@ -132,6 +132,8 @@ export default async (application: Application): Promise<void> => {
                           `,
                         )}");
                         mask-size: 100% 100%;
+                        scale: var(--scale--150);
+                        translate: var(--size--0) var(--size--1);
                       }
                     `}"
                   >
