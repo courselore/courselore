@@ -195,6 +195,28 @@ export default async (application: Application): Promise<void> => {
                     var(--color--fuchsia--900)
                   );
                   background-image:
+                    url("data:image/svg+xml,${encodeURIComponent(html`
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1000"
+                        height="1000"
+                      >
+                        <filter id="noise">
+                          <feTurbulence
+                            baseFrequency="0.6"
+                            stitchTiles="stitch"
+                          />
+                        </filter>
+                        <rect
+                          x="0"
+                          y="0"
+                          width="1000"
+                          height="1000"
+                          filter="url(#noise)"
+                          opacity="0.7"
+                        />
+                      </svg>
+                    `)}"),
                     radial-gradient(
                       ellipse at top,
                       light-dark(
@@ -223,71 +245,6 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--20);
                 `}"
               >
-                <svg
-                  viewBox="0 0 700 700"
-                  width="700"
-                  height="700"
-                  opacity="0.8"
-                >
-                  <defs>
-                    <filter
-                      id="nnnoise-filter"
-                      x="-20%"
-                      y="-20%"
-                      width="140%"
-                      height="140%"
-                      filterUnits="objectBoundingBox"
-                      primitiveUnits="userSpaceOnUse"
-                      color-interpolation-filters="linearRGB"
-                    >
-                      <feTurbulence
-                        type="turbulence"
-                        baseFrequency="0.05"
-                        numOctaves="4"
-                        seed="15"
-                        stitchTiles="stitch"
-                        x="0%"
-                        y="0%"
-                        width="100%"
-                        height="100%"
-                        result="turbulence"
-                      ></feTurbulence>
-                      <feSpecularLighting
-                        surfaceScale="25"
-                        specularConstant="1.5"
-                        specularExponent="20"
-                        lighting-color="#d0021b"
-                        x="0%"
-                        y="0%"
-                        width="100%"
-                        height="100%"
-                        in="turbulence"
-                        result="specularLighting"
-                      >
-                        <feDistantLight
-                          azimuth="3"
-                          elevation="106"
-                        ></feDistantLight>
-                      </feSpecularLighting>
-                      <feColorMatrix
-                        type="saturate"
-                        values="0"
-                        x="0%"
-                        y="0%"
-                        width="100%"
-                        height="100%"
-                        in="specularLighting"
-                        result="colormatrix"
-                      ></feColorMatrix>
-                    </filter>
-                  </defs>
-                  <rect
-                    width="700"
-                    height="700"
-                    fill="white"
-                    filter="url(#nnnoise-filter)"
-                  ></rect>
-                </svg>
                 <div
                   css="${css`
                     font-family:
