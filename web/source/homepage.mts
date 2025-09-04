@@ -116,7 +116,10 @@ export default async (application: Application): Promise<void> => {
                         );
                         opacity: var(--opacity--50);
                         position: absolute;
-                        inset: var(--size--0);
+                        top: var(--size---1);
+                        right: var(--size---8);
+                        bottom: var(--size---3);
+                        left: var(--size---8);
                         z-index: -1;
                         mask-image: url("data:image/svg+xml,${encodeURIComponent(
                           html`
@@ -132,8 +135,6 @@ export default async (application: Application): Promise<void> => {
                           `,
                         )}");
                         mask-size: 100% 100%;
-                        scale: var(--scale--150);
-                        translate: var(--size--0) var(--size--1);
                       }
                     `}"
                   >
