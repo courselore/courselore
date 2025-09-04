@@ -36,23 +36,52 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 css="${css`
-                  background-image: url("data:image/svg+xml,${encodeURIComponent(
-                    html`
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                      >
-                        <rect fill="#f00" x="8" y="8" width="1" height="1" />
-                      </svg>
-                    `,
-                  )}");
                   padding: var(--size--20) var(--size--4) var(--size--0)
                     var(--size--4);
                   display: flex;
                   flex-direction: column;
                   align-items: center;
                   gap: var(--size--32);
+                  @media (prefers-color-scheme: light) {
+                    background-image: url("data:image/svg+xml,${encodeURIComponent(
+                      html`
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                        >
+                          <rect
+                            fill="black"
+                            x="8"
+                            y="8"
+                            width="1"
+                            height="1"
+                            opacity="0.3"
+                          />
+                        </svg>
+                      `,
+                    )}");
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    background-image: url("data:image/svg+xml,${encodeURIComponent(
+                      html`
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                        >
+                          <rect
+                            fill="white"
+                            x="8"
+                            y="8"
+                            width="1"
+                            height="1"
+                            opacity="0.3"
+                          />
+                        </svg>
+                      `,
+                    )}");
+                  }
                 `}"
               >
                 <div
