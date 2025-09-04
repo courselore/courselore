@@ -203,7 +203,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         <filter id="noise">
                           <feTurbulence
-                            baseFrequency="0.6"
+                            baseFrequency="0.8"
                             stitchTiles="stitch"
                           />
                         </filter>
