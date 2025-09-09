@@ -179,7 +179,10 @@ export default async (application: Application): Promise<void> => {
       if (request.state.systemOptions === undefined) throw new Error();
       if (typeof request.cookies.session !== "string") {
         if (
-          request.URL.pathname !== "/" &&
+          !(
+            application.configuration.hostname === "courselore.org" &&
+            request.URL.pathname === "/"
+          ) &&
           !request.URL.pathname.match(new RegExp("^/authentication(?:$|/)"))
         )
           response.redirect(
