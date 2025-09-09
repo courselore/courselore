@@ -312,25 +312,39 @@ export default async (application: Application): Promise<void> => {
                     >
                       <i class="bi bi-mortarboard-fill"></i> For instructors
                     </div>
-                    <ul
-                      css="${css`
-                        li {
-                          list-style: disc;
-                        }
-                      `}"
-                    >
-                      <li>
-                        Forum for announcements, question-and-answer, and polls.
-                      </li>
-                      <li>
-                        Fine-grained control of visibility of conversations and
-                        messages.
-                      </li>
-                      <li>
-                        Easy onboarding of students with a comprehensive and
-                        simple invitation system, and single sign-on with SAML.
-                      </li>
-                    </ul>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Forum:
+                      </span>
+                      Announcements. Question-and-answer. Polls.
+                    </div>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Quality-of-life features:
+                      </span>
+                      Message among instructors before answering a student right
+                      from the conversation page. See who read a message. And
+                      much more!
+                    </div>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Easy onboarding:
+                      </span>
+                      Comprehensive and simple invitation system. Single sign-on
+                      with SAML.
+                    </div>
                   </div>
                   <div>
                     <div
