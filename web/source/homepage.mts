@@ -143,6 +143,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
                 <img
                   src="/${caddy.staticFiles["screenshot--light.webp"]}"
+                  loading="lazy"
                   width="900"
                   height="691"
                   css="${css`
@@ -166,6 +167,7 @@ export default async (application: Application): Promise<void> => {
                 />
                 <img
                   src="/${caddy.staticFiles["screenshot--dark.webp"]}"
+                  loading="lazy"
                   width="900"
                   height="691"
                   css="${css`
@@ -290,7 +292,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
                 <div
                   css="${css`
-                    width: 100%;
+                    flex: 1;
                     max-width: var(--size--96);
                     display: flex;
                     flex-direction: column;
@@ -302,7 +304,7 @@ export default async (application: Application): Promise<void> => {
                       font-weight: 900;
                     `}"
                   >
-                    Courselore is made by educators, for educators.
+                    Courselore is made for educators, by educators.
                   </div>
                   <div>
                     <div
@@ -310,7 +312,7 @@ export default async (application: Application): Promise<void> => {
                         font-weight: 900;
                       `}"
                     >
-                      <i class="bi bi-mortarboard-fill"></i> For instructors
+                      <i class="bi bi-mortarboard-fill"></i>  For instructors
                     </div>
                     <div>
                       <span
@@ -352,22 +354,30 @@ export default async (application: Application): Promise<void> => {
                         font-weight: 900;
                       `}"
                     >
-                      <i class="bi bi-backpack-fill"></i> For students
+                      <i class="bi bi-backpack-fill"></i>  For students
                     </div>
-                    <ul
-                      css="${css`
-                        li {
-                          list-style: disc;
-                        }
-                      `}"
-                    >
-                      <li>Ask questions anonymously.<br /></li>
-                      <li>
-                        Ask questions visible to other students, to help
-                        everyone out, or only to instructors, to protect your
-                        privacy.<br />
-                      </li>
-                    </ul>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Anonymity:
+                      </span>
+                      Feel more comfortable expressing yourself.
+                    </div>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Privacy:
+                      </span>
+                      Ask questions visible to other students, to help everyone
+                      out, or visible to instructors only, to protect your
+                      privacy.
+                    </div>
                   </div>
                   <div>
                     <div
@@ -375,24 +385,29 @@ export default async (application: Application): Promise<void> => {
                         font-weight: 900;
                       `}"
                     >
-                      <i class="bi bi-person-arms-up"></i> For everyone
+                      <i class="bi bi-person-arms-up"></i>  For everyone
                     </div>
-                    <ul
-                      css="${css`
-                        li {
-                          list-style: disc;
-                        }
-                      `}"
-                    >
-                      <li>
-                        Modern and functional design with support for dark mode
-                        and mobile (no need to install an application).
-                      </li>
-                      <li>
-                        Rich-text messaging with support for Markdown, LaTeX,
-                        and syntax highlighting for code.
-                      </li>
-                    </ul>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Modern and functional design:
+                      </span>
+                      Dark mode. Mobile support right from the browser, without
+                      the need to install an application.
+                    </div>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Rich-text messaging:
+                      </span>
+                      Markdown. LaTeX. Syntax highlighting for code.
+                    </div>
                   </div>
                   <div>
                     <div
@@ -400,19 +415,38 @@ export default async (application: Application): Promise<void> => {
                         font-weight: 900;
                       `}"
                     >
-                      <i class="bi bi-gear-fill"></i> For system administrators
+                      <i class="bi bi-gear-fill"></i>  For system administrators
                     </div>
-                    <ul
-                      css="${css`
-                        li {
-                          list-style: disc;
-                        }
-                      `}"
-                    >
-                      <li>Open-source.</li>
-                      <li>Easy to self-host.</li>
-                      <li>Free hosted version for a limited time.</li>
-                    </ul>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Open source:
+                      </span>
+                      TODO
+                    </div>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Easy to self-host:
+                      </span>
+                      TODO
+                    </div>
+                    <div>
+                      <span
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        Free hosted installation:
+                      </span>
+                      Available at courselore.org for a limited time.
+                    </div>
                   </div>
                 </div>
               </div>
