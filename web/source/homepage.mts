@@ -93,11 +93,11 @@ export default async (application: Application): Promise<void> => {
                     flex-direction: column;
                     align-items: center;
                     gap: var(--size--2);
-                    @media (max-width: 559px) {
+                    @media (max-width: 599px) {
                       font-size: var(--font-size--5);
                       line-height: var(--font-size--5--line-height);
                     }
-                    @media (min-width: 560px) {
+                    @media (min-width: 600px) {
                       font-size: var(--font-size--9);
                       line-height: var(--font-size--9--line-height);
                     }
@@ -255,11 +255,11 @@ export default async (application: Application): Promise<void> => {
                     font-family:
                       "Roboto Serif Variable", var(--font-family--serif);
                     font-weight: 900;
-                    @media (max-width: 559px) {
+                    @media (max-width: 599px) {
                       font-size: var(--font-size--5);
                       line-height: var(--font-size--5--line-height);
                     }
-                    @media (min-width: 560px) {
+                    @media (min-width: 600px) {
                       font-size: var(--font-size--9);
                       line-height: var(--font-size--9--line-height);
                     }
@@ -482,11 +482,11 @@ export default async (application: Application): Promise<void> => {
                     font-family:
                       "Roboto Serif Variable", var(--font-family--serif);
                     font-weight: 900;
-                    @media (max-width: 559px) {
+                    @media (max-width: 599px) {
                       font-size: var(--font-size--5);
                       line-height: var(--font-size--5--line-height);
                     }
-                    @media (min-width: 560px) {
+                    @media (min-width: 600px) {
                       font-size: var(--font-size--9);
                       line-height: var(--font-size--9--line-height);
                     }
