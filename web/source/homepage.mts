@@ -332,9 +332,9 @@ export default async (application: Application): Promise<void> => {
                       >
                         Quality-of-life features:
                       </span>
-                      Message among instructors before answering a student right
-                      from the conversation page. See who read a message. And
-                      much more!
+                      Message among instructors right from the conversation page
+                      before answering a student. See a list of who read a
+                      message. And much more!
                     </div>
                     <div>
                       <span
@@ -374,8 +374,8 @@ export default async (application: Application): Promise<void> => {
                       >
                         Privacy:
                       </span>
-                      Ask questions visible to other students, to help everyone
-                      out, or visible to instructors only, to protect your
+                      Ask questions visible to other students to help everyone
+                      out, or visible to instructors only to protect your
                       privacy.
                     </div>
                   </div>
@@ -406,7 +406,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         Rich-text messaging:
                       </span>
-                      Markdown. LaTeX. Syntax highlighting for code.
+                      Markdown. LaTeX. Syntax highlighting.
                     </div>
                   </div>
                   <div>
@@ -423,9 +423,9 @@ export default async (application: Application): Promise<void> => {
                           font-weight: 700;
                         `}"
                       >
-                        Open source:
+                        Easy to self-host:
                       </span>
-                      TODO
+                      Install Courselore on your own server in minutes.
                     </div>
                     <div>
                       <span
@@ -433,9 +433,9 @@ export default async (application: Application): Promise<void> => {
                           font-weight: 700;
                         `}"
                       >
-                        Easy to self-host:
+                        Open source:
                       </span>
-                      TODO
+                      Codebase designed to be easy to contribute to.
                     </div>
                     <div>
                       <span
