@@ -245,6 +245,9 @@ export default async (application: Application): Promise<void> => {
                   align-items: center;
                   justify-content: center;
                   gap: var(--size--20);
+                  @media (max-width: 999px) {
+                    flex-direction: column;
+                  }
                 `}"
               >
                 <div
