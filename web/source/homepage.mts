@@ -378,7 +378,7 @@ export default async (application: Application): Promise<void> => {
                         Privacy:
                       </span>
                       Ask questions visible to other students to help everyone
-                      out, or visible to instructors only to protect your
+                      out, or visible to instructors only if you prefer more
                       privacy.
                     </div>
                   </div>
@@ -412,44 +412,163 @@ export default async (application: Application): Promise<void> => {
                       Markdown. LaTeX. Syntax highlighting.
                     </div>
                   </div>
-                  <div>
-                    <div
+                </div>
+              </div>
+              <div
+                css="${css`
+                  color: light-dark(
+                    var(--color--blue--100),
+                    var(--color--blue--100)
+                  );
+                  background-image:
+                    url("data:image/svg+xml,${encodeURIComponent(html`
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1000"
+                        height="1000"
+                      >
+                        <filter id="filter">
+                          <feTurbulence
+                            baseFrequency="0.8"
+                            stitchTiles="stitch"
+                          />
+                        </filter>
+                        <rect
+                          x="0"
+                          y="0"
+                          width="1000"
+                          height="1000"
+                          filter="url(#filter)"
+                          opacity="0.7"
+                        />
+                      </svg>
+                    `)}"),
+                    radial-gradient(
+                      ellipse at top,
+                      light-dark(
+                        var(--color--cyan--800),
+                        var(--color--cyan--800)
+                      ),
+                      transparent
+                    ),
+                    radial-gradient(
+                      ellipse at bottom,
+                      light-dark(
+                        var(--color--violet--800),
+                        var(--color--violet--800)
+                      ),
+                      transparent
+                    );
+                  background-color: light-dark(
+                    var(--color--blue--800),
+                    var(--color--blue--800)
+                  );
+                  min-height: 100vh;
+                  padding: var(--size--20) var(--size--4);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: var(--size--20);
+                  @media (max-width: 999px) {
+                    flex-direction: column;
+                  }
+                  @media (min-width: 1000px) {
+                    flex-direction: row-reverse;
+                  }
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-family:
+                      "Roboto Serif Variable", var(--font-family--serif);
+                    font-weight: 900;
+                    @media (max-width: 559px) {
+                      font-size: var(--font-size--5);
+                      line-height: var(--font-size--5--line-height);
+                    }
+                    @media (min-width: 560px) {
+                      font-size: var(--font-size--9);
+                      line-height: var(--font-size--9--line-height);
+                    }
+                  `}"
+                >
+                  <span>Courselore</span>
+                  <span
+                    css="${css`
+                      font-weight: 400;
+                      color: light-dark(
+                        var(--color--blue--400),
+                        var(--color--blue--400)
+                      );
+                    `}"
+                    >vs</span
+                  >
+                  <span
+                    css="${css`
+                      display: inline-flex;
+                      flex-direction: column;
+                    `}"
+                  >
+                    <span>Piazza</span>
+                    <span>Campuswire</span>
+                    <span>Ed Discussion</span>
+                    <span
                       css="${css`
-                        font-weight: 900;
+                        text-align: center;
+                      `}"
+                      ><i class="bi bi-three-dots-vertical"></i
+                    ></span>
+                  </span>
+                </div>
+                <div
+                  css="${css`
+                    flex: 1;
+                    max-width: var(--size--96);
+                  `}"
+                >
+                  <div>
+                    <span
+                      css="${css`
+                        font-weight: 700;
                       `}"
                     >
-                      <i class="bi bi-gear-fill"></i>  For system administrators
-                    </div>
-                    <div>
-                      <span
-                        css="${css`
-                          font-weight: 700;
-                        `}"
-                      >
-                        Easy to self-host:
-                      </span>
-                      Install Courselore on your own server in minutes.
-                    </div>
-                    <div>
-                      <span
-                        css="${css`
-                          font-weight: 700;
-                        `}"
-                      >
-                        Open source:
-                      </span>
-                      Codebase designed to be easy to contribute to.
-                    </div>
-                    <div>
-                      <span
-                        css="${css`
-                          font-weight: 700;
-                        `}"
-                      >
-                        Free hosted installation:
-                      </span>
-                      Available at courselore.org for a limited time.
-                    </div>
+                      Free forever:
+                    </span>
+                    For a Courselore installation on your own server. Free
+                    hosted installation available at courselore.org for a
+                    limited time.
+                  </div>
+                  <div>
+                    <span
+                      css="${css`
+                        font-weight: 700;
+                      `}"
+                    >
+                      Constant evolution:
+                    </span>
+                    We listen to the feedback of educators, introducing
+                    refinements and new features often.
+                  </div>
+                  <div>
+                    <span
+                      css="${css`
+                        font-weight: 700;
+                      `}"
+                    >
+                      Open source:
+                    </span>
+                    Codebase designed to be easy to contribute to.
+                  </div>
+                  <div>
+                    <span
+                      css="${css`
+                        font-weight: 700;
+                      `}"
+                    >
+                      Clear business model:
+                    </span>
+                    We charge for services for educational institutions. We
+                    don’t collect student information or monetize it.
                   </div>
                 </div>
               </div>
