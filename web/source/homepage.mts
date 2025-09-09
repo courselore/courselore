@@ -512,6 +512,9 @@ export default async (application: Application): Promise<void> => {
                     <span>Piazza</span>
                     <span>Campuswire</span>
                     <span>Ed Discussion</span>
+                    <span>Moodle</span>
+                    <span>Canvas</span>
+                    <span>Blackboard</span>
                     <span
                       css="${css`
                         text-align: center;
@@ -526,6 +529,17 @@ export default async (application: Application): Promise<void> => {
                     max-width: var(--size--96);
                   `}"
                 >
+                  <div>
+                    <span
+                      css="${css`
+                        font-weight: 700;
+                      `}"
+                    >
+                      For communication:
+                    </span>
+                    Courselore does one thing, and does it well. It’s easy to
+                    use and modern.
+                  </div>
                   <div>
                     <span
                       css="${css`
@@ -558,6 +572,17 @@ export default async (application: Application): Promise<void> => {
                       Open source:
                     </span>
                     Codebase designed to be easy to contribute to.
+                  </div>
+                  <div>
+                    <span
+                      css="${css`
+                        font-weight: 700;
+                      `}"
+                    >
+                      Easy to self-host:
+                    </span>
+                    Install Courselore on your own server in minutes. Upgrade,
+                    backup, and migrate easily.
                   </div>
                   <div>
                     <span
