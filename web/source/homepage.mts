@@ -194,7 +194,7 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   color: light-dark(
                     var(--color--fuchsia--100),
-                    var(--color--fuchsia--900)
+                    var(--color--fuchsia--100)
                   );
                   background-image:
                     url("data:image/svg+xml,${encodeURIComponent(html`
@@ -223,7 +223,7 @@ export default async (application: Application): Promise<void> => {
                       ellipse at top,
                       light-dark(
                         var(--color--violet--800),
-                        var(--color--violet--200)
+                        var(--color--violet--800)
                       ),
                       transparent
                     ),
@@ -231,13 +231,13 @@ export default async (application: Application): Promise<void> => {
                       ellipse at bottom,
                       light-dark(
                         var(--color--rose--800),
-                        var(--color--rose--200)
+                        var(--color--rose--800)
                       ),
                       transparent
                     );
                   background-color: light-dark(
                     var(--color--fuchsia--800),
-                    var(--color--fuchsia--200)
+                    var(--color--fuchsia--800)
                   );
                   min-height: 100vh;
                   padding: var(--size--20) var(--size--4);
@@ -271,7 +271,7 @@ export default async (application: Application): Promise<void> => {
                       font-weight: 400;
                       color: light-dark(
                         var(--color--fuchsia--400),
-                        var(--color--fuchsia--600)
+                        var(--color--fuchsia--400)
                       );
                     `}"
                     >vs</span
