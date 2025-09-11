@@ -34,7 +34,7 @@
     "unified": "^11.0.5"
   },
   "devDependencies": {
-    "@fontsource-variable/roboto-flex": "^5.2.6",
+    "@fontsource-variable/roboto-flex": "^5.2.7",
     "@fontsource-variable/roboto-mono": "^5.2.6",
     "@fontsource-variable/roboto-serif": "^5.2.6",
     "@radically-straightforward/development": "^1.0.63",
