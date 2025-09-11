@@ -2194,7 +2194,9 @@ export default async (application: Application): Promise<void> => {
                                       gap: var(--size--4);
                                     `}"
                                     javascript="${javascript`
+                                      this.morph = false;
                                       this.onsubmit = () => {
+                                        delete this.morph;
                                         delete this.isModified;
                                       };
                                     `}"
@@ -2405,7 +2407,9 @@ export default async (application: Application): Promise<void> => {
                           gap: var(--size--4);
                         `}"
                         javascript="${javascript`
+                          this.morph = false;
                           this.onsubmit = () => {
+                            delete this.morph;
                             delete this.isModified;
                           };
                         `}"
