@@ -1590,8 +1590,6 @@ export default async (application: Application): Promise<void> => {
                               this.onclick = () => {
                                 if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
                                   this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
-                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]') !== null)
-                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]').hidden = true;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.focus();
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
                               };
@@ -1606,8 +1604,6 @@ export default async (application: Application): Promise<void> => {
                               this.onclick = () => {
                                 if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
                                   this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
-                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]') !== null)
-                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]').hidden = false;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.focus();
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
                               };
@@ -1667,7 +1663,7 @@ export default async (application: Application): Promise<void> => {
                                       javascript="${javascript`
                                         this.onkeyup = utilities.foregroundJob(() => {
                                           const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                                          for (const element of this.closest('[type~="popover"]').querySelectorAll('[key~="courseConversationParticipations--courseParticipation"]')) {
+                                          for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
                                             const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
                                             nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
                                             element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
