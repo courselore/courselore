@@ -1655,7 +1655,7 @@ export default async (application: Application): Promise<void> => {
                                     javascript="${javascript`
                                       this.onkeyup = utilities.foregroundJob(() => {
                                         const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                                        for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
+                                        for (const element of this.closest('[type~="popover"]').querySelectorAll('[key~="courseConversationParticipations--courseParticipation"]')) {
                                           const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
                                           nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
                                           element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
@@ -1748,6 +1748,7 @@ export default async (application: Application): Promise<void> => {
                                                     throw new Error();
                                                   return html`
                                                     <label
+                                                      key="courseConversationParticipations--courseParticipation"
                                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                                       css="${css`
                                                         display: flex;
@@ -1883,6 +1884,7 @@ export default async (application: Application): Promise<void> => {
                                                     throw new Error();
                                                   return html`
                                                     <label
+                                                      key="courseConversationParticipations--courseParticipation"
                                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                                       css="${css`
                                                         display: flex;
