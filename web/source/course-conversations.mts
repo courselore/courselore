@@ -1729,7 +1729,6 @@ export default async (application: Application): Promise<void> => {
                                             throw new Error();
                                           return html`
                                             <label
-                                              key="courseConversationParticipations--courseParticipation"
                                               class="button button--rectangle button--transparent button--dropdown-menu"
                                               css="${css`
                                                 display: flex;
@@ -1759,22 +1758,29 @@ export default async (application: Application): Promise<void> => {
                                                     this.name = ${user.name};
                                                   `}"
                                                   >${user.name}</span
-                                                ><span
-                                                  css="${css`
-                                                    font-size: var(
-                                                      --font-size--3
-                                                    );
-                                                    line-height: var(
-                                                      --font-size--3--line-height
-                                                    );
-                                                    color: light-dark(
-                                                      var(--color--slate--600),
-                                                      var(--color--slate--400)
-                                                    );
-                                                  `}"
-                                                >
-                                                  (instructor)</span
-                                                >
+                                                >$${courseParticipation.courseParticipationRole ===
+                                                "courseParticipationRoleInstructor"
+                                                  ? html`<span
+                                                      css="${css`
+                                                        font-size: var(
+                                                          --font-size--3
+                                                        );
+                                                        line-height: var(
+                                                          --font-size--3--line-height
+                                                        );
+                                                        color: light-dark(
+                                                          var(
+                                                            --color--slate--600
+                                                          ),
+                                                          var(
+                                                            --color--slate--400
+                                                          )
+                                                        );
+                                                      `}"
+                                                    >
+                                                      (instructor)</span
+                                                    >`
+                                                  : html``}
                                               </div>
                                             </label>
                                           `;
