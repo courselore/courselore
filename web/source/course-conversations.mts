@@ -1575,7 +1575,8 @@ export default async (application: Application): Promise<void> => {
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
                               this.onclick = () => {
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = true;
+                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
+                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = true;
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
                               };
                             `}"
@@ -1587,9 +1588,11 @@ export default async (application: Application): Promise<void> => {
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
                               this.onclick = () => {
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]').hidden = true;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
+                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
+                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
+                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]') !== null)
+                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]').hidden = true;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.focus();
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
                               };
                             `}"
@@ -1601,9 +1604,11 @@ export default async (application: Application): Promise<void> => {
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
                               this.onclick = () => {
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]').hidden = false;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
+                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
+                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
+                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]') !== null)
+                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]').hidden = false;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.focus();
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
                               };
                             `}"
