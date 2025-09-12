@@ -1625,7 +1625,6 @@ export default async (application: Application): Promise<void> => {
                             <hr class="separator" />
                             $${application.database
                               .all<{
-                                id: number;
                                 publicId: string;
                                 user: number;
                                 courseParticipationRole:
@@ -1634,7 +1633,6 @@ export default async (application: Application): Promise<void> => {
                               }>(
                                 sql`
                                   select
-                                    "courseParticipations"."id" as "id",
                                     "courseParticipations"."publicId" as "publicId",
                                     "courseParticipations"."user" as "user",
                                     "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
