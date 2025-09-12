@@ -1615,7 +1615,8 @@ export default async (application: Application): Promise<void> => {
                           >
                             Selected course participants
                           </button>
-                          $${application.database.get<{
+                          $${0 <
+                          application.database.get<{
                             count: number;
                           }>(
                             sql`
@@ -1626,7 +1627,7 @@ export default async (application: Application): Promise<void> => {
                                 "courseParticipations"."course" = ${request.state.course.id} and
                                 "users"."id" != ${request.state.user.id};
                             `,
-                          )
+                          )!.count
                             ? html`
                                 <div
                                   key="courseConversationParticipations"
