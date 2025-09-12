@@ -1669,7 +1669,9 @@ export default async (application: Application): Promise<void> => {
                                       "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
                                     from "courseParticipations"
                                     join "users" on "courseParticipations"."user" = "users"."id"
-                                    where "courseParticipations"."course" = ${request.state.course.id}
+                                    where
+                                      "courseParticipations"."course" = ${request.state.course.id} and
+                                      "users"."id" != ${request.state.user.id}
                                     order by
                                       "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
                                       "users"."name" asc;
