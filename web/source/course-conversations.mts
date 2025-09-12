@@ -1684,12 +1684,22 @@ export default async (application: Application): Promise<void> => {
                                 );
                                 if (user === undefined) throw new Error();
                                 return html`
-                                  <div
+                                  <label
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
                                     css="${css`
                                       display: flex;
                                       gap: var(--size--2);
                                     `}"
                                   >
+                                    <input
+                                      type="checkbox"
+                                      name="courseConversationParticipations[]"
+                                      value="${courseParticipation.publicId}"
+                                      class="input--checkbox"
+                                      css="${css`
+                                        margin-top: var(--size--1);
+                                      `}"
+                                    />
                                     $${application.partials.userAvatar({
                                       user,
                                     })}
@@ -1715,7 +1725,7 @@ export default async (application: Application): Promise<void> => {
                                           : ""}</span
                                       >
                                     </div>
-                                  </div>
+                                  </label>
                                 `;
                               })}
                           </div>
