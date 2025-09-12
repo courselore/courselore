@@ -1494,7 +1494,7 @@ export default async (application: Application): Promise<void> => {
                           type="button"
                           class="button button--rectangle button--transparent"
                           javascript="${javascript`
-                            javascript.popover({ element: this, trigger: "click" });
+                            javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
                           `}"
                         >
                           <span
@@ -1575,6 +1575,7 @@ export default async (application: Application): Promise<void> => {
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
                               this.onclick = () => {
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = true;
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
                               };
                             `}"
@@ -1586,7 +1587,8 @@ export default async (application: Application): Promise<void> => {
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
                               this.onclick = () => {
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').click();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
                               };
                             `}"
                           >
@@ -1597,7 +1599,8 @@ export default async (application: Application): Promise<void> => {
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
                               this.onclick = () => {
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').click();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
                               };
                             `}"
                           >
