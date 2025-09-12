@@ -1656,16 +1656,9 @@ export default async (application: Application): Promise<void> => {
                                 gap: var(--size--2);
                               `}"
                             >
-                              <div
-                                key="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--2);
-                                `}"
-                              >
-                                $${application.database
-                                  .all<{
+                              $${(() => {
+                                const courseParticipations =
+                                  application.database.all<{
                                     publicId: string;
                                     user: number;
                                   }>(
@@ -1681,104 +1674,120 @@ export default async (application: Application): Promise<void> => {
                                         "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
                                       order by "users"."name" asc;
                                     `,
-                                  )
-                                  .map((courseParticipation) => {
-                                    const user = application.database.get<{
-                                      publicId: string;
-                                      name: string;
-                                      avatarColor:
-                                        | "red"
-                                        | "orange"
-                                        | "amber"
-                                        | "yellow"
-                                        | "lime"
-                                        | "green"
-                                        | "emerald"
-                                        | "teal"
-                                        | "cyan"
-                                        | "sky"
-                                        | "blue"
-                                        | "indigo"
-                                        | "violet"
-                                        | "purple"
-                                        | "fuchsia"
-                                        | "pink"
-                                        | "rose";
-                                      avatarImage: string | null;
-                                      lastSeenOnlineAt: string;
-                                    }>(
-                                      sql`
-                                        select
-                                          "publicId",
-                                          "name",
-                                          "avatarColor",
-                                          "avatarImage",
-                                          "lastSeenOnlineAt"
-                                        from "users"
-                                        where "id" = ${courseParticipation.user};
-                                      `,
-                                    );
-                                    if (user === undefined) throw new Error();
-                                    return html`
-                                      <label
-                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                  );
+                                return 0 < courseParticipations.length
+                                  ? html`
+                                      <div
+                                        key="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"
                                         css="${css`
                                           display: flex;
+                                          flex-direction: column;
                                           gap: var(--size--2);
                                         `}"
                                       >
-                                        <input
-                                          type="checkbox"
-                                          name="courseConversationParticipations[]"
-                                          value="${courseParticipation.publicId}"
-                                          class="input--checkbox"
-                                          css="${css`
-                                            margin-top: var(--size--1);
-                                          `}"
-                                        />
-                                        $${application.partials.userAvatar({
-                                          user,
-                                        })}
-                                        <div
-                                          css="${css`
-                                            margin-top: var(--size--0-5);
-                                          `}"
-                                        >
-                                          <span
-                                            key="courseConversationParticipations--courseParticipation--name"
-                                            javascript="${javascript`
-                                              this.name = ${user.name};
-                                            `}"
-                                            >${user.name}</span
-                                          ><span
-                                            css="${css`
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
+                                        $${courseParticipations.map(
+                                          (courseParticipation) => {
+                                            const user =
+                                              application.database.get<{
+                                                publicId: string;
+                                                name: string;
+                                                avatarColor:
+                                                  | "red"
+                                                  | "orange"
+                                                  | "amber"
+                                                  | "yellow"
+                                                  | "lime"
+                                                  | "green"
+                                                  | "emerald"
+                                                  | "teal"
+                                                  | "cyan"
+                                                  | "sky"
+                                                  | "blue"
+                                                  | "indigo"
+                                                  | "violet"
+                                                  | "purple"
+                                                  | "fuchsia"
+                                                  | "pink"
+                                                  | "rose";
+                                                avatarImage: string | null;
+                                                lastSeenOnlineAt: string;
+                                              }>(
+                                                sql`
+                                                  select
+                                                    "publicId",
+                                                    "name",
+                                                    "avatarColor",
+                                                    "avatarImage",
+                                                    "lastSeenOnlineAt"
+                                                  from "users"
+                                                  where "id" = ${courseParticipation.user};
+                                                `,
                                               );
-                                              color: light-dark(
-                                                var(--color--slate--600),
-                                                var(--color--slate--400)
-                                              );
-                                            `}"
-                                          >
-                                            (instructor)</span
-                                          >
-                                        </div>
-                                      </label>
-                                    `;
-                                  })}
-                              </div>
-                              <div
-                                key="courseConversationParticipations--courseParticipations--courseParticipationRoleStudents"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--2);
-                                `}"
-                              >
-                                $${application.database
-                                  .all<{
+                                            if (user === undefined)
+                                              throw new Error();
+                                            return html`
+                                              <label
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                css="${css`
+                                                  display: flex;
+                                                  gap: var(--size--2);
+                                                `}"
+                                              >
+                                                <input
+                                                  type="checkbox"
+                                                  name="courseConversationParticipations[]"
+                                                  value="${courseParticipation.publicId}"
+                                                  class="input--checkbox"
+                                                  css="${css`
+                                                    margin-top: var(--size--1);
+                                                  `}"
+                                                />
+                                                $${application.partials.userAvatar(
+                                                  { user },
+                                                )}
+                                                <div
+                                                  css="${css`
+                                                    margin-top: var(
+                                                      --size--0-5
+                                                    );
+                                                  `}"
+                                                >
+                                                  <span
+                                                    key="courseConversationParticipations--courseParticipation--name"
+                                                    javascript="${javascript`
+                                                      this.name = ${user.name};
+                                                    `}"
+                                                    >${user.name}</span
+                                                  ><span
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--3
+                                                      );
+                                                      line-height: var(
+                                                        --font-size--3--line-height
+                                                      );
+                                                      color: light-dark(
+                                                        var(
+                                                          --color--slate--600
+                                                        ),
+                                                        var(--color--slate--400)
+                                                      );
+                                                    `}"
+                                                  >
+                                                    (instructor)</span
+                                                  >
+                                                </div>
+                                              </label>
+                                            `;
+                                          },
+                                        )}
+                                      </div>
+                                    `
+                                  : html``;
+                              })()}
+                              $${(() => {
+                                const courseParticipations =
+                                  application.database.all<{
                                     publicId: string;
                                     user: number;
                                   }>(
@@ -1794,81 +1803,102 @@ export default async (application: Application): Promise<void> => {
                                         "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleStudent'
                                       order by "users"."name" asc;
                                     `,
-                                  )
-                                  .map((courseParticipation) => {
-                                    const user = application.database.get<{
-                                      publicId: string;
-                                      name: string;
-                                      avatarColor:
-                                        | "red"
-                                        | "orange"
-                                        | "amber"
-                                        | "yellow"
-                                        | "lime"
-                                        | "green"
-                                        | "emerald"
-                                        | "teal"
-                                        | "cyan"
-                                        | "sky"
-                                        | "blue"
-                                        | "indigo"
-                                        | "violet"
-                                        | "purple"
-                                        | "fuchsia"
-                                        | "pink"
-                                        | "rose";
-                                      avatarImage: string | null;
-                                      lastSeenOnlineAt: string;
-                                    }>(
-                                      sql`
-                                        select
-                                          "publicId",
-                                          "name",
-                                          "avatarColor",
-                                          "avatarImage",
-                                          "lastSeenOnlineAt"
-                                        from "users"
-                                        where "id" = ${courseParticipation.user};
-                                      `,
-                                    );
-                                    if (user === undefined) throw new Error();
-                                    return html`
-                                      <label
-                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                  );
+                                return 0 < courseParticipations.length
+                                  ? html`
+                                      <div
+                                        key="courseConversationParticipations--courseParticipations--courseParticipationRoleStudents"
                                         css="${css`
                                           display: flex;
+                                          flex-direction: column;
                                           gap: var(--size--2);
                                         `}"
                                       >
-                                        <input
-                                          type="checkbox"
-                                          name="courseConversationParticipations[]"
-                                          value="${courseParticipation.publicId}"
-                                          class="input--checkbox"
-                                          css="${css`
-                                            margin-top: var(--size--1);
-                                          `}"
-                                        />
-                                        $${application.partials.userAvatar({
-                                          user,
-                                        })}
-                                        <div
-                                          css="${css`
-                                            margin-top: var(--size--0-5);
-                                          `}"
-                                        >
-                                          <span
-                                            key="courseConversationParticipations--courseParticipation--name"
-                                            javascript="${javascript`
-                                              this.name = ${user.name};
-                                            `}"
-                                            >${user.name}</span
-                                          >
-                                        </div>
-                                      </label>
-                                    `;
-                                  })}
-                              </div>
+                                        $${courseParticipations.map(
+                                          (courseParticipation) => {
+                                            const user =
+                                              application.database.get<{
+                                                publicId: string;
+                                                name: string;
+                                                avatarColor:
+                                                  | "red"
+                                                  | "orange"
+                                                  | "amber"
+                                                  | "yellow"
+                                                  | "lime"
+                                                  | "green"
+                                                  | "emerald"
+                                                  | "teal"
+                                                  | "cyan"
+                                                  | "sky"
+                                                  | "blue"
+                                                  | "indigo"
+                                                  | "violet"
+                                                  | "purple"
+                                                  | "fuchsia"
+                                                  | "pink"
+                                                  | "rose";
+                                                avatarImage: string | null;
+                                                lastSeenOnlineAt: string;
+                                              }>(
+                                                sql`
+                                                  select
+                                                    "publicId",
+                                                    "name",
+                                                    "avatarColor",
+                                                    "avatarImage",
+                                                    "lastSeenOnlineAt"
+                                                  from "users"
+                                                  where "id" = ${courseParticipation.user};
+                                                `,
+                                              );
+                                            if (user === undefined)
+                                              throw new Error();
+                                            return html`
+                                              <label
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                css="${css`
+                                                  display: flex;
+                                                  gap: var(--size--2);
+                                                `}"
+                                              >
+                                                <input
+                                                  type="checkbox"
+                                                  name="courseConversationParticipations[]"
+                                                  value="${courseParticipation.publicId}"
+                                                  class="input--checkbox"
+                                                  css="${css`
+                                                    margin-top: var(--size--1);
+                                                  `}"
+                                                />
+                                                $${application.partials.userAvatar(
+                                                  {
+                                                    user,
+                                                  },
+                                                )}
+                                                <div
+                                                  css="${css`
+                                                    margin-top: var(
+                                                      --size--0-5
+                                                    );
+                                                  `}"
+                                                >
+                                                  <span
+                                                    key="courseConversationParticipations--courseParticipation--name"
+                                                    javascript="${javascript`
+                                                      this.name = ${user.name};
+                                                    `}"
+                                                    >${user.name}</span
+                                                  >
+                                                </div>
+                                              </label>
+                                            `;
+                                          },
+                                        )}
+                                      </div>
+                                    `
+                                  : html``;
+                              })()}
                             </div>
                           </div>
                         </div>
