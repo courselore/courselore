@@ -448,8 +448,8 @@ export default async (application: Application): Promise<void> => {
                 }>(
                   sql`
                     select
-                      "user",
-                      "courseParticipationRole"
+                      "courseParticipations"."user" as "user",
+                      "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
                     from "courseParticipations"
                     join "users" on "courseParticipations"."user" = "users"."id"
                     where
