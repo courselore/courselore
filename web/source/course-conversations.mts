@@ -1588,6 +1588,7 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.onclick = () => {
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]').hidden = true;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
                               };
@@ -1601,6 +1602,7 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.onclick = () => {
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"]').hidden = false;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
                               };
@@ -1655,6 +1657,7 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             >
                               <div
+                                key="courseConversationParticipations--courseParticipations--courseParticipationRoleInstructors"
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
@@ -1767,6 +1770,7 @@ export default async (application: Application): Promise<void> => {
                                   })}
                               </div>
                               <div
+                                key="courseConversationParticipations--courseParticipations--courseParticipationRoleStudents"
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
