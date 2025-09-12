@@ -1682,6 +1682,7 @@ export default async (application: Application): Promise<void> => {
                                     where "id" = ${courseParticipation.user};
                                   `,
                                 );
+                                if (user === undefined) throw new Error();
                                 return html`
                                   <div
                                     css="${css`
@@ -1690,16 +1691,14 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                   >
                                     $${application.partials.userAvatar({
-                                      user:
-                                        user ?? "courseParticipationDeleted",
+                                      user,
                                     })}
                                     <div
                                       css="${css`
                                         margin-top: var(--size--0-5);
                                       `}"
                                     >
-                                      ${user?.name ??
-                                      "Deleted course participant"}<span
+                                      ${user.name}<span
                                         css="${css`
                                           font-size: var(--font-size--3);
                                           line-height: var(
