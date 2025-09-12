@@ -1603,102 +1603,112 @@ export default async (application: Application): Promise<void> => {
                           >
                             Selected course participants
                           </button>
-                          <hr class="separator" />
-                          $${application.database
-                            .all<{
-                              id: number;
-                              publicId: string;
-                              user: number;
-                              courseParticipationRole:
-                                | "courseParticipationRoleInstructor"
-                                | "courseParticipationRoleStudent";
-                            }>(
-                              sql`
-                                select
-                                  "courseParticipations"."id" as "id",
-                                  "courseParticipations"."publicId" as "publicId",
-                                  "courseParticipations"."user" as "user",
-                                  "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                from "courseParticipations"
-                                join "users" on "courseParticipations"."user" = "users"."id"
-                                where "courseParticipations"."course" = ${request.state.course.id}
-                                order by
-                                  "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                  "users"."name" asc;
-                              `,
-                            )
-                            .map((courseParticipation) => {
-                              const user = application.database.get<{
+                          <div key="courseConversationParticipations" $${prefill.courseConversationVisibility ===
+                              "courseConversationVisibilityEveryone" ||
+                            (prefill.courseConversationVisibility !==
+                              "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                              prefill.courseConversationVisibility !==
+                                "courseConversationVisibilityCourseConversationParticipations")
+                              ? html`hidden`
+                              : html``}>
+                            <hr class="separator" />
+                            $${application.database
+                              .all<{
+                                id: number;
                                 publicId: string;
-                                name: string;
-                                avatarColor:
-                                  | "red"
-                                  | "orange"
-                                  | "amber"
-                                  | "yellow"
-                                  | "lime"
-                                  | "green"
-                                  | "emerald"
-                                  | "teal"
-                                  | "cyan"
-                                  | "sky"
-                                  | "blue"
-                                  | "indigo"
-                                  | "violet"
-                                  | "purple"
-                                  | "fuchsia"
-                                  | "pink"
-                                  | "rose";
-                                avatarImage: string | null;
-                                lastSeenOnlineAt: string;
+                                user: number;
+                                courseParticipationRole:
+                                  | "courseParticipationRoleInstructor"
+                                  | "courseParticipationRoleStudent";
                               }>(
                                 sql`
                                   select
-                                    "publicId",
-                                    "name",
-                                    "avatarColor",
-                                    "avatarImage",
-                                    "lastSeenOnlineAt"
-                                  from "users"
-                                  where "id" = ${courseParticipation.user};
+                                    "courseParticipations"."id" as "id",
+                                    "courseParticipations"."publicId" as "publicId",
+                                    "courseParticipations"."user" as "user",
+                                    "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                  from "courseParticipations"
+                                  join "users" on "courseParticipations"."user" = "users"."id"
+                                  where "courseParticipations"."course" = ${request.state.course.id}
+                                  order by
+                                    "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                    "users"."name" asc;
                                 `,
-                              );
-                              return html`
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                    gap: var(--size--2);
-                                  `}"
-                                >
-                                  $${application.partials.userAvatar({
-                                    user: user ?? "courseParticipationDeleted",
-                                  })}
+                              )
+                              .map((courseParticipation) => {
+                                const user = application.database.get<{
+                                  publicId: string;
+                                  name: string;
+                                  avatarColor:
+                                    | "red"
+                                    | "orange"
+                                    | "amber"
+                                    | "yellow"
+                                    | "lime"
+                                    | "green"
+                                    | "emerald"
+                                    | "teal"
+                                    | "cyan"
+                                    | "sky"
+                                    | "blue"
+                                    | "indigo"
+                                    | "violet"
+                                    | "purple"
+                                    | "fuchsia"
+                                    | "pink"
+                                    | "rose";
+                                  avatarImage: string | null;
+                                  lastSeenOnlineAt: string;
+                                }>(
+                                  sql`
+                                    select
+                                      "publicId",
+                                      "name",
+                                      "avatarColor",
+                                      "avatarImage",
+                                      "lastSeenOnlineAt"
+                                    from "users"
+                                    where "id" = ${courseParticipation.user};
+                                  `,
+                                );
+                                return html`
                                   <div
                                     css="${css`
-                                      margin-top: var(--size--0-5);
+                                      display: flex;
+                                      gap: var(--size--2);
                                     `}"
                                   >
-                                    ${user?.name ??
-                                    "Deleted course participant"}<span
+                                    $${application.partials.userAvatar({
+                                      user:
+                                        user ?? "courseParticipationDeleted",
+                                    })}
+                                    <div
                                       css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                        color: light-dark(
-                                          var(--color--slate--600),
-                                          var(--color--slate--400)
-                                        );
+                                        margin-top: var(--size--0-5);
                                       `}"
-                                      >${courseParticipation?.courseParticipationRole ===
-                                      "courseParticipationRoleInstructor"
-                                        ? " (instructor)"
-                                        : ""}</span
                                     >
+                                      ${user?.name ??
+                                      "Deleted course participant"}<span
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          color: light-dark(
+                                            var(--color--slate--600),
+                                            var(--color--slate--400)
+                                          );
+                                        `}"
+                                        >${courseParticipation?.courseParticipationRole ===
+                                        "courseParticipationRoleInstructor"
+                                          ? " (instructor)"
+                                          : ""}</span
+                                      >
+                                    </div>
                                   </div>
-                                </div>
-                              `;
-                            })}
+                                `;
+                              })}
+                          </div>
                         </div>
                       </form>
                       $${request.state.courseParticipation
