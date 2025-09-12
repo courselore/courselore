@@ -1603,14 +1603,22 @@ export default async (application: Application): Promise<void> => {
                           >
                             Selected course participants
                           </button>
-                          <div key="courseConversationParticipations" $${prefill.courseConversationVisibility ===
+                          <div
+                            key="courseConversationParticipations"
+                            $${prefill.courseConversationVisibility ===
                               "courseConversationVisibilityEveryone" ||
                             (prefill.courseConversationVisibility !==
                               "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
                               prefill.courseConversationVisibility !==
                                 "courseConversationVisibilityCourseConversationParticipations")
                               ? html`hidden`
-                              : html``}>
+                              : html``}
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--2);
+                            `}"
+                          >
                             <hr class="separator" />
                             $${application.database
                               .all<{
