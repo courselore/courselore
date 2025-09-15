@@ -1694,7 +1694,10 @@ export default async (application: Application): Promise<void> => {
                                       `}"
                                     >
                                       $${courseParticipations.map(
-                                        (courseParticipation) => {
+                                        (
+                                          courseParticipation,
+                                          courseParticipationOrder,
+                                        ) => {
                                           const user =
                                             application.database.get<{
                                               publicId: string;
@@ -1735,6 +1738,7 @@ export default async (application: Application): Promise<void> => {
                                             throw new Error();
                                           return html`
                                             <label
+                                              key="courseConversationParticipations--courseParticipation"
                                               class="button button--rectangle button--transparent button--dropdown-menu"
                                               css="${css`
                                                 display: flex;
@@ -1742,6 +1746,7 @@ export default async (application: Application): Promise<void> => {
                                               `}"
                                               javascript="${javascript`
                                                 this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
+                                                this.order = ${courseParticipationOrder};
                                               `}"
                                             >
                                               <input
@@ -1751,6 +1756,28 @@ export default async (application: Application): Promise<void> => {
                                                 class="input--checkbox"
                                                 css="${css`
                                                   margin-top: var(--size--1);
+                                                `}"
+                                                javascript="${javascript`
+                                                  this.onchange = () => {
+                                                    const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
+                                                    for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
+                                                      if (
+                                                        (
+                                                          this.checked && (
+                                                            otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
+                                                            element.order < otherElement.order
+                                                          ) 
+                                                        ) || (
+                                                         !this.checked &&
+                                                            otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
+                                                            element.order < otherElement.order
+                                                        )
+                                                      ) {
+                                                        otherElement.insertAdjacentElement("beforebegin", element);
+                                                        return;
+                                                      }
+                                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
+                                                  };
                                                 `}"
                                               />
                                               $${application.partials.userAvatar(
