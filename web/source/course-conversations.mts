@@ -1692,6 +1692,9 @@ export default async (application: Application): Promise<void> => {
                                         flex-direction: column;
                                         gap: var(--size--2);
                                       `}"
+                                      javascript="${javascript`
+                                        this.morph = false;
+                                      `}"
                                     >
                                       $${courseParticipations.map(
                                         (
