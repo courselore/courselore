@@ -3288,7 +3288,7 @@ export default async (application: Application): Promise<void> => {
                                 type="button"
                                 class="button button--rectangle button--transparent"
                                 javascript="${javascript`
-                                  javascript.popover({ element: this, trigger: "click" });
+                                  javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
                                 `}"
                               >
                                 <span
@@ -3370,6 +3370,8 @@ export default async (application: Application): Promise<void> => {
                                   javascript="${javascript`
                                     this.onclick = () => {
                                       this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
+                                      if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
+                                        this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = true;
                                     };
                                   `}"
                                 >
@@ -3380,7 +3382,11 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').click();
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
+                                      if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
+                                        this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
+                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.focus();
+                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.onkeyup();
                                     };
                                   `}"
                                 >
@@ -3391,12 +3397,253 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').click();
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
+                                      if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
+                                        this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
+                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.focus();
+                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.onkeyup();
                                     };
                                   `}"
                                 >
                                   Selected course participants
                                 </button>
+                                $${(() => {
+                                  const courseParticipations =
+                                    application.database.all<{
+                                      id: number;
+                                      publicId: string;
+                                      user: number;
+                                      courseParticipationRole:
+                                        | "courseParticipationRoleInstructor"
+                                        | "courseParticipationRoleStudent";
+                                    }>(
+                                      sql`
+                                        select
+                                          "courseParticipations"."id" as "id",
+                                          "courseParticipations"."publicId" as "publicId",
+                                          "courseParticipations"."user" as "user",
+                                          "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                        from "courseParticipations"
+                                        join "users" on "courseParticipations"."user" = "users"."id"
+                                        where
+                                          "courseParticipations"."course" = ${request.state.course.id} and
+                                          "users"."id" != ${request.state.user.id}
+                                        order by
+                                          "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                          "users"."name" asc;
+                                      `,
+                                    );
+                                  return 0 < courseParticipations.length
+                                    ? html`
+                                        <div
+                                          key="courseConversationParticipations"
+                                          $${request.state.courseConversation
+                                            .courseConversationVisibility !==
+                                            "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                                          request.state.courseConversation
+                                            .courseConversationVisibility !==
+                                            "courseConversationVisibilityCourseConversationParticipations"
+                                            ? html`hidden`
+                                            : html``}
+                                          css="${css`
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--size--2);
+                                          `}"
+                                        >
+                                          <hr class="separator" />
+                                          <input
+                                            key="courseConversationParticipations--input"
+                                            type="text"
+                                            placeholder="Search…"
+                                            maxlength="3000"
+                                            class="input--text"
+                                            javascript="${javascript`
+                                              this.onkeyup = utilities.foregroundJob(() => {
+                                                const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
+                                                for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
+                                                  const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
+                                                  nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
+                                                  nameElement.morph = nameElement.querySelector("span") === null;
+                                                  element.hidden =
+                                                    (
+                                                      element.courseParticipationRole === "courseParticipationRoleInstructor" &&
+                                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                                    ) || (
+                                                    0 < search.size &&
+                                                    nameElement.querySelector("span") === null
+                                                    );
+                                                }
+                                              });
+                                            `}"
+                                          />
+                                          <div
+                                            key="courseConversationParticipations--courseParticipations"
+                                            class="scroll"
+                                            css="${css`
+                                              height: var(--size--36);
+                                              padding: var(--size--1)
+                                                var(--size--2);
+                                              margin: var(--size---1)
+                                                var(--size---2);
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--size--2);
+                                            `}"
+                                            javascript="${javascript`
+                                              this.morph = false;
+                                            `}"
+                                          >
+                                            $${courseParticipations.map(
+                                              (
+                                                courseParticipation,
+                                                courseParticipationOrder,
+                                              ) => {
+                                                const user =
+                                                  application.database.get<{
+                                                    publicId: string;
+                                                    name: string;
+                                                    avatarColor:
+                                                      | "red"
+                                                      | "orange"
+                                                      | "amber"
+                                                      | "yellow"
+                                                      | "lime"
+                                                      | "green"
+                                                      | "emerald"
+                                                      | "teal"
+                                                      | "cyan"
+                                                      | "sky"
+                                                      | "blue"
+                                                      | "indigo"
+                                                      | "violet"
+                                                      | "purple"
+                                                      | "fuchsia"
+                                                      | "pink"
+                                                      | "rose";
+                                                    avatarImage: string | null;
+                                                    lastSeenOnlineAt: string;
+                                                  }>(
+                                                    sql`
+                                                      select
+                                                        "publicId",
+                                                        "name",
+                                                        "avatarColor",
+                                                        "avatarImage",
+                                                        "lastSeenOnlineAt"
+                                                      from "users"
+                                                      where "id" = ${courseParticipation.user};
+                                                    `,
+                                                  );
+                                                if (user === undefined)
+                                                  throw new Error();
+                                                return html`
+                                                  <label
+                                                    key="courseConversationParticipations--courseParticipation"
+                                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                                    css="${css`
+                                                      display: flex;
+                                                      gap: var(--size--2);
+                                                    `}"
+                                                    javascript="${javascript`
+                                                      this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
+                                                      this.order = ${courseParticipationOrder};
+                                                    `}"
+                                                  >
+                                                    <input
+                                                      type="checkbox"
+                                                      name="courseConversationParticipations[]"
+                                                      value="${courseParticipation.publicId}"
+                                                      class="input--checkbox"
+                                                      css="${css`
+                                                        margin-top: var(
+                                                          --size--1
+                                                        );
+                                                      `}"
+                                                      $${application.database.get(
+                                                        sql`
+                                                            select true
+                                                            from "courseConversationParticipations"
+                                                            where
+                                                              "courseConversation" = ${request.state.courseConversation!.id} and
+                                                              "courseParticipation" = ${courseParticipation.id};
+                                                          `,
+                                                      ) !== undefined
+                                                        ? html`checked`
+                                                        : html``}
+                                                      javascript="${javascript`
+                                                        this.onchange = () => {
+                                                          const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
+                                                          for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
+                                                            if (
+                                                              (
+                                                                this.checked && (
+                                                                  otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
+                                                                  element.order < otherElement.order
+                                                                ) 
+                                                              ) || (
+                                                              !this.checked &&
+                                                                  otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
+                                                                  element.order < otherElement.order
+                                                              )
+                                                            ) {
+                                                              otherElement.insertAdjacentElement("beforebegin", element);
+                                                              return;
+                                                            }
+                                                          this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
+                                                        };
+                                                        this.onchange();
+                                                      `}"
+                                                    />
+                                                    $${application.partials.userAvatar(
+                                                      { user },
+                                                    )}
+                                                    <div
+                                                      css="${css`
+                                                        margin-top: var(
+                                                          --size--0-5
+                                                        );
+                                                      `}"
+                                                    >
+                                                      <span
+                                                        key="courseConversationParticipations--courseParticipation--name"
+                                                        javascript="${javascript`
+                                                          this.name = ${user.name};
+                                                        `}"
+                                                        >${user.name}</span
+                                                      >$${courseParticipation.courseParticipationRole ===
+                                                      "courseParticipationRoleInstructor"
+                                                        ? html`<span
+                                                            css="${css`
+                                                              font-size: var(
+                                                                --font-size--3
+                                                              );
+                                                              line-height: var(
+                                                                --font-size--3--line-height
+                                                              );
+                                                              color: light-dark(
+                                                                var(
+                                                                  --color--slate--600
+                                                                ),
+                                                                var(
+                                                                  --color--slate--400
+                                                                )
+                                                              );
+                                                            `}"
+                                                          >
+                                                            (instructor)</span
+                                                          >`
+                                                        : html``}
+                                                    </div>
+                                                  </label>
+                                                `;
+                                              },
+                                            )}
+                                          </div>
+                                        </div>
+                                      `
+                                    : html``;
+                                })()}
                               </div>
                             </form>
                           `
