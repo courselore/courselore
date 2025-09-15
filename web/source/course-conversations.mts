@@ -3647,33 +3647,202 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             </form>
                           `
-                        : html`
-                            <div>
-                              <span
-                                css="${css`
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
-                                >Visibility:</span
-                              >  ${request.state.courseConversation
-                                .courseConversationVisibility ===
-                              "courseConversationVisibilityEveryone"
-                                ? "Everyone"
-                                : request.state.courseConversation
+                        : (() => {
+                            const courseConversationParticipations =
+                              application.database.all<{
+                                courseParticipation: number;
+                              }>(
+                                sql`
+                                  select "courseConversationParticipations"."courseParticipation" as "courseParticipation"
+                                  from "courseConversationParticipations"
+                                  join "courseParticipations" on "courseConversationParticipations"."courseParticipation" = "courseParticipations"."id"
+                                  join "users" on "courseParticipations"."user" = "users"."id"
+                                  where
+                                    "courseConversationParticipations"."courseConversation" = ${request.state.courseConversation.id} and
+                                    "courseConversationParticipations"."courseParticipation" != ${request.state.courseParticipation.id}
+                                  order by
+                                    "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                    "users"."name" asc;
+                                `,
+                              );
+                            return courseConversationParticipations.length === 0
+                              ? html`
+                                  <div>
+                                    <span
+                                      css="${css`
+                                        color: light-dark(
+                                          var(--color--slate--500),
+                                          var(--color--slate--500)
+                                        );
+                                      `}"
+                                      >Visibility:</span
+                                    >  ${request.state.courseConversation
                                       .courseConversationVisibility ===
-                                    "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                  ? "Instructors and selected course participants"
-                                  : request.state.courseConversation
-                                        .courseConversationVisibility ===
-                                      "courseConversationVisibilityCourseConversationParticipations"
-                                    ? "Selected course participants"
-                                    : (() => {
-                                        throw new Error();
-                                      })()}
-                            </div>
-                          `}
+                                    "courseConversationVisibilityEveryone"
+                                      ? "Everyone"
+                                      : request.state.courseConversation
+                                            .courseConversationVisibility ===
+                                          "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                        ? "Instructors and selected course participants"
+                                        : request.state.courseConversation
+                                              .courseConversationVisibility ===
+                                            "courseConversationVisibilityCourseConversationParticipations"
+                                          ? "Selected course participants"
+                                          : (() => {
+                                              throw new Error();
+                                            })()}
+                                  </div>
+                                `
+                              : html`
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      javascript.popover({ element: this, trigger: "click" });
+                                    `}"
+                                  >
+                                    <span
+                                      css="${css`
+                                        color: light-dark(
+                                          var(--color--slate--500),
+                                          var(--color--slate--500)
+                                        );
+                                      `}"
+                                      >Visibility:</span
+                                    >  ${request.state.courseConversation
+                                      .courseConversationVisibility ===
+                                    "courseConversationVisibilityEveryone"
+                                      ? "Everyone"
+                                      : request.state.courseConversation
+                                            .courseConversationVisibility ===
+                                          "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                        ? "Instructors and selected course participants"
+                                        : request.state.courseConversation
+                                              .courseConversationVisibility ===
+                                            "courseConversationVisibilityCourseConversationParticipations"
+                                          ? "Selected course participants"
+                                          : (() => {
+                                              throw new Error();
+                                            })()} <i
+                                      class="bi bi-chevron-down"
+                                    ></i>
+                                  </button>
+                                  <div
+                                    type="popover"
+                                    class="scroll"
+                                    css="${css`
+                                      height: var(--size--36);
+                                      padding: var(--size--1) var(--size--2);
+                                      margin: var(--size---1) var(--size---2);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--size--2);
+                                    `}"
+                                  >
+                                    $${courseConversationParticipations.map(
+                                      (courseConversationParticipation) => {
+                                        const courseParticipation =
+                                          application.database.get<{
+                                            id: number;
+                                            publicId: string;
+                                            user: number;
+                                            courseParticipationRole:
+                                              | "courseParticipationRoleInstructor"
+                                              | "courseParticipationRoleStudent";
+                                          }>(
+                                            sql`
+                                              select
+                                                "id",
+                                                "publicId",
+                                                "user",
+                                                "courseParticipationRole"
+                                              from "courseParticipations"
+                                              where "id" = ${courseConversationParticipation.courseParticipation};
+                                            `,
+                                          );
+                                        if (courseParticipation === undefined)
+                                          throw new Error();
+                                        const user = application.database.get<{
+                                          publicId: string;
+                                          name: string;
+                                          avatarColor:
+                                            | "red"
+                                            | "orange"
+                                            | "amber"
+                                            | "yellow"
+                                            | "lime"
+                                            | "green"
+                                            | "emerald"
+                                            | "teal"
+                                            | "cyan"
+                                            | "sky"
+                                            | "blue"
+                                            | "indigo"
+                                            | "violet"
+                                            | "purple"
+                                            | "fuchsia"
+                                            | "pink"
+                                            | "rose";
+                                          avatarImage: string | null;
+                                          lastSeenOnlineAt: string;
+                                        }>(
+                                          sql`
+                                            select
+                                              "publicId",
+                                              "name",
+                                              "avatarColor",
+                                              "avatarImage",
+                                              "lastSeenOnlineAt"
+                                            from "users"
+                                            where "id" = ${courseParticipation.user};
+                                          `,
+                                        );
+                                        if (user === undefined)
+                                          throw new Error();
+                                        return html`
+                                          <div
+                                            css="${css`
+                                              display: flex;
+                                              gap: var(--size--2);
+                                            `}"
+                                          >
+                                            $${application.partials.userAvatar({
+                                              user,
+                                            })}
+                                            <div
+                                              css="${css`
+                                                margin-top: var(--size--0-5);
+                                              `}"
+                                            >
+                                              ${user.name}$${courseParticipation.courseParticipationRole ===
+                                              "courseParticipationRoleInstructor"
+                                                ? html`<span
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--3
+                                                      );
+                                                      line-height: var(
+                                                        --font-size--3--line-height
+                                                      );
+                                                      color: light-dark(
+                                                        var(
+                                                          --color--slate--600
+                                                        ),
+                                                        var(--color--slate--400)
+                                                      );
+                                                    `}"
+                                                  >
+                                                    (instructor)</span
+                                                  >`
+                                                : html``}
+                                            </div>
+                                          </div>
+                                        `;
+                                      },
+                                    )}
+                                  </div>
+                                `;
+                          })()}
                       $${mayEditCourseConversation &&
                       request.state.courseParticipation
                         .courseParticipationRole ===
