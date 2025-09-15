@@ -3475,6 +3475,9 @@ export default async (application: Application): Promise<void> => {
                                                     );
                                                 }
                                               });
+                                              window.setTimeout(() => {
+                                                this.onkeyup();
+                                              });
                                             `}"
                                           />
                                           <div
