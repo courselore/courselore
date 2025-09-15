@@ -2260,6 +2260,7 @@ export default async (application: Application): Promise<void> => {
             | "courseConversationVisibilityEveryone"
             | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
+          courseConversationParticipations: string[];
           pinned: "false" | "true";
           announcement: "on";
           tags: string[];
@@ -2281,6 +2282,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversationsTags === undefined
       )
         return;
+      request.body.courseConversationParticipations ??= [];
       request.body.tags ??= [];
       if (
         typeof request.body.title !== "string" ||
@@ -2294,6 +2296,11 @@ export default async (application: Application): Promise<void> => {
             "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
           request.body.courseConversationVisibility !==
             "courseConversationVisibilityCourseConversationParticipations") ||
+        !Array.isArray(request.body.courseConversationParticipations) ||
+        request.body.courseConversationParticipations.some(
+          (courseConversationParticipation) =>
+            typeof courseConversationParticipation !== "string",
+        ) ||
         (request.body.pinned === "true" &&
           request.state.courseParticipation.courseParticipationRole !==
             "courseParticipationRoleInstructor") ||
@@ -2410,6 +2417,48 @@ export default async (application: Application): Promise<void> => {
             where "id" = ${request.state.course!.id};
           `,
         );
+        for (const courseConversationParticipation of new Set([
+          ...request.body.courseConversationParticipations!,
+          request.state.courseParticipation!.publicId,
+        ])) {
+          const courseParticipation = application.database.get<{
+            id: number;
+            courseParticipationRole:
+              | "courseParticipationRoleInstructor"
+              | "courseParticipationRoleStudent";
+          }>(
+            sql`
+              select
+                "id",
+                "courseParticipationRole"
+              from "courseParticipations"
+              where "publicId" = ${courseConversationParticipation};
+            `,
+          );
+          if (
+            courseParticipation !== undefined &&
+            request.body.courseConversationVisibility !==
+              "courseConversationVisibilityEveryone" &&
+            !(
+              request.body.courseConversationVisibility ===
+                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+              courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleInstructor"
+            )
+          )
+            application.database.run(
+              sql`
+                insert into "courseConversationParticipations" (
+                  "courseConversation",
+                  "courseParticipation"
+                )
+                values (
+                  ${courseConversation.id},
+                  ${courseParticipation.id}
+                );
+              `,
+            );
+        }
         for (const tag of request.body.tags!)
           application.database.run(
             sql`
