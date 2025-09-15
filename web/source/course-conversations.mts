@@ -1685,7 +1685,7 @@ export default async (application: Application): Promise<void> => {
                                       key="courseConversationParticipations--courseParticipations"
                                       class="scroll"
                                       css="${css`
-                                        height: var(--size--36);
+                                        max-height: var(--size--36);
                                         padding: var(--size--1) var(--size--2);
                                         margin: var(--size---1) var(--size---2);
                                         display: flex;
@@ -3481,7 +3481,7 @@ export default async (application: Application): Promise<void> => {
                                             key="courseConversationParticipations--courseParticipations"
                                             class="scroll"
                                             css="${css`
-                                              height: var(--size--36);
+                                              max-height: var(--size--36);
                                               padding: var(--size--1)
                                                 var(--size--2);
                                               margin: var(--size---1)
@@ -3731,7 +3731,7 @@ export default async (application: Application): Promise<void> => {
                                     type="popover"
                                     class="scroll"
                                     css="${css`
-                                      height: var(--size--36);
+                                      max-height: var(--size--36);
                                       padding: var(--size--1) var(--size--2);
                                       margin: var(--size---1) var(--size---2);
                                       display: flex;
