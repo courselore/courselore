@@ -1591,6 +1591,7 @@ export default async (application: Application): Promise<void> => {
                                 if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
                                   this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.focus();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.onkeyup();
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
                               };
                             `}"
@@ -1605,6 +1606,7 @@ export default async (application: Application): Promise<void> => {
                                 if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]') !== null)
                                   this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.focus();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]')?.onkeyup();
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
                               };
                             `}"
@@ -1730,6 +1732,9 @@ export default async (application: Application): Promise<void> => {
                                               css="${css`
                                                 display: flex;
                                                 gap: var(--size--2);
+                                              `}"
+                                              javascript="${javascript`
+                                                this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
                                               `}"
                                             >
                                               <input
