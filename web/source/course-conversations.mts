@@ -1672,7 +1672,7 @@ export default async (application: Application): Promise<void> => {
                                             element.hidden =
                                               (
                                                 element.courseParticipationRole === "courseParticipationRoleInstructor" &&
-                                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === ""
+                                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
                                               ) || (
                                                0 < search.size &&
                                                nameElement.querySelector("span") === null
