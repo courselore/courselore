@@ -2943,7 +2943,13 @@ export default async (application: Application): Promise<void> => {
             ),
           ].map(
             (user, userIndex) =>
-              database.get<{ id: number; publicId: string }>(
+              database.get<{
+                id: number;
+                publicId: string;
+                courseParticipationRole:
+                  | "courseParticipationRoleInstructor"
+                  | "courseParticipationRoleStudent";
+              }>(
                 sql`
                   select * from "courseParticipations" where "id" = ${
                     database.run(
@@ -3041,7 +3047,13 @@ export default async (application: Application): Promise<void> => {
               model: textExamples,
               length: 0,
             });
-            const courseConversation = database.get<{ id: number }>(
+            const courseConversation = database.get<{
+              id: number;
+              courseConversationVisibility:
+                | "courseConversationVisibilityEveryone"
+                | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                | "courseConversationVisibilityCourseConversationParticipations";
+            }>(
               sql`
                 select * from "courseConversations" where "id" = ${
                   database.run(
@@ -3074,35 +3086,50 @@ export default async (application: Application): Promise<void> => {
                 };
               `,
             )!;
-            const courseParticipationsForCourseConversationParticipations = [
-              ...courseParticipations,
-            ];
-            for (const courseParticipationForCourseConversationParticipations of [
-              ...(Math.random() < 0.7 ? [courseParticipation] : []),
-              ...Array.from(
-                { length: Math.floor(Math.random() * 10) },
-                () =>
-                  courseParticipationsForCourseConversationParticipations.splice(
-                    Math.floor(
-                      Math.random() *
-                        courseParticipationsForCourseConversationParticipations.length,
-                    ),
-                    1,
-                  )[0],
-              ),
-            ])
-              database.run(
-                sql`
-                  insert into "courseConversationParticipations" (
-                    "courseConversation",
-                    "courseParticipation"
-                  )
-                  values (
-                    ${courseConversation.id},
-                    ${courseParticipationForCourseConversationParticipations.id}
-                  );
-                `,
+            if (
+              courseConversation.courseConversationVisibility ===
+                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" ||
+              courseConversation.courseConversationVisibility ===
+                "courseConversationVisibilityCourseConversationParticipations"
+            ) {
+              const courseParticipationsForCourseConversationParticipations = [
+                ...courseParticipations,
+              ].filter(
+                (courseParticipation) =>
+                  !(
+                    courseConversation.courseConversationVisibility ===
+                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                    courseParticipation.courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                  ),
               );
+              for (const courseParticipationForCourseConversationParticipations of [
+                ...(Math.random() < 0.7 ? [courseParticipation] : []),
+                ...Array.from(
+                  { length: Math.floor(Math.random() * 10) },
+                  () =>
+                    courseParticipationsForCourseConversationParticipations.splice(
+                      Math.floor(
+                        Math.random() *
+                          courseParticipationsForCourseConversationParticipations.length,
+                      ),
+                      1,
+                    )[0],
+                ),
+              ])
+                database.run(
+                  sql`
+                    insert into "courseConversationParticipations" (
+                      "courseConversation",
+                      "courseParticipation"
+                    )
+                    values (
+                      ${courseConversation.id},
+                      ${courseParticipationForCourseConversationParticipations.id}
+                    );
+                  `,
+                );
+            }
             const courseConversationsTagsForCourseConversationTaggings = [
               ...courseConversationsTags,
             ];
