@@ -1669,7 +1669,14 @@ export default async (application: Application): Promise<void> => {
                                             const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
                                             nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
                                             nameElement.morph = nameElement.querySelector("span") === null;
-                                            element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
+                                            element.hidden =
+                                              (
+                                                element.courseParticipationRole === "courseParticipationRoleInstructor" &&
+                                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === ""
+                                              ) || (
+                                               0 < search.size &&
+                                               nameElement.querySelector("span") === null
+                                              );
                                           }
                                         });
                                       `}"
