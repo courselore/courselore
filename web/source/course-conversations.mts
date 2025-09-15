@@ -1666,8 +1666,8 @@ export default async (application: Application): Promise<void> => {
                                           for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
                                             const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
                                             nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
+                                            nameElement.morph = nameElement.querySelector("span") === null;
                                             element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
-                                            element.morph = nameElement.querySelector("span") === null;
                                           }
                                         });
                                       `}"

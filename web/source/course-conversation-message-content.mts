@@ -422,8 +422,8 @@ export default async (application: Application): Promise<void> => {
                   for (const element of this.closest('[key~="courseConversationMessageContentEditor--mention"]').querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipations"]').children) {
                     const nameElement = element.querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipation--name"]');
                     nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
+                    nameElement.morph = nameElement.querySelector("span") === null;
                     element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
-                    element.morph = nameElement.querySelector("span") === null;
                   }
                 });
               `}"
@@ -626,8 +626,8 @@ export default async (application: Application): Promise<void> => {
                   for (const element of this.closest('[key~="courseConversationMessageContentEditor--reference"]').querySelector('[key~="courseConversationMessageContentEditor--reference--courseConversations"]').children) {
                     const titleElement = element.querySelector('[key~="courseConversationMessageContentEditor--reference--courseConversation--title"]');
                     titleElement.innerHTML = utilities.highlight(html\`\${titleElement.title}\`, search, { prefix: true });
+                    titleElement.morph = titleElement.querySelector("span") === null;
                     element.hidden = 0 < search.size && titleElement.querySelector("span") === null;
-                    element.morph = titleElement.querySelector("span") === null;
                   }
                 });
               `}"
