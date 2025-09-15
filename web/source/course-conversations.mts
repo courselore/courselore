@@ -5785,7 +5785,7 @@ export default async (application: Application): Promise<void> => {
           request.body.courseConversationType !==
             "courseConversationTypeQuestion") ||
         (request.body.questionResolved === "true" &&
-          request.body.courseConversationType ===
+          request.body.courseConversationType !==
             "courseConversationTypeQuestion") ||
         (request.body.courseConversationVisibility !==
           "courseConversationVisibilityEveryone" &&
@@ -5823,7 +5823,12 @@ export default async (application: Application): Promise<void> => {
               "courseConversationType" = ${request.body.courseConversationType},
               "questionResolved" = ${Number(request.body.questionResolved === "true")},
               "courseConversationVisibility" = ${request.body.courseConversationVisibility},
-              "pinned" = ${Number(request.body.pinned === "true")},
+              "pinned" = ${
+                request.state.courseParticipation!.courseParticipationRole ===
+                "courseParticipationRoleInstructor"
+                  ? Number(request.body.pinned === "true")
+                  : request.state.courseConversation!.pinned
+              },
               "title" = ${request.body.title},
               "titleSearch" = ${utilities
                 .tokenize(request.body.title!)
