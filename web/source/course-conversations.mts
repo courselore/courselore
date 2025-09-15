@@ -5739,6 +5739,7 @@ export default async (application: Application): Promise<void> => {
             | "courseConversationVisibilityEveryone"
             | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
+          courseConversationParticipations: string[];
           pinned: "false" | "true";
           tags: string[];
         },
@@ -5775,6 +5776,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         return;
+      request.body.courseConversationParticipations ??= [];
       request.body.tags ??= [];
       if (
         typeof request.body.title !== "string" ||
@@ -5791,6 +5793,11 @@ export default async (application: Application): Promise<void> => {
             "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
           request.body.courseConversationVisibility !==
             "courseConversationVisibilityCourseConversationParticipations") ||
+        !Array.isArray(request.body.courseConversationParticipations) ||
+        request.body.courseConversationParticipations.some(
+          (courseConversationParticipation) =>
+            typeof courseConversationParticipation !== "string",
+        ) ||
         (request.body.pinned === "true" &&
           request.state.courseParticipation.courseParticipationRole !==
             "courseParticipationRoleInstructor") ||
@@ -5825,6 +5832,54 @@ export default async (application: Application): Promise<void> => {
             where "id" = ${request.state.courseConversation!.id};
           `,
         );
+        application.database.run(
+          sql`
+            delete from "courseConversationParticipations"
+            where "courseConversation" = ${request.state.courseConversation!.id};
+          `,
+        );
+        for (const courseConversationParticipation of new Set([
+          ...request.body.courseConversationParticipations!,
+          request.state.courseParticipation!.publicId,
+        ])) {
+          const courseParticipation = application.database.get<{
+            id: number;
+            courseParticipationRole:
+              | "courseParticipationRoleInstructor"
+              | "courseParticipationRoleStudent";
+          }>(
+            sql`
+              select
+                "id",
+                "courseParticipationRole"
+              from "courseParticipations"
+              where "publicId" = ${courseConversationParticipation};
+            `,
+          );
+          if (
+            courseParticipation !== undefined &&
+            request.body.courseConversationVisibility !==
+              "courseConversationVisibilityEveryone" &&
+            !(
+              request.body.courseConversationVisibility ===
+                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+              courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleInstructor"
+            )
+          )
+            application.database.run(
+              sql`
+                insert into "courseConversationParticipations" (
+                  "courseConversation",
+                  "courseParticipation"
+                )
+                values (
+                  ${request.state.courseConversation!.id},
+                  ${courseParticipation.id}
+                );
+              `,
+            );
+        }
         application.database.run(
           sql`
             delete from "courseConversationTaggings"
