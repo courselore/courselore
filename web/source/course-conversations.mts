@@ -1748,9 +1748,9 @@ export default async (application: Application): Promise<void> => {
                                           gap: var(--size--2);
                                         `}"
                                         javascript="${javascript`
-                                        this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
-                                        this.order = ${courseParticipationOrder};
-                                      `}"
+                                          this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
+                                          this.order = ${courseParticipationOrder};
+                                        `}"
                                       >
                                         <input
                                           type="checkbox"
