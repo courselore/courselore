@@ -3767,7 +3767,7 @@ export default async (application: Application): Promise<void> => {
                                     type="popover"
                                     class="scroll"
                                     css="${css`
-                                      max-height: var(--size--36);
+                                      max-height: var(--size--56);
                                       padding: var(--size--1) var(--size--2);
                                       margin: var(--size---1) var(--size---2);
                                       display: flex;
