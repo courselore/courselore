@@ -431,11 +431,11 @@ export default async (application: Application): Promise<void> => {
             />
             <div
               key="courseConversationMessageContentEditor--mention--courseParticipations"
-              class="scroll"
               css="${css`
                 height: var(--size--28);
                 padding: var(--size--1) var(--size--2);
                 margin: var(--size---1) var(--size---2);
+                overflow: auto;
                 display: flex;
                 flex-direction: column;
                 gap: var(--size--2);
@@ -636,11 +636,11 @@ export default async (application: Application): Promise<void> => {
             />
             <div
               key="courseConversationMessageContentEditor--reference--courseConversations"
-              class="scroll"
               css="${css`
                 height: var(--size--60);
                 padding: var(--size--1) var(--size--2);
                 margin: var(--size---1) var(--size---2);
+                overflow: auto;
                 display: flex;
                 flex-direction: column;
                 gap: var(--size--2);

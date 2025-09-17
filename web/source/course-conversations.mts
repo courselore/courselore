@@ -1684,11 +1684,11 @@ export default async (application: Application): Promise<void> => {
                                     />
                                     <div
                                       key="courseConversationParticipations--courseParticipations"
-                                      class="scroll"
                                       css="${css`
                                         max-height: var(--size--36);
                                         padding: var(--size--1) var(--size--2);
                                         margin: var(--size---1) var(--size---2);
+                                        overflow: auto;
                                         display: flex;
                                         flex-direction: column;
                                         gap: var(--size--2);
@@ -3484,13 +3484,13 @@ export default async (application: Application): Promise<void> => {
                                           />
                                           <div
                                             key="courseConversationParticipations--courseParticipations"
-                                            class="scroll"
                                             css="${css`
                                               max-height: var(--size--36);
                                               padding: var(--size--1)
                                                 var(--size--2);
                                               margin: var(--size---1)
                                                 var(--size---2);
+                                              overflow: auto;
                                               display: flex;
                                               flex-direction: column;
                                               gap: var(--size--2);
@@ -3765,11 +3765,11 @@ export default async (application: Application): Promise<void> => {
                                   </button>
                                   <div
                                     type="popover"
-                                    class="scroll"
                                     css="${css`
                                       max-height: var(--size--56);
                                       padding: var(--size--1) var(--size--2);
                                       margin: var(--size---1) var(--size---2);
+                                      overflow: auto;
                                       display: flex;
                                       flex-direction: column;
                                       gap: var(--size--2);
