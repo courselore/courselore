@@ -527,7 +527,26 @@ export default async (application: Application): Promise<void> => {
                   where "id" = ${
                     request.state.courseParticipation
                       .mostRecentlyVisitedCourseConversation
-                  }
+                  } and (
+                    "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                    $${
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                        ? sql`
+                            or
+                            "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                          `
+                        : sql``
+                    }
+                    or (
+                      select true
+                      from "courseConversationParticipations"
+                      where
+                        "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                        "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                    )
+                  )
                 `
               : sql`
                   where
