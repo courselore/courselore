@@ -417,6 +417,7 @@ export default async (application: Application): Promise<void> => {
               maxlength="3000"
               class="input--text"
               javascript="${javascript`
+                this.isModified = false;
                 this.onkeyup = utilities.foregroundJob(() => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
                   for (const element of this.closest('[key~="courseConversationMessageContentEditor--mention"]').querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipations"]').children) {
@@ -621,6 +622,7 @@ export default async (application: Application): Promise<void> => {
               maxlength="3000"
               class="input--text"
               javascript="${javascript`
+                this.isModified = false;
                 this.onkeyup = utilities.foregroundJob(() => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
                   for (const element of this.closest('[key~="courseConversationMessageContentEditor--reference"]').querySelector('[key~="courseConversationMessageContentEditor--reference--courseConversations"]').children) {
