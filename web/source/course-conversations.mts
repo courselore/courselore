@@ -3643,6 +3643,37 @@ export default async (application: Application): Promise<void> => {
                                               },
                                             )}
                                           </div>
+                                          <div
+                                            hidden
+                                            class="hide-on-not-modified"
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--size--2);
+                                            `}"
+                                          >
+                                            <hr class="separator" />
+                                            <div
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                              `}"
+                                            >
+                                              <button
+                                                type="submit"
+                                                class="button button--rectangle button--blue"
+                                                javascript="${javascript`
+                                                  this.onclick = () => {
+                                                    document.querySelector("body").click();
+                                                  };
+                                                `}"
+                                              >
+                                                Update
+                                              </button>
+                                            </div>
+                                          </div>
                                         </div>
                                       `
                                     : html``;
