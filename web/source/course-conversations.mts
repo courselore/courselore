@@ -1588,9 +1588,14 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.onclick = () => {
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').value = "";
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                                if ([...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].every((element) => element.hidden)) {
+                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = true;
+                                  return;
+                                }
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
                               };
                             `}"
                           >
@@ -1602,9 +1607,14 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.onclick = () => {
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').value = "";
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                                if ([...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].every((element) => element.hidden)) {
+                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = true;
+                                  return;
+                                }
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = false;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
                               };
                             `}"
                           >
