@@ -514,70 +514,73 @@ export default async (application: Application): Promise<void> => {
         request.state.courseParticipation === undefined
       )
         return;
-      const courseConversation = application.database.get<{
-        publicId: number;
-      }>(
-        sql`
-          select "publicId"
-          from "courseConversations"
-          $${
-            typeof request.state.courseParticipation
-              .mostRecentlyVisitedCourseConversation === "number"
-              ? sql`
-                  where "id" = ${
+      const courseConversation =
+        (typeof request.state.courseParticipation
+          .mostRecentlyVisitedCourseConversation === "number"
+          ? application.database.get<{
+              publicId: number;
+            }>(
+              sql`
+                select "publicId"
+                from "courseConversations"
+                where "id" = ${
+                  request.state.courseParticipation
+                    .mostRecentlyVisitedCourseConversation
+                } and (
+                  "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                  $${
                     request.state.courseParticipation
-                      .mostRecentlyVisitedCourseConversation
-                  } and (
-                    "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                    $${
-                      request.state.courseParticipation
-                        .courseParticipationRole ===
-                      "courseParticipationRoleInstructor"
-                        ? sql`
-                            or
-                            "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                          `
-                        : sql``
-                    }
-                    or (
-                      select true
-                      from "courseConversationParticipations"
-                      where
-                        "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                        "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                    )
+                      .courseParticipationRole ===
+                    "courseParticipationRoleInstructor"
+                      ? sql`
+                          or
+                          "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                        `
+                      : sql``
+                  }
+                  or (
+                    select true
+                    from "courseConversationParticipations"
+                    where
+                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                      "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                   )
-                `
-              : sql`
+                );
+              `,
+            )
+          : undefined) ??
+        application.database.get<{
+          publicId: number;
+        }>(
+          sql`
+            select "publicId"
+            from "courseConversations"
+            where
+              "course" = ${request.state.course.id} and (
+                "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                $${
+                  request.state.courseParticipation.courseParticipationRole ===
+                  "courseParticipationRoleInstructor"
+                    ? sql`
+                        or
+                        "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                      `
+                    : sql``
+                }
+                or (
+                  select true
+                  from "courseConversationParticipations"
                   where
-                    "course" = ${request.state.course.id} and (
-                      "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                      $${
-                        request.state.courseParticipation
-                          .courseParticipationRole ===
-                        "courseParticipationRoleInstructor"
-                          ? sql`
-                              or
-                              "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                            `
-                          : sql``
-                      }
-                      or (
-                        select true
-                        from "courseConversationParticipations"
-                        where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                      )
-                    )
-                  order by
-                    "pinned" = true desc,
-                    "id" desc
-                  limit 1
-                `
-          };
-        `,
-      );
+                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                )
+              )
+            order by
+              "pinned" = true desc,
+              "id" desc
+            limit 1;
+          `,
+        );
       if (courseConversation !== undefined) {
         response.redirect(
           `/courses/${request.state.course.publicId}/conversations/${courseConversation.publicId}`,
