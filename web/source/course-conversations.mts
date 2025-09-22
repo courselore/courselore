@@ -1581,7 +1581,7 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.onclick = () => {
                                 this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden = true;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
                               };
                             `}"
                           >
