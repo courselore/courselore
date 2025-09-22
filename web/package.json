@@ -30,7 +30,7 @@
     "remark-rehype": "^11.1.2",
     "saml-idp": "^1.2.1",
     "sharp": "^0.34.4",
-    "shiki": "^3.12.2",
+    "shiki": "^3.13.0",
     "unified": "^11.0.5"
   },
   "devDependencies": {

@@ -1316,6 +1316,11 @@ export default async (application: Application): Promise<void> => {
                 flex-direction: column;
                 gap: var(--size--4);
               `}"
+              javascript="${javascript`
+                this.onsubmit = () => {
+                  delete this.querySelector('[key~="courseConversationParticipations--courseParticipations"]').morph;
+                };
+              `}"
             >
               <div
                 css="${css`
@@ -2658,6 +2663,7 @@ export default async (application: Application): Promise<void> => {
                   this.onsubmit = () => {
                     this.querySelector('[key~="courseConversation--header--title--show"]').hidden = false;
                     this.querySelector('[key~="courseConversation--header--title--edit"]').hidden = true;
+                    delete this.querySelector('[key~="courseConversationParticipations--courseParticipations"]').morph;
                   };
                 `}"
               >
