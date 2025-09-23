@@ -458,14 +458,14 @@ export default async (application: Application): Promise<void> => {
                     firstCourseConversationMessage.id
                 )
                   courseConversationMessageEditOptionsHTML += html`
-                    <form>
-                      <button
-                        type="button"
-                        class="button button--rectangle button--transparent"
-                        javascript="${javascript`
-                          javascript.popover({ element: this, trigger: "click" });
-                        `}"
-                      >
+                    <button
+                      type="button"
+                      class="button button--rectangle button--transparent"
+                      javascript="${javascript`
+                        javascript.popover({ element: this, trigger: "click" });
+                      `}"
+                    >
+                      <form>
                         <span
                           css="${css`
                             color: light-dark(
@@ -537,50 +537,50 @@ export default async (application: Application): Promise<void> => {
                           `}"
                           >Follow-up question</span
                         > <i class="bi bi-chevron-down"></i>
-                      </button>
-                      <div
-                        type="popover"
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--2);
+                      </form>
+                    </button>
+                    <div
+                      type="popover"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--2);
+                      `}"
+                    >
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
+                          };
                         `}"
                       >
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent button--dropdown-menu"
-                          javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
-                            };
-                          `}"
-                        >
-                          Message
-                        </button>
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent button--dropdown-menu"
-                          javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
-                            };
-                          `}"
-                        >
-                          Answer
-                        </button>
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent button--dropdown-menu"
-                          javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
-                            };
-                          `}"
-                        >
-                          Follow-up question
-                        </button>
-                      </div>
-                    </form>
+                        Message
+                      </button>
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
+                          };
+                        `}"
+                      >
+                        Answer
+                      </button>
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
+                          };
+                        `}"
+                      >
+                        Follow-up question
+                      </button>
+                    </div>
                   `;
                 if (
                   request.state.courseParticipation.courseParticipationRole ===
@@ -589,14 +589,14 @@ export default async (application: Application): Promise<void> => {
                     firstCourseConversationMessage.id
                 )
                   courseConversationMessageEditOptionsHTML += html`
-                    <form>
-                      <button
-                        type="button"
-                        class="button button--rectangle button--transparent"
-                        javascript="${javascript`
-                          javascript.popover({ element: this, trigger: "click" });
-                        `}"
-                      >
+                    <button
+                      type="button"
+                      class="button button--rectangle button--transparent"
+                      javascript="${javascript`
+                        javascript.popover({ element: this, trigger: "click" });
+                      `}"
+                    >
+                      <form>
                         <span
                           css="${css`
                             color: light-dark(
@@ -646,39 +646,39 @@ export default async (application: Application): Promise<void> => {
                           `}"
                           >Instructors</span
                         > <i class="bi bi-chevron-down"></i>
-                      </button>
-                      <div
-                        type="popover"
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--2);
+                      </form>
+                    </button>
+                    <div
+                      type="popover"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--2);
+                      `}"
+                    >
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
+                          };
                         `}"
                       >
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent button--dropdown-menu"
-                          javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
-                            };
-                          `}"
-                        >
-                          Everyone
-                        </button>
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent button--dropdown-menu"
-                          javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
-                            };
-                          `}"
-                        >
-                          Instructors
-                        </button>
-                      </div>
-                    </form>
+                        Everyone
+                      </button>
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
+                          };
+                        `}"
+                      >
+                        Instructors
+                      </button>
+                    </div>
                   `;
                 if (
                   request.state.courseParticipation.courseParticipationRole ===
@@ -691,14 +691,14 @@ export default async (application: Application): Promise<void> => {
                       "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors")
                 )
                   courseConversationMessageEditOptionsHTML += html`
-                    <form>
-                      <button
-                        type="button"
-                        class="button button--rectangle button--transparent"
-                        javascript="${javascript`
-                          javascript.popover({ element: this, trigger: "click" });
-                        `}"
-                      >
+                    <button
+                      type="button"
+                      class="button button--rectangle button--transparent"
+                      javascript="${javascript`
+                        javascript.popover({ element: this, trigger: "click" });
+                      `}"
+                    >
+                      <form>
                         <span
                           css="${css`
                             color: light-dark(
@@ -769,59 +769,59 @@ export default async (application: Application): Promise<void> => {
                                 >Anonymous to instructors</span
                               >`
                           : html``} <i class="bi bi-chevron-down"></i>
-                      </button>
-                      <div
-                        type="popover"
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--2);
+                      </form>
+                    </button>
+                    <div
+                      type="popover"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--2);
+                      `}"
+                    >
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
+                          };
                         `}"
                       >
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent button--dropdown-menu"
-                          javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
-                            };
-                          `}"
-                        >
-                          None
-                        </button>
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent button--dropdown-menu"
-                          javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
-                            };
-                          `}"
-                        >
-                          Anonymous to students
-                        </button>
-                        $${request.state.course
-                          .courseParticipationRoleStudentsAnonymityAllowed ===
-                          "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors" ||
-                        request.state.courseConversationMessage
-                          .courseConversationMessageAnonymity ===
-                          "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
-                          ? html`
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"]').click();
-                                  };
-                                `}"
-                              >
-                                Anonymous to instructors
-                              </button>
-                            `
-                          : html``}
-                      </div>
-                    </form>
+                        None
+                      </button>
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
+                          };
+                        `}"
+                      >
+                        Anonymous to students
+                      </button>
+                      $${request.state.course
+                        .courseParticipationRoleStudentsAnonymityAllowed ===
+                        "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors" ||
+                      request.state.courseConversationMessage
+                        .courseConversationMessageAnonymity ===
+                        "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                        ? html`
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent button--dropdown-menu"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"]').click();
+                                };
+                              `}"
+                            >
+                              Anonymous to instructors
+                            </button>
+                          `
+                        : html``}
+                    </div>
                   `;
                 return courseConversationMessageEditOptionsHTML !== html``
                   ? html`
