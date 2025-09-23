@@ -2623,14 +2623,14 @@ export default async (application: Application): Promise<void> => {
                                       row-gap: var(--size--2);
                                     `}"
                                   >
-                                    <form>
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--transparent"
-                                        javascript="${javascript`
-                                          javascript.popover({ element: this, trigger: "click" });
-                                        `}"
-                                      >
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--transparent"
+                                      javascript="${javascript`
+                                        javascript.popover({ element: this, trigger: "click" });
+                                      `}"
+                                    >
+                                      <form>
                                         <span
                                           css="${css`
                                             color: light-dark(
@@ -2674,39 +2674,39 @@ export default async (application: Application): Promise<void> => {
                                           `}"
                                           >Student</span
                                         > <i class="bi bi-chevron-down"></i>
-                                      </button>
-                                      <div
-                                        type="popover"
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--size--2);
+                                      </form>
+                                    </button>
+                                    <div
+                                      type="popover"
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
+                                      <button
+                                        type="button"
+                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                        javascript="${javascript`
+                                          this.onclick = () => {
+                                            this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
+                                          };
                                         `}"
                                       >
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            this.onclick = () => {
-                                              this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
-                                            };
-                                          `}"
-                                        >
-                                          Instructor
-                                        </button>
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            this.onclick = () => {
-                                              this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
-                                            };
-                                          `}"
-                                        >
-                                          Student
-                                        </button>
-                                      </div>
-                                    </form>
+                                        Instructor
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                        javascript="${javascript`
+                                          this.onclick = () => {
+                                            this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                          };
+                                        `}"
+                                      >
+                                        Student
+                                      </button>
+                                    </div>
                                     <button
                                       type="button"
                                       class="button button--rectangle button--transparent"
