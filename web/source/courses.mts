@@ -805,7 +805,7 @@ export default async (application: Application): Promise<void> => {
                             />
                           </div>
                         </label>
-                        <form
+                        <div
                           css="${css`
                             display: flex;
                             flex-direction: column;
@@ -825,7 +825,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             Anonymity
                           </div>
-                          <div
+                          <form
                             css="${css`
                               display: flex;
                               flex-direction: column;
@@ -880,8 +880,8 @@ export default async (application: Application): Promise<void> => {
                               />  Students may send messages that are anonymous
                               to everyone, including instructors
                             </label>
-                          </div>
-                        </form>
+                          </form>
+                        </div>
                         <div
                           css="${css`
                             display: flex;
@@ -944,7 +944,7 @@ export default async (application: Application): Promise<void> => {
                             </label>
                           </div>
                         </div>
-                        <form
+                        <div
                           css="${css`
                             display: flex;
                             flex-direction: column;
@@ -964,7 +964,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             Course state
                           </div>
-                          <div
+                          <form
                             css="${css`
                               display: flex;
                               flex-direction: column;
@@ -1010,8 +1010,8 @@ export default async (application: Application): Promise<void> => {
                                 >(read-only)</span
                               >
                             </label>
-                          </div>
-                        </form>
+                          </form>
+                        </div>
                         <div
                           css="${css`
                             font-size: var(--font-size--3);
