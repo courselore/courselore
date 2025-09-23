@@ -1386,14 +1386,14 @@ export default async (application: Application): Promise<void> => {
                         row-gap: var(--size--2);
                       `}"
                     >
-                      <form>
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent"
-                          javascript="${javascript`
-                            javascript.popover({ element: this, trigger: "click" });
-                          `}"
-                        >
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent"
+                        javascript="${javascript`
+                          javascript.popover({ element: this, trigger: "click" });
+                        `}"
+                      >
+                        <form>
                           <span
                             css="${css`
                               color: light-dark(
@@ -1461,47 +1461,48 @@ export default async (application: Application): Promise<void> => {
                             `}"
                             >Question</span
                           > <i class="bi bi-chevron-down"></i>
-                        </button>
-                        <div
-                          type="popover"
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--size--2);
-                          `}"
-                        >
-                          <button
-                            type="button"
-                            class="button button--rectangle button--transparent button--dropdown-menu"
-                            javascript="${javascript`
-                              this.onclick = () => {
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
-                              };
-                            `}"
-                          >
-                            Note
-                          </button>
-                          <button
-                            type="button"
-                            class="button button--rectangle button--transparent button--dropdown-menu"
-                            javascript="${javascript`
-                              this.onclick = () => {
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
-                              };
-                            `}"
-                          >
-                            Question
-                          </button>
-                        </div>
-                      </form>
-                      <form>
+                        </form>
+                      </button>
+                      <div
+                        type="popover"
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--size--2);
+                        `}"
+                      >
                         <button
                           type="button"
-                          class="button button--rectangle button--transparent"
+                          class="button button--rectangle button--transparent button--dropdown-menu"
                           javascript="${javascript`
-                            javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                            this.onclick = () => {
+                              this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
+                            };
                           `}"
                         >
+                          Note
+                        </button>
+                        <button
+                          type="button"
+                          class="button button--rectangle button--transparent button--dropdown-menu"
+                          javascript="${javascript`
+                            this.onclick = () => {
+                              this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
+                            };
+                          `}"
+                        >
+                          Question
+                        </button>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent"
+                        javascript="${javascript`
+                          javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                        `}"
+                      >
+                        <form>
                           <span
                             css="${css`
                               color: light-dark(
@@ -1566,282 +1567,280 @@ export default async (application: Application): Promise<void> => {
                             `}"
                             >Selected course participants</span
                           > <i class="bi bi-chevron-down"></i>
+                        </form>
+                      </button>
+                      <div
+                        type="popover"
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--size--2);
+                        `}"
+                      >
+                        <button
+                          type="button"
+                          class="button button--rectangle button--transparent button--dropdown-menu"
+                          javascript="${javascript`
+                            this.onclick = () => {
+                              this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
+                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                            };
+                          `}"
+                        >
+                          Everyone
+                        </button>
+                        <button
+                          type="button"
+                          class="button button--rectangle button--transparent button--dropdown-menu"
+                          javascript="${javascript`
+                            this.onclick = () => {
+                              this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
+                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                              if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
+                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
+                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                            };
+                          `}"
+                        >
+                          Instructors and selected course participants
+                        </button>
+                        <button
+                          type="button"
+                          class="button button--rectangle button--transparent button--dropdown-menu"
+                          javascript="${javascript`
+                            this.onclick = () => {
+                              this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
+                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                              if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
+                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
+                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                            };
+                          `}"
+                        >
+                          Selected course participants
                         </button>
                         <div
-                          type="popover"
+                          key="courseConversationParticipations"
                           css="${css`
                             display: flex;
                             flex-direction: column;
                             gap: var(--size--2);
                           `}"
+                          javascript="${javascript`
+                            this.setHidden = () => {
+                              this.hidden =
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityEveryone" || (
+                                  this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                                  ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
+                                ) || (
+                                  this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
+                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
+                                );
+                            };
+                            this.setHidden();
+                          `}"
                         >
-                          <button
-                            type="button"
-                            class="button button--rectangle button--transparent button--dropdown-menu"
+                          <hr class="separator" />
+                          <input
+                            key="courseConversationParticipations--input"
+                            type="text"
+                            placeholder="Search…"
+                            maxlength="3000"
+                            class="input--text"
                             javascript="${javascript`
-                              this.onclick = () => {
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                              };
+                              this.isModified = false;
+                              this.onkeyup = utilities.foregroundJob(() => {
+                                const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
+                                for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
+                                  const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
+                                  nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
+                                  nameElement.morph = nameElement.querySelector("span") === null;
+                                  element.hidden =
+                                    (
+                                      element.courseParticipationRole === "courseParticipationRoleInstructor" &&
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                    ) || (
+                                      0 < search.size &&
+                                      nameElement.querySelector("span") === null
+                                    );
+                                }
+                              });
                             `}"
-                          >
-                            Everyone
-                          </button>
-                          <button
-                            type="button"
-                            class="button button--rectangle button--transparent button--dropdown-menu"
-                            javascript="${javascript`
-                              this.onclick = () => {
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
-                              };
-                            `}"
-                          >
-                            Instructors and selected course participants
-                          </button>
-                          <button
-                            type="button"
-                            class="button button--rectangle button--transparent button--dropdown-menu"
-                            javascript="${javascript`
-                              this.onclick = () => {
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
-                              };
-                            `}"
-                          >
-                            Selected course participants
-                          </button>
+                          />
                           <div
-                            key="courseConversationParticipations"
+                            key="courseConversationParticipations--courseParticipations"
                             css="${css`
+                              max-height: var(--size--36);
+                              padding: var(--size--1) var(--size--2);
+                              margin: var(--size---1) var(--size---2);
+                              overflow: auto;
                               display: flex;
                               flex-direction: column;
                               gap: var(--size--2);
                             `}"
                             javascript="${javascript`
-                              this.setHidden = () => {
-                                this.hidden =
-                                  this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityEveryone" || (
-                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
-                                    ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
-                                  ) || (
-                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
-                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
-                                  );
-                              };
-                              this.setHidden();
+                              this.morph = false;
                             `}"
                           >
-                            <hr class="separator" />
-                            <input
-                              key="courseConversationParticipations--input"
-                              type="text"
-                              placeholder="Search…"
-                              maxlength="3000"
-                              class="input--text"
-                              javascript="${javascript`
-                                this.isModified = false;
-                                this.onkeyup = utilities.foregroundJob(() => {
-                                  const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                                  for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
-                                    const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
-                                    nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
-                                    nameElement.morph = nameElement.querySelector("span") === null;
-                                    element.hidden =
-                                      (
-                                        element.courseParticipationRole === "courseParticipationRoleInstructor" &&
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                      ) || (
-                                        0 < search.size &&
-                                        nameElement.querySelector("span") === null
-                                      );
-                                  }
-                                });
-                              `}"
-                            />
-                            <div
-                              key="courseConversationParticipations--courseParticipations"
-                              css="${css`
-                                max-height: var(--size--36);
-                                padding: var(--size--1) var(--size--2);
-                                margin: var(--size---1) var(--size---2);
-                                overflow: auto;
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--2);
-                              `}"
-                              javascript="${javascript`
-                                this.morph = false;
-                              `}"
-                            >
-                              $${application.database
-                                .all<{
-                                  publicId: string;
-                                  user: number;
-                                  courseParticipationRole:
-                                    | "courseParticipationRoleInstructor"
-                                    | "courseParticipationRoleStudent";
-                                }>(
-                                  sql`
-                                    select
-                                      "courseParticipations"."publicId" as "publicId",
-                                      "courseParticipations"."user" as "user",
-                                      "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                    from "courseParticipations"
-                                    join "users" on "courseParticipations"."user" = "users"."id"
-                                    where
-                                      "courseParticipations"."course" = ${request.state.course.id} and
-                                      "users"."id" != ${request.state.user.id}
-                                    order by
-                                      "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                      "users"."name" asc;
-                                  `,
-                                )
-                                .map(
-                                  (
-                                    courseParticipation,
-                                    courseParticipationOrder,
-                                  ) => {
-                                    const user = application.database.get<{
-                                      publicId: string;
-                                      name: string;
-                                      avatarColor:
-                                        | "red"
-                                        | "orange"
-                                        | "amber"
-                                        | "yellow"
-                                        | "lime"
-                                        | "green"
-                                        | "emerald"
-                                        | "teal"
-                                        | "cyan"
-                                        | "sky"
-                                        | "blue"
-                                        | "indigo"
-                                        | "violet"
-                                        | "purple"
-                                        | "fuchsia"
-                                        | "pink"
-                                        | "rose";
-                                      avatarImage: string | null;
-                                      lastSeenOnlineAt: string;
-                                    }>(
-                                      sql`
-                                        select
-                                          "publicId",
-                                          "name",
-                                          "avatarColor",
-                                          "avatarImage",
-                                          "lastSeenOnlineAt"
-                                        from "users"
-                                        where "id" = ${courseParticipation.user};
-                                      `,
-                                    );
-                                    if (user === undefined) throw new Error();
-                                    return html`
-                                      <label
-                                        key="courseConversationParticipations--courseParticipation"
-                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                            $${application.database
+                              .all<{
+                                publicId: string;
+                                user: number;
+                                courseParticipationRole:
+                                  | "courseParticipationRoleInstructor"
+                                  | "courseParticipationRoleStudent";
+                              }>(
+                                sql`
+                                  select
+                                    "courseParticipations"."publicId" as "publicId",
+                                    "courseParticipations"."user" as "user",
+                                    "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                  from "courseParticipations"
+                                  join "users" on "courseParticipations"."user" = "users"."id"
+                                  where
+                                    "courseParticipations"."course" = ${request.state.course.id} and
+                                    "users"."id" != ${request.state.user.id}
+                                  order by
+                                    "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                    "users"."name" asc;
+                                `,
+                              )
+                              .map(
+                                (
+                                  courseParticipation,
+                                  courseParticipationOrder,
+                                ) => {
+                                  const user = application.database.get<{
+                                    publicId: string;
+                                    name: string;
+                                    avatarColor:
+                                      | "red"
+                                      | "orange"
+                                      | "amber"
+                                      | "yellow"
+                                      | "lime"
+                                      | "green"
+                                      | "emerald"
+                                      | "teal"
+                                      | "cyan"
+                                      | "sky"
+                                      | "blue"
+                                      | "indigo"
+                                      | "violet"
+                                      | "purple"
+                                      | "fuchsia"
+                                      | "pink"
+                                      | "rose";
+                                    avatarImage: string | null;
+                                    lastSeenOnlineAt: string;
+                                  }>(
+                                    sql`
+                                      select
+                                        "publicId",
+                                        "name",
+                                        "avatarColor",
+                                        "avatarImage",
+                                        "lastSeenOnlineAt"
+                                      from "users"
+                                      where "id" = ${courseParticipation.user};
+                                    `,
+                                  );
+                                  if (user === undefined) throw new Error();
+                                  return html`
+                                    <label
+                                      key="courseConversationParticipations--courseParticipation"
+                                      class="button button--rectangle button--transparent button--dropdown-menu"
+                                      css="${css`
+                                        display: flex;
+                                        gap: var(--size--2);
+                                      `}"
+                                      javascript="${javascript`
+                                        this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
+                                        this.order = ${courseParticipationOrder};
+                                      `}"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="courseConversationParticipations[]"
+                                        value="${courseParticipation.publicId}"
+                                        class="input--checkbox"
                                         css="${css`
-                                          display: flex;
-                                          gap: var(--size--2);
+                                          margin-top: var(--size--1);
                                         `}"
                                         javascript="${javascript`
-                                          this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
-                                          this.order = ${courseParticipationOrder};
+                                          this.onchange = () => {
+                                            const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
+                                            for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
+                                              if (
+                                                (
+                                                  this.checked && (
+                                                    otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
+                                                    element.order < otherElement.order
+                                                  ) 
+                                                ) || (
+                                                  !this.checked &&
+                                                    otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
+                                                    element.order < otherElement.order
+                                                )
+                                              ) {
+                                                otherElement.insertAdjacentElement("beforebegin", element);
+                                                return;
+                                              }
+                                            this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
+                                          };
+                                        `}"
+                                      />
+                                      $${application.partials.userAvatar({
+                                        user,
+                                      })}
+                                      <div
+                                        css="${css`
+                                          margin-top: var(--size--0-5);
                                         `}"
                                       >
-                                        <input
-                                          type="checkbox"
-                                          name="courseConversationParticipations[]"
-                                          value="${courseParticipation.publicId}"
-                                          class="input--checkbox"
-                                          css="${css`
-                                            margin-top: var(--size--1);
-                                          `}"
+                                        <span
+                                          key="courseConversationParticipations--courseParticipation--name"
                                           javascript="${javascript`
-                                            this.onchange = () => {
-                                              const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
-                                              for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
-                                                if (
-                                                  (
-                                                    this.checked && (
-                                                      otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
-                                                      element.order < otherElement.order
-                                                    ) 
-                                                  ) || (
-                                                    !this.checked &&
-                                                      otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
-                                                      element.order < otherElement.order
-                                                  )
-                                                ) {
-                                                  otherElement.insertAdjacentElement("beforebegin", element);
-                                                  return;
-                                                }
-                                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
-                                            };
+                                            this.name = ${user.name};
                                           `}"
-                                        />
-                                        $${application.partials.userAvatar({
-                                          user,
-                                        })}
-                                        <div
-                                          css="${css`
-                                            margin-top: var(--size--0-5);
-                                          `}"
-                                        >
-                                          <span
-                                            key="courseConversationParticipations--courseParticipation--name"
-                                            javascript="${javascript`
-                                              this.name = ${user.name};
-                                            `}"
-                                            >${user.name}</span
-                                          >$${courseParticipation.courseParticipationRole ===
-                                          "courseParticipationRoleInstructor"
-                                            ? html`<span
-                                                css="${css`
-                                                  font-size: var(
-                                                    --font-size--3
-                                                  );
-                                                  line-height: var(
-                                                    --font-size--3--line-height
-                                                  );
-                                                  color: light-dark(
-                                                    var(--color--slate--600),
-                                                    var(--color--slate--400)
-                                                  );
-                                                `}"
-                                              >
-                                                (instructor)</span
-                                              >`
-                                            : html``}
-                                        </div>
-                                      </label>
-                                    `;
-                                  },
-                                )}
-                            </div>
+                                          >${user.name}</span
+                                        >$${courseParticipation.courseParticipationRole ===
+                                        "courseParticipationRoleInstructor"
+                                          ? html`<span
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                                color: light-dark(
+                                                  var(--color--slate--600),
+                                                  var(--color--slate--400)
+                                                );
+                                              `}"
+                                            >
+                                              (instructor)</span
+                                            >`
+                                          : html``}
+                                      </div>
+                                    </label>
+                                  `;
+                                },
+                              )}
                           </div>
                         </div>
-                      </form>
+                      </div>
                       $${request.state.courseParticipation
                         .courseParticipationRole ===
                       "courseParticipationRoleInstructor"
                         ? html`
-                            <form>
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.popover({ element: this, trigger: "click" });
-                                `}"
-                              >
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                javascript.popover({ element: this, trigger: "click" });
+                              `}"
+                            >
+                              <form>
                                 <span
                                   css="${css`
                                     color: light-dark(
@@ -1884,39 +1883,39 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                   >Pinned</span
                                 > <i class="bi bi-chevron-down"></i>
-                              </button>
-                              <div
-                                type="popover"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--2);
+                              </form>
+                            </button>
+                            <div
+                              type="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[type~="form"]').querySelector('[name="pinned"][value="false"]').click();
+                                  };
                                 `}"
                               >
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="pinned"][value="false"]').click();
-                                    };
-                                  `}"
-                                >
-                                  Unpinned
-                                </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="pinned"][value="true"]').click();
-                                    };
-                                  `}"
-                                >
-                                  Pinned
-                                </button>
-                              </div>
-                            </form>
+                                Unpinned
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[type~="form"]').querySelector('[name="pinned"][value="true"]').click();
+                                  };
+                                `}"
+                              >
+                                Pinned
+                              </button>
+                            </div>
                           `
                         : html``}
                     </div>
@@ -2077,14 +2076,14 @@ export default async (application: Application): Promise<void> => {
                                 row-gap: var(--size--2);
                               `}"
                             >
-                              <form>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    javascript.popover({ element: this, trigger: "click" });
-                                  `}"
-                                >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  javascript.popover({ element: this, trigger: "click" });
+                                `}"
+                              >
+                                <form>
                                   <span
                                     css="${css`
                                       color: light-dark(
@@ -2158,56 +2157,56 @@ export default async (application: Application): Promise<void> => {
                                           >Anonymous to instructors</span
                                         >`
                                     : html``} <i class="bi bi-chevron-down"></i>
-                                </button>
-                                <div
-                                  type="popover"
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
+                                </form>
+                              </button>
+                              <div
+                                type="popover"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
+                                    };
                                   `}"
                                 >
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    None
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    Anonymous to students
-                                  </button>
-                                  $${request.state.course
-                                    .courseParticipationRoleStudentsAnonymityAllowed ===
-                                  "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
-                                    ? html`
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            this.onclick = () => {
-                                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"]').click();
-                                            };
-                                          `}"
-                                        >
-                                          Anonymous to instructors
-                                        </button>
-                                      `
-                                    : html``}
-                                </div>
-                              </form>
+                                  None
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Anonymous to students
+                                </button>
+                                $${request.state.course
+                                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                                "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                                  ? html`
+                                      <button
+                                        type="button"
+                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                        javascript="${javascript`
+                                          this.onclick = () => {
+                                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"]').click();
+                                          };
+                                        `}"
+                                      >
+                                        Anonymous to instructors
+                                      </button>
+                                    `
+                                  : html``}
+                              </div>
                             </div>
                           `
                         : html``}
@@ -3023,14 +3022,14 @@ export default async (application: Application): Promise<void> => {
                     >
                       $${mayEditCourseConversation
                         ? html`
-                            <form>
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.popover({ element: this, trigger: "click" });
-                                `}"
-                              >
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                javascript.popover({ element: this, trigger: "click" });
+                              `}"
+                            >
+                              <form>
                                 <span
                                   css="${css`
                                     color: light-dark(
@@ -3076,39 +3075,39 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                   >Question</span
                                 > <i class="bi bi-chevron-down"></i>
-                              </button>
-                              <div
-                                type="popover"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--2);
+                              </form>
+                            </button>
+                            <div
+                              type="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
+                                  };
                                 `}"
                               >
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
-                                    };
-                                  `}"
-                                >
-                                  Note
-                                </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
-                                    };
-                                  `}"
-                                >
-                                  Question
-                                </button>
-                              </div>
-                            </form>
+                                Note
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
+                                  };
+                                `}"
+                              >
+                                Question
+                              </button>
+                            </div>
                           `
                         : html`
                             <div>
@@ -3141,14 +3140,14 @@ export default async (application: Application): Promise<void> => {
                             .courseParticipationRole ===
                             "courseParticipationRoleInstructor"
                           ? html`
-                              <form>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
                                     javascript.popover({ element: this, trigger: "click" });
                                   `}"
-                                >
+                              >
+                                <form>
                                   <span
                                     css="${css`
                                       color: light-dark(
@@ -3204,39 +3203,39 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                     >Resolved</span
                                   > <i class="bi bi-chevron-down"></i>
-                                </button>
-                                <div
-                                  type="popover"
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
+                                </form>
+                              </button>
+                              <div
+                                type="popover"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="questionResolved"][value="false"]').click();
+                                    };
                                   `}"
                                 >
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="questionResolved"][value="false"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    Unresolved
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="questionResolved"][value="true"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    Resolved
-                                  </button>
-                                </div>
-                              </form>
+                                  Unresolved
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="questionResolved"][value="true"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Resolved
+                                </button>
+                              </div>
                             `
                           : html`
                               <div>
@@ -3282,14 +3281,14 @@ export default async (application: Application): Promise<void> => {
                         : html``}
                       $${mayEditCourseConversation
                         ? html`
-                            <form>
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
-                                `}"
-                              >
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                              `}"
+                            >
+                              <form>
                                 <span
                                   css="${css`
                                     color: light-dark(
@@ -3354,324 +3353,321 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                   >Selected course participants</span
                                 > <i class="bi bi-chevron-down"></i>
+                              </form>
+                            </button>
+                            <div
+                              type="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                                  };
+                                `}"
+                              >
+                                Everyone
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                                    if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                                  };
+                                `}"
+                              >
+                                Instructors and selected course participants
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                                    if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                                  };
+                                `}"
+                              >
+                                Selected course participants
                               </button>
                               <div
-                                type="popover"
+                                key="courseConversationParticipations"
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--size--2);
                                 `}"
+                                javascript="${javascript`
+                                  this.setHidden = () => {
+                                    this.hidden =
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityEveryone" || (
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                                        ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
+                                      ) || (
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
+                                        this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
+                                      );
+                                  };
+                                  this.setHidden();
+                                `}"
                               >
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                <hr class="separator" />
+                                <input
+                                  key="courseConversationParticipations--input"
+                                  type="text"
+                                  placeholder="Search…"
+                                  maxlength="3000"
+                                  class="input--text"
                                   javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
-                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                                    };
+                                    this.isModified = false;
+                                    this.onkeyup = utilities.foregroundJob(() => {
+                                      const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
+                                      for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
+                                        const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
+                                        nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
+                                        nameElement.morph = nameElement.querySelector("span") === null;
+                                        element.hidden =
+                                          (
+                                            element.courseParticipationRole === "courseParticipationRoleInstructor" &&
+                                            this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                          ) || (
+                                            0 < search.size &&
+                                            nameElement.querySelector("span") === null
+                                          );
+                                      }
+                                    });
+                                    window.setTimeout(() => {
+                                      this.onkeyup();
+                                    });
                                   `}"
-                                >
-                                  Everyone
-                                </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
-                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                                      if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
-                                    };
-                                  `}"
-                                >
-                                  Instructors and selected course participants
-                                </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
-                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                                      if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                      this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
-                                    };
-                                  `}"
-                                >
-                                  Selected course participants
-                                </button>
+                                />
                                 <div
-                                  key="courseConversationParticipations"
+                                  key="courseConversationParticipations--courseParticipations"
                                   css="${css`
+                                    max-height: var(--size--36);
+                                    padding: var(--size--1) var(--size--2);
+                                    margin: var(--size---1) var(--size---2);
+                                    overflow: auto;
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--size--2);
                                   `}"
                                   javascript="${javascript`
-                                    this.setHidden = () => {
-                                      this.hidden =
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityEveryone" || (
-                                          this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
-                                          ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
-                                        ) || (
-                                          this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
-                                          this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
+                                    this.morph = false;
+                                  `}"
+                                >
+                                  $${application.database
+                                    .all<{
+                                      id: number;
+                                      publicId: string;
+                                      user: number;
+                                      courseParticipationRole:
+                                        | "courseParticipationRoleInstructor"
+                                        | "courseParticipationRoleStudent";
+                                    }>(
+                                      sql`
+                                        select
+                                          "courseParticipations"."id" as "id",
+                                          "courseParticipations"."publicId" as "publicId",
+                                          "courseParticipations"."user" as "user",
+                                          "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                        from "courseParticipations"
+                                        join "users" on "courseParticipations"."user" = "users"."id"
+                                        where
+                                          "courseParticipations"."course" = ${request.state.course.id} and
+                                          "users"."id" != ${request.state.user.id}
+                                        order by
+                                          "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                          "users"."name" asc;
+                                      `,
+                                    )
+                                    .map(
+                                      (
+                                        courseParticipation,
+                                        courseParticipationOrder,
+                                      ) => {
+                                        const user = application.database.get<{
+                                          publicId: string;
+                                          name: string;
+                                          avatarColor:
+                                            | "red"
+                                            | "orange"
+                                            | "amber"
+                                            | "yellow"
+                                            | "lime"
+                                            | "green"
+                                            | "emerald"
+                                            | "teal"
+                                            | "cyan"
+                                            | "sky"
+                                            | "blue"
+                                            | "indigo"
+                                            | "violet"
+                                            | "purple"
+                                            | "fuchsia"
+                                            | "pink"
+                                            | "rose";
+                                          avatarImage: string | null;
+                                          lastSeenOnlineAt: string;
+                                        }>(
+                                          sql`
+                                            select
+                                              "publicId",
+                                              "name",
+                                              "avatarColor",
+                                              "avatarImage",
+                                              "lastSeenOnlineAt"
+                                            from "users"
+                                            where "id" = ${courseParticipation.user};
+                                          `,
                                         );
-                                    };
-                                    this.setHidden();
+                                        if (user === undefined)
+                                          throw new Error();
+                                        return html`
+                                          <label
+                                            key="courseConversationParticipations--courseParticipation"
+                                            class="button button--rectangle button--transparent button--dropdown-menu"
+                                            css="${css`
+                                              display: flex;
+                                              gap: var(--size--2);
+                                            `}"
+                                            javascript="${javascript`
+                                              this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
+                                              this.order = ${courseParticipationOrder};
+                                            `}"
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              name="courseConversationParticipations[]"
+                                              value="${courseParticipation.publicId}"
+                                              class="input--checkbox"
+                                              css="${css`
+                                                margin-top: var(--size--1);
+                                              `}"
+                                              $${application.database.get(
+                                                sql`
+                                                  select true
+                                                  from "courseConversationParticipations"
+                                                  where
+                                                    "courseConversation" = ${request.state.courseConversation!.id} and
+                                                    "courseParticipation" = ${courseParticipation.id};
+                                                `,
+                                              ) !== undefined
+                                                ? html`checked`
+                                                : html``}
+                                              javascript="${javascript`
+                                                this.onchange = () => {
+                                                  const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
+                                                  for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
+                                                    if (
+                                                      (
+                                                        this.checked && (
+                                                          otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
+                                                          element.order < otherElement.order
+                                                        ) 
+                                                      ) || (
+                                                        !this.checked &&
+                                                          otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
+                                                          element.order < otherElement.order
+                                                      )
+                                                    ) {
+                                                      otherElement.insertAdjacentElement("beforebegin", element);
+                                                      return;
+                                                    }
+                                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
+                                                };
+                                                this.onchange();
+                                              `}"
+                                            />
+                                            $${application.partials.userAvatar({
+                                              user,
+                                            })}
+                                            <div
+                                              css="${css`
+                                                margin-top: var(--size--0-5);
+                                              `}"
+                                            >
+                                              <span
+                                                key="courseConversationParticipations--courseParticipation--name"
+                                                javascript="${javascript`
+                                                  this.name = ${user.name};
+                                                `}"
+                                                >${user.name}</span
+                                              >$${courseParticipation.courseParticipationRole ===
+                                              "courseParticipationRoleInstructor"
+                                                ? html`<span
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--3
+                                                      );
+                                                      line-height: var(
+                                                        --font-size--3--line-height
+                                                      );
+                                                      color: light-dark(
+                                                        var(
+                                                          --color--slate--600
+                                                        ),
+                                                        var(--color--slate--400)
+                                                      );
+                                                    `}"
+                                                  >
+                                                    (instructor)</span
+                                                  >`
+                                                : html``}
+                                            </div>
+                                          </label>
+                                        `;
+                                      },
+                                    )}
+                                </div>
+                                <div
+                                  hidden
+                                  class="hide-on-not-modified"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--2);
                                   `}"
                                 >
                                   <hr class="separator" />
-                                  <input
-                                    key="courseConversationParticipations--input"
-                                    type="text"
-                                    placeholder="Search…"
-                                    maxlength="3000"
-                                    class="input--text"
-                                    javascript="${javascript`
-                                      this.isModified = false;
-                                      this.onkeyup = utilities.foregroundJob(() => {
-                                        const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                                        for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
-                                          const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
-                                          nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
-                                          nameElement.morph = nameElement.querySelector("span") === null;
-                                          element.hidden =
-                                            (
-                                              element.courseParticipationRole === "courseParticipationRoleInstructor" &&
-                                              this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                            ) || (
-                                              0 < search.size &&
-                                              nameElement.querySelector("span") === null
-                                            );
-                                        }
-                                      });
-                                      window.setTimeout(() => {
-                                        this.onkeyup();
-                                      });
-                                    `}"
-                                  />
                                   <div
-                                    key="courseConversationParticipations--courseParticipations"
                                     css="${css`
-                                      max-height: var(--size--36);
-                                      padding: var(--size--1) var(--size--2);
-                                      margin: var(--size---1) var(--size---2);
-                                      overflow: auto;
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--size--2);
-                                    `}"
-                                    javascript="${javascript`
-                                      this.morph = false;
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
                                     `}"
                                   >
-                                    $${application.database
-                                      .all<{
-                                        id: number;
-                                        publicId: string;
-                                        user: number;
-                                        courseParticipationRole:
-                                          | "courseParticipationRoleInstructor"
-                                          | "courseParticipationRoleStudent";
-                                      }>(
-                                        sql`
-                                          select
-                                            "courseParticipations"."id" as "id",
-                                            "courseParticipations"."publicId" as "publicId",
-                                            "courseParticipations"."user" as "user",
-                                            "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                          from "courseParticipations"
-                                          join "users" on "courseParticipations"."user" = "users"."id"
-                                          where
-                                            "courseParticipations"."course" = ${request.state.course.id} and
-                                            "users"."id" != ${request.state.user.id}
-                                          order by
-                                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                            "users"."name" asc;
-                                        `,
-                                      )
-                                      .map(
-                                        (
-                                          courseParticipation,
-                                          courseParticipationOrder,
-                                        ) => {
-                                          const user =
-                                            application.database.get<{
-                                              publicId: string;
-                                              name: string;
-                                              avatarColor:
-                                                | "red"
-                                                | "orange"
-                                                | "amber"
-                                                | "yellow"
-                                                | "lime"
-                                                | "green"
-                                                | "emerald"
-                                                | "teal"
-                                                | "cyan"
-                                                | "sky"
-                                                | "blue"
-                                                | "indigo"
-                                                | "violet"
-                                                | "purple"
-                                                | "fuchsia"
-                                                | "pink"
-                                                | "rose";
-                                              avatarImage: string | null;
-                                              lastSeenOnlineAt: string;
-                                            }>(
-                                              sql`
-                                                select
-                                                  "publicId",
-                                                  "name",
-                                                  "avatarColor",
-                                                  "avatarImage",
-                                                  "lastSeenOnlineAt"
-                                                from "users"
-                                                where "id" = ${courseParticipation.user};
-                                              `,
-                                            );
-                                          if (user === undefined)
-                                            throw new Error();
-                                          return html`
-                                            <label
-                                              key="courseConversationParticipations--courseParticipation"
-                                              class="button button--rectangle button--transparent button--dropdown-menu"
-                                              css="${css`
-                                                display: flex;
-                                                gap: var(--size--2);
-                                              `}"
-                                              javascript="${javascript`
-                                                this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
-                                                this.order = ${courseParticipationOrder};
-                                              `}"
-                                            >
-                                              <input
-                                                type="checkbox"
-                                                name="courseConversationParticipations[]"
-                                                value="${courseParticipation.publicId}"
-                                                class="input--checkbox"
-                                                css="${css`
-                                                  margin-top: var(--size--1);
-                                                `}"
-                                                $${application.database.get(
-                                                  sql`
-                                                    select true
-                                                    from "courseConversationParticipations"
-                                                    where
-                                                      "courseConversation" = ${request.state.courseConversation!.id} and
-                                                      "courseParticipation" = ${courseParticipation.id};
-                                                  `,
-                                                ) !== undefined
-                                                  ? html`checked`
-                                                  : html``}
-                                                javascript="${javascript`
-                                                  this.onchange = () => {
-                                                    const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
-                                                    for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
-                                                      if (
-                                                        (
-                                                          this.checked && (
-                                                            otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
-                                                            element.order < otherElement.order
-                                                          ) 
-                                                        ) || (
-                                                          !this.checked &&
-                                                            otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
-                                                            element.order < otherElement.order
-                                                        )
-                                                      ) {
-                                                        otherElement.insertAdjacentElement("beforebegin", element);
-                                                        return;
-                                                      }
-                                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
-                                                  };
-                                                  this.onchange();
-                                                `}"
-                                              />
-                                              $${application.partials.userAvatar(
-                                                { user },
-                                              )}
-                                              <div
-                                                css="${css`
-                                                  margin-top: var(--size--0-5);
-                                                `}"
-                                              >
-                                                <span
-                                                  key="courseConversationParticipations--courseParticipation--name"
-                                                  javascript="${javascript`
-                                                    this.name = ${user.name};
-                                                  `}"
-                                                  >${user.name}</span
-                                                >$${courseParticipation.courseParticipationRole ===
-                                                "courseParticipationRoleInstructor"
-                                                  ? html`<span
-                                                      css="${css`
-                                                        font-size: var(
-                                                          --font-size--3
-                                                        );
-                                                        line-height: var(
-                                                          --font-size--3--line-height
-                                                        );
-                                                        color: light-dark(
-                                                          var(
-                                                            --color--slate--600
-                                                          ),
-                                                          var(
-                                                            --color--slate--400
-                                                          )
-                                                        );
-                                                      `}"
-                                                    >
-                                                      (instructor)</span
-                                                    >`
-                                                  : html``}
-                                              </div>
-                                            </label>
-                                          `;
-                                        },
-                                      )}
-                                  </div>
-                                  <div
-                                    hidden
-                                    class="hide-on-not-modified"
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <hr class="separator" />
-                                    <div
-                                      css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
+                                    <button
+                                      type="submit"
+                                      class="button button--rectangle button--blue"
+                                      javascript="${javascript`
+                                        this.onclick = () => {
+                                          document.querySelector("body").click();
+                                        };
                                       `}"
                                     >
-                                      <button
-                                        type="submit"
-                                        class="button button--rectangle button--blue"
-                                        javascript="${javascript`
-                                          this.onclick = () => {
-                                            document.querySelector("body").click();
-                                          };
-                                        `}"
-                                      >
-                                        Update
-                                      </button>
-                                    </div>
+                                      Update
+                                    </button>
                                   </div>
                                 </div>
                               </div>
-                            </form>
+                            </div>
                           `
                         : (() => {
                             const courseConversationParticipations =
@@ -3874,14 +3870,14 @@ export default async (application: Application): Promise<void> => {
                         .courseParticipationRole ===
                         "courseParticipationRoleInstructor"
                         ? html`
-                            <form>
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.popover({ element: this, trigger: "click" });
-                                `}"
-                              >
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                javascript.popover({ element: this, trigger: "click" });
+                              `}"
+                            >
+                              <form>
                                 <span
                                   css="${css`
                                     color: light-dark(
@@ -3927,39 +3923,39 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                   >Pinned</span
                                 > <i class="bi bi-chevron-down"></i>
-                              </button>
-                              <div
-                                type="popover"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--2);
+                              </form>
+                            </button>
+                            <div
+                              type="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[type~="form"]').querySelector('[name="pinned"][value="false"]').click();
+                                  };
                                 `}"
                               >
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="pinned"][value="false"]').click();
-                                    };
-                                  `}"
-                                >
-                                  Unpinned
-                                </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="pinned"][value="true"]').click();
-                                    };
-                                  `}"
-                                >
-                                  Pinned
-                                </button>
-                              </div>
-                            </form>
+                                Unpinned
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[type~="form"]').querySelector('[name="pinned"][value="true"]').click();
+                                  };
+                                `}"
+                              >
+                                Pinned
+                              </button>
+                            </div>
                           `
                         : Boolean(request.state.courseConversation.pinned) ===
                             true
@@ -5563,14 +5559,14 @@ export default async (application: Application): Promise<void> => {
                             "courseConversationTypeQuestion"
                           )
                             courseConversationMessageNewOptionsHTML += html`
-                              <form>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    javascript.popover({ element: this, trigger: "click" });
-                                  `}"
-                                >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  javascript.popover({ element: this, trigger: "click" });
+                                `}"
+                              >
+                                <form>
                                   <span
                                     css="${css`
                                       color: light-dark(
@@ -5628,50 +5624,50 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                     >Follow-up question</span
                                   > <i class="bi bi-chevron-down"></i>
-                                </button>
-                                <div
-                                  type="popover"
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
+                                </form>
+                              </button>
+                              <div
+                                type="popover"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
+                                    };
                                   `}"
                                 >
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    Message
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    Answer
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    Follow-up question
-                                  </button>
-                                </div>
-                              </form>
+                                  Message
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Answer
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Follow-up question
+                                </button>
+                              </div>
                             `;
                           if (
                             request.state.courseParticipation
@@ -5679,14 +5675,14 @@ export default async (application: Application): Promise<void> => {
                             "courseParticipationRoleInstructor"
                           )
                             courseConversationMessageNewOptionsHTML += html`
-                              <form>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    javascript.popover({ element: this, trigger: "click" });
-                                  `}"
-                                >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  javascript.popover({ element: this, trigger: "click" });
+                                `}"
+                              >
+                                <form>
                                   <span
                                     css="${css`
                                       color: light-dark(
@@ -5727,39 +5723,39 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                     >Instructors</span
                                   > <i class="bi bi-chevron-down"></i>
-                                </button>
-                                <div
-                                  type="popover"
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
+                                </form>
+                              </button>
+                              <div
+                                type="popover"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
+                                    };
                                   `}"
                                 >
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    Everyone
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    Instructors
-                                  </button>
-                                </div>
-                              </form>
+                                  Everyone
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Instructors
+                                </button>
+                              </div>
                             `;
                           if (
                             request.state.courseParticipation
@@ -5773,14 +5769,14 @@ export default async (application: Application): Promise<void> => {
                                 "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors")
                           )
                             courseConversationMessageNewOptionsHTML += html`
-                              <form>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    javascript.popover({ element: this, trigger: "click" });
-                                  `}"
-                                >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  javascript.popover({ element: this, trigger: "click" });
+                                `}"
+                              >
+                                <form>
                                   <span
                                     css="${css`
                                       color: light-dark(
@@ -5834,56 +5830,56 @@ export default async (application: Application): Promise<void> => {
                                           >Anonymous to instructors</span
                                         >`
                                     : html``} <i class="bi bi-chevron-down"></i>
-                                </button>
-                                <div
-                                  type="popover"
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
+                                </form>
+                              </button>
+                              <div
+                                type="popover"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
+                                    };
                                   `}"
                                 >
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    None
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
-                                      };
-                                    `}"
-                                  >
-                                    Anonymous to students
-                                  </button>
-                                  $${request.state.course
-                                    .courseParticipationRoleStudentsAnonymityAllowed ===
-                                  "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
-                                    ? html`
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            this.onclick = () => {
-                                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"]').click();
-                                            };
-                                          `}"
-                                        >
-                                          Anonymous to instructors
-                                        </button>
-                                      `
-                                    : html``}
-                                </div>
-                              </form>
+                                  None
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Anonymous to students
+                                </button>
+                                $${request.state.course
+                                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                                "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                                  ? html`
+                                      <button
+                                        type="button"
+                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                        javascript="${javascript`
+                                          this.onclick = () => {
+                                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"]').click();
+                                          };
+                                        `}"
+                                      >
+                                        Anonymous to instructors
+                                      </button>
+                                    `
+                                  : html``}
+                              </div>
                             `;
                           return courseConversationMessageNewOptionsHTML !==
                             html``
