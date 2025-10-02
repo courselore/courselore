@@ -1070,8 +1070,9 @@ export default async (application: Application): Promise<void> => {
             gap: var(--size--2);
           `}"
         >
-          $${results.length === 0
-            ? html`
+          $${0 < results.length
+            ? results
+            : html`
                 <div
                   css="${css`
                     color: light-dark(
@@ -1082,8 +1083,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   No results
                 </div>
-              `
-            : results}
+              `}
         </div>
       `);
     },
