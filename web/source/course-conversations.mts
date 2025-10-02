@@ -1053,7 +1053,15 @@ export default async (application: Application): Promise<void> => {
         request.search.search.trim() === ""
       )
         throw "validation";
-      const results = new Array();
+      const results = new Array<HTML>();
+      results.push(html`
+        <a
+          href="/"
+          class="button button--rectangle button--transparent button--dropdown-menu"
+        >
+          Search result 1
+        </a>
+      `);
       response.end(html`
         <div
           css="${css`
@@ -1075,16 +1083,7 @@ export default async (application: Application): Promise<void> => {
                   No results
                 </div>
               `
-            : results.map(
-                () => html`
-                  <a
-                    href="/"
-                    class="button button--rectangle button--transparent button--dropdown-menu"
-                  >
-                    Search result 1
-                  </a>
-                `,
-              )}
+            : results}
         </div>
       `);
     },
