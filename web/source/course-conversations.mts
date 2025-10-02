@@ -214,14 +214,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 />
               </div>
-              <div
-                type="popover"
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--size--2);
-                `}"
-              >
+              <div type="popover">
                 <div
                   css="${css`
                     color: light-dark(
@@ -1034,6 +1027,56 @@ export default async (application: Application): Promise<void> => {
       `,
     });
   };
+
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/search$"),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        { search: "string" },
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseConversationsTags === undefined
+      )
+        return;
+      if (
+        typeof request.search.search !== "string" ||
+        request.search.search.trim() === ""
+      )
+        throw "validation";
+      response.end(html`
+        <div
+          css="${css`
+            display: flex;
+            flex-direction: column;
+            gap: var(--size--2);
+          `}"
+        >
+          <a
+            href="/"
+            class="button button--rectangle button--transparent button--dropdown-menu"
+          >
+            Search result 1
+          </a>
+          <a
+            href="/"
+            class="button button--rectangle button--transparent button--dropdown-menu"
+          >
+            Search result 2
+          </a>
+        </div>
+      `);
+    },
+  });
 
   application.server?.push({
     method: "PATCH",
