@@ -176,6 +176,8 @@ export default async (application: Application): Promise<void> => {
               <div
                 key="sidebar--menu--search"
                 type="form"
+                method="GET"
+                action="/courses/${request.state.course.publicId}/search"
                 css="${css`
                   flex: 1;
                   min-width: var(--size--0);
@@ -190,14 +192,17 @@ export default async (application: Application): Promise<void> => {
                       return;
                     }
                     popover.showPopover();
-                    // javascript.mount(
-                    //   popover.firstElementChild,
-                    //   await (
-                    //     await fetch(
-                    //       ${`/courses/${request.state.course.publicId}/search`}
-                    //     )
-                    //   ).text()
-                    // );
+                    javascript.mount(
+                      popover.firstElementChild,
+                      await (
+                        await fetch(
+                          this.getAttribute("action"), {
+                            method: this.getAttribute("method"),
+                            body: javascript.serialize(this),
+                          }
+                        )
+                      ).text()
+                    );
                   });
                   this.onblur = () => {
                     popover.hidePopover();
