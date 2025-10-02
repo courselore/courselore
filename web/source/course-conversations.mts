@@ -183,7 +183,42 @@ export default async (application: Application): Promise<void> => {
                   flex: 1;
                   min-width: var(--size--0);
                 `}"
+                javascript="${javascript`
+                  this.isModified = false;
+                  const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom-start" });
+                  this.oninput = this.onfocus = () => {
+                    if (this.value.trim() === "") {
+                      popover.hidePopover();
+                      return;
+                    }
+                    popover.showPopover();
+                  };
+                  this.onblur = () => {
+                    popover.hidePopover();
+                  };
+                `}"
               />
+              <div
+                type="popover"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--2);
+                `}"
+              >
+                <a
+                  href="/"
+                  class="button button--rectangle button--transparent button--dropdown-menu"
+                >
+                  Search result 1
+                </a>
+                <a
+                  href="/"
+                  class="button button--rectangle button--transparent button--dropdown-menu"
+                >
+                  Search result 2
+                </a>
+              </div>
             </div>
             <div
               key="courseConversations"
