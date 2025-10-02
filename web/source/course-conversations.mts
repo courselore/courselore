@@ -185,7 +185,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
                 javascript="${javascript`
                   this.isModified = false;
-                  const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom-start" });
+                  const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom" });
                   this.oninput = this.onfocusin = utilities.foregroundJob(async () => {
                     if (this.querySelector('[name="search"]').value.trim() === "") {
                       popover.hidePopover();
@@ -1053,6 +1053,7 @@ export default async (application: Application): Promise<void> => {
         request.search.search.trim() === ""
       )
         throw "validation";
+      const results = new Array();
       response.end(html`
         <div
           css="${css`
@@ -1061,18 +1062,29 @@ export default async (application: Application): Promise<void> => {
             gap: var(--size--2);
           `}"
         >
-          <a
-            href="/"
-            class="button button--rectangle button--transparent button--dropdown-menu"
-          >
-            Search result 1
-          </a>
-          <a
-            href="/"
-            class="button button--rectangle button--transparent button--dropdown-menu"
-          >
-            Search result 2
-          </a>
+          $${results.length === 0
+            ? html`
+                <div
+                  css="${css`
+                    color: light-dark(
+                      var(--color--slate--400),
+                      var(--color--slate--600)
+                    );
+                  `}"
+                >
+                  No results
+                </div>
+              `
+            : results.map(
+                () => html`
+                  <a
+                    href="/"
+                    class="button button--rectangle button--transparent button--dropdown-menu"
+                  >
+                    Search result 1
+                  </a>
+                `,
+              )}
         </div>
       `);
     },
