@@ -186,13 +186,21 @@ export default async (application: Application): Promise<void> => {
                 javascript="${javascript`
                   this.isModified = false;
                   const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom-start" });
-                  this.oninput = this.onfocus = () => {
+                  this.oninput = this.onfocus = utilities.foregroundJob(async () => {
                     if (this.value.trim() === "") {
                       popover.hidePopover();
                       return;
                     }
                     popover.showPopover();
-                  };
+                    javascript.mount(
+                      popover.firstElementChild,
+                      await (
+                        await fetch(
+                          ${`/courses/${request.state.course.publicId}/search`}
+                        )
+                      ).text()
+                    );
+                  });
                   this.onblur = () => {
                     popover.hidePopover();
                   };
@@ -206,18 +214,17 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--2);
                 `}"
               >
-                <a
-                  href="/"
-                  class="button button--rectangle button--transparent button--dropdown-menu"
+                <div
+                  css="${css`
+                    color: light-dark(
+                      var(--color--slate--600),
+                      var(--color--slate--400)
+                    );
+                    animation: var(--animation--pulse);
+                  `}"
                 >
-                  Search result 1
-                </a>
-                <a
-                  href="/"
-                  class="button button--rectangle button--transparent button--dropdown-menu"
-                >
-                  Search result 2
-                </a>
+                  <i class="bi bi-three-dots"></i>
+                </div>
               </div>
             </div>
             <div
