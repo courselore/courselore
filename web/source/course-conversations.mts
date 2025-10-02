@@ -1748,7 +1748,7 @@ export default async (application: Application): Promise<void> => {
                                   if (user === undefined) throw new Error();
                                   return html`
                                     <label
-                                      key="courseConversationParticipations--courseParticipation"
+                                      key="courseConversationParticipations--courseParticipation ${courseParticipation.publicId}"
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       css="${css`
                                         display: flex;
@@ -3542,7 +3542,7 @@ export default async (application: Application): Promise<void> => {
                                           throw new Error();
                                         return html`
                                           <label
-                                            key="courseConversationParticipations--courseParticipation"
+                                            key="courseConversationParticipations--courseParticipation ${courseParticipation.publicId}"
                                             class="button button--rectangle button--transparent button--dropdown-menu"
                                             css="${css`
                                               display: flex;
@@ -3593,7 +3593,9 @@ export default async (application: Application): Promise<void> => {
                                                     }
                                                   this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
                                                 };
-                                                this.onchange();
+                                                window.setTimeout(() => {
+                                                  this.onchange();
+                                                });
                                               `}"
                                             />
                                             $${application.partials.userAvatar({
