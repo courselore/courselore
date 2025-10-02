@@ -186,7 +186,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${javascript`
                   this.isModified = false;
                   const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom-start" });
-                  this.oninput = this.onfocus = utilities.foregroundJob(async () => {
+                  this.oninput = this.onfocusin = utilities.foregroundJob(async () => {
                     if (this.querySelector('[name="search"]').value.trim() === "") {
                       popover.hidePopover();
                       return;
@@ -197,7 +197,7 @@ export default async (application: Application): Promise<void> => {
                       await (await fetch(this.getAttribute("action") + "?" + new URLSearchParams(javascript.serialize(this)))).text()
                     );
                   });
-                  this.onblur = () => {
+                  this.onfocusout = () => {
                     popover.hidePopover();
                   };
                 `}"
