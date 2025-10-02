@@ -194,14 +194,7 @@ export default async (application: Application): Promise<void> => {
                     popover.showPopover();
                     javascript.mount(
                       popover.firstElementChild,
-                      await (
-                        await fetch(
-                          this.getAttribute("action"), {
-                            method: this.getAttribute("method"),
-                            body: javascript.serialize(this),
-                          }
-                        )
-                      ).text()
+                      await (await fetch(this.getAttribute("action") + "?" + new URLSearchParams(javascript.serialize(this)))).text()
                     );
                   });
                   this.onblur = () => {
