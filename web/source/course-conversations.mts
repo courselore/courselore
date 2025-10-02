@@ -173,39 +173,49 @@ export default async (application: Application): Promise<void> => {
                     </a>
                   `
                 : html``}
-              <input
+              <div
                 key="sidebar--menu--search"
-                type="text"
-                placeholder="Search…"
-                maxlength="3000"
-                class="input--text"
+                type="form"
                 css="${css`
                   flex: 1;
                   min-width: var(--size--0);
+                  display: flex;
                 `}"
                 javascript="${javascript`
                   this.isModified = false;
                   const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom-start" });
                   this.oninput = this.onfocus = utilities.foregroundJob(async () => {
-                    if (this.value.trim() === "") {
+                    if (this.querySelector('[name="search"]').value.trim() === "") {
                       popover.hidePopover();
                       return;
                     }
                     popover.showPopover();
-                    javascript.mount(
-                      popover.firstElementChild,
-                      await (
-                        await fetch(
-                          ${`/courses/${request.state.course.publicId}/search`}
-                        )
-                      ).text()
-                    );
+                    // javascript.mount(
+                    //   popover.firstElementChild,
+                    //   await (
+                    //     await fetch(
+                    //       ${`/courses/${request.state.course.publicId}/search`}
+                    //     )
+                    //   ).text()
+                    // );
                   });
                   this.onblur = () => {
                     popover.hidePopover();
                   };
                 `}"
-              />
+              >
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search…"
+                  maxlength="3000"
+                  class="input--text"
+                  css="${css`
+                    flex: 1;
+                    min-width: var(--size--0);
+                  `}"
+                />
+              </div>
               <div
                 type="popover"
                 css="${css`
