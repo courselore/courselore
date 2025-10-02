@@ -173,102 +173,17 @@ export default async (application: Application): Promise<void> => {
                     </a>
                   `
                 : html``}
-              <div
-                key="sidebar--menu--search-and-filter"
-                type="form"
+              <input
+                key="sidebar--menu--search"
+                type="text"
+                placeholder="Search…"
+                maxlength="3000"
                 class="input--text"
                 css="${css`
                   flex: 1;
                   min-width: var(--size--0);
-                  padding: var(--size--0);
-                  display: flex;
                 `}"
-              >
-                <input
-                  type="text"
-                  name="search.courseConversations"
-                  placeholder="Search…"
-                  maxlength="3000"
-                  css="${css`
-                    flex: 1;
-                    min-width: var(--size--0);
-                    padding: var(--size--1) var(--size--0) var(--size--1)
-                      var(--size--2);
-                  `}"
-                />
-                <button
-                  key="sidebar--menu--search-and-filter--search"
-                  type="button"
-                  class="button button--icon button--transparent"
-                  css="${css`
-                    padding: var(--size--1) var(--size--2);
-                  `}"
-                  javascript="${javascript`
-                    javascript.popover({ element: this });
-                    this.onclick = () => {
-                      this.closest('[key~="sidebar--menu--search-and-filter"]').querySelector('[name="search.courseConversations"]').focus();
-                    };
-                  `}"
-                >
-                  <i class="bi bi-search"></i>
-                </button>
-                <div type="popover">Search</div>
-                $${request.state.courseConversationsTags.length > 0
-                  ? html`
-                      <button
-                        key="sidebar--menu--search-and-filter--filter"
-                        type="button"
-                        class="button button--icon button--transparent"
-                        css="${css`
-                          padding: var(--size--1) var(--size--2);
-                        `}"
-                        javascript="${javascript`
-                          javascript.popover({ element: this });
-                          javascript.popover({ element: this, target: this.nextElementSibling.nextElementSibling, trigger: "click", remainOpenWhileFocused: true, placement: "bottom-end" });
-                        `}"
-                      >
-                        <i class="bi bi-filter"></i>
-                      </button>
-                      <div type="popover">Filter</div>
-                      <div
-                        type="popover"
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--2);
-                        `}"
-                      >
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--600),
-                              var(--color--slate--400)
-                            );
-                          `}"
-                        >
-                          Tags
-                        </div>
-                        $${request.state.courseConversationsTags.map(
-                          (courseConversationsTag) => html`
-                            <label
-                              class="button button--rectangle button--transparent button--dropdown-menu"
-                            >
-                              <input
-                                type="checkbox"
-                                name="filter.courseConversationsTags[]"
-                                value="${courseConversationsTag.publicId}"
-                                class="input--checkbox"
-                              />  ${courseConversationsTag.name}
-                            </label>
-                          `,
-                        )}
-                      </div>
-                    `
-                  : html``}
-              </div>
+              />
             </div>
             <div
               key="courseConversations"
