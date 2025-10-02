@@ -1054,14 +1054,60 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const results = new Array<HTML>();
-      results.push(html`
-        <a
-          href="/"
-          class="button button--rectangle button--transparent button--dropdown-menu"
-        >
-          Search result 1
-        </a>
-      `);
+      for (const courseConversationMessage of application.database.all<{}>(
+        sql`
+          select "TODO"
+          from "courseConversationMessages"
+          join "search_courseConversationMessages_contentSearch" on
+            "courseConversationMessages"."id" = "search_courseConversationMessages_contentSearch"."rowid" $${
+              request.state.courseParticipation!.courseParticipationRole !==
+              "courseParticipationRoleInstructor"
+                ? sql`
+                    and
+                    "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                  `
+                : sql``
+            } and
+            "search_courseConversationMessages_contentSearch" match ${utilities
+              .tokenize(request.search.search, {
+                stopWords: application.privateConfiguration.stopWords,
+                stem: (token) => natural.PorterStemmer.stem(token),
+              })
+              .map((tokenWithPosition) => tokenWithPosition.token)
+              .join(" ")}
+          join "courseConversations" on
+            "courseConversationMessages"."courseConversation" = "courseConversation"."id" and (
+              "courseConversation"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+              $${
+                request.state.courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleInstructor"
+                  ? sql`
+                      or
+                      "courseConversation"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                    `
+                  : sql``
+              }
+              or (
+                select true
+                from "courseConversationParticipations"
+                where
+                  "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                  "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+              )
+            )
+          order by "search_courseConversationMessages_contentSearch"."rank"
+          limit 5;
+        `,
+      )) {
+        results.push(html`
+          <a
+            href="/"
+            class="button button--rectangle button--transparent button--dropdown-menu"
+          >
+            Search result 1
+          </a>
+        `);
+      }
       response.end(html`
         <div
           css="${css`
