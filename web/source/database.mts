@@ -2425,7 +2425,6 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "publicId" text not null unique,
             "name" text not null,
-            "nameSearch" text not null,
             "email" text not null unique,
             "emailVerificationEmail" text null,
             "emailVerificationNonce" text null unique,
@@ -2450,20 +2449,6 @@ export default async (application: Application): Promise<void> => {
             "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations"
           ) strict;
           create index "index_users_mostRecentlyVisitedCourseParticipation" on "users" ("mostRecentlyVisitedCourseParticipation");
-          create virtual table "search_users_nameSearch" using fts5(
-            content = "users",
-            content_rowid = "id",
-            "nameSearch"
-          );
-          create trigger "search_users_nameSearch_insert" after insert on "users" begin
-            insert into "search_users_nameSearch" ("rowid", "nameSearch") values ("new"."id", "new"."nameSearch");
-          end;
-          create trigger "search_users_nameSearch_update" after update on "users" begin
-            update "search_users_nameSearch" set "nameSearch" = "new"."nameSearch" where "rowid" = "old"."id";
-          end;
-          create trigger "search_users_nameSearch_delete" after delete on "users" begin
-            delete from "search_users_nameSearch" where "rowid" = "old"."id";
-          end;
           
           create table "userSessions" (
             "id" integer primary key autoincrement,
@@ -2540,20 +2525,6 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
           create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
           create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
-          create virtual table "search_courseConversations_publicId" using fts5(
-            content = "courseConversations",
-            content_rowid = "id",
-            "publicId"
-          );
-          create trigger "search_courseConversations_publicId_insert" after insert on "courseConversations" begin
-            insert into "search_courseConversations_publicId" ("rowid", "publicId") values ("new"."id", "new"."publicId");
-          end;
-          create trigger "search_courseConversations_publicId_update" after update on "courseConversations" begin
-            update "search_courseConversations_publicId" set "publicId" = "new"."publicId" where "rowid" = "old"."id";
-          end;
-          create trigger "search_courseConversations_publicId_delete" after delete on "courseConversations" begin
-            delete from "search_courseConversations_publicId" where "rowid" = "old"."id";
-          end;
           create virtual table "search_courseConversations_titleSearch" using fts5(
             content = "courseConversations",
             content_rowid = "id",
@@ -2740,7 +2711,6 @@ export default async (application: Application): Promise<void> => {
                       insert into "users" (
                         "publicId",
                         "name",
-                        "nameSearch",
                         "email",
                         "emailVerificationEmail",
                         "emailVerificationNonce",
@@ -2767,10 +2737,6 @@ export default async (application: Application): Promise<void> => {
                       values (
                         ${cryptoRandomString({ length: 20, type: "numeric" })},
                         ${userName},
-                        ${utilities
-                          .tokenize(userName)
-                          .map((tokenWithPosition) => tokenWithPosition.token)
-                          .join(" ")},
                         ${`${userIndex === 0 ? "administrator" : `${userName.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
                         ${null},
                         ${null},

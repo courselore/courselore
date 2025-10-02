@@ -1166,7 +1166,6 @@ export default async (application: Application): Promise<void> => {
                   insert into "users" (
                     "publicId",
                     "name",
-                    "nameSearch",
                     "email",
                     "emailVerificationEmail",
                     "emailVerificationNonce",
@@ -1193,10 +1192,6 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
                     ${request.body.name!},
-                    ${utilities
-                      .tokenize(request.body.name!)
-                      .map((tokenWithPosition) => tokenWithPosition.token)
-                      .join(" ")},
                     ${request.body.email},
                     ${request.body.email},
                     ${emailVerificationNonce},
@@ -3411,7 +3406,6 @@ export default async (application: Application): Promise<void> => {
                   insert into "users" (
                     "publicId",
                     "name",
-                    "nameSearch",
                     "email",
                     "emailVerificationEmail",
                     "emailVerificationNonce",
@@ -3438,10 +3432,6 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
                     ${attributes.name!},
-                    ${utilities
-                      .tokenize(attributes.name!)
-                      .map((tokenWithPosition) => tokenWithPosition.token)
-                      .join(" ")},
                     ${attributes.email},
                     ${null},
                     ${null},
