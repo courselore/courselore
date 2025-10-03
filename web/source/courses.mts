@@ -518,7 +518,7 @@ export default async (application: Application): Promise<void> => {
         (typeof request.state.courseParticipation
           .mostRecentlyVisitedCourseConversation === "number"
           ? application.database.get<{
-              publicId: number;
+              publicId: string;
             }>(
               sql`
                 select "publicId"
@@ -550,7 +550,7 @@ export default async (application: Application): Promise<void> => {
             )
           : undefined) ??
         application.database.get<{
-          publicId: number;
+          publicId: string;
         }>(
           sql`
             select "publicId"

@@ -94,7 +94,7 @@ export default async (application: Application): Promise<void> => {
       );
       if (courseParticipation !== undefined) {
         const course = application.database.get<{
-          publicId: number;
+          publicId: string;
         }>(
           sql`
             select "publicId"
