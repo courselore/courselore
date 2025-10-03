@@ -1231,6 +1231,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   $${utilities.snippet(
+                    // TODO: Take in consideration that we must process the content to remove Markdown, similar to the conversations list on the sidebar
                     html`${courseConversationMessage.content}`,
                     new Set(
                       searchTokens.map(
