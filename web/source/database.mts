@@ -2526,9 +2526,10 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
           create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
           create virtual table "search_courseConversations_titleSearch" using fts5(
+            "titleSearch",
             content = "courseConversations",
             content_rowid = "id",
-            "titleSearch"
+            prefix = '2 3'
           );
           create trigger "search_courseConversations_titleSearch_insert" after insert on "courseConversations" begin
             insert into "search_courseConversations_titleSearch" ("rowid", "titleSearch") values ("new"."id", "new"."titleSearch");
@@ -2580,9 +2581,10 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseConversationMessages_createdByCourseParticipation" on "courseConversationMessages" ("createdByCourseParticipation");
           create index "index_courseConversationMessages_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
           create virtual table "search_courseConversationMessages_contentSearch" using fts5(
+            "contentSearch",
             content = "courseConversationMessages",
             content_rowid = "id",
-            "contentSearch"
+            prefix = '2 3'
           );
           create trigger "search_courseConversationMessages_contentSearch_insert" after insert on "courseConversationMessages" begin
             insert into "search_courseConversationMessages_contentSearch" ("rowid", "contentSearch") values ("new"."id", "new"."contentSearch");
