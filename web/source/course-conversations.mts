@@ -1055,7 +1055,6 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const searchTokens = utilities.tokenize(request.search.search, {
-        stopWords: application.privateConfiguration.stopWords,
         stem: (token) => natural.PorterStemmer.stem(token),
       });
       const results = new Array<HTML>();
