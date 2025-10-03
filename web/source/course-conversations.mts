@@ -196,6 +196,7 @@ export default async (application: Application): Promise<void> => {
                       popover.firstElementChild,
                       await (await fetch(this.getAttribute("action") + "?" + new URLSearchParams(javascript.serialize(this)))).text()
                     );
+                    if (popover.matches('[state~="open"]')) popover.showPopover();
                   });
                   this.onfocusout = () => {
                     popover.hidePopover();
