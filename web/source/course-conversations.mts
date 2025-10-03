@@ -1054,36 +1054,33 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const results = new Array<HTML>();
-      for (const courseConversationMessage of application.database.all<{}>(
+      for (const courseConversation of application.database.all<{
+        publicId: string;
+        title: string;
+      }>(
         sql`
-          select "TODO"
-          from "courseConversationMessages"
-          join "search_courseConversationMessages_contentSearch" on
-            "courseConversationMessages"."id" = "search_courseConversationMessages_contentSearch"."rowid" $${
-              request.state.courseParticipation!.courseParticipationRole !==
-              "courseParticipationRoleInstructor"
-                ? sql`
-                    and
-                    "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                  `
-                : sql``
-            } and
-            "search_courseConversationMessages_contentSearch" match ${utilities
+          select
+            "publicId",
+            "title"
+          from "courseConversations"
+          join "search_courseConversations_titleSearch" on
+            "courseConversations"."id" = "search_courseConversations_titleSearch"."rowid" and
+            "search_courseConversations_titleSearch" match ${utilities
               .tokenize(request.search.search, {
                 stopWords: application.privateConfiguration.stopWords,
                 stem: (token) => natural.PorterStemmer.stem(token),
               })
-              .map((tokenWithPosition) => tokenWithPosition.token)
+              .map((tokenWithPosition) => `"${tokenWithPosition.token}"`)
               .join(" ")}
-          join "courseConversations" on
-            "courseConversationMessages"."courseConversation" = "courseConversation"."id" and (
-              "courseConversation"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+          where
+            "courseConversations"."course" = ${request.state.course.id} and (
+              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
               $${
                 request.state.courseParticipation.courseParticipationRole ===
                 "courseParticipationRoleInstructor"
                   ? sql`
                       or
-                      "courseConversation"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
                     `
                   : sql``
               }
@@ -1095,19 +1092,74 @@ export default async (application: Application): Promise<void> => {
                   "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
               )
             )
-          order by "search_courseConversationMessages_contentSearch"."rank"
+          order by "search_courseConversations_titleSearch"."rank" asc
           limit 5;
         `,
       )) {
         results.push(html`
           <a
-            href="/"
+            href="/courses/${request.state.course
+              .publicId}/conversations/${courseConversation.publicId}"
             class="button button--rectangle button--transparent button--dropdown-menu"
           >
-            Search result 1
+            ${courseConversation.title}
           </a>
         `);
       }
+      // for (const courseConversationMessage of application.database.all<{}>(
+      //   sql`
+      //     select "TODO"
+      //     from "courseConversationMessages"
+      //     join "search_courseConversationMessages_contentSearch" on
+      //       "courseConversationMessages"."id" = "search_courseConversationMessages_contentSearch"."rowid" $${
+      //         request.state.courseParticipation!.courseParticipationRole !==
+      //         "courseParticipationRoleInstructor"
+      //           ? sql`
+      //               and
+      //               "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+      //             `
+      //           : sql``
+      //       } and
+      //       "search_courseConversationMessages_contentSearch" match ${utilities
+      //         .tokenize(request.search.search, {
+      //           stopWords: application.privateConfiguration.stopWords,
+      //           stem: (token) => natural.PorterStemmer.stem(token),
+      //         })
+      //         .map((tokenWithPosition) => tokenWithPosition.token)
+      //         .join(" ")}
+      //     join "courseConversations" on
+      //       "courseConversationMessages"."courseConversation" = "courseConversation"."id" and (
+      //         "courseConversation"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+      //         $${
+      //           request.state.courseParticipation.courseParticipationRole ===
+      //           "courseParticipationRoleInstructor"
+      //             ? sql`
+      //                 or
+      //                 "courseConversation"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+      //               `
+      //             : sql``
+      //         }
+      //         or (
+      //           select true
+      //           from "courseConversationParticipations"
+      //           where
+      //             "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+      //             "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+      //         )
+      //       )
+      //     order by "search_courseConversationMessages_contentSearch"."rank"
+      //     limit 5;
+      //   `,
+      // )) {
+      //   results.push(html`
+      //     <a
+      //       href="/"
+      //       class="button button--rectangle button--transparent button--dropdown-menu"
+      //     >
+      //       Search result 1
+      //     </a>
+      //   `);
+      // }
       response.end(html`
         <div
           css="${css`
@@ -2462,7 +2514,10 @@ export default async (application: Application): Promise<void> => {
                     ${Number(request.body.pinned === "true")},
                     ${request.body.title},
                     ${utilities
-                      .tokenize(request.body.title!)
+                      .tokenize(request.body.title!, {
+                        stopWords: application.privateConfiguration.stopWords,
+                        stem: (token) => natural.PorterStemmer.stem(token),
+                      })
                       .map((tokenWithPosition) => tokenWithPosition.token)
                       .join(" ")}
                   );

@@ -3043,7 +3043,11 @@ export default async (application: Application): Promise<void> => {
                         ${Number(courseConversationPublicId !== 1 && Math.random() < 0.1)},
                         ${courseConversationTitle},
                         ${utilities
-                          .tokenize(courseConversationTitle)
+                          .tokenize(courseConversationTitle, {
+                            stopWords:
+                              application.privateConfiguration.stopWords,
+                            stem: (token) => natural.PorterStemmer.stem(token),
+                          })
                           .map((tokenWithPosition) => tokenWithPosition.token)
                           .join(" ")}
                       );
