@@ -1069,8 +1069,8 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             select
-              "publicId",
-              "title"
+              "courseConversations"."publicId" as "publicId",
+              "courseConversations"."title" as "title"
             from "courseConversations"
             join "search_courseConversations_titleSearch" on
               "courseConversations"."id" = "search_courseConversations_titleSearch"."rowid" and
@@ -1134,60 +1134,119 @@ export default async (application: Application): Promise<void> => {
               >
             </a>
           `);
-        // for (const courseConversationMessage of application.database.all<{}>(
-        //   sql`
-        //     select "TODO"
-        //     from "courseConversationMessages"
-        //     join "search_courseConversationMessages_contentSearch" on
-        //       "courseConversationMessages"."id" = "search_courseConversationMessages_contentSearch"."rowid" $${
-        //         request.state.courseParticipation!.courseParticipationRole !==
-        //         "courseParticipationRoleInstructor"
-        //           ? sql`
-        //               and
-        //               "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-        //             `
-        //           : sql``
-        //       } and
-        //       "search_courseConversationMessages_contentSearch" match ${utilities
-        //         .tokenize(request.search.search, {
-        //           stopWords: application.privateConfiguration.stopWords,
-        //           stem: (token) => natural.PorterStemmer.stem(token),
-        //         })
-        //         .map((tokenWithPosition) => tokenWithPosition.token)
-        //         .join(" ")}
-        //     join "courseConversations" on
-        //       "courseConversationMessages"."courseConversation" = "courseConversation"."id" and (
-        //         "courseConversation"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-        //         $${
-        //           request.state.courseParticipation.courseParticipationRole ===
-        //           "courseParticipationRoleInstructor"
-        //             ? sql`
-        //                 or
-        //                 "courseConversation"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-        //               `
-        //             : sql``
-        //         }
-        //         or (
-        //           select true
-        //           from "courseConversationParticipations"
-        //           where
-        //             "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-        //             "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-        //         )
-        //       )
-        //     order by "search_courseConversationMessages_contentSearch"."rank"
-        //     limit 5;
-        //   `,
-        // )) {
-        //   results.push(html`
-        //     <a
-        //       href="/"
-        //       class="button button--rectangle button--transparent button--dropdown-menu"
-        //     >
-        //       Search result 1
-        //     </a>
-        //   `);
-        // }
+        if (results.length < 5)
+          for (const courseConversationMessage of application.database.all<{
+            publicId: string;
+            courseConversation: number;
+            content: string;
+          }>(
+            sql`
+              select
+                "courseConversationMessages"."publicId" as "publicId",
+                "courseConversationMessages"."courseConversation" as "courseConversation",
+                "courseConversationMessages"."content" as "content"
+              from "courseConversationMessages"
+              join "search_courseConversationMessages_contentSearch" on
+                "courseConversationMessages"."id" = "search_courseConversationMessages_contentSearch"."rowid" and
+                "search_courseConversationMessages_contentSearch" match ${searchString}
+              join "courseConversations" on
+                "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                "courseConversations"."course" = ${request.state.course.id} and (
+                  "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                  $${
+                    request.state.courseParticipation
+                      .courseParticipationRole ===
+                    "courseParticipationRoleInstructor"
+                      ? sql`
+                          or
+                          "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                        `
+                      : sql``
+                  }
+                  or (
+                    select true
+                    from "courseConversationParticipations"
+                    where
+                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                      "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                  )
+                )
+              $${
+                request.state.courseParticipation!.courseParticipationRole !==
+                "courseParticipationRoleInstructor"
+                  ? sql`
+                      where
+                        "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                    `
+                  : sql``
+              }
+              order by "search_courseConversationMessages_contentSearch"."rank" asc
+              limit ${5 - results.length};
+            `,
+          )) {
+            const courseConversation = application.database.get<{
+              publicId: string;
+              title: string;
+            }>(
+              sql`
+                select
+                  "publicId",
+                  "title"
+                from "courseConversations"
+                where "id" = ${courseConversationMessage.courseConversation};
+              `,
+            );
+            if (courseConversation === undefined) throw new Error();
+            results.push(html`
+              <a
+                href="/courses/${request.state.course
+                  .publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
+                  { message: courseConversationMessage.publicId },
+                ).toString()}"
+                class="button button--rectangle button--transparent button--dropdown-menu"
+              >
+                <div>
+                  <span
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 500;
+                      color: light-dark(
+                        var(--color--slate--400),
+                        var(--color--slate--600)
+                      );
+                    `}"
+                    >#${courseConversation.publicId}</span
+                  >
+                  <span>${courseConversation.title}</span>
+                </div>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    color: light-dark(
+                      var(--color--slate--600),
+                      var(--color--slate--400)
+                    );
+                  `}"
+                >
+                  $${utilities.snippet(
+                    html`${courseConversationMessage.content}`,
+                    new Set(
+                      searchTokens.map(
+                        (tokenWithPosition) => tokenWithPosition.token,
+                      ),
+                    ),
+                    {
+                      prefix: true,
+                      stopWords: application.privateConfiguration.stopWords,
+                      stem: (token) => natural.PorterStemmer.stem(token),
+                    },
+                  )}
+                </div>
+              </a>
+            `);
+          }
       }
       response.end(html`
         <div

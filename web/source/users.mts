@@ -97,10 +97,10 @@ export default async (application: Application): Promise<void> => {
           publicId: number;
         }>(
           sql`
-          select "publicId"
-          from "courses"
-          where "id" = ${courseParticipation.course};
-        `,
+            select "publicId"
+            from "courses"
+            where "id" = ${courseParticipation.course};
+          `,
         );
         if (course === undefined) throw new Error();
         response.redirect(`/courses/${course.publicId}`);
