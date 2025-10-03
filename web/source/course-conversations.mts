@@ -1054,15 +1054,15 @@ export default async (application: Application): Promise<void> => {
         request.search.search.trim() === ""
       )
         throw "validation";
-      const search = utilities
-        .tokenize(request.search.search, {
-          stopWords: application.privateConfiguration.stopWords,
-          stem: (token) => natural.PorterStemmer.stem(token),
-        })
-        .map((tokenWithPosition) => `"${tokenWithPosition.token}"`)
-        .join(" ");
+      const searchTokens = utilities.tokenize(request.search.search, {
+        stopWords: application.privateConfiguration.stopWords,
+        stem: (token) => natural.PorterStemmer.stem(token),
+      });
       const results = new Array<HTML>();
-      if (search !== "") {
+      if (0 < searchTokens.length) {
+        const searchString = searchTokens
+          .map((tokenWithPosition) => `"${tokenWithPosition.token}"`)
+          .join(" ");
         for (const courseConversation of application.database.all<{
           publicId: string;
           title: string;
@@ -1074,7 +1074,7 @@ export default async (application: Application): Promise<void> => {
             from "courseConversations"
             join "search_courseConversations_titleSearch" on
               "courseConversations"."id" = "search_courseConversations_titleSearch"."rowid" and
-              "search_courseConversations_titleSearch" match ${search}
+              "search_courseConversations_titleSearch" match ${searchString}
             where
               "courseConversations"."course" = ${request.state.course.id} and (
                 "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
@@ -1117,7 +1117,21 @@ export default async (application: Application): Promise<void> => {
                 `}"
                 >#${courseConversation.publicId}</span
               >
-              <span>${courseConversation.title}</span>
+              <span
+                >$${utilities.highlight(
+                  html`${courseConversation.title}`,
+                  new Set(
+                    searchTokens.map(
+                      (tokenWithPosition) => tokenWithPosition.token,
+                    ),
+                  ),
+                  {
+                    // TODO: prefix: true,
+                    stopWords: application.privateConfiguration.stopWords,
+                    stem: (token) => natural.PorterStemmer.stem(token),
+                  },
+                )}</span
+              >
             </a>
           `);
         // for (const courseConversationMessage of application.database.all<{}>(
