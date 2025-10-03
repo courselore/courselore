@@ -32,7 +32,7 @@ export type ApplicationCourseConversation = {
 };
 
 export default async (application: Application): Promise<void> => {
-  const courseConversationsLayout = ({
+  const courseConversationsLayout = async ({
     request,
     response,
     head,
@@ -48,7 +48,7 @@ export default async (application: Application): Promise<void> => {
     response: serverTypes.Response;
     head: HTML;
     body: HTML;
-  }): HTML => {
+  }): Promise<HTML> => {
     if (
       request.state.user === undefined ||
       request.state.course === undefined ||
@@ -237,305 +237,487 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <div key="courseConversations--to-group" hidden>
-                $${application.database
-                  .all<{
-                    id: number;
-                    publicId: string;
-                    courseConversationType:
-                      | "courseConversationTypeNote"
-                      | "courseConversationTypeQuestion";
-                    questionResolved: number;
-                    pinned: number;
-                    title: string;
-                  }>(
-                    sql`
-                      select
-                        "id",
-                        "publicId",
-                        "courseConversationType",
-                        "questionResolved",
-                        "pinned",
-                        "title"
-                      from "courseConversations"
-                      where
-                        "course" = ${request.state.course.id} and (
-                          "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                          $${
-                            request.state.courseParticipation
-                              .courseParticipationRole ===
-                            "courseParticipationRoleInstructor"
-                              ? sql`
-                                  or
-                                  "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                                `
-                              : sql``
-                          }
-                          or (
-                            select true
-                            from "courseConversationParticipations"
-                            where
-                              "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                              "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                $${await Promise.all(
+                  application.database
+                    .all<{
+                      id: number;
+                      publicId: string;
+                      courseConversationType:
+                        | "courseConversationTypeNote"
+                        | "courseConversationTypeQuestion";
+                      questionResolved: number;
+                      pinned: number;
+                      title: string;
+                    }>(
+                      sql`
+                        select
+                          "id",
+                          "publicId",
+                          "courseConversationType",
+                          "questionResolved",
+                          "pinned",
+                          "title"
+                        from "courseConversations"
+                        where
+                          "course" = ${request.state.course.id} and (
+                            "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                            $${
+                              request.state.courseParticipation
+                                .courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
+                                ? sql`
+                                    or
+                                    "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                  `
+                                : sql``
+                            }
+                            or (
+                              select true
+                              from "courseConversationParticipations"
+                              where
+                                "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                            )
                           )
-                        )
-                      order by
-                        "pinned" = true desc,
-                        "id" desc;
-                    `,
-                  )
-                  .map((courseConversation) => {
-                    const firstCourseConversationMessage =
-                      application.database.get<{
-                        createdAt: string;
-                        createdByCourseParticipation: number | null;
-                        courseConversationMessageAnonymity:
-                          | "courseConversationMessageAnonymityNone"
-                          | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-                          | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
-                        content: string;
-                      }>(
-                        sql`
-                          select
-                            "createdAt",
-                            "createdByCourseParticipation",
-                            "courseConversationMessageAnonymity",
-                            "content"
-                          from "courseConversationMessages"
-                          where "courseConversation" = ${courseConversation.id}
-                          order by "id" asc
-                          limit 1;
-                        `,
-                      );
-                    if (firstCourseConversationMessage === undefined)
-                      throw new Error();
-                    const firstCourseConversationMessageAnonymous =
-                      firstCourseConversationMessage.createdByCourseParticipation !==
-                        request.state.courseParticipation!.id &&
-                      ((firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                        "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
-                        request.state.courseParticipation!
-                          .courseParticipationRole ===
-                          "courseParticipationRoleStudent") ||
-                        firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                          "courseConversationMessageAnonymityCourseParticipationRoleInstructors");
-                    const firstCourseConversationMessageCreatedByCourseParticipation =
-                      typeof firstCourseConversationMessage.createdByCourseParticipation ===
-                        "number" && !firstCourseConversationMessageAnonymous
-                        ? application.database.get<{
-                            user: number;
-                            courseParticipationRole:
-                              | "courseParticipationRoleInstructor"
-                              | "courseParticipationRoleStudent";
-                          }>(
-                            sql`
-                              select
-                                "user",
-                                "courseParticipationRole"
-                              from "courseParticipations"
-                              where "id" = ${firstCourseConversationMessage.createdByCourseParticipation};
-                            `,
-                          )
-                        : undefined;
-                    const firstCourseConversationMessageCreatedByCourseParticipationUser =
-                      typeof firstCourseConversationMessageCreatedByCourseParticipation ===
-                      "object"
-                        ? application.database.get<{
-                            publicId: string;
-                            name: string;
-                            avatarColor:
-                              | "red"
-                              | "orange"
-                              | "amber"
-                              | "yellow"
-                              | "lime"
-                              | "green"
-                              | "emerald"
-                              | "teal"
-                              | "cyan"
-                              | "sky"
-                              | "blue"
-                              | "indigo"
-                              | "violet"
-                              | "purple"
-                              | "fuchsia"
-                              | "pink"
-                              | "rose";
-                            avatarImage: string | null;
-                            lastSeenOnlineAt: string;
-                          }>(
-                            sql`
-                              select
-                                "publicId",
-                                "name",
-                                "avatarColor",
-                                "avatarImage",
-                                "lastSeenOnlineAt"
-                              from "users"
-                              where "id" = ${firstCourseConversationMessageCreatedByCourseParticipation.user};
-                            `,
-                          )
-                        : undefined;
-                    return html`
-                      <a
-                        key="courseConversation /courses/${request.state.course!
-                          .publicId}/conversations/${courseConversation.publicId}"
-                        href="/courses/${request.state.course!
-                          .publicId}/conversations/${courseConversation.publicId}"
-                        css="${css`
-                          padding: var(--size--2) var(--size--4);
-                          border-bottom: var(--border-width--1) solid
-                            light-dark(
-                              var(--color--slate--200),
-                              var(--color--slate--800)
-                            );
-                          display: flex;
-                          gap: var(--size--2);
-                          cursor: pointer;
-                          transition-property: var(
-                            --transition-property--colors
-                          );
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--ease-in-out
-                          );
-                        `} ${request.state.courseConversation?.id ===
-                        courseConversation.id
-                          ? css`
-                              color: light-dark(
-                                var(--color--white),
-                                var(--color--white)
-                              );
-                              background-color: light-dark(
-                                var(--color--blue--500),
-                                var(--color--blue--500)
-                              );
-                              &:hover,
-                              &:focus-within {
-                                background-color: light-dark(
-                                  var(--color--blue--400),
-                                  var(--color--blue--400)
-                                );
-                              }
-                              &:active {
-                                background-color: light-dark(
-                                  var(--color--blue--600),
-                                  var(--color--blue--600)
-                                );
-                              }
-                            `
-                          : css`
-                              &:hover,
-                              &:focus-within {
-                                background-color: light-dark(
-                                  var(--color--slate--50),
-                                  var(--color--slate--950)
-                                );
-                              }
-                              &:active {
-                                background-color: light-dark(
-                                  var(--color--slate--100),
-                                  var(--color--slate--900)
-                                );
-                              }
-                            `}"
-                        javascript="${javascript`
-                          this.pinned = ${Boolean(courseConversation.pinned)};
-                          this.firstCourseConversationMessageCreatedAt = ${firstCourseConversationMessage.createdAt};
-                          this.current = ${
-                            request.state.courseConversation?.id ===
-                            courseConversation.id
-                          };
-                        `}"
-                      >
-                        <div key="courseConversation--sidebar">
-                          <div
-                            css="${css`
-                              display: flex;
-                              align-items: center;
-                            `}"
-                          >
-                            $${request.state.courseConversation?.id !==
-                              courseConversation.id &&
-                            application.database.get(
+                        order by
+                          "pinned" = true desc,
+                          "id" desc;
+                      `,
+                    )
+                    .map(async (courseConversation) => {
+                      const firstCourseConversationMessage =
+                        application.database.get<{
+                          publicId: string;
+                          createdAt: string;
+                          updatedAt: string | null;
+                          createdByCourseParticipation: number | null;
+                          courseConversationMessageAnonymity:
+                            | "courseConversationMessageAnonymityNone"
+                            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                            | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+                          content: string;
+                        }>(
+                          sql`
+                            select
+                              "publicId",
+                              "createdAt",
+                              "updatedAt",
+                              "createdByCourseParticipation",
+                              "courseConversationMessageAnonymity",
+                              "content"
+                            from "courseConversationMessages"
+                            where "courseConversation" = ${courseConversation.id}
+                            order by "id" asc
+                            limit 1;
+                          `,
+                        );
+                      if (firstCourseConversationMessage === undefined)
+                        throw new Error();
+                      const firstCourseConversationMessageAnonymous =
+                        firstCourseConversationMessage.createdByCourseParticipation !==
+                          request.state.courseParticipation!.id &&
+                        ((firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                          "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                          request.state.courseParticipation!
+                            .courseParticipationRole ===
+                            "courseParticipationRoleStudent") ||
+                          firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                            "courseConversationMessageAnonymityCourseParticipationRoleInstructors");
+                      const firstCourseConversationMessageCreatedByCourseParticipation =
+                        typeof firstCourseConversationMessage.createdByCourseParticipation ===
+                          "number" && !firstCourseConversationMessageAnonymous
+                          ? application.database.get<{
+                              user: number;
+                              courseParticipationRole:
+                                | "courseParticipationRoleInstructor"
+                                | "courseParticipationRoleStudent";
+                            }>(
                               sql`
-                                select true
-                                from "courseConversationMessages"
-                                left join "courseConversationMessageViews" on
-                                  "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                                  "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
-                                where
-                                  "courseConversationMessages"."courseConversation" = ${courseConversation.id} $${
-                                    request.state.courseParticipation!
-                                      .courseParticipationRole !==
-                                    "courseParticipationRoleInstructor"
-                                      ? sql`
-                                          and
-                                          "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                                        `
-                                      : sql``
-                                  } and
-                                  "courseConversationMessageViews"."id" is null
-                                limit 1;
+                                select
+                                  "user",
+                                  "courseParticipationRole"
+                                from "courseParticipations"
+                                where "id" = ${firstCourseConversationMessage.createdByCourseParticipation};
                               `,
-                            ) !== undefined
-                              ? html`
-                                  <div
-                                    key="courseConversation--sidebar--courseConversationMessageViews"
-                                    css="${css`
-                                      font-size: var(--size--1-5);
-                                      color: light-dark(
-                                        var(--color--blue--500),
-                                        var(--color--blue--500)
-                                      );
-                                      position: absolute;
-                                      translate: calc(-100% - var(--size--1));
-                                    `}"
-                                  >
-                                    <i class="bi bi-circle-fill"></i>
-                                  </div>
-                                `
-                              : html``}
-                            <div key="courseConversation--sidebar--userAvatar">
-                              $${application.partials.userAvatar({
-                                user: firstCourseConversationMessageAnonymous
-                                  ? "anonymous"
-                                  : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
-                                    "courseParticipationDeleted"),
-                                size: 9,
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          key="courseConversation--main"
+                            )
+                          : undefined;
+                      const firstCourseConversationMessageCreatedByCourseParticipationUser =
+                        typeof firstCourseConversationMessageCreatedByCourseParticipation ===
+                        "object"
+                          ? application.database.get<{
+                              publicId: string;
+                              name: string;
+                              avatarColor:
+                                | "red"
+                                | "orange"
+                                | "amber"
+                                | "yellow"
+                                | "lime"
+                                | "green"
+                                | "emerald"
+                                | "teal"
+                                | "cyan"
+                                | "sky"
+                                | "blue"
+                                | "indigo"
+                                | "violet"
+                                | "purple"
+                                | "fuchsia"
+                                | "pink"
+                                | "rose";
+                              avatarImage: string | null;
+                              lastSeenOnlineAt: string;
+                            }>(
+                              sql`
+                                select
+                                  "publicId",
+                                  "name",
+                                  "avatarColor",
+                                  "avatarImage",
+                                  "lastSeenOnlineAt"
+                                from "users"
+                                where "id" = ${firstCourseConversationMessageCreatedByCourseParticipation.user};
+                              `,
+                            )
+                          : undefined;
+                      return html`
+                        <a
+                          key="courseConversation /courses/${request.state
+                            .course!
+                            .publicId}/conversations/${courseConversation.publicId}"
+                          href="/courses/${request.state.course!
+                            .publicId}/conversations/${courseConversation.publicId}"
                           css="${css`
-                            flex: 1;
-                            min-width: var(--size--0);
+                            padding: var(--size--2) var(--size--4);
+                            border-bottom: var(--border-width--1) solid
+                              light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            display: flex;
+                            gap: var(--size--2);
+                            cursor: pointer;
+                            transition-property: var(
+                              --transition-property--colors
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--ease-in-out
+                            );
+                          `} ${request.state.courseConversation?.id ===
+                          courseConversation.id
+                            ? css`
+                                color: light-dark(
+                                  var(--color--white),
+                                  var(--color--white)
+                                );
+                                background-color: light-dark(
+                                  var(--color--blue--500),
+                                  var(--color--blue--500)
+                                );
+                                &:hover,
+                                &:focus-within {
+                                  background-color: light-dark(
+                                    var(--color--blue--400),
+                                    var(--color--blue--400)
+                                  );
+                                }
+                                &:active {
+                                  background-color: light-dark(
+                                    var(--color--blue--600),
+                                    var(--color--blue--600)
+                                  );
+                                }
+                              `
+                            : css`
+                                &:hover,
+                                &:focus-within {
+                                  background-color: light-dark(
+                                    var(--color--slate--50),
+                                    var(--color--slate--950)
+                                  );
+                                }
+                                &:active {
+                                  background-color: light-dark(
+                                    var(--color--slate--100),
+                                    var(--color--slate--900)
+                                  );
+                                }
+                              `}"
+                          javascript="${javascript`
+                            this.pinned = ${Boolean(courseConversation.pinned)};
+                            this.firstCourseConversationMessageCreatedAt = ${firstCourseConversationMessage.createdAt};
+                            this.current = ${
+                              request.state.courseConversation?.id ===
+                              courseConversation.id
+                            };
                           `}"
                         >
+                          <div key="courseConversation--sidebar">
+                            <div
+                              css="${css`
+                                display: flex;
+                                align-items: center;
+                              `}"
+                            >
+                              $${request.state.courseConversation?.id !==
+                                courseConversation.id &&
+                              application.database.get(
+                                sql`
+                                  select true
+                                  from "courseConversationMessages"
+                                  left join "courseConversationMessageViews" on
+                                    "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                                    "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
+                                  where
+                                    "courseConversationMessages"."courseConversation" = ${courseConversation.id} $${
+                                      request.state.courseParticipation!
+                                        .courseParticipationRole !==
+                                      "courseParticipationRoleInstructor"
+                                        ? sql`
+                                            and
+                                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                          `
+                                        : sql``
+                                    } and
+                                    "courseConversationMessageViews"."id" is null
+                                  limit 1;
+                                `,
+                              ) !== undefined
+                                ? html`
+                                    <div
+                                      key="courseConversation--sidebar--courseConversationMessageViews"
+                                      css="${css`
+                                        font-size: var(--size--1-5);
+                                        color: light-dark(
+                                          var(--color--blue--500),
+                                          var(--color--blue--500)
+                                        );
+                                        position: absolute;
+                                        translate: calc(-100% - var(--size--1));
+                                      `}"
+                                    >
+                                      <i class="bi bi-circle-fill"></i>
+                                    </div>
+                                  `
+                                : html``}
+                              <div
+                                key="courseConversation--sidebar--userAvatar"
+                              >
+                                $${application.partials.userAvatar({
+                                  user: firstCourseConversationMessageAnonymous
+                                    ? "anonymous"
+                                    : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
+                                      "courseParticipationDeleted"),
+                                  size: 9,
+                                })}
+                              </div>
+                            </div>
+                          </div>
                           <div
-                            key="courseConversation--main--header"
+                            key="courseConversation--main"
                             css="${css`
-                              display: flex;
-                              align-items: baseline;
-                              gap: var(--size--2);
+                              flex: 1;
+                              min-width: var(--size--0);
                             `}"
                           >
                             <div
-                              key="courseConversation--main--header--title"
+                              key="courseConversation--main--header"
                               css="${css`
-                                flex: 1;
-                                font-weight: 600;
+                                display: flex;
+                                align-items: baseline;
+                                gap: var(--size--2);
                               `}"
                             >
-                              ${courseConversation.title}
+                              <div
+                                key="courseConversation--main--header--title"
+                                css="${css`
+                                  flex: 1;
+                                  font-weight: 600;
+                                `}"
+                              >
+                                ${courseConversation.title}
+                              </div>
+                              <div
+                                key="courseConversation--main--header--publicId"
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 500;
+                                `} ${request.state.courseConversation?.id ===
+                                courseConversation.id
+                                  ? css`
+                                      color: light-dark(
+                                        var(--color--blue--300),
+                                        var(--color--blue--300)
+                                      );
+                                    `
+                                  : css`
+                                      color: light-dark(
+                                        var(--color--slate--400),
+                                        var(--color--slate--600)
+                                      );
+                                    `}"
+                              >
+                                #${courseConversation.publicId}
+                              </div>
                             </div>
                             <div
-                              key="courseConversation--main--header--publicId"
+                              key="courseConversation--main--byline"
                               css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
-                                font-weight: 500;
+                              `} ${request.state.courseConversation?.id ===
+                              courseConversation.id
+                                ? css`
+                                    color: light-dark(
+                                      var(--color--blue--200),
+                                      var(--color--blue--200)
+                                    );
+                                  `
+                                : css`
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                  `}"
+                            >
+                              <span
+                                css="${css`
+                                  font-weight: 600;
+                                `}"
+                                >${firstCourseConversationMessageAnonymous
+                                  ? "Anonymous"
+                                  : (firstCourseConversationMessageCreatedByCourseParticipationUser?.name ??
+                                    "Deleted course participant")}</span
+                              >${!firstCourseConversationMessageAnonymous
+                                ? `${
+                                    firstCourseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                    "courseParticipationRoleInstructor"
+                                      ? " (instructor)"
+                                      : ""
+                                  }${
+                                    firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                    "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                                      ? " (anonymous to students)"
+                                      : firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                          "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                                        ? " (anonymous to instructors)"
+                                        : ""
+                                  }`
+                                : ``} ·
+                              <span
+                                javascript="${javascript`
+                                  javascript.relativizeDateTimeElement(this, ${firstCourseConversationMessage.createdAt}, { capitalize: true });
+                                  javascript.popover({ element: this });
+                                `}"
+                              ></span>
+                              <span
+                                type="popover"
+                                javascript="${javascript`
+                                  this.textContent = javascript.localizeDateTime(${firstCourseConversationMessage.createdAt});
+                                `}"
+                              ></span>
+                            </div>
+                            <div
+                              key="courseConversation--main--details"
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                              `} ${request.state.courseConversation?.id ===
+                              courseConversation.id
+                                ? css`
+                                    color: light-dark(
+                                      var(--color--blue--200),
+                                      var(--color--blue--200)
+                                    );
+                                  `
+                                : css`
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                  `}"
+                            >
+                              $${(() => {
+                                const courseConversationMainDetails = [
+                                  html`<span
+                                      css="${css`
+                                        font-weight: 600;
+                                      `}"
+                                      >${courseConversation.courseConversationType ===
+                                      "courseConversationTypeNote"
+                                        ? "Note"
+                                        : courseConversation.courseConversationType ===
+                                            "courseConversationTypeQuestion"
+                                          ? "Question"
+                                          : (() => {
+                                              throw new Error();
+                                            })()}</span
+                                    >$${courseConversation.courseConversationType ===
+                                    "courseConversationTypeQuestion"
+                                      ? Boolean(
+                                          courseConversation.questionResolved,
+                                        ) === false
+                                        ? html` <span
+                                            css="${request.state
+                                              .courseConversation?.id ===
+                                            courseConversation.id
+                                              ? css``
+                                              : css`
+                                                  color: light-dark(
+                                                    var(--color--red--500),
+                                                    var(--color--red--500)
+                                                  );
+                                                `}"
+                                            >(unresolved)</span
+                                          >`
+                                        : html` <span
+                                            css="${request.state
+                                              .courseConversation?.id ===
+                                            courseConversation.id
+                                              ? css``
+                                              : css`
+                                                  color: light-dark(
+                                                    var(--color--green--500),
+                                                    var(--color--green--500)
+                                                  );
+                                                `}"
+                                            >(resolved)</span
+                                          >`
+                                      : ""}`,
+                                ];
+                                for (const courseConversationsTag of request
+                                  .state.courseConversationsTags!)
+                                  if (
+                                    application.database.get(
+                                      sql`
+                                        select true
+                                        from "courseConversationTaggings"
+                                        where
+                                          "courseConversation" = ${courseConversation.id} and
+                                          "courseConversationsTag" = ${courseConversationsTag.id};
+                                      `,
+                                    ) !== undefined
+                                  )
+                                    courseConversationMainDetails.push(
+                                      html`${courseConversationsTag.name}`,
+                                    );
+                                return courseConversationMainDetails.join(
+                                  " · ",
+                                );
+                              })()}
+                            </div>
+                            <div
+                              key="courseConversation--main--firstCourseConversationMessageContent"
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
                               `} ${request.state.courseConversation?.id ===
                               courseConversation.id
                                 ? css`
@@ -551,186 +733,25 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   `}"
                             >
-                              #${courseConversation.publicId}
+                              ${(
+                                await application.partials.courseConversationMessageContentProcessor(
+                                  {
+                                    course: request.state.course!,
+                                    courseParticipation:
+                                      request.state.courseParticipation,
+                                    courseConversation,
+                                    courseConversationMessage:
+                                      firstCourseConversationMessage,
+                                    mode: "textContent",
+                                  },
+                                )
+                              ).slice(0, 1000)}
                             </div>
                           </div>
-                          <div
-                            key="courseConversation--main--byline"
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                            `} ${request.state.courseConversation?.id ===
-                            courseConversation.id
-                              ? css`
-                                  color: light-dark(
-                                    var(--color--blue--200),
-                                    var(--color--blue--200)
-                                  );
-                                `
-                              : css`
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
-                                `}"
-                          >
-                            <span
-                              css="${css`
-                                font-weight: 600;
-                              `}"
-                              >${firstCourseConversationMessageAnonymous
-                                ? "Anonymous"
-                                : (firstCourseConversationMessageCreatedByCourseParticipationUser?.name ??
-                                  "Deleted course participant")}</span
-                            >${!firstCourseConversationMessageAnonymous
-                              ? `${
-                                  firstCourseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                  "courseParticipationRoleInstructor"
-                                    ? " (instructor)"
-                                    : ""
-                                }${
-                                  firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                                  "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-                                    ? " (anonymous to students)"
-                                    : firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                                        "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
-                                      ? " (anonymous to instructors)"
-                                      : ""
-                                }`
-                              : ``} ·
-                            <span
-                              javascript="${javascript`
-                                javascript.relativizeDateTimeElement(this, ${firstCourseConversationMessage.createdAt}, { capitalize: true });
-                                javascript.popover({ element: this });
-                              `}"
-                            ></span>
-                            <span
-                              type="popover"
-                              javascript="${javascript`
-                                this.textContent = javascript.localizeDateTime(${firstCourseConversationMessage.createdAt});
-                              `}"
-                            ></span>
-                          </div>
-                          <div
-                            key="courseConversation--main--details"
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                            `} ${request.state.courseConversation?.id ===
-                            courseConversation.id
-                              ? css`
-                                  color: light-dark(
-                                    var(--color--blue--200),
-                                    var(--color--blue--200)
-                                  );
-                                `
-                              : css`
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
-                                `}"
-                          >
-                            $${(() => {
-                              const courseConversationMainDetails = [
-                                html`<span
-                                    css="${css`
-                                      font-weight: 600;
-                                    `}"
-                                    >${courseConversation.courseConversationType ===
-                                    "courseConversationTypeNote"
-                                      ? "Note"
-                                      : courseConversation.courseConversationType ===
-                                          "courseConversationTypeQuestion"
-                                        ? "Question"
-                                        : (() => {
-                                            throw new Error();
-                                          })()}</span
-                                  >$${courseConversation.courseConversationType ===
-                                  "courseConversationTypeQuestion"
-                                    ? Boolean(
-                                        courseConversation.questionResolved,
-                                      ) === false
-                                      ? html` <span
-                                          css="${request.state
-                                            .courseConversation?.id ===
-                                          courseConversation.id
-                                            ? css``
-                                            : css`
-                                                color: light-dark(
-                                                  var(--color--red--500),
-                                                  var(--color--red--500)
-                                                );
-                                              `}"
-                                          >(unresolved)</span
-                                        >`
-                                      : html` <span
-                                          css="${request.state
-                                            .courseConversation?.id ===
-                                          courseConversation.id
-                                            ? css``
-                                            : css`
-                                                color: light-dark(
-                                                  var(--color--green--500),
-                                                  var(--color--green--500)
-                                                );
-                                              `}"
-                                          >(resolved)</span
-                                        >`
-                                    : ""}`,
-                              ];
-                              for (const courseConversationsTag of request.state
-                                .courseConversationsTags!)
-                                if (
-                                  application.database.get(
-                                    sql`
-                                      select true
-                                      from "courseConversationTaggings"
-                                      where
-                                        "courseConversation" = ${courseConversation.id} and
-                                        "courseConversationsTag" = ${courseConversationsTag.id};
-                                    `,
-                                  ) !== undefined
-                                )
-                                  courseConversationMainDetails.push(
-                                    html`${courseConversationsTag.name}`,
-                                  );
-                              return courseConversationMainDetails.join(" · ");
-                            })()}
-                          </div>
-                          <div
-                            key="courseConversation--main--firstCourseConversationMessageContent"
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              white-space: nowrap;
-                              overflow: hidden;
-                              text-overflow: ellipsis;
-                            `} ${request.state.courseConversation?.id ===
-                            courseConversation.id
-                              ? css`
-                                  color: light-dark(
-                                    var(--color--blue--300),
-                                    var(--color--blue--300)
-                                  );
-                                `
-                              : css`
-                                  color: light-dark(
-                                    var(--color--slate--400),
-                                    var(--color--slate--600)
-                                  );
-                                `}"
-                          >
-                            ${firstCourseConversationMessage.content.slice(
-                              0,
-                              200,
-                            )}
-                            TODO
-                          </div>
-                        </div>
-                      </a>
-                    `;
-                  })}
+                        </a>
+                      `;
+                    }),
+                )}
               </div>
               <div
                 key="courseConversations--groups--container"
@@ -1032,7 +1053,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/search$"),
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         { search: "string" },
@@ -1137,12 +1158,16 @@ export default async (application: Application): Promise<void> => {
           for (const courseConversationMessage of application.database.all<{
             publicId: string;
             courseConversation: number;
+            updatedAt: string | null;
+            createdByCourseParticipation: number | null;
             content: string;
           }>(
             sql`
               select
                 "courseConversationMessages"."publicId" as "publicId",
                 "courseConversationMessages"."courseConversation" as "courseConversation",
+                "courseConversationMessages"."updatedAt" as "updatedAt",
+                "courseConversationMessages"."createdByCourseParticipation" as "createdByCourseParticipation",
                 "courseConversationMessages"."content" as "content"
               from "courseConversationMessages"
               join "search_courseConversationMessages_contentSearch" on
@@ -1230,8 +1255,15 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   $${utilities.snippet(
-                    // TODO: Take in consideration that we must process the content to remove Markdown, similar to the conversations list on the sidebar
-                    html`${courseConversationMessage.content}`,
+                    html`${await application.partials.courseConversationMessageContentProcessor(
+                      {
+                        course: request.state.course,
+                        courseParticipation: request.state.courseParticipation,
+                        courseConversation,
+                        courseConversationMessage,
+                        mode: "textContent",
+                      },
+                    )}`,
                     new Set(
                       searchTokens.map(
                         (tokenWithPosition) => tokenWithPosition.token,
@@ -1312,7 +1344,7 @@ export default async (application: Application): Promise<void> => {
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/new$",
     ),
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {
@@ -1473,8 +1505,9 @@ export default async (application: Application): Promise<void> => {
       }
       prefill = { ...prefill, ...request.search };
       response.end(
-        (application.database.get(
-          sql`
+        await (
+          application.database.get(
+            sql`
             select true
             from "courseConversations"
             where
@@ -1499,9 +1532,10 @@ export default async (application: Application): Promise<void> => {
               )
             limit 1;
           `,
-        ) === undefined
-          ? application.layouts.main
-          : courseConversationsLayout)({
+          ) === undefined
+            ? application.layouts.main
+            : courseConversationsLayout
+        )({
           request,
           response,
           head: html`
@@ -2827,7 +2861,7 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       response.end(
-        courseConversationsLayout({
+        await courseConversationsLayout({
           request,
           response,
           head: html`
