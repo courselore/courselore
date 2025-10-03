@@ -185,7 +185,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
                 javascript="${javascript`
                   this.isModified = false;
-                  const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom" });
+                  const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom-start" });
                   this.oninput = this.onfocusin = utilities.foregroundJob(async () => {
                     if (this.querySelector('[name="search"]').value.trim() === "") {
                       popover.hidePopover();
@@ -1105,7 +1105,19 @@ export default async (application: Application): Promise<void> => {
                 .publicId}/conversations/${courseConversation.publicId}"
               class="button button--rectangle button--transparent button--dropdown-menu"
             >
-              ${courseConversation.title}
+              <span
+                css="${css`
+                  font-size: var(--font-size--3);
+                  line-height: var(--font-size--3--line-height);
+                  font-weight: 500;
+                  color: light-dark(
+                    var(--color--slate--400),
+                    var(--color--slate--600)
+                  );
+                `}"
+                >#${courseConversation.publicId}</span
+              >
+              <span>${courseConversation.title}</span>
             </a>
           `);
         // for (const courseConversationMessage of application.database.all<{}>(
