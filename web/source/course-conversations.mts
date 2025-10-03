@@ -1061,7 +1061,7 @@ export default async (application: Application): Promise<void> => {
       const results = new Array<HTML>();
       if (0 < searchTokens.length) {
         const searchString = searchTokens
-          .map((tokenWithPosition) => `"${tokenWithPosition.token}"`)
+          .map((tokenWithPosition) => `"${tokenWithPosition.token}"*`)
           .join(" ");
         for (const courseConversation of application.database.all<{
           publicId: string;
@@ -1126,7 +1126,7 @@ export default async (application: Application): Promise<void> => {
                     ),
                   ),
                   {
-                    // TODO: prefix: true,
+                    prefix: true,
                     stopWords: application.privateConfiguration.stopWords,
                     stem: (token) => natural.PorterStemmer.stem(token),
                   },
