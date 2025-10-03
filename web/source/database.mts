@@ -2529,7 +2529,7 @@ export default async (application: Application): Promise<void> => {
             "titleSearch",
             content = "courseConversations",
             content_rowid = "id",
-            prefix = '2 3'
+            prefix = '1 2 3'
           );
           create trigger "search_courseConversations_titleSearch_insert" after insert on "courseConversations" begin
             insert into "search_courseConversations_titleSearch" ("rowid", "titleSearch") values ("new"."id", "new"."titleSearch");
@@ -2584,7 +2584,7 @@ export default async (application: Application): Promise<void> => {
             "contentSearch",
             content = "courseConversationMessages",
             content_rowid = "id",
-            prefix = '2 3'
+            prefix = '1 2 3'
           );
           create trigger "search_courseConversationMessages_contentSearch_insert" after insert on "courseConversationMessages" begin
             insert into "search_courseConversationMessages_contentSearch" ("rowid", "contentSearch") values ("new"."id", "new"."contentSearch");
