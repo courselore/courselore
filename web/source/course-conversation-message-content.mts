@@ -1731,11 +1731,14 @@ You may also use the buttons on the message content editor to ${
           .use(remarkMath)
           .use(remarkRehype, { allowDangerousHtml: true, clobberPrefix: "" })
           .use(rehypeRaw)
-          .use(
-            () =>
-              function addPosition(node: any): void {
+          .use(() => (node: any): void => {
+            addPosition(node, false);
+            function addPosition(node: any, topLevel: boolean): void {
+              if (typeof node.properties === "object") {
                 if (
-                  typeof node.properties === "object" &&
+                  ((mode === "normal" && topLevel) ||
+                    mode ===
+                      "programmaticEditingOfCourseConversationMessageContent") &&
                   typeof node.position?.start?.offset === "number" &&
                   typeof node.position?.end?.offset === "number"
                 )
@@ -1743,15 +1746,13 @@ You may also use the buttons on the message content editor to ${
                     start: node.position.start.offset,
                     end: node.position.end.offset,
                   });
-                if (
-                  (node.type === "root" ||
-                    mode ===
-                      "programmaticEditingOfCourseConversationMessageContent") &&
-                  Array.isArray(node.children)
-                )
-                  for (const child of node.children) addPosition(child);
-              },
-          )
+                else delete node.properties.dataPosition;
+              }
+              if (Array.isArray(node.children))
+                for (const child of node.children)
+                  addPosition(child, node.type === "root");
+            }
+          })
           .use(rehypeStringify)
           .process(courseConversationMessageContent)
       ).value;
