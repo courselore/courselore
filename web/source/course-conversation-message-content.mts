@@ -2582,10 +2582,11 @@ You may also use the buttons on the message content editor to ${
             defaultColor: false,
           }),
         );
-        targetElement.nextElementSibling.setAttribute(
-          "data-position",
-          targetElement.getAttribute("data-position"),
-        );
+        if (typeof targetElement.getAttribute("data-position") === "string")
+          targetElement.nextElementSibling.setAttribute(
+            "data-position",
+            targetElement.getAttribute("data-position"),
+          );
         targetElement.remove();
       }
       {
