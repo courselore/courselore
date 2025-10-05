@@ -93,7 +93,8 @@ export type ApplicationCourseConversationMessageContent = {
         | "normal"
         | "preview"
         | "textContent"
-        | "programmaticEditingOfCourseConversationMessageContent";
+        | "programmaticEditingOfCourseConversationMessageContent"
+        | "emailNotification";
     }) => Promise<HTML>;
   };
 };
