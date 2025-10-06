@@ -2621,8 +2621,12 @@ You may also use the buttons on the message content editor to ${
           "afterend",
           await shiki.codeToHtml(element.textContent, {
             lang: element.getAttribute("class").slice("language-".length),
-            themes: { light: "light-plus", dark: "dark-plus" },
-            defaultColor: false,
+            ...(mode === "emailNotification"
+              ? { theme: "light-plus" }
+              : {
+                  themes: { light: "light-plus", dark: "dark-plus" },
+                  defaultColor: false,
+                }),
           }),
         );
         if (typeof targetElement.getAttribute("data-position") === "string")
