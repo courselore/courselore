@@ -2178,6 +2178,10 @@ You may also use the buttons on the message content editor to ${
           element.getAttribute("href"),
           `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
         );
+        if (mode === "emailNotification") {
+          element.setAttribute("href", url.href);
+          continue;
+        }
         if (
           !(
             url.protocol === "https:" &&
@@ -2197,6 +2201,10 @@ You may also use the buttons on the message content editor to ${
           element.getAttribute("src"),
           `https://${application.configuration.hostname}`,
         );
+        if (mode === "emailNotification") {
+          element.setAttribute("src", url.href);
+          continue;
+        }
         if (url.hostname !== application.configuration.hostname)
           element.setAttribute(
             "src",
@@ -2876,7 +2884,19 @@ You may also use the buttons on the message content editor to ${
         if (mentionCourseConversationMessage === undefined) continue;
         element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
       }
-      return mode !== "textContent" ? document.outerHTML : document.textContent;
+      return mode === "normal"
+        ? document.outerHTML
+        : mode === "preview"
+          ? document.outerHTML
+          : mode === "textContent"
+            ? document.textContent
+            : mode === "programmaticEditingOfCourseConversationMessageContent"
+              ? document.outerHTML
+              : mode === "emailNotification"
+                ? document.innerHTML
+                : (() => {
+                    throw new Error();
+                  })();
     }
   };
 
