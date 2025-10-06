@@ -2173,29 +2173,26 @@ You may also use the buttons on the message content editor to ${
           sanitize(child);
         }
       })(document);
-      for (const element of document.querySelectorAll("a")) {
-        const url = new URL(
-          element.getAttribute("href"),
-          `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
-        );
-        if (mode === "emailNotification") {
-          element.setAttribute("href", url.href);
-          continue;
-        }
-        if (
-          !(
-            url.protocol === "https:" &&
-            url.hostname === application.configuration.hostname &&
-            url.pathname.match(
-              new RegExp(
-                `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
-              ),
+      if (mode !== "emailNotification")
+        for (const element of document.querySelectorAll("a")) {
+          const url = new URL(
+            element.getAttribute("href"),
+            `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
+          );
+          if (
+            !(
+              url.protocol === "https:" &&
+              url.hostname === application.configuration.hostname &&
+              url.pathname.match(
+                new RegExp(
+                  `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
+                ),
+              )
             )
           )
-        )
-          element.setAttribute("target", "_blank");
-        element.setAttribute("class", "link");
-      }
+            element.setAttribute("target", "_blank");
+          element.setAttribute("class", "link");
+        }
       for (const element of document.querySelectorAll("img, video, audio")) {
         const url = new URL(
           element.getAttribute("src"),
@@ -2654,44 +2651,45 @@ You may also use the buttons on the message content editor to ${
             element.getAttribute("id") ??
             `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(element.textContent)}`;
           element.setAttribute("id", id);
-          element.insertAdjacentHTML(
-            "afterbegin",
-            html`
-              <a
-                href="#${id}"
-                class="button button--square button--icon button--transparent"
-                css="${css`
-                  font-size: var(--font-size--4-5);
-                  color: light-dark(
-                    var(--color--slate--500),
-                    var(--color--slate--500)
-                  );
-                  margin-left: var(--size--0);
-                  display: block;
-                  position: absolute;
-                  translate: -100%;
-                  transition-property:
-                    var(--transition-property--opacity),
-                    var(--transition-property--colors);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--ease-in-out
-                  );
-                  &:not(:hover, :focus-within, :active) {
-                    background-color: light-dark(
-                      var(--color--white),
-                      var(--color--black)
+          if (mode !== "emailNotification")
+            element.insertAdjacentHTML(
+              "afterbegin",
+              html`
+                <a
+                  href="#${id}"
+                  class="button button--square button--icon button--transparent"
+                  css="${css`
+                    font-size: var(--font-size--4-5);
+                    color: light-dark(
+                      var(--color--slate--500),
+                      var(--color--slate--500)
                     );
-                  }
-                  :not(:hover) > & {
-                    opacity: var(--opacity--0);
-                  }
-                `}"
-              >
-                <i class="bi bi-link"></i>
-              </a>
-            `,
-          );
+                    margin-left: var(--size--0);
+                    display: block;
+                    position: absolute;
+                    translate: -100%;
+                    transition-property:
+                      var(--transition-property--opacity),
+                      var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
+                    &:not(:hover, :focus-within, :active) {
+                      background-color: light-dark(
+                        var(--color--white),
+                        var(--color--black)
+                      );
+                    }
+                    :not(:hover) > & {
+                      opacity: var(--opacity--0);
+                    }
+                  `}"
+                >
+                  <i class="bi bi-link"></i>
+                </a>
+              `,
+            );
         }
       }
       (function mentionsAndReferences(parent) {
@@ -2922,6 +2920,16 @@ You may also use the buttons on the message content editor to ${
         );
         if (mentionCourseConversationMessage === undefined) continue;
         element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
+      }
+      if (mode === "emailNotification") {
+        if (courseConversation === undefined) throw new Error();
+        for (const element of document.querySelectorAll("a")) {
+          const url = new URL(
+            element.getAttribute("href"),
+            `https://${application.configuration.hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}`,
+          );
+          element.setAttribute("href", url.href);
+        }
       }
       return mode === "normal"
         ? document.outerHTML
