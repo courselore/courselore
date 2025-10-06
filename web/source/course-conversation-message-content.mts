@@ -2246,7 +2246,7 @@ You may also use the buttons on the message content editor to ${
               <a
                 href="https://${application.configuration
                   .hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}?message=${courseConversationMessage.publicId}"
-                >See poll</a
+                >[poll]</a
               >
             </p>
           `;
@@ -2580,7 +2580,23 @@ You may also use the buttons on the message content editor to ${
             element.parentElement.matches("pre")
               ? element.parentElement
               : element;
-          if (mode !== "textContent")
+          if (mode === "textContent") targetElement.remove();
+          else if (mode === "emailNotification") {
+            if (
+              courseConversation === undefined ||
+              courseConversationMessage === undefined
+            )
+              throw new Error();
+            targetElement.outerHTML = html`<a
+              href="https://${application.configuration
+                .hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}?message=${courseConversationMessage.publicId}"
+              >[mathematics]</a
+            >`;
+            if (element.matches(".math-display"))
+              targetElement.outerHTML = html`
+                <p>$${targetElement.outerHTML}</p>
+              `;
+          } else
             targetElement.outerHTML = katex.renderToString(
               element.textContent,
               {
@@ -2593,7 +2609,6 @@ You may also use the buttons on the message content editor to ${
                 strict: false,
               },
             );
-          else targetElement.remove();
         }
       }
       for (const element of document.querySelectorAll(
