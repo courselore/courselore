@@ -2229,11 +2229,29 @@ You may also use the buttons on the message content editor to ${
         element.setAttribute("controls", "");
         element.setAttribute("preload", "metadata");
       }
-      for (const element of document.querySelectorAll("input"))
-        element.setAttribute("class", "input--checkbox");
+      if (mode !== "emailNotification")
+        for (const element of document.querySelectorAll("input"))
+          element.setAttribute("class", "input--checkbox");
       for (const [elementIndex, element] of [
         ...document.querySelectorAll("poll"),
       ].entries()) {
+        if (mode === "emailNotification") {
+          if (
+            courseConversation === undefined ||
+            courseConversationMessage === undefined
+          )
+            throw new Error();
+          element.outerHTML = html`
+            <p>
+              <a
+                href="https://${application.configuration
+                  .hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}?message=${courseConversationMessage.publicId}"
+                >See poll</a
+              >
+            </p>
+          `;
+          continue;
+        }
         let votesCount = 0;
         for (const [pollOptionIndex, pollOption] of [
           ...element.children[0].children,
@@ -2488,70 +2506,72 @@ You may also use the buttons on the message content editor to ${
               "afterbegin",
               html`<summary>See more</summary>`,
             );
-      for (const element of document.querySelectorAll("summary")) {
-        element.setAttribute(
-          "class",
-          "button button--rectangle button--transparent",
-        );
-        element.insertAdjacentHTML(
-          "afterbegin",
-          html`
-            <span
+      if (mode !== "emailNotification")
+        for (const element of document.querySelectorAll("summary")) {
+          element.setAttribute(
+            "class",
+            "button button--rectangle button--transparent",
+          );
+          element.insertAdjacentHTML(
+            "afterbegin",
+            html`
+              <span
+                css="${css`
+                  display: inline-block;
+                  transition-property: var(--transition-property--transform);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--ease-in-out
+                  );
+                  details[open] > summary > & {
+                    rotate: var(--rotate--90);
+                  }
+                `}"
+              >
+                <i class="bi bi-chevron-right"></i>
+              </span>
+              <span></span>
+            `,
+          );
+        }
+      if (mode !== "emailNotification")
+        if (document.lastElementChild?.footnotes === true) {
+          const footnotes = document.lastElementChild;
+          for (const element of footnotes.querySelectorAll("a:last-child"))
+            if (
+              typeof element.getAttribute("href") === "string" &&
+              element.getAttribute("href").match(/^#fnref-\d+$/) &&
+              element.textContent.trim() === "↩"
+            ) {
+              element.setAttribute(
+                "class",
+                "button button--square button--transparent",
+              );
+              element.innerHTML = html`<i class="bi bi-arrow-up"></i>`;
+            }
+          footnotes.outerHTML = html`
+            <div
               css="${css`
-                display: inline-block;
-                transition-property: var(--transition-property--transform);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--ease-in-out
+                font-size: var(--font-size--3);
+                line-height: var(--font-size--3--line-height);
+                color: light-dark(
+                  var(--color--slate--600),
+                  var(--color--slate--400)
                 );
-                details[open] > summary > & {
-                  rotate: var(--rotate--90);
+                padding-top: var(--size--2);
+                border-top: var(--border-width--1) solid
+                  light-dark(var(--color--slate--200), var(--color--slate--800));
+                margin-top: var(--size--2);
+                & > ol {
+                  margin-top: var(--size--0);
+                  margin-bottom: var(--size--0);
                 }
               `}"
             >
-              <i class="bi bi-chevron-right"></i>
-            </span>
-            <span></span>
-          `,
-        );
-      }
-      if (document.lastElementChild?.footnotes === true) {
-        const footnotes = document.lastElementChild;
-        for (const element of footnotes.querySelectorAll("a:last-child"))
-          if (
-            typeof element.getAttribute("href") === "string" &&
-            element.getAttribute("href").match(/^#fnref-\d+$/) &&
-            element.textContent.trim() === "↩"
-          ) {
-            element.setAttribute(
-              "class",
-              "button button--square button--transparent",
-            );
-            element.innerHTML = html`<i class="bi bi-arrow-up"></i>`;
-          }
-        footnotes.outerHTML = html`
-          <div
-            css="${css`
-              font-size: var(--font-size--3);
-              line-height: var(--font-size--3--line-height);
-              color: light-dark(
-                var(--color--slate--600),
-                var(--color--slate--400)
-              );
-              padding-top: var(--size--2);
-              border-top: var(--border-width--1) solid
-                light-dark(var(--color--slate--200), var(--color--slate--800));
-              margin-top: var(--size--2);
-              & > ol {
-                margin-top: var(--size--0);
-                margin-bottom: var(--size--0);
-              }
-            `}"
-          >
-            $${footnotes.outerHTML}
-          </div>
-        `;
-      }
+              $${footnotes.outerHTML}
+            </div>
+          `;
+        }
       {
         const katexMacros = {};
         for (const element of document.querySelectorAll("code.language-math")) {
