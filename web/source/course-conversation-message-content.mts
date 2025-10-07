@@ -1708,7 +1708,7 @@ You may also use the buttons on the message content editor to ${
       })(),
     mode = "normal",
   }) => {
-    return await (mode === "normal"
+    return await (mode === "normal" && false /* TODO */
       ? application.database.cacheAsync(
           JSON.stringify({
             version: application.version,
@@ -2233,16 +2233,12 @@ You may also use the buttons on the message content editor to ${
         ...document.querySelectorAll("poll"),
       ].entries()) {
         if (mode === "emailNotification") {
-          if (
-            courseConversation === undefined ||
-            courseConversationMessage === undefined
-          )
-            throw new Error();
           element.outerHTML = html`
             <p>
               <a
                 href="https://${application.configuration
-                  .hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}?message=${courseConversationMessage.publicId}"
+                  .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                  .publicId}?message=${courseConversationMessage!.publicId}"
                 >[poll]</a
               >
             </p>
@@ -2572,40 +2568,39 @@ You may also use the buttons on the message content editor to ${
       {
         const katexMacros = {};
         for (const element of document.querySelectorAll("code.language-math")) {
-          const targetElement =
-            element.matches(".math-display") &&
-            element.parentElement.matches("pre")
-              ? element.parentElement
-              : element;
-          if (mode === "textContent") targetElement.remove();
-          else if (mode === "emailNotification") {
-            if (
-              courseConversation === undefined ||
-              courseConversationMessage === undefined
-            )
-              throw new Error();
-            targetElement.outerHTML = html`<a
-              href="https://${application.configuration
-                .hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}?message=${courseConversationMessage.publicId}"
-              >[mathematics]</a
-            >`;
-            if (element.matches(".math-display"))
-              targetElement.outerHTML = html`
-                <p>$${targetElement.outerHTML}</p>
-              `;
-          } else
-            targetElement.outerHTML = katex.renderToString(
-              element.textContent,
-              {
-                displayMode: element.matches(".math-display"),
-                output: "html",
-                throwOnError: false,
-                macros: katexMacros,
-                maxSize: 25,
-                maxExpand: 10,
-                strict: false,
-              },
-            );
+          const displayMode = element.matches(".math-display");
+          (displayMode && element.parentElement.matches("pre")
+            ? element.parentElement
+            : element
+          ).outerHTML =
+            mode === "emailNotification"
+              ? displayMode
+                ? html`
+                    <p>
+                      <a
+                        href="https://${application.configuration
+                          .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                          .publicId}?message=${courseConversationMessage!
+                          .publicId}"
+                        >[mathematics]</a
+                      >
+                    </p>
+                  `
+                : html`<a
+                    href="https://${application.configuration
+                      .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                      .publicId}?message=${courseConversationMessage!.publicId}"
+                    >[mathematics]</a
+                  >`
+              : katex.renderToString(element.textContent, {
+                  displayMode,
+                  output: "html",
+                  throwOnError: false,
+                  macros: katexMacros,
+                  maxSize: 25,
+                  maxExpand: 10,
+                  strict: false,
+                });
         }
       }
       for (const element of document.querySelectorAll(
@@ -2921,29 +2916,20 @@ You may also use the buttons on the message content editor to ${
         if (mentionCourseConversationMessage === undefined) continue;
         element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
       }
-      if (mode === "emailNotification") {
-        if (courseConversation === undefined) throw new Error();
-        for (const element of document.querySelectorAll("a")) {
-          const url = new URL(
-            element.getAttribute("href"),
-            `https://${application.configuration.hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}`,
+      if (mode === "emailNotification")
+        for (const element of document.querySelectorAll("a"))
+          element.setAttribute(
+            "href",
+            new URL(
+              element.getAttribute("href"),
+              `https://${application.configuration.hostname}/courses/${course.publicId}/conversations/${courseConversation!.publicId}`,
+            ).href,
           );
-          element.setAttribute("href", url.href);
-        }
-      }
-      return mode === "normal"
-        ? document.outerHTML
-        : mode === "preview"
-          ? document.outerHTML
-          : mode === "textContent"
-            ? document.textContent
-            : mode === "programmaticEditingOfCourseConversationMessageContent"
-              ? document.outerHTML
-              : mode === "emailNotification"
-                ? document.innerHTML
-                : (() => {
-                    throw new Error();
-                  })();
+      return mode === "textContent"
+        ? document.textContent
+        : mode === "emailNotification"
+          ? document.innerHTML
+          : document.outerHTML;
     }
   };
 
