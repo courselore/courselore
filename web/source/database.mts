@@ -3454,8 +3454,6 @@ export default async (application: Application): Promise<void> => {
 
                       # Mathematics
 
-                      $\\displaystyle \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }$
-
                       Lift($L$) can be determined by Lift Coefficient ($$C_L$$) like the following
                       equation.
 
@@ -3463,13 +3461,21 @@ export default async (application: Application): Promise<void> => {
                       L = \\frac{1}{2} \\rho v^2 S C_L
                       $$
 
-                      A raw dollar sign: \\$
+                      Big equation:
+
+                      $$
+                      \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }
+                      $$
+
+                      Raw dollar signs: \\$Hello\\$
+
+                      An invalid macro:
 
                       $$
                       \\invalidMacro
                       $$
 
-                      Prevent large width/height visual affronts:
+                      Large width/height visual affront:
 
                       $$
                       \\rule{500em}{500em}
