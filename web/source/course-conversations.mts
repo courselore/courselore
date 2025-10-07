@@ -5634,6 +5634,9 @@ export default async (application: Application): Promise<void> => {
                     >
                       <div
                         key="courseConversationMessage--main--content--show--content"
+                        css="${css`
+                          white-space: pre-line;
+                        `}"
                       ></div>
                     </div>
                   </div>
@@ -5655,7 +5658,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                       javascript="${javascript`
                         this.onsubmit = () => {
-                          this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value;
+                          this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value.trim();
                           this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
                           if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
                             this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
