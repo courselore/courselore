@@ -11,7 +11,12 @@ import rehypeRaw from "rehype-raw";
 import rehypeStringify from "rehype-stringify";
 import { DOMParser } from "linkedom";
 import GitHubSlugger from "github-slugger";
-import katex from "katex";
+// @ts-expect-error
+import MathJax from "mathjax";
+await MathJax.init({
+  loader: { load: ["input/tex-base", "ui/safe", "output/svg"] },
+  svg: { fontCache: "none" },
+});
 import * as shiki from "shiki";
 import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
@@ -1286,7 +1291,7 @@ $E=mc^2$
 </td>
 <td>
 
-$E=mc^2$ ([Mathematics support](https://katex.org/docs/supported))
+$E=mc^2$ ([Mathematics support](https://docs.mathjax.org/en/latest/input/tex/macros/index.html))
 
 </td>
 </tr>
@@ -1630,7 +1635,7 @@ $$
 L = \\frac{1}{2} \\rho v^2 S C_L
 $$
 
-([Mathematics support](https://katex.org/docs/supported))
+([Mathematics support](https://docs.mathjax.org/en/latest/input/tex/macros/index.html))
 
 </td>
 </tr>
@@ -1947,14 +1952,6 @@ You may also use the buttons on the message content editor to ${
                       font-weight: 500;
                       details[open] > & {
                         margin-bottom: var(--size--1);
-                      }
-                    }
-
-                    .katex-display {
-                      margin: var(--size--2) var(--size--0);
-                      overflow: auto hidden;
-                      & > .katex > .katex-html {
-                        text-align: center;
                       }
                     }
 
@@ -2565,43 +2562,34 @@ You may also use the buttons on the message content editor to ${
             </div>
           `;
         }
-      {
-        const katexMacros = {};
-        for (const element of document.querySelectorAll("code.language-math")) {
-          const displayMode = element.matches(".math-display");
-          (displayMode && element.parentElement.matches("pre")
-            ? element.parentElement
-            : element
-          ).outerHTML =
-            mode === "emailNotification"
-              ? displayMode
-                ? html`
-                    <p>
-                      <a
-                        href="https://${application.configuration
-                          .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                          .publicId}?message=${courseConversationMessage!
-                          .publicId}"
-                        >[mathematics]</a
-                      >
-                    </p>
-                  `
-                : html`<a
-                    href="https://${application.configuration
-                      .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                      .publicId}?message=${courseConversationMessage!.publicId}"
-                    >[mathematics]</a
-                  >`
-              : katex.renderToString(element.textContent, {
-                  displayMode,
-                  output: "html",
-                  throwOnError: false,
-                  macros: katexMacros,
-                  maxSize: 25,
-                  maxExpand: 10,
-                  strict: false,
-                });
-        }
+      for (const element of document.querySelectorAll("code.language-math")) {
+        const displayMode = element.matches(".math-display");
+        (displayMode && element.parentElement.matches("pre")
+          ? element.parentElement
+          : element
+        ).outerHTML =
+          mode === "emailNotification"
+            ? displayMode
+              ? html`
+                  <p>
+                    <a
+                      href="https://${application.configuration
+                        .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                        .publicId}?message=${courseConversationMessage!
+                        .publicId}"
+                      >[mathematics]</a
+                    >
+                  </p>
+                `
+              : html`<a
+                  href="https://${application.configuration
+                    .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                    .publicId}?message=${courseConversationMessage!.publicId}"
+                  >[mathematics]</a
+                >`
+            : MathJax.startup.adaptor.innerHTML(
+                await MathJax.tex2svgPromise(element.textContent),
+              );
       }
       for (const element of document.querySelectorAll(
         'code[class^="language-"]',
@@ -2691,6 +2679,7 @@ You may also use the buttons on the message content editor to ${
         let previousElementSibling;
         for (const child of parent.childNodes) {
           if (child.nodeType === child.ELEMENT_NODE) {
+            // TODO
             if (!child.matches("a, code, .katex")) mentionsAndReferences(child);
             previousElementSibling = child;
             continue;

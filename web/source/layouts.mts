@@ -57,7 +57,6 @@ export default async (application: Application): Promise<void> => {
     @import "@fontsource-variable/roboto-mono/wght.css";
     @import "@fontsource-variable/roboto-mono/wght-italic.css";
     @import "bootstrap-icons/font/bootstrap-icons.css";
-    @import "katex/dist/katex.css";
 
     .input--text {
       background-color: light-dark(
