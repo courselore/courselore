@@ -231,37 +231,59 @@ export default async (application: Application): Promise<void> => {
               where "id" = ${request.state.courseConversation!.id};
             `,
           );
+        const courseConversationMessage = application.database.get<{
+          id: number;
+        }>(
+          sql`
+            select * from "courseConversationMessages" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "courseConversationMessages" (
+                    "publicId",
+                    "courseConversation",
+                    "createdAt",
+                    "updatedAt",
+                    "createdByCourseParticipation",
+                    "courseConversationMessageType",
+                    "courseConversationMessageVisibility",
+                    "courseConversationMessageAnonymity",
+                    "content",
+                    "contentSearch"
+                  )
+                  values (
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${request.state.courseConversation!.id},
+                    ${new Date().toISOString()},
+                    ${null},
+                    ${request.state.courseParticipation!.id},
+                    ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
+                    ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
+                    ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
+                    ${request.body.content},
+                    ${utilities
+                      .tokenize(contentTextContent, {
+                        stopWords: application.privateConfiguration.stopWords,
+                        stem: (token) => natural.PorterStemmer.stem(token),
+                      })
+                      .map((tokenWithPosition) => tokenWithPosition.token)
+                      .join(" ")}
+                  );
+                `,
+              ).lastInsertRowid
+            };
+          `,
+        )!;
         application.database.run(
           sql`
-            insert into "courseConversationMessages" (
-              "publicId",
-              "courseConversation",
-              "createdAt",
-              "updatedAt",
-              "createdByCourseParticipation",
-              "courseConversationMessageType",
-              "courseConversationMessageVisibility",
-              "courseConversationMessageAnonymity",
-              "content",
-              "contentSearch"
+            insert into "_backgroundJobs" (
+              "type",
+              "startAt",
+              "parameters"
             )
             values (
-              ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${request.state.courseConversation!.id},
-              ${new Date().toISOString()},
-              ${null},
-              ${request.state.courseParticipation!.id},
-              ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
-              ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
-              ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
-              ${request.body.content},
-              ${utilities
-                .tokenize(contentTextContent, {
-                  stopWords: application.privateConfiguration.stopWords,
-                  stem: (token) => natural.PorterStemmer.stem(token),
-                })
-                .map((tokenWithPosition) => tokenWithPosition.token)
-                .join(" ")}
+              'courseConversationMessageEmailNotification',
+              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+              ${JSON.stringify({ courseConversationMessage })}
             );
           `,
         );
