@@ -2561,10 +2561,11 @@ You may also use the buttons on the message content editor to ${
       for (const element of document.querySelectorAll(
         'code[class^="language-"]',
       )) {
-        const targetElement = element.parentElement.matches("pre")
-          ? element.parentElement
-          : element;
-        targetElement.insertAdjacentHTML(
+        if (!element.parentElement.matches("pre")) {
+          element.removeAttribute("class");
+          continue;
+        }
+        element.parentElement.insertAdjacentHTML(
           "afterend",
           await shiki.codeToHtml(element.textContent, {
             lang: element.getAttribute("class").slice("language-".length),
@@ -2576,12 +2577,15 @@ You may also use the buttons on the message content editor to ${
                 }),
           }),
         );
-        if (typeof targetElement.getAttribute("data-position") === "string")
-          targetElement.nextElementSibling.setAttribute(
+        if (
+          typeof element.parentElement.getAttribute("data-position") ===
+          "string"
+        )
+          element.parentElement.nextElementSibling.setAttribute(
             "data-position",
-            targetElement.getAttribute("data-position"),
+            element.parentElement.getAttribute("data-position"),
           );
-        targetElement.remove();
+        element.parentElement.remove();
       }
       {
         const githubSlugger = new GitHubSlugger();
