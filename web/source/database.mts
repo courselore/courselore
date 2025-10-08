@@ -3475,7 +3475,9 @@ export default async (application: Application): Promise<void> => {
                       \\invalidMacro
                       $$
 
-                      Large width/height visual affront:
+                      Inline large width/height $\\rule{500em}{500em}$ visual affront.
+
+                      Block large width/height visual affront:
 
                       $$
                       \\rule{500em}{500em}
