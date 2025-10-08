@@ -305,94 +305,97 @@ export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "backgroundJob")
     application.database.backgroundJob<{
       courseConversationMessage: { id: number };
-    }>({ type: "courseConversationMessageEmailNotification" }, (parameters) => {
-      const courseConversationMessage = application.database.get<{
-        id: number;
-        publicId: string;
-        courseConversation: number;
-        createdByCourseParticipation: number | null;
-        courseConversationMessageVisibility:
-          | "courseConversationMessageVisibilityEveryone"
-          | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
-        courseConversationMessageAnonymity:
-          | "courseConversationMessageAnonymityNone"
-          | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-          | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
-        content: string;
-      }>(
-        sql`
-          select
-            "id",
-            "publicId",
-            "courseConversation",
-            "createdByCourseParticipation",
-            "courseConversationMessageVisibility",
-            "courseConversationMessageAnonymity",
-            "content"
-          from "courseConversationMessages"
-          where "id" = ${parameters.courseConversationMessage.id};
-        `,
-      );
-      if (courseConversationMessage === undefined) return;
-      const courseConversation = application.database.get<{
-        publicId: string;
-        course: number;
-        courseConversationVisibility:
-          | "courseConversationVisibilityEveryone"
-          | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-          | "courseConversationParticipations";
-        title: string;
-      }>(
-        sql`
-          select
-            "publicId",
-            "course",
-            "courseConversationVisibility",
-            "title"
-          from "courseConversations"
-          where "id" = ${courseConversationMessage.courseConversation};
-        `,
-      );
-      if (courseConversation === undefined) throw new Error();
-      for (const courseParticipation of application.database.all<{
-        id: number;
-        user: number;
-        courseParticipationRole:
-          | "courseParticipationRoleInstructor"
-          | "courseParticipationRoleStudent";
-      }>(
-        sql`
-          select
-            "id",
-            "user",
-            "courseParticipationRole"
-          from "courseParticipations"
-          where "course" = ${courseConversation.course}
-          order by "id" asc;
-        `,
-      )) {
-        const user = application.database.get<{
-          email: string;
-          emailNotificationsForAllMessages: number;
-          emailNotificationsForMessagesIncludingAMention: number;
-          emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-          emailNotificationsForMessagesInConversationsThatYouStarted: number;
+    }>(
+      { type: "courseConversationMessageEmailNotification" },
+      async (parameters) => {
+        const courseConversationMessage = application.database.get<{
+          id: number;
+          publicId: string;
+          courseConversation: number;
+          createdByCourseParticipation: number | null;
+          courseConversationMessageVisibility:
+            | "courseConversationMessageVisibilityEveryone"
+            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+          courseConversationMessageAnonymity:
+            | "courseConversationMessageAnonymityNone"
+            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+            | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+          content: string;
         }>(
           sql`
             select
-              "email",
-              "emailNotificationsForAllMessages",
-              "emailNotificationsForMessagesIncludingAMention",
-              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-              "emailNotificationsForMessagesInConversationsThatYouStarted"
-            from "users"
-            where "id" = ${courseParticipation.user};
+              "id",
+              "publicId",
+              "courseConversation",
+              "createdByCourseParticipation",
+              "courseConversationMessageVisibility",
+              "courseConversationMessageAnonymity",
+              "content"
+            from "courseConversationMessages"
+            where "id" = ${parameters.courseConversationMessage.id};
           `,
         );
-        if (user === undefined) throw new Error();
-      }
-      throw new Error("TODO");
-    });
+        if (courseConversationMessage === undefined) return;
+        const courseConversation = application.database.get<{
+          publicId: string;
+          course: number;
+          courseConversationVisibility:
+            | "courseConversationVisibilityEveryone"
+            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseConversationParticipations";
+          title: string;
+        }>(
+          sql`
+            select
+              "publicId",
+              "course",
+              "courseConversationVisibility",
+              "title"
+            from "courseConversations"
+            where "id" = ${courseConversationMessage.courseConversation};
+          `,
+        );
+        if (courseConversation === undefined) throw new Error();
+        for (const courseParticipation of application.database.all<{
+          id: number;
+          user: number;
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+        }>(
+          sql`
+            select
+              "id",
+              "user",
+              "courseParticipationRole"
+            from "courseParticipations"
+            where "course" = ${courseConversation.course}
+            order by "id" asc;
+          `,
+        )) {
+          const user = application.database.get<{
+            email: string;
+            emailNotificationsForAllMessages: number;
+            emailNotificationsForMessagesIncludingAMention: number;
+            emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+            emailNotificationsForMessagesInConversationsThatYouStarted: number;
+          }>(
+            sql`
+              select
+                "email",
+                "emailNotificationsForAllMessages",
+                "emailNotificationsForMessagesIncludingAMention",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                "emailNotificationsForMessagesInConversationsThatYouStarted"
+              from "users"
+              where "id" = ${courseParticipation.user};
+            `,
+          );
+          if (user === undefined) throw new Error();
+        }
+        throw new Error("TODO");
+      },
+    );
 
   application.server?.push({
     pathname: new RegExp(
