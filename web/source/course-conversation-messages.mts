@@ -396,7 +396,11 @@ export default async (application: Application): Promise<void> => {
           if (
             "TODO: Check that email notification should be sent to this person"
           )
-            emailNotifications.push({ courseParticipation, user });
+            emailNotifications.push({
+              to: user.email,
+              subject: html`${courseConversation.title}`,
+              html: html``,
+            });
         }
         application.database.executeTransaction(() => {
           for (const emailNotification of emailNotifications)
