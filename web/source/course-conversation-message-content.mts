@@ -2541,14 +2541,23 @@ You may also use the buttons on the message content editor to ${
           </div>
         `;
       }
-      for (const element of document.querySelectorAll("code.language-math"))
-        (element.matches(".math-display") &&
-        element.parentElement.matches("pre")
-          ? element.parentElement
-          : element
-        ).outerHTML = MathJax.startup.adaptor.innerHTML(
+      for (const element of document.querySelectorAll("code.language-math")) {
+        const svg = MathJax.startup.adaptor.innerHTML(
           await MathJax.tex2svgPromise(element.textContent),
         );
+        if (element.parentElement.matches("pre"))
+          element.parentElement.outerHTML = html`
+            <div
+              css="${css`
+                text-align: center;
+                margin: var(--size--2) var(--size--0);
+              `}"
+            >
+              $${svg}
+            </div>
+          `;
+        else element.outerHTML = html` <span>$${svg}</span> `;
+      }
       for (const element of document.querySelectorAll(
         'code[class^="language-"]',
       )) {
