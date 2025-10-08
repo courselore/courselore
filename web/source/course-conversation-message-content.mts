@@ -2170,35 +2170,30 @@ You may also use the buttons on the message content editor to ${
           sanitize(child);
         }
       })(document);
-      if (mode !== "emailNotification")
-        for (const element of document.querySelectorAll("a")) {
-          const url = new URL(
-            element.getAttribute("href"),
-            `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
-          );
-          if (
-            !(
-              url.protocol === "https:" &&
-              url.hostname === application.configuration.hostname &&
-              url.pathname.match(
-                new RegExp(
-                  `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
-                ),
-              )
+      for (const element of document.querySelectorAll("a")) {
+        const url = new URL(
+          element.getAttribute("href"),
+          `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
+        );
+        if (
+          !(
+            url.protocol === "https:" &&
+            url.hostname === application.configuration.hostname &&
+            url.pathname.match(
+              new RegExp(
+                `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
+              ),
             )
           )
-            element.setAttribute("target", "_blank");
-          element.setAttribute("class", "link");
-        }
+        )
+          element.setAttribute("target", "_blank");
+        element.setAttribute("class", "link");
+      }
       for (const element of document.querySelectorAll("img, video, audio")) {
         const url = new URL(
           element.getAttribute("src"),
           `https://${application.configuration.hostname}`,
         );
-        if (mode === "emailNotification") {
-          element.setAttribute("src", url.href);
-          continue;
-        }
         if (url.hostname !== application.configuration.hostname)
           element.setAttribute(
             "src",
@@ -2223,25 +2218,11 @@ You may also use the buttons on the message content editor to ${
         element.setAttribute("controls", "");
         element.setAttribute("preload", "metadata");
       }
-      if (mode !== "emailNotification")
-        for (const element of document.querySelectorAll("input"))
-          element.setAttribute("class", "input--checkbox");
+      for (const element of document.querySelectorAll("input"))
+        element.setAttribute("class", "input--checkbox");
       for (const [elementIndex, element] of [
         ...document.querySelectorAll("poll"),
       ].entries()) {
-        if (mode === "emailNotification") {
-          element.outerHTML = html`
-            <p>
-              <a
-                href="https://${application.configuration
-                  .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                  .publicId}?message=${courseConversationMessage!.publicId}"
-                >[poll]</a
-              >
-            </p>
-          `;
-          continue;
-        }
         let votesCount = 0;
         for (const [pollOptionIndex, pollOption] of [
           ...element.children[0].children,
@@ -2496,101 +2477,78 @@ You may also use the buttons on the message content editor to ${
               "afterbegin",
               html`<summary>See more</summary>`,
             );
-      if (mode !== "emailNotification")
-        for (const element of document.querySelectorAll("summary")) {
-          element.setAttribute(
-            "class",
-            "button button--rectangle button--transparent",
-          );
-          element.insertAdjacentHTML(
-            "afterbegin",
-            html`
-              <span
-                css="${css`
-                  display: inline-block;
-                  transition-property: var(--transition-property--transform);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--ease-in-out
-                  );
-                  details[open] > summary > & {
-                    rotate: var(--rotate--90);
-                  }
-                `}"
-              >
-                <i class="bi bi-chevron-right"></i>
-              </span>
-              <span></span>
-            `,
-          );
-        }
-      if (mode !== "emailNotification")
-        if (document.lastElementChild?.footnotes === true) {
-          const footnotes = document.lastElementChild;
-          for (const element of footnotes.querySelectorAll("a:last-child"))
-            if (
-              typeof element.getAttribute("href") === "string" &&
-              element.getAttribute("href").match(/^#fnref-\d+$/) &&
-              element.textContent.trim() === "↩"
-            ) {
-              element.setAttribute(
-                "class",
-                "button button--square button--transparent",
-              );
-              element.innerHTML = html`<i class="bi bi-arrow-up"></i>`;
-            }
-          footnotes.outerHTML = html`
-            <div
+      for (const element of document.querySelectorAll("summary")) {
+        element.setAttribute(
+          "class",
+          "button button--rectangle button--transparent",
+        );
+        element.insertAdjacentHTML(
+          "afterbegin",
+          html`
+            <span
               css="${css`
-                font-size: var(--font-size--3);
-                line-height: var(--font-size--3--line-height);
-                color: light-dark(
-                  var(--color--slate--600),
-                  var(--color--slate--400)
+                display: inline-block;
+                transition-property: var(--transition-property--transform);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--ease-in-out
                 );
-                padding-top: var(--size--2);
-                border-top: var(--border-width--1) solid
-                  light-dark(var(--color--slate--200), var(--color--slate--800));
-                margin-top: var(--size--2);
-                & > ol {
-                  margin-top: var(--size--0);
-                  margin-bottom: var(--size--0);
+                details[open] > summary > & {
+                  rotate: var(--rotate--90);
                 }
               `}"
             >
-              $${footnotes.outerHTML}
-            </div>
-          `;
-        }
-      for (const element of document.querySelectorAll("code.language-math")) {
-        const displayMode = element.matches(".math-display");
-        (displayMode && element.parentElement.matches("pre")
+              <i class="bi bi-chevron-right"></i>
+            </span>
+            <span></span>
+          `,
+        );
+      }
+      if (document.lastElementChild?.footnotes === true) {
+        const footnotes = document.lastElementChild;
+        for (const element of footnotes.querySelectorAll("a:last-child"))
+          if (
+            typeof element.getAttribute("href") === "string" &&
+            element.getAttribute("href").match(/^#fnref-\d+$/) &&
+            element.textContent.trim() === "↩"
+          ) {
+            element.setAttribute(
+              "class",
+              "button button--square button--transparent",
+            );
+            element.innerHTML = html`<i class="bi bi-arrow-up"></i>`;
+          }
+        footnotes.outerHTML = html`
+          <div
+            css="${css`
+              font-size: var(--font-size--3);
+              line-height: var(--font-size--3--line-height);
+              color: light-dark(
+                var(--color--slate--600),
+                var(--color--slate--400)
+              );
+              padding-top: var(--size--2);
+              border-top: var(--border-width--1) solid
+                light-dark(var(--color--slate--200), var(--color--slate--800));
+              margin-top: var(--size--2);
+              & > ol {
+                margin-top: var(--size--0);
+                margin-bottom: var(--size--0);
+              }
+            `}"
+          >
+            $${footnotes.outerHTML}
+          </div>
+        `;
+      }
+      for (const element of document.querySelectorAll("code.language-math"))
+        (element.matches(".math-display") &&
+        element.parentElement.matches("pre")
           ? element.parentElement
           : element
-        ).outerHTML =
-          mode === "emailNotification"
-            ? displayMode
-              ? html`
-                  <p>
-                    <a
-                      href="https://${application.configuration
-                        .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                        .publicId}?message=${courseConversationMessage!
-                        .publicId}"
-                      >[mathematics]</a
-                    >
-                  </p>
-                `
-              : html`<a
-                  href="https://${application.configuration
-                    .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                    .publicId}?message=${courseConversationMessage!.publicId}"
-                  >[mathematics]</a
-                >`
-            : MathJax.startup.adaptor.innerHTML(
-                await MathJax.tex2svgPromise(element.textContent),
-              );
-      }
+        ).outerHTML = MathJax.startup.adaptor.innerHTML(
+          await MathJax.tex2svgPromise(element.textContent),
+        );
       for (const element of document.querySelectorAll(
         'code[class^="language-"]',
       )) {
@@ -2634,53 +2592,51 @@ You may also use the buttons on the message content editor to ${
             element.getAttribute("id") ??
             `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(element.textContent)}`;
           element.setAttribute("id", id);
-          if (mode !== "emailNotification")
-            element.insertAdjacentHTML(
-              "afterbegin",
-              html`
-                <a
-                  href="#${id}"
-                  class="button button--square button--icon button--transparent"
-                  css="${css`
-                    font-size: var(--font-size--4-5);
-                    color: light-dark(
-                      var(--color--slate--500),
-                      var(--color--slate--500)
+          element.insertAdjacentHTML(
+            "afterbegin",
+            html`
+              <a
+                href="#${id}"
+                class="button button--square button--icon button--transparent"
+                css="${css`
+                  font-size: var(--font-size--4-5);
+                  color: light-dark(
+                    var(--color--slate--500),
+                    var(--color--slate--500)
+                  );
+                  margin-left: var(--size--0);
+                  display: block;
+                  position: absolute;
+                  translate: -100%;
+                  transition-property:
+                    var(--transition-property--opacity),
+                    var(--transition-property--colors);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--ease-in-out
+                  );
+                  &:not(:hover, :focus-within, :active) {
+                    background-color: light-dark(
+                      var(--color--white),
+                      var(--color--black)
                     );
-                    margin-left: var(--size--0);
-                    display: block;
-                    position: absolute;
-                    translate: -100%;
-                    transition-property:
-                      var(--transition-property--opacity),
-                      var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--ease-in-out
-                    );
-                    &:not(:hover, :focus-within, :active) {
-                      background-color: light-dark(
-                        var(--color--white),
-                        var(--color--black)
-                      );
-                    }
-                    :not(:hover) > & {
-                      opacity: var(--opacity--0);
-                    }
-                  `}"
-                >
-                  <i class="bi bi-link"></i>
-                </a>
-              `,
-            );
+                  }
+                  :not(:hover) > & {
+                    opacity: var(--opacity--0);
+                  }
+                `}"
+              >
+                <i class="bi bi-link"></i>
+              </a>
+            `,
+          );
         }
       }
       (function mentionsAndReferences(parent) {
         let previousElementSibling;
         for (const child of parent.childNodes) {
           if (child.nodeType === child.ELEMENT_NODE) {
-            // TODO
-            if (!child.matches("a, code, .katex")) mentionsAndReferences(child);
+            if (!child.matches("a, code, svg")) mentionsAndReferences(child);
             previousElementSibling = child;
             continue;
           }
@@ -2905,15 +2861,6 @@ You may also use the buttons on the message content editor to ${
         if (mentionCourseConversationMessage === undefined) continue;
         element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
       }
-      if (mode === "emailNotification")
-        for (const element of document.querySelectorAll("a"))
-          element.setAttribute(
-            "href",
-            new URL(
-              element.getAttribute("href"),
-              `https://${application.configuration.hostname}/courses/${course.publicId}/conversations/${courseConversation!.publicId}`,
-            ).href,
-          );
       return mode === "textContent"
         ? document.textContent
         : mode === "emailNotification"
