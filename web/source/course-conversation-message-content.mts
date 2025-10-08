@@ -2578,33 +2578,33 @@ You may also use the buttons on the message content editor to ${
       }
       for (const element of document.querySelectorAll(
         'code[class^="language-"]',
-      )) {
-        if (!element.parentElement.matches("pre")) {
-          element.removeAttribute("class");
-          continue;
-        }
-        element.parentElement.insertAdjacentHTML(
-          "afterend",
-          await shiki.codeToHtml(element.textContent, {
-            lang: element.getAttribute("class").slice("language-".length),
-            ...(mode === "emailNotification"
-              ? { theme: "light-plus" }
-              : {
-                  themes: { light: "light-plus", dark: "dark-plus" },
-                  defaultColor: false,
-                }),
-          }),
-        );
-        if (
-          typeof element.parentElement.getAttribute("data-position") ===
-          "string"
-        )
-          element.parentElement.nextElementSibling.setAttribute(
-            "data-position",
-            element.parentElement.getAttribute("data-position"),
+      ))
+        try {
+          if (!element.parentElement.matches("pre")) throw undefined;
+          element.parentElement.insertAdjacentHTML(
+            "afterend",
+            await shiki.codeToHtml(element.textContent, {
+              lang: element.getAttribute("class").slice("language-".length),
+              ...(mode === "emailNotification"
+                ? { theme: "light-plus" }
+                : {
+                    themes: { light: "light-plus", dark: "dark-plus" },
+                    defaultColor: false,
+                  }),
+            }),
           );
-        element.parentElement.remove();
-      }
+          if (
+            typeof element.parentElement.getAttribute("data-position") ===
+            "string"
+          )
+            element.parentElement.nextElementSibling.setAttribute(
+              "data-position",
+              element.parentElement.getAttribute("data-position"),
+            );
+          element.parentElement.remove();
+        } catch {
+          element.removeAttribute("class");
+        }
       {
         const githubSlugger = new GitHubSlugger();
         for (const element of document.querySelectorAll("[id]")) {
