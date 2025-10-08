@@ -2550,7 +2550,10 @@ You may also use the buttons on the message content editor to ${
             <div
               css="${css`
                 text-align: center;
+                max-width: 100%;
+                max-height: var(--size--128);
                 margin: var(--size--2) var(--size--0);
+                overflow: auto;
               `}"
             >
               $${svg}
