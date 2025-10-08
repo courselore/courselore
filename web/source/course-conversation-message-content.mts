@@ -2559,7 +2559,22 @@ You may also use the buttons on the message content editor to ${
               $${svg}
             </div>
           `;
-        else element.outerHTML = html` <span>$${svg}</span> `;
+        else
+          element.outerHTML = html`
+            <span
+              css="${css`
+                display: inline-block;
+                max-width: 100%;
+                max-height: var(--size--64);
+                vertical-align: var(--size---1-5);
+                overflow: auto;
+                & > svg {
+                  overflow: visible;
+                }
+              `}"
+              >$${svg}</span
+            >
+          `;
       }
       for (const element of document.querySelectorAll(
         'code[class^="language-"]',
