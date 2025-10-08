@@ -1292,10 +1292,10 @@ export default async (application: Application): Promise<void> => {
                     <label class="button button--rectangle button--transparent">
                       <input
                         type="checkbox"
-                        name="emailNotificationsForMessagesIncludingMentions"
+                        name="emailNotificationsForMessagesIncludingAMention"
                         $${Boolean(
                           request.state.user
-                            .emailNotificationsForMessagesIncludingMentions,
+                            .emailNotificationsForMessagesIncludingAMention,
                         )
                           ? html`checked`
                           : html``}
@@ -2411,7 +2411,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           emailNotificationsForAllMessages: "on";
-          emailNotificationsForMessagesIncludingMentions: "on";
+          emailNotificationsForMessagesIncludingAMention: "on";
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: "on";
           emailNotificationsForMessagesInConversationsThatYouStarted: "on";
         },
@@ -2425,7 +2425,7 @@ export default async (application: Application): Promise<void> => {
           update "users"
           set
             "emailNotificationsForAllMessages" = ${Number(request.body.emailNotificationsForAllMessages === "on")},
-            "emailNotificationsForMessagesIncludingMentions" = ${Number(request.body.emailNotificationsForMessagesIncludingMentions === "on")},
+            "emailNotificationsForMessagesIncludingAMention" = ${Number(request.body.emailNotificationsForMessagesIncludingAMention === "on")},
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" = ${Number(request.body.emailNotificationsForMessagesInConversationsInWhichYouParticipated === "on")},
             "emailNotificationsForMessagesInConversationsThatYouStarted" = ${Number(request.body.emailNotificationsForMessagesInConversationsThatYouStarted === "on")}
           where "id" = ${request.state.user.id};

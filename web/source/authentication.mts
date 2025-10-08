@@ -77,7 +77,7 @@ export type ApplicationAuthentication = {
             | "userDarkModeDark";
           sidebarWidth: number;
           emailNotificationsForAllMessages: number;
-          emailNotificationsForMessagesIncludingMentions: number;
+          emailNotificationsForMessagesIncludingAMention: number;
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
           emailNotificationsForMessagesInConversationsThatYouStarted: number;
           userAnonymityPreferred:
@@ -333,7 +333,7 @@ export default async (application: Application): Promise<void> => {
           | "userDarkModeDark";
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
-        emailNotificationsForMessagesIncludingMentions: number;
+        emailNotificationsForMessagesIncludingAMention: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         emailNotificationsForMessagesInConversationsThatYouStarted: number;
         userAnonymityPreferred:
@@ -364,7 +364,7 @@ export default async (application: Application): Promise<void> => {
             "darkMode",
             "sidebarWidth",
             "emailNotificationsForAllMessages",
-            "emailNotificationsForMessagesIncludingMentions",
+            "emailNotificationsForMessagesIncludingAMention",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
@@ -1150,7 +1150,7 @@ export default async (application: Application): Promise<void> => {
             | "userDarkModeDark";
           sidebarWidth: number;
           emailNotificationsForAllMessages: number;
-          emailNotificationsForMessagesIncludingMentions: number;
+          emailNotificationsForMessagesIncludingAMention: number;
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
           emailNotificationsForMessagesInConversationsThatYouStarted: number;
           userAnonymityPreferred:
@@ -1183,7 +1183,7 @@ export default async (application: Application): Promise<void> => {
                     "darkMode",
                     "sidebarWidth",
                     "emailNotificationsForAllMessages",
-                    "emailNotificationsForMessagesIncludingMentions",
+                    "emailNotificationsForMessagesIncludingAMention",
                     "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                     "emailNotificationsForMessagesInConversationsThatYouStarted",
                     "userAnonymityPreferred",
@@ -1885,7 +1885,7 @@ export default async (application: Application): Promise<void> => {
           | "userDarkModeDark";
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
-        emailNotificationsForMessagesIncludingMentions: number;
+        emailNotificationsForMessagesIncludingAMention: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         emailNotificationsForMessagesInConversationsThatYouStarted: number;
         userAnonymityPreferred:
@@ -1916,7 +1916,7 @@ export default async (application: Application): Promise<void> => {
             "darkMode",
             "sidebarWidth",
             "emailNotificationsForAllMessages",
-            "emailNotificationsForMessagesIncludingMentions",
+            "emailNotificationsForMessagesIncludingAMention",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
@@ -2556,7 +2556,7 @@ export default async (application: Application): Promise<void> => {
           | "userDarkModeDark";
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
-        emailNotificationsForMessagesIncludingMentions: number;
+        emailNotificationsForMessagesIncludingAMention: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         emailNotificationsForMessagesInConversationsThatYouStarted: number;
         userAnonymityPreferred:
@@ -2587,7 +2587,7 @@ export default async (application: Application): Promise<void> => {
             "darkMode",
             "sidebarWidth",
             "emailNotificationsForAllMessages",
-            "emailNotificationsForMessagesIncludingMentions",
+            "emailNotificationsForMessagesIncludingAMention",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
@@ -2953,7 +2953,7 @@ export default async (application: Application): Promise<void> => {
           | "userDarkModeDark";
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
-        emailNotificationsForMessagesIncludingMentions: number;
+        emailNotificationsForMessagesIncludingAMention: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         emailNotificationsForMessagesInConversationsThatYouStarted: number;
         userAnonymityPreferred:
@@ -2984,7 +2984,7 @@ export default async (application: Application): Promise<void> => {
             "darkMode",
             "sidebarWidth",
             "emailNotificationsForAllMessages",
-            "emailNotificationsForMessagesIncludingMentions",
+            "emailNotificationsForMessagesIncludingAMention",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
@@ -3306,7 +3306,7 @@ export default async (application: Application): Promise<void> => {
             | "userDarkModeDark";
           sidebarWidth: number;
           emailNotificationsForAllMessages: number;
-          emailNotificationsForMessagesIncludingMentions: number;
+          emailNotificationsForMessagesIncludingAMention: number;
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
           emailNotificationsForMessagesInConversationsThatYouStarted: number;
           userAnonymityPreferred:
@@ -3337,7 +3337,7 @@ export default async (application: Application): Promise<void> => {
               "darkMode",
               "sidebarWidth",
               "emailNotificationsForAllMessages",
-              "emailNotificationsForMessagesIncludingMentions",
+              "emailNotificationsForMessagesIncludingAMention",
               "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
               "emailNotificationsForMessagesInConversationsThatYouStarted",
               "userAnonymityPreferred",
@@ -3390,7 +3390,7 @@ export default async (application: Application): Promise<void> => {
             | "userDarkModeDark";
           sidebarWidth: number;
           emailNotificationsForAllMessages: number;
-          emailNotificationsForMessagesIncludingMentions: number;
+          emailNotificationsForMessagesIncludingAMention: number;
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
           emailNotificationsForMessagesInConversationsThatYouStarted: number;
           userAnonymityPreferred:
@@ -3423,7 +3423,7 @@ export default async (application: Application): Promise<void> => {
                     "darkMode",
                     "sidebarWidth",
                     "emailNotificationsForAllMessages",
-                    "emailNotificationsForMessagesIncludingMentions",
+                    "emailNotificationsForMessagesIncludingAMention",
                     "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                     "emailNotificationsForMessagesInConversationsThatYouStarted",
                     "userAnonymityPreferred",
