@@ -12,7 +12,6 @@
     "argon2": "^0.44.0",
     "crypto-random-string": "^5.0.0",
     "email-addresses": "^5.0.0",
-    "ffmpeg-static": "^5.2.0",
     "github-slugger": "^2.0.0",
     "linkedom": "^0.18.12",
     "maildev": "^2.2.1",
