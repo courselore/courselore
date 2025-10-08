@@ -334,7 +334,15 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (courseConversationMessage === undefined) return;
-      const courseConversation = application.database.get<{}>(
+      const courseConversation = application.database.get<{
+        publicId: string;
+        course: number;
+        courseConversationVisibility:
+          | "courseConversationVisibilityEveryone"
+          | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+          | "courseConversationParticipations";
+        title: string;
+      }>(
         sql`
           select
             "publicId",
@@ -345,6 +353,44 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${courseConversationMessage.courseConversation};
         `,
       );
+      if (courseConversation === undefined) throw new Error();
+      for (const courseParticipation of application.database.all<{
+        id: number;
+        user: number;
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
+      }>(
+        sql`
+          select
+            "id",
+            "user",
+            "courseParticipationRole"
+          from "courseParticipations"
+          where "course" = ${courseConversation.course}
+          order by "id" asc;
+        `,
+      )) {
+        const user = application.database.get<{
+          email: string;
+          emailNotificationsForAllMessages: number;
+          emailNotificationsForMessagesIncludingAMention: number;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+          emailNotificationsForMessagesInConversationsThatYouStarted: number;
+        }>(
+          sql`
+            select
+              "email",
+              "emailNotificationsForAllMessages",
+              "emailNotificationsForMessagesIncludingAMention",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+              "emailNotificationsForMessagesInConversationsThatYouStarted"
+            from "users"
+            where "id" = ${courseParticipation.user};
+          `,
+        );
+        if (user === undefined) throw new Error();
+      }
       throw new Error("TODO");
     });
 
