@@ -356,6 +356,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (courseConversation === undefined) throw new Error();
+        const emailNotifications = new Array<any>();
         for (const courseParticipation of application.database.all<{
           id: number;
           user: number;
@@ -392,8 +393,28 @@ export default async (application: Application): Promise<void> => {
             `,
           );
           if (user === undefined) throw new Error();
+          if (
+            "TODO: Check that email notification should be sent to this person"
+          )
+            emailNotifications.push({ courseParticipation, user });
         }
-        throw new Error("TODO");
+        application.database.executeTransaction(() => {
+          for (const emailNotification of emailNotifications)
+            application.database.run(
+              sql`
+              insert into "_backgroundJobs" (
+                "type",
+                "startAt",
+                "parameters"
+              )
+              values (
+                'email',
+                ${new Date().toISOString()},
+                ${JSON.stringify(emailNotification)}
+              );
+            `,
+            );
+        });
       },
     );
 
