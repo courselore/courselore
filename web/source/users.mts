@@ -1306,12 +1306,12 @@ export default async (application: Application): Promise<void> => {
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
                           };
                         `}"
-                      />  Email notifications for messages including
+                      />  Email notifications for messages including a
                       <strong
                         css="${css`
                           font-weight: 500;
                         `}"
-                        >@mentions</strong
+                        >@mention</strong
                       >
                     </label>
                     <label class="button button--rectangle button--transparent">

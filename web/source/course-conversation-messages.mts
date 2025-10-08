@@ -302,6 +302,52 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  if (application.commandLineArguments.values.type === "backgroundJob")
+    application.database.backgroundJob<{
+      courseConversationMessage: { id: number };
+    }>({ type: "courseConversationMessageEmailNotification" }, (parameters) => {
+      const courseConversationMessage = application.database.get<{
+        id: number;
+        publicId: string;
+        courseConversation: number;
+        createdByCourseParticipation: number | null;
+        courseConversationMessageVisibility:
+          | "courseConversationMessageVisibilityEveryone"
+          | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+        courseConversationMessageAnonymity:
+          | "courseConversationMessageAnonymityNone"
+          | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+          | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+        content: string;
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "courseConversation",
+            "createdByCourseParticipation",
+            "courseConversationMessageVisibility",
+            "courseConversationMessageAnonymity",
+            "content"
+          from "courseConversationMessages"
+          where "id" = ${parameters.courseConversationMessage.id};
+        `,
+      );
+      if (courseConversationMessage === undefined) return;
+      const courseConversation = application.database.get<{}>(
+        sql`
+          select
+            "publicId",
+            "course",
+            "courseConversationVisibility",
+            "title"
+          from "courseConversations"
+          where "id" = ${courseConversationMessage.courseConversation};
+        `,
+      );
+      throw new Error("TODO");
+    });
+
   application.server?.push({
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)(?:$|/)",
