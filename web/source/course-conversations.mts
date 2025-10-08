@@ -6455,12 +6455,6 @@ export default async (application: Application): Promise<void> => {
           );
           application.database.run(
             sql`
-              delete from "courseConversationMessageEmailNotificationDeliveries"
-              where "courseConversationMessage" = ${courseConversationMessage.id};
-            `,
-          );
-          application.database.run(
-            sql`
               delete from "courseConversationMessages"
               where "id" = ${courseConversationMessage.id};
             `,

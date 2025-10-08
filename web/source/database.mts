@@ -2610,13 +2610,6 @@ export default async (application: Application): Promise<void> => {
             "courseParticipation" integer null references "courseParticipations",
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
-          
-          create table "courseConversationMessageEmailNotificationDeliveries" (
-            "id" integer primary key autoincrement,
-            "courseConversationMessage" integer not null references "courseConversationMessages",
-            "courseParticipation" integer not null references "courseParticipations",
-            unique ("courseConversationMessage", "courseParticipation")
-          ) strict;
         `,
       );
 
