@@ -415,21 +415,27 @@ export default async (application: Application): Promise<void> => {
           );
           if (user === undefined) throw new Error();
           if (
-            courseConversation.courseConversationVisibility ===
-              "courseConversationVisibilityEveryone" ||
             (courseConversation.courseConversationVisibility ===
-              "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
-              courseParticipation.courseParticipationRole ===
-                "courseParticipationRoleInstructor") ||
-            application.database.get(
-              sql`
+              "courseConversationVisibilityEveryone" ||
+              (courseConversation.courseConversationVisibility ===
+                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                courseParticipation.courseParticipationRole ===
+                  "courseParticipationRoleInstructor") ||
+              application.database.get(
+                sql`
                 select true
                 from "courseConversationParticipations"
                 where
                   "courseConversation" = ${courseConversation.id} and
                   "courseParticipation" = ${courseParticipation.id};
               `,
-            ) !== undefined
+              ) !== undefined) &&
+            (courseConversationMessage.courseConversationMessageVisibility ===
+              "courseConversationMessageVisibilityEveryone" ||
+              (courseConversationMessage.courseConversationMessageVisibility ===
+                "courseConversationMessageVisibilityCourseParticipationRoleInstructors" &&
+                courseParticipation.courseParticipationRole ===
+                  "courseParticipationRoleInstructor"))
           )
             courseConversationMessageEmailNotifications.push({
               to: user.email,
