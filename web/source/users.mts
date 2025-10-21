@@ -1786,6 +1786,7 @@ export default async (application: Application): Promise<void> => {
             'email',
             ${new Date().toISOString()},
             ${JSON.stringify({
+              from: `"Courselore" <${application.configuration.email.from}>`,
               to: request.state.user.email,
               subject: "Trying to change email address",
               html: html`
@@ -1833,6 +1834,7 @@ export default async (application: Application): Promise<void> => {
             'email',
             ${new Date().toISOString()},
             ${JSON.stringify({
+              from: `"Courselore" <${application.configuration.email.from}>`,
               to: request.state.user.emailVerificationEmail,
               subject: "Email verification",
               html: html`
@@ -1978,6 +1980,7 @@ export default async (application: Application): Promise<void> => {
             'email',
             ${new Date().toISOString()},
             ${JSON.stringify({
+              from: `"Courselore" <${application.configuration.email.from}>`,
               to: request.state.user.email,
               subject: "Password changed",
               html: html`
@@ -2569,6 +2572,7 @@ export default async (application: Application): Promise<void> => {
               'email',
               ${new Date().toISOString()},
               ${JSON.stringify({
+                from: `"Courselore" <${application.configuration.email.from}>`,
                 to: request.state.user!.email,
                 subject: "Account deleted",
                 html: html`

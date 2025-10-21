@@ -3659,8 +3659,12 @@ export default async (application: Application): Promise<void> => {
               'email',
               ${new Date().toISOString()},
               ${JSON.stringify({
+                from: {
+                  name: `${request.state.course.name} · Courselore`,
+                  address: application.configuration.email.from,
+                },
                 to: userEmail,
-                subject: `Invitation · ${request.state.course.name}`,
+                subject: `Invitation`,
                 html: html`
                   <p>
                     You’re invited to join the course

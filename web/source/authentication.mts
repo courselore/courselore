@@ -1064,6 +1064,7 @@ export default async (application: Application): Promise<void> => {
                 'email',
                 ${new Date().toISOString()},
                 ${JSON.stringify({
+                  from: `"Courselore" <${application.configuration.email.from}>`,
                   to: request.body.email,
                   subject: "Tried to sign up with an existing email",
                   html: html`
@@ -1259,6 +1260,7 @@ export default async (application: Application): Promise<void> => {
               'email',
               ${new Date().toISOString()},
               ${JSON.stringify({
+                from: `"Courselore" <${application.configuration.email.from}>`,
                 to: request.state.user.email,
                 subject: "Email verification",
                 html: html`
@@ -1485,6 +1487,7 @@ export default async (application: Application): Promise<void> => {
             'email',
             ${new Date().toISOString()},
             ${JSON.stringify({
+              from: `"Courselore" <${application.configuration.email.from}>`,
               to: request.state.user.emailVerificationEmail,
               subject: "Email verification",
               html: html`
@@ -1987,6 +1990,7 @@ export default async (application: Application): Promise<void> => {
             'email',
             ${new Date().toISOString()},
             ${JSON.stringify({
+              from: `"Courselore" <${application.configuration.email.from}>`,
               to: request.state.user.email,
               subject: "Sign in",
               html: html`
@@ -2624,6 +2628,7 @@ export default async (application: Application): Promise<void> => {
               'email',
               ${new Date().toISOString()},
               ${JSON.stringify({
+                from: `"Courselore" <${application.configuration.email.from}>`,
                 to: request.state.user.email,
                 subject: "Reset password",
                 html: html`
@@ -3044,6 +3049,7 @@ export default async (application: Application): Promise<void> => {
             'email',
             ${new Date().toISOString()},
             ${JSON.stringify({
+              from: `"Courselore" <${application.configuration.email.from}>`,
               to: request.state.user.email,
               subject: "Password has been reset",
               html: html`
@@ -3538,6 +3544,7 @@ export default async (application: Application): Promise<void> => {
             'email',
             ${new Date().toISOString()},
             ${JSON.stringify({
+              from: `"Courselore" <${application.configuration.email.from}>`,
               to: request.state.user!.email,
               subject: "Sign in",
               html: html`

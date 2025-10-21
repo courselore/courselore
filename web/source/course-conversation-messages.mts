@@ -376,12 +376,14 @@ export default async (application: Application): Promise<void> => {
         const course = application.database.get<{
           id: number;
           publicId: string;
+          name: string;
           courseState: "courseStateActive" | "courseStateArchived";
         }>(
           sql`
             select
               "id",
               "publicId",
+              "name",
               "courseState"
             from "courses"
             where "id" = ${courseConversation.course};
@@ -493,6 +495,10 @@ export default async (application: Application): Promise<void> => {
             ) === undefined
           )
             courseConversationMessageEmailNotifications.push({
+              from: {
+                name: `${course.name} · Courselore`,
+                address: application.configuration.email.from,
+              },
               to: user.email,
               subject: courseConversation.title,
               inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
