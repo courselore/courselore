@@ -360,6 +360,18 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (courseConversation === undefined) throw new Error();
+        const firstCourseConversationMessage = application.database.get<{
+          id: number;
+        }>(
+          sql`
+              select "id"
+              from "courseConversationMessages"
+              where "courseConversation" = ${courseConversation.id}
+              order by "id" asc
+              limit 1;
+            `,
+        );
+        if (firstCourseConversationMessage === undefined) throw new Error();
         const course = application.database.get<{
           id: number;
           publicId: string;
