@@ -3,7 +3,7 @@ export default {
   email: {
     host: "127.0.0.1",
     port: 8025,
-    from: "Courselore <courselore@courselore.org>",
+    from: "courselore@courselore.org",
   },
   saml: {
     "courselore-university": {
