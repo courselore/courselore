@@ -339,6 +339,7 @@ export default async (application: Application): Promise<void> => {
         );
         if (courseConversationMessage === undefined) return;
         const courseConversation = application.database.get<{
+          id: number;
           publicId: string;
           course: number;
           courseConversationVisibility:
@@ -349,6 +350,7 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             select
+              "id",
               "publicId",
               "course",
               "courseConversationVisibility",
@@ -413,7 +415,21 @@ export default async (application: Application): Promise<void> => {
           );
           if (user === undefined) throw new Error();
           if (
-            "TODO: Check that email notification should be sent to this person"
+            courseConversation.courseConversationVisibility ===
+              "courseConversationVisibilityEveryone" ||
+            (courseConversation.courseConversationVisibility ===
+              "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+              courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleInstructor") ||
+            application.database.get(
+              sql`
+                select true
+                from "courseConversationParticipations"
+                where
+                  "courseConversation" = ${courseConversation.id} and
+                  "courseParticipation" = ${courseParticipation.id};
+              `,
+            ) !== undefined
           )
             courseConversationMessageEmailNotifications.push({
               to: user.email,
