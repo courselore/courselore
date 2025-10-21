@@ -361,15 +361,15 @@ export default async (application: Application): Promise<void> => {
         );
         if (courseConversation === undefined) throw new Error();
         const firstCourseConversationMessage = application.database.get<{
-          id: number;
+          createdByCourseParticipation: number | null;
         }>(
           sql`
-              select "id"
-              from "courseConversationMessages"
-              where "courseConversation" = ${courseConversation.id}
-              order by "id" asc
-              limit 1;
-            `,
+            select "createdByCourseParticipation"
+            from "courseConversationMessages"
+            where "courseConversation" = ${courseConversation.id}
+            order by "id" asc
+            limit 1;
+          `,
         );
         if (firstCourseConversationMessage === undefined) throw new Error();
         const course = application.database.get<{
@@ -434,6 +434,8 @@ export default async (application: Application): Promise<void> => {
           );
           if (user === undefined) throw new Error();
           if (
+            courseConversationMessage.createdByCourseParticipation !==
+              courseParticipation.id &&
             (courseConversation.courseConversationVisibility ===
               "courseConversationVisibilityEveryone" ||
               (courseConversation.courseConversationVisibility ===
@@ -455,6 +457,28 @@ export default async (application: Application): Promise<void> => {
                 "courseConversationMessageVisibilityCourseParticipationRoleInstructors" &&
                 courseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor")) &&
+            (Boolean(user.emailNotificationsForAllMessages) ||
+              (Boolean(user.emailNotificationsForMessagesIncludingAMention) &&
+                courseConversationMessageMentions.includes(
+                  courseParticipation.id,
+                )) ||
+              (Boolean(
+                user.emailNotificationsForMessagesInConversationsInWhichYouParticipated,
+              ) &&
+                application.database.get(
+                  sql`
+                    select true
+                    from "courseConversationMessages"
+                    where
+                      "courseConversation" = ${courseConversation.id} and
+                      "createdByCourseParticipation" = ${courseParticipation.id};
+                  `,
+                ) !== undefined) ||
+              (Boolean(
+                user.emailNotificationsForMessagesInConversationsThatYouStarted,
+              ) &&
+                firstCourseConversationMessage.createdByCourseParticipation ===
+                  courseParticipation.id)) &&
             application.database.get(
               sql`
                 select true
