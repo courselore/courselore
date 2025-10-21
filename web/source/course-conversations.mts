@@ -2540,6 +2540,11 @@ export default async (application: Application): Promise<void> => {
         (request.body.pinned === "true" &&
           request.state.courseParticipation.courseParticipationRole !==
             "courseParticipationRoleInstructor") ||
+        (request.body.announcement === "on" &&
+          (request.body.courseConversationType !==
+            "courseConversationTypeNote" ||
+            request.state.courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleInstructor")) ||
         !Array.isArray(request.body.tags) ||
         (Boolean(request.state.course.courseConversationRequiresTagging) &&
           0 < request.state.courseConversationsTags.length &&
@@ -2763,7 +2768,7 @@ export default async (application: Application): Promise<void> => {
             values (
               'courseConversationMessageEmailNotification',
               ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
-              ${JSON.stringify({ courseConversationMessage })}
+              ${JSON.stringify({ courseConversationMessage, announcement: request.body.announcement === "on" })}
             );
           `,
         );

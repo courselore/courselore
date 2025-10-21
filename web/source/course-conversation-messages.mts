@@ -305,6 +305,7 @@ export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "backgroundJob")
     application.database.backgroundJob<{
       courseConversationMessage: { id: number };
+      announcement?: boolean;
     }>(
       { type: "courseConversationMessageEmailNotification" },
       async (parameters) => {
@@ -457,7 +458,8 @@ export default async (application: Application): Promise<void> => {
                 "courseConversationMessageVisibilityCourseParticipationRoleInstructors" &&
                 courseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor")) &&
-            (Boolean(user.emailNotificationsForAllMessages) ||
+            (parameters.announcement === true ||
+              Boolean(user.emailNotificationsForAllMessages) ||
               (Boolean(user.emailNotificationsForMessagesIncludingAMention) &&
                 courseConversationMessageMentions.has(
                   courseParticipation.id,
