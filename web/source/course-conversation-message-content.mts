@@ -1763,6 +1763,8 @@ You may also use the buttons on the message content editor to ${
         )
       : courseConversationMessageContentProcessor());
     async function courseConversationMessageContentProcessor() {
+      // TODO
+      if (mode === "mentions") return new Set();
       const processedMarkdown = (
         await unified()
           .use(remarkParse)
