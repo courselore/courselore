@@ -375,6 +375,13 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (course === undefined) throw new Error();
+        const courseConversationMessageMentions =
+          await application.partials.courseConversationMessageContentProcessor({
+            course,
+            courseConversation,
+            courseConversationMessage,
+            mode: "mentions",
+          });
         const courseConversationMessageEmailNotifications = new Array<any>();
         for (const courseParticipation of application.database.all<{
           id: number;

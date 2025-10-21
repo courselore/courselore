@@ -64,43 +64,77 @@ export type ApplicationCourseConversationMessageContent = {
       };
       courseConversationMessageContent?: string;
     }) => HTML;
-    courseConversationMessageContentProcessor: ({
-      course,
-      courseParticipation,
-      courseConversation,
-      courseConversationMessage,
-      courseConversationMessageContent,
-      mode,
-    }: {
-      course: {
-        id: number;
-        publicId: string;
-        courseState: "courseStateActive" | "courseStateArchived";
-      };
-      courseParticipation?: {
-        id: number;
-        publicId: string;
-        courseParticipationRole:
-          | "courseParticipationRoleInstructor"
-          | "courseParticipationRoleStudent";
-      };
-      courseConversation?: {
-        publicId: string;
-      };
-      courseConversationMessage?: {
-        publicId: string;
-        updatedAt: string | null;
-        createdByCourseParticipation: number | null;
-        content: string;
-      };
-      courseConversationMessageContent?: string;
-      mode?:
-        | "normal"
-        | "preview"
-        | "textContent"
-        | "programmaticEditingOfCourseConversationMessageContent"
-        | "emailNotification";
-    }) => Promise<HTML>;
+    courseConversationMessageContentProcessor: {
+      ({
+        course,
+        courseParticipation,
+        courseConversation,
+        courseConversationMessage,
+        courseConversationMessageContent,
+        mode,
+      }: {
+        course: {
+          id: number;
+          publicId: string;
+          courseState: "courseStateActive" | "courseStateArchived";
+        };
+        courseParticipation?: {
+          id: number;
+          publicId: string;
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+        };
+        courseConversation?: {
+          publicId: string;
+        };
+        courseConversationMessage?: {
+          publicId: string;
+          updatedAt: string | null;
+          createdByCourseParticipation: number | null;
+          content: string;
+        };
+        courseConversationMessageContent?: string;
+        mode?:
+          | "normal"
+          | "preview"
+          | "textContent"
+          | "programmaticEditingOfCourseConversationMessageContent"
+          | "emailNotification";
+      }): Promise<HTML>;
+      ({
+        course,
+        courseParticipation,
+        courseConversation,
+        courseConversationMessage,
+        courseConversationMessageContent,
+        mode,
+      }: {
+        course: {
+          id: number;
+          publicId: string;
+          courseState: "courseStateActive" | "courseStateArchived";
+        };
+        courseParticipation?: {
+          id: number;
+          publicId: string;
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+        };
+        courseConversation?: {
+          publicId: string;
+        };
+        courseConversationMessage?: {
+          publicId: string;
+          updatedAt: string | null;
+          createdByCourseParticipation: number | null;
+          content: string;
+        };
+        courseConversationMessageContent?: string;
+        mode?: "mentions";
+      }): Promise<number[]>;
+    };
   };
 };
 
