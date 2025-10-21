@@ -423,19 +423,28 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleInstructor") ||
               application.database.get(
                 sql`
-                select true
-                from "courseConversationParticipations"
-                where
-                  "courseConversation" = ${courseConversation.id} and
-                  "courseParticipation" = ${courseParticipation.id};
-              `,
+                  select true
+                  from "courseConversationParticipations"
+                  where
+                    "courseConversation" = ${courseConversation.id} and
+                    "courseParticipation" = ${courseParticipation.id};
+                `,
               ) !== undefined) &&
             (courseConversationMessage.courseConversationMessageVisibility ===
               "courseConversationMessageVisibilityEveryone" ||
               (courseConversationMessage.courseConversationMessageVisibility ===
                 "courseConversationMessageVisibilityCourseParticipationRoleInstructors" &&
                 courseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor"))
+                  "courseParticipationRoleInstructor")) &&
+            application.database.get(
+              sql`
+                select true
+                from "courseConversationMessageViews"
+                where
+                  "courseConversationMessage" = ${courseConversationMessage.id}
+                  "courseParticipation" = ${courseParticipation.id};
+              `,
+            ) === undefined
           )
             courseConversationMessageEmailNotifications.push({
               to: user.email,
