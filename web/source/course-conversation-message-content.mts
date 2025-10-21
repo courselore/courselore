@@ -1713,7 +1713,7 @@ You may also use the buttons on the message content editor to ${
       })(),
     mode = "normal",
   }) => {
-    return await (mode === "normal" && false /* TODO */
+    return await (mode === "normal"
       ? application.database.cacheAsync(
           JSON.stringify({
             version: application.version,
