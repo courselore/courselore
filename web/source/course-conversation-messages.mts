@@ -493,6 +493,8 @@ export default async (application: Application): Promise<void> => {
             courseConversationMessageEmailNotifications.push({
               to: user.email,
               subject: courseConversation.title,
+              inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
+              references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
               html: await application.partials.courseConversationMessageContentProcessor(
                 {
                   course,
