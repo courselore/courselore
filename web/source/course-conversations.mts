@@ -2769,7 +2769,7 @@ export default async (application: Application): Promise<void> => {
               'courseConversationMessageEmailNotification',
               ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
               ${JSON.stringify({
-                courseConversationMessage: { id: courseConversationMessage.id },
+                courseConversationMessageId: courseConversationMessage.id,
                 announcement: request.body.announcement === "on",
               })}
             );

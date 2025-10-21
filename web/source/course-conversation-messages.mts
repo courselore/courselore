@@ -283,7 +283,7 @@ export default async (application: Application): Promise<void> => {
             values (
               'courseConversationMessageEmailNotification',
               ${new Date(Date.now() /* TODO: + 5 * 60 * 1000 */).toISOString()},
-              ${JSON.stringify({ courseConversationMessage: { id: courseConversationMessage.id } })}
+              ${JSON.stringify({ courseConversationMessageId: courseConversationMessage.id })}
             );
           `,
         );
@@ -304,7 +304,7 @@ export default async (application: Application): Promise<void> => {
 
   if (application.commandLineArguments.values.type === "backgroundJob")
     application.database.backgroundJob<{
-      courseConversationMessage: { id: number };
+      courseConversationMessageId: number;
       announcement?: boolean;
     }>(
       { type: "courseConversationMessageEmailNotification" },
@@ -335,7 +335,7 @@ export default async (application: Application): Promise<void> => {
               "courseConversationMessageAnonymity",
               "content"
             from "courseConversationMessages"
-            where "id" = ${parameters.courseConversationMessage.id};
+            where "id" = ${parameters.courseConversationMessageId};
           `,
         );
         if (courseConversationMessage === undefined) return;
