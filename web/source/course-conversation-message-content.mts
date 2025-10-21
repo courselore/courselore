@@ -133,7 +133,7 @@ export type ApplicationCourseConversationMessageContent = {
         };
         courseConversationMessageContent?: string;
         mode?: "mentions";
-      }): Promise<number[]>;
+      }): Promise<Set<number>>;
     };
   };
 };

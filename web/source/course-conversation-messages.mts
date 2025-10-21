@@ -459,7 +459,7 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleInstructor")) &&
             (Boolean(user.emailNotificationsForAllMessages) ||
               (Boolean(user.emailNotificationsForMessagesIncludingAMention) &&
-                courseConversationMessageMentions.includes(
+                courseConversationMessageMentions.has(
                   courseParticipation.id,
                 )) ||
               (Boolean(
@@ -471,7 +471,8 @@ export default async (application: Application): Promise<void> => {
                     from "courseConversationMessages"
                     where
                       "courseConversation" = ${courseConversation.id} and
-                      "createdByCourseParticipation" = ${courseParticipation.id};
+                      "createdByCourseParticipation" = ${courseParticipation.id}
+                    limit 1;
                   `,
                 ) !== undefined) ||
               (Boolean(
