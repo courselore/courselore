@@ -487,7 +487,7 @@ export default async (application: Application): Promise<void> => {
                 select true
                 from "courseConversationMessageViews"
                 where
-                  "courseConversationMessage" = ${courseConversationMessage.id}
+                  "courseConversationMessage" = ${courseConversationMessage.id} and
                   "courseParticipation" = ${courseParticipation.id};
               `,
             ) === undefined
