@@ -312,6 +312,7 @@ export default async (application: Application): Promise<void> => {
           id: number;
           publicId: string;
           courseConversation: number;
+          updatedAt: string | null;
           createdByCourseParticipation: number | null;
           courseConversationMessageVisibility:
             | "courseConversationMessageVisibilityEveryone"
@@ -327,6 +328,7 @@ export default async (application: Application): Promise<void> => {
               "id",
               "publicId",
               "courseConversation",
+              "updatedAt",
               "createdByCourseParticipation",
               "courseConversationMessageVisibility",
               "courseConversationMessageAnonymity",
@@ -356,9 +358,25 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (courseConversation === undefined) throw new Error();
+        const course = application.database.get<{
+          id: number;
+          publicId: string;
+          courseState: "courseStateActive" | "courseStateArchived";
+        }>(
+          sql`
+            select
+              "id",
+              "publicId",
+              "courseState"
+            from "courses"
+            where "id" = ${courseConversation.course};
+          `,
+        );
+        if (course === undefined) throw new Error();
         const courseConversationMessageEmailNotifications = new Array<any>();
         for (const courseParticipation of application.database.all<{
           id: number;
+          publicId: string;
           user: number;
           courseParticipationRole:
             | "courseParticipationRoleInstructor"
@@ -367,10 +385,11 @@ export default async (application: Application): Promise<void> => {
           sql`
             select
               "id",
+              "publicId",
               "user",
               "courseParticipationRole"
             from "courseParticipations"
-            where "course" = ${courseConversation.course}
+            where "course" = ${course.id}
             order by "id" asc;
           `,
         )) {
@@ -398,8 +417,16 @@ export default async (application: Application): Promise<void> => {
           )
             courseConversationMessageEmailNotifications.push({
               to: user.email,
-              subject: html`${courseConversation.title}`,
-              html: html``,
+              subject: courseConversation.title,
+              html: await application.partials.courseConversationMessageContentProcessor(
+                {
+                  course,
+                  courseParticipation,
+                  courseConversation,
+                  courseConversationMessage,
+                  mode: "emailNotification",
+                },
+              ),
             });
         }
         application.database.executeTransaction(() => {
