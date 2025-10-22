@@ -398,7 +398,7 @@ export default async (application: Application): Promise<void> => {
             mode: "mentions",
           });
         const courseConversationMessageEmailNotifications = new Array<any>();
-        for (const courseParticipation of application.database.all<{
+        for (const courseConversationMessageEmailNotificationCourseParticipation of application.database.all<{
           id: number;
           publicId: string;
           user: number;
@@ -417,35 +417,37 @@ export default async (application: Application): Promise<void> => {
             order by "id" asc;
           `,
         )) {
-          const user = application.database.get<{
-            name: string;
-            email: string;
-            emailNotificationsForAllMessages: number;
-            emailNotificationsForMessagesIncludingAMention: number;
-            emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-            emailNotificationsForMessagesInConversationsThatYouStarted: number;
-          }>(
-            sql`
-              select
-                "name",
-                "email",
-                "emailNotificationsForAllMessages",
-                "emailNotificationsForMessagesIncludingAMention",
-                "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                "emailNotificationsForMessagesInConversationsThatYouStarted"
-              from "users"
-              where "id" = ${courseParticipation.user};
-            `,
-          );
-          if (user === undefined) throw new Error();
+          const courseConversationMessageEmailNotificationUser =
+            application.database.get<{
+              name: string;
+              email: string;
+              emailNotificationsForAllMessages: number;
+              emailNotificationsForMessagesIncludingAMention: number;
+              emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+              emailNotificationsForMessagesInConversationsThatYouStarted: number;
+            }>(
+              sql`
+                select
+                  "name",
+                  "email",
+                  "emailNotificationsForAllMessages",
+                  "emailNotificationsForMessagesIncludingAMention",
+                  "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                  "emailNotificationsForMessagesInConversationsThatYouStarted"
+                from "users"
+                where "id" = ${courseConversationMessageEmailNotificationCourseParticipation.user};
+              `,
+            );
+          if (courseConversationMessageEmailNotificationUser === undefined)
+            throw new Error();
           if (
             courseConversationMessage.createdByCourseParticipation !==
-              courseParticipation.id &&
+              courseConversationMessageEmailNotificationCourseParticipation.id &&
             (courseConversation.courseConversationVisibility ===
               "courseConversationVisibilityEveryone" ||
               (courseConversation.courseConversationVisibility ===
                 "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
-                courseParticipation.courseParticipationRole ===
+                courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor") ||
               application.database.get(
                 sql`
@@ -453,30 +455,34 @@ export default async (application: Application): Promise<void> => {
                   from "courseConversationParticipations"
                   where
                     "courseConversation" = ${courseConversation.id} and
-                    "courseParticipation" = ${courseParticipation.id};
+                    "courseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id};
                 `,
               ) !== undefined) &&
             (courseConversationMessage.courseConversationMessageVisibility ===
               "courseConversationMessageVisibilityEveryone" ||
               (courseConversationMessage.courseConversationMessageVisibility ===
                 "courseConversationMessageVisibilityCourseParticipationRoleInstructors" &&
-                courseParticipation.courseParticipationRole ===
+                courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor")) &&
             (parameters.announcement === true ||
-              Boolean(user.emailNotificationsForAllMessages) ||
-              (Boolean(user.emailNotificationsForMessagesIncludingAMention) &&
+              Boolean(
+                courseConversationMessageEmailNotificationUser.emailNotificationsForAllMessages,
+              ) ||
+              (Boolean(
+                courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesIncludingAMention,
+              ) &&
                 (courseConversationMessageMentions.has("everyone") ||
                   (courseConversationMessageMentions.has("instructors") &&
-                    courseParticipation.courseParticipationRole ===
+                    courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
                       "courseParticipationRoleInstructor") ||
                   (courseConversationMessageMentions.has("students") &&
-                    courseParticipation.courseParticipationRole ===
+                    courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
                       "courseParticipationRoleStudent") ||
                   courseConversationMessageMentions.has(
-                    courseParticipation.publicId,
+                    courseConversationMessageEmailNotificationCourseParticipation.publicId,
                   ))) ||
               (Boolean(
-                user.emailNotificationsForMessagesInConversationsInWhichYouParticipated,
+                courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesInConversationsInWhichYouParticipated,
               ) &&
                 application.database.get(
                   sql`
@@ -484,22 +490,22 @@ export default async (application: Application): Promise<void> => {
                     from "courseConversationMessages"
                     where
                       "courseConversation" = ${courseConversation.id} and
-                      "createdByCourseParticipation" = ${courseParticipation.id}
+                      "createdByCourseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id}
                     limit 1;
                   `,
                 ) !== undefined) ||
               (Boolean(
-                user.emailNotificationsForMessagesInConversationsThatYouStarted,
+                courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesInConversationsThatYouStarted,
               ) &&
                 firstCourseConversationMessage.createdByCourseParticipation ===
-                  courseParticipation.id)) &&
+                  courseConversationMessageEmailNotificationCourseParticipation.id)) &&
             application.database.get(
               sql`
                 select true
                 from "courseConversationMessageViews"
                 where
                   "courseConversationMessage" = ${courseConversationMessage.id} and
-                  "courseParticipation" = ${courseParticipation.id};
+                  "courseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id};
               `,
             ) === undefined
           )
@@ -508,7 +514,7 @@ export default async (application: Application): Promise<void> => {
                 name: `${course.name} · Courselore`,
                 address: application.configuration.email.from,
               },
-              to: user.email,
+              to: courseConversationMessageEmailNotificationUser.email,
               subject: courseConversation.title,
               inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
               references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
@@ -521,14 +527,17 @@ export default async (application: Application): Promise<void> => {
                         message: courseConversationMessage.publicId,
                       },
                     ).toString()}"
-                    >${user.name} says</a
+                    >TODO:
+                    ${courseConversationMessageEmailNotificationUser.name}
+                    says</a
                   >:
                 </p>
                 <hr />
                 $${await application.partials.courseConversationMessageContentProcessor(
                   {
                     course,
-                    courseParticipation,
+                    courseParticipation:
+                      courseConversationMessageEmailNotificationCourseParticipation,
                     courseConversation,
                     courseConversationMessage,
                     mode: "emailNotification",
