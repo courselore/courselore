@@ -419,7 +419,6 @@ export default async (application: Application): Promise<void> => {
         )) {
           const courseConversationMessageEmailNotificationUser =
             application.database.get<{
-              name: string;
               email: string;
               emailNotificationsForAllMessages: number;
               emailNotificationsForMessagesIncludingAMention: number;
@@ -428,7 +427,6 @@ export default async (application: Application): Promise<void> => {
             }>(
               sql`
                 select
-                  "name",
                   "email",
                   "emailNotificationsForAllMessages",
                   "emailNotificationsForMessagesIncludingAMention",
@@ -527,9 +525,11 @@ export default async (application: Application): Promise<void> => {
                         message: courseConversationMessage.publicId,
                       },
                     ).toString()}"
-                    >TODO:
-                    ${courseConversationMessageEmailNotificationUser.name}
-                    says</a
+                    >TODO
+                    says${courseConversationMessage.courseConversationMessageVisibility ===
+                    "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                      ? " (visible by instructors only)"
+                      : ""}</a
                   >:
                 </p>
                 <hr />
