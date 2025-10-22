@@ -418,6 +418,7 @@ export default async (application: Application): Promise<void> => {
           `,
         )) {
           const user = application.database.get<{
+            name: string;
             email: string;
             emailNotificationsForAllMessages: number;
             emailNotificationsForMessagesIncludingAMention: number;
@@ -426,6 +427,7 @@ export default async (application: Application): Promise<void> => {
           }>(
             sql`
               select
+                "name",
                 "email",
                 "emailNotificationsForAllMessages",
                 "emailNotificationsForMessagesIncludingAMention",
@@ -510,15 +512,21 @@ export default async (application: Application): Promise<void> => {
               subject: courseConversation.title,
               inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
               references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
-              html: await application.partials.courseConversationMessageContentProcessor(
-                {
-                  course,
-                  courseParticipation,
-                  courseConversation,
-                  courseConversationMessage,
-                  mode: "emailNotification",
-                },
-              ),
+              html: html`
+                <a href="TODO">${user.name} says</a>:
+                <hr />
+                $${await application.partials.courseConversationMessageContentProcessor(
+                  {
+                    course,
+                    courseParticipation,
+                    courseConversation,
+                    courseConversationMessage,
+                    mode: "emailNotification",
+                  },
+                )}
+                <hr />
+                <a href="TODO">Change notification preferences</a>
+              `,
             });
         }
         application.database.executeTransaction(() => {
