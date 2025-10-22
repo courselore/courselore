@@ -513,7 +513,17 @@ export default async (application: Application): Promise<void> => {
               inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
               references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
               html: html`
-                <a href="TODO">${user.name} says</a>:
+                <p>
+                  <a
+                    href="https://${application.configuration
+                      .hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
+                      {
+                        message: courseConversationMessage.publicId,
+                      },
+                    ).toString()}"
+                    >${user.name} says</a
+                  >:
+                </p>
                 <hr />
                 $${await application.partials.courseConversationMessageContentProcessor(
                   {
@@ -525,7 +535,13 @@ export default async (application: Application): Promise<void> => {
                   },
                 )}
                 <hr />
-                <a href="TODO">Change notification preferences</a>
+                <p>
+                  <a
+                    href="https://${application.configuration
+                      .hostname}/settings"
+                    >Change email notification preferences</a
+                  >
+                </p>
               `,
             });
         }
