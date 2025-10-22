@@ -463,9 +463,16 @@ export default async (application: Application): Promise<void> => {
             (parameters.announcement === true ||
               Boolean(user.emailNotificationsForAllMessages) ||
               (Boolean(user.emailNotificationsForMessagesIncludingAMention) &&
-                courseConversationMessageMentions.has(
-                  courseParticipation.id,
-                )) ||
+                (courseConversationMessageMentions.has("everyone") ||
+                  (courseConversationMessageMentions.has("instructors") &&
+                    courseParticipation.courseParticipationRole ===
+                      "courseParticipationRoleInstructor") ||
+                  (courseConversationMessageMentions.has("students") &&
+                    courseParticipation.courseParticipationRole ===
+                      "courseParticipationRoleStudent") ||
+                  courseConversationMessageMentions.has(
+                    courseParticipation.publicId,
+                  ))) ||
               (Boolean(
                 user.emailNotificationsForMessagesInConversationsInWhichYouParticipated,
               ) &&
