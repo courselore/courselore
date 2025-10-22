@@ -2211,6 +2211,10 @@ You may also use the buttons on the message content editor to ${
           element.getAttribute("href"),
           `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
         );
+        if (mode === "emailNotification") {
+          element.setAttribute("href", url.href);
+          continue;
+        }
         if (
           !(
             url.protocol === "https:" &&
@@ -2230,16 +2234,28 @@ You may also use the buttons on the message content editor to ${
           element.getAttribute("src"),
           `https://${application.configuration.hostname}`,
         );
+        if (mode === "emailNotification") {
+          element.setAttribute("src", url.href);
+          continue;
+        }
         if (url.hostname !== application.configuration.hostname)
           element.setAttribute(
             "src",
             `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
           );
       }
-      for (const element of document.querySelectorAll("img"))
-        element.setAttribute("loading", "lazy");
+      if (mode !== "emailNotification")
+        for (const element of document.querySelectorAll("img"))
+          element.setAttribute("loading", "lazy");
       for (const element of document.querySelectorAll("video"))
-        if (element.parentElement.matches("a")) {
+        if (mode === "emailNotification")
+          element.outerHTML = html`<a
+            href="https://${application.configuration
+              .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+              .publicId}?message=${courseConversationMessage!.publicId}"
+            >[Video]</a
+          >`;
+        else if (element.parentElement.matches("a")) {
           element.setAttribute("autoplay", "");
           element.setAttribute("disablepictureinpicture", "");
           element.setAttribute("disableremoteplayback", "");
@@ -2250,15 +2266,37 @@ You may also use the buttons on the message content editor to ${
           element.setAttribute("controls", "");
           element.setAttribute("preload", "metadata");
         }
-      for (const element of document.querySelectorAll("audio")) {
-        element.setAttribute("controls", "");
-        element.setAttribute("preload", "metadata");
-      }
-      for (const element of document.querySelectorAll("input"))
-        element.setAttribute("class", "input--checkbox");
+      for (const element of document.querySelectorAll("audio"))
+        if (mode === "emailNotification")
+          element.outerHTML = html`<a
+            href="https://${application.configuration
+              .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+              .publicId}?message=${courseConversationMessage!.publicId}"
+            >[Audio]</a
+          >`;
+        else {
+          element.setAttribute("controls", "");
+          element.setAttribute("preload", "metadata");
+        }
+      if (mode === "emailNotification")
+        for (const element of document.querySelectorAll("input"))
+          element.setAttribute("class", "input--checkbox");
       for (const [elementIndex, element] of [
         ...document.querySelectorAll("poll"),
       ].entries()) {
+        if (mode === "emailNotification") {
+          element.outerHTML = html`
+            <div>
+              <a
+                href="https://${application.configuration
+                  .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                  .publicId}?message=${courseConversationMessage!.publicId}"
+                >[Poll]</a
+              >
+            </div>
+          `;
+          continue;
+        }
         let votesCount = 0;
         for (const [pollOptionIndex, pollOption] of [
           ...element.children[0].children,
@@ -2513,71 +2551,94 @@ You may also use the buttons on the message content editor to ${
               "afterbegin",
               html`<summary>See more</summary>`,
             );
-      for (const element of document.querySelectorAll("summary")) {
-        element.setAttribute(
-          "class",
-          "button button--rectangle button--transparent",
-        );
-        element.insertAdjacentHTML(
-          "afterbegin",
-          html`
-            <span
+      if (mode !== "emailNotification")
+        for (const element of document.querySelectorAll("summary")) {
+          element.setAttribute(
+            "class",
+            "button button--rectangle button--transparent",
+          );
+          element.insertAdjacentHTML(
+            "afterbegin",
+            html`
+              <span
+                css="${css`
+                  display: inline-block;
+                  transition-property: var(--transition-property--transform);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--ease-in-out
+                  );
+                  details[open] > summary > & {
+                    rotate: var(--rotate--90);
+                  }
+                `}"
+              >
+                <i class="bi bi-chevron-right"></i>
+              </span>
+              <span></span>
+            `,
+          );
+        }
+      if (mode !== "emailNotification")
+        if (document.lastElementChild?.footnotes === true) {
+          const footnotes = document.lastElementChild;
+          for (const element of footnotes.querySelectorAll("a:last-child"))
+            if (
+              typeof element.getAttribute("href") === "string" &&
+              element.getAttribute("href").match(/^#fnref-\d+$/) &&
+              element.textContent.trim() === "↩"
+            ) {
+              element.setAttribute(
+                "class",
+                "button button--square button--transparent",
+              );
+              element.innerHTML = html`<i class="bi bi-arrow-up"></i>`;
+            }
+          footnotes.outerHTML = html`
+            <div
               css="${css`
-                display: inline-block;
-                transition-property: var(--transition-property--transform);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--ease-in-out
+                font-size: var(--font-size--3);
+                line-height: var(--font-size--3--line-height);
+                color: light-dark(
+                  var(--color--slate--600),
+                  var(--color--slate--400)
                 );
-                details[open] > summary > & {
-                  rotate: var(--rotate--90);
+                padding-top: var(--size--2);
+                border-top: var(--border-width--1) solid
+                  light-dark(var(--color--slate--200), var(--color--slate--800));
+                margin-top: var(--size--2);
+                & > ol {
+                  margin-top: var(--size--0);
+                  margin-bottom: var(--size--0);
                 }
               `}"
             >
-              <i class="bi bi-chevron-right"></i>
-            </span>
-            <span></span>
-          `,
-        );
-      }
-      if (document.lastElementChild?.footnotes === true) {
-        const footnotes = document.lastElementChild;
-        for (const element of footnotes.querySelectorAll("a:last-child"))
-          if (
-            typeof element.getAttribute("href") === "string" &&
-            element.getAttribute("href").match(/^#fnref-\d+$/) &&
-            element.textContent.trim() === "↩"
-          ) {
-            element.setAttribute(
-              "class",
-              "button button--square button--transparent",
-            );
-            element.innerHTML = html`<i class="bi bi-arrow-up"></i>`;
-          }
-        footnotes.outerHTML = html`
-          <div
-            css="${css`
-              font-size: var(--font-size--3);
-              line-height: var(--font-size--3--line-height);
-              color: light-dark(
-                var(--color--slate--600),
-                var(--color--slate--400)
-              );
-              padding-top: var(--size--2);
-              border-top: var(--border-width--1) solid
-                light-dark(var(--color--slate--200), var(--color--slate--800));
-              margin-top: var(--size--2);
-              & > ol {
-                margin-top: var(--size--0);
-                margin-bottom: var(--size--0);
-              }
-            `}"
-          >
-            $${footnotes.outerHTML}
-          </div>
-        `;
-      }
+              $${footnotes.outerHTML}
+            </div>
+          `;
+        }
       for (const element of document.querySelectorAll("code.language-math")) {
+        if (mode === "emailNotification") {
+          if (element.parentElement.matches("pre"))
+            element.parentElement.outerHTML = html`
+              <div>
+                <a
+                  href="https://${application.configuration
+                    .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                    .publicId}?message=${courseConversationMessage!.publicId}"
+                  >[Mathematics]</a
+                >
+              </div>
+            `;
+          else
+            element.outerHTML = html`<a
+              href="https://${application.configuration
+                .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                .publicId}?message=${courseConversationMessage!.publicId}"
+              >[mathematics]</a
+            >`;
+          continue;
+        }
         const svg = MathJax.startup.adaptor.innerHTML(
           await MathJax.tex2svgPromise(element.textContent),
         );
@@ -2641,7 +2702,7 @@ You may also use the buttons on the message content editor to ${
         } catch {
           element.removeAttribute("class");
         }
-      {
+      if (mode !== "emailNotification") {
         const githubSlugger = new GitHubSlugger();
         for (const element of document.querySelectorAll("[id]")) {
           const originalId = element.getAttribute("id");
@@ -2804,13 +2865,21 @@ You may also use the buttons on the message content editor to ${
                   );
                   if (mentionCourseConversation === undefined) return match;
                   if (courseConversationMessagePublicId === undefined)
-                    return html`
-                      <a
-                        href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
-                        class="link"
-                        >${match}</a
-                      >
-                    `;
+                    return mode === "emailNotification"
+                      ? html`
+                          <a
+                            href="https://${application.configuration
+                              .hostname}/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
+                            >${match}</a
+                          >
+                        `
+                      : html`
+                          <a
+                            href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
+                            class="link"
+                            >${match}</a
+                          >
+                        `;
                   const mentionCourseConversationMessage =
                     application.database.get<{ publicId: string }>(
                       sql`
@@ -2832,13 +2901,21 @@ You may also use the buttons on the message content editor to ${
                     );
                   if (mentionCourseConversationMessage === undefined)
                     return match;
-                  return html`
-                    <a
-                      href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?message=${mentionCourseConversationMessage.publicId}"
-                      class="link"
-                      >${match}</a
-                    >
-                  `;
+                  return mode === "emailNotification"
+                    ? html`
+                        <a
+                          href="https://${application.configuration
+                            .hostname}/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?message=${mentionCourseConversationMessage.publicId}"
+                          >${match}</a
+                        >
+                      `
+                    : html`
+                        <a
+                          href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?message=${mentionCourseConversationMessage.publicId}"
+                          class="link"
+                          >${match}</a
+                        >
+                      `;
                 },
               );
           parent.removeChild(child);
