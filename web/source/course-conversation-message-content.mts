@@ -133,7 +133,7 @@ export type ApplicationCourseConversationMessageContent = {
         };
         courseConversationMessageContent?: string;
         mode?: "mentions";
-      }): Promise<Set<number>>;
+      }): Promise<Set<string>>;
     };
   };
 };
@@ -1763,8 +1763,7 @@ You may also use the buttons on the message content editor to ${
         )
       : courseConversationMessageContentProcessor());
     async function courseConversationMessageContentProcessor() {
-      // TODO
-      if (mode === "mentions") return new Set();
+      const mentions = new Set<string>();
       const processedMarkdown = (
         await unified()
           .use(remarkParse)
@@ -2802,6 +2801,7 @@ You may also use the buttons on the message content editor to ${
                     `,
                   );
                   if (mentionUser === undefined) throw new Error();
+                  mentions.add(courseParticipationPublicId);
                   return html`<strong
                     $${courseParticipation !== undefined &&
                     courseParticipation.id === mentionCourseParticipation.id
@@ -2815,8 +2815,11 @@ You may also use the buttons on the message content editor to ${
                 },
               )
               .replaceAll(
-                /(?<=^|\s)@(?:everyone|instructors|students)(?![A-Za-z0-9\-])/g,
-                (match) => html`<strong>${match}</strong>`,
+                /(?<=^|\s)@(?<mention>everyone|instructors|students)(?![A-Za-z0-9\-])/g,
+                (match, mention) => {
+                  mentions.add(mention);
+                  return html`<strong>${match}</strong>`;
+                },
               )
               .replaceAll(
                 /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseConversationMessagePublicId>\d+))?/g,
@@ -3009,7 +3012,9 @@ You may also use the buttons on the message content editor to ${
         ? document.textContent
         : mode === "emailNotification"
           ? document.innerHTML
-          : document.outerHTML;
+          : mode === "mentions"
+            ? mentions
+            : document.outerHTML;
     }
   };
 
