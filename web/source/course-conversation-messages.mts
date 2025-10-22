@@ -390,6 +390,35 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (course === undefined) throw new Error();
+        const courseConversationMessageCreatedByCourseParticipation =
+          typeof courseConversationMessage.createdByCourseParticipation ===
+          "number"
+            ? application.database.get<{
+                user: number;
+                courseParticipationRole:
+                  | "courseParticipationRoleInstructor"
+                  | "courseParticipationRoleStudent";
+              }>(
+                sql`
+                  select
+                    "user",
+                    "courseParticipationRole"
+                  from "courseParticipations"
+                  where "id" = ${courseConversationMessage.createdByCourseParticipation};
+                `,
+              )
+            : undefined;
+        const courseConversationMessageCreatedByUser =
+          typeof courseConversationMessageCreatedByCourseParticipation ===
+          "object"
+            ? application.database.get<{ name: string }>(
+                sql`
+                  select "name"
+                  from "users"
+                  where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
+                `,
+              )
+            : undefined;
         const courseConversationMessageMentions =
           await application.partials.courseConversationMessageContentProcessor({
             course,
@@ -438,6 +467,15 @@ export default async (application: Application): Promise<void> => {
             );
           if (courseConversationMessageEmailNotificationUser === undefined)
             throw new Error();
+          const courseConversationMessageAnonymous =
+            courseConversationMessage.createdByCourseParticipation !==
+              courseConversationMessageEmailNotificationCourseParticipation.id &&
+            ((courseConversationMessage.courseConversationMessageAnonymity ===
+              "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+              courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
+                "courseParticipationRoleStudent") ||
+              courseConversationMessage.courseConversationMessageAnonymity ===
+                "courseConversationMessageAnonymityCourseParticipationRoleInstructors");
           if (
             courseConversationMessage.createdByCourseParticipation !==
               courseConversationMessageEmailNotificationCourseParticipation.id &&
@@ -518,19 +556,48 @@ export default async (application: Application): Promise<void> => {
               references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
               html: html`
                 <p>
-                  <a
-                    href="https://${application.configuration
-                      .hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
-                      {
-                        message: courseConversationMessage.publicId,
-                      },
-                    ).toString()}"
-                    >TODO
-                    says${courseConversationMessage.courseConversationMessageVisibility ===
-                    "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
-                      ? " (visible by instructors only)"
-                      : ""}</a
-                  >:
+                  <small>
+                    <a
+                      href="https://${application.configuration
+                        .hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
+                        {
+                          message: courseConversationMessage.publicId,
+                        },
+                      ).toString()}"
+                      >See in Courselore</a
+                    >
+                  </small>
+                </p>
+                <p>
+                  <strong>
+                    ${courseConversationMessageAnonymous
+                      ? "Anonymous"
+                      : (courseConversationMessageCreatedByUser?.name ??
+                        "Deleted course participant")}
+                  </strong>
+                  ${!courseConversationMessageAnonymous
+                    ? `
+                        ${
+                          courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                            ? "(instructor)"
+                            : ""
+                        }
+                        ${
+                          courseConversationMessage.courseConversationMessageAnonymity ===
+                          "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                            ? "(anonymous to students)"
+                            : courseConversationMessage.courseConversationMessageAnonymity ===
+                                "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                              ? "(anonymous to instructors)"
+                              : ""
+                        }
+                      `
+                    : ``}
+                  ${courseConversationMessage.courseConversationMessageVisibility ===
+                  "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                    ? "(visible by instructors only)"
+                    : ""}
                 </p>
                 <hr />
                 $${await application.partials.courseConversationMessageContentProcessor(
@@ -545,11 +612,13 @@ export default async (application: Application): Promise<void> => {
                 )}
                 <hr />
                 <p>
-                  <a
-                    href="https://${application.configuration
-                      .hostname}/settings"
-                    >Change email notification preferences</a
-                  >
+                  <small>
+                    <a
+                      href="https://${application.configuration
+                        .hostname}/settings"
+                      >Change email notification preferences</a
+                    >
+                  </small>
                 </p>
               `,
             });
