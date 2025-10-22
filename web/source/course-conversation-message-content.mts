@@ -2251,7 +2251,9 @@ You may also use the buttons on the message content editor to ${
           element.outerHTML = html`<a
             href="https://${application.configuration
               .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-              .publicId}?message=${courseConversationMessage!.publicId}"
+              .publicId}?${new URLSearchParams({
+              message: courseConversationMessage!.publicId,
+            }).toString()}"
             >[Video]</a
           >`;
         else if (element.parentElement.matches("a")) {
@@ -2270,7 +2272,9 @@ You may also use the buttons on the message content editor to ${
           element.outerHTML = html`<a
             href="https://${application.configuration
               .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-              .publicId}?message=${courseConversationMessage!.publicId}"
+              .publicId}?${new URLSearchParams({
+              message: courseConversationMessage!.publicId,
+            }).toString()}"
             >[Audio]</a
           >`;
         else {
@@ -2289,7 +2293,9 @@ You may also use the buttons on the message content editor to ${
               <a
                 href="https://${application.configuration
                   .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                  .publicId}?message=${courseConversationMessage!.publicId}"
+                  .publicId}?${new URLSearchParams({
+                  message: courseConversationMessage!.publicId,
+                }).toString()}"
                 >[Poll]</a
               >
             </div>
@@ -2624,7 +2630,9 @@ You may also use the buttons on the message content editor to ${
                 <a
                   href="https://${application.configuration
                     .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                    .publicId}?message=${courseConversationMessage!.publicId}"
+                    .publicId}${new URLSearchParams({
+                    message: courseConversationMessage!.publicId,
+                  }).toString()}"
                   >[Mathematics]</a
                 >
               </div>
@@ -2633,7 +2641,9 @@ You may also use the buttons on the message content editor to ${
             element.outerHTML = html`<a
               href="https://${application.configuration
                 .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                .publicId}?message=${courseConversationMessage!.publicId}"
+                .publicId}${new URLSearchParams({
+                message: courseConversationMessage!.publicId,
+              }).toString()}"
               >[mathematics]</a
             >`;
           continue;
@@ -2908,13 +2918,23 @@ You may also use the buttons on the message content editor to ${
                     ? html`
                         <a
                           href="https://${application.configuration
-                            .hostname}/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?message=${mentionCourseConversationMessage.publicId}"
+                            .hostname}/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?${new URLSearchParams(
+                            {
+                              message:
+                                mentionCourseConversationMessage.publicId,
+                            },
+                          ).toString()}"
                           >${match}</a
                         >
                       `
                     : html`
                         <a
-                          href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?message=${mentionCourseConversationMessage.publicId}"
+                          href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?${new URLSearchParams(
+                            {
+                              message:
+                                mentionCourseConversationMessage.publicId,
+                            },
+                          ).toString()}"
                           class="link"
                           >${match}</a
                         >
