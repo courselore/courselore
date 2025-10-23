@@ -1090,7 +1090,13 @@ export default async (application: Application): Promise<void> => {
                           required
                           $${request.state.courseConversationMessage
                             .courseConversationMessageAnonymity ===
-                          "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                            "courseConversationMessageAnonymityCourseParticipationRoleStudents" ||
+                          (request.state.course
+                            .courseParticipationRoleStudentsAnonymityAllowed ===
+                            "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
+                            request.state.courseConversationMessage
+                              .courseConversationMessageAnonymity ===
+                              "courseConversationMessageAnonymityEveryone")
                             ? html`checked`
                             : html``}
                           hidden
@@ -1103,10 +1109,7 @@ export default async (application: Application): Promise<void> => {
                           >Anonymous to students</span
                         >$${request.state.course
                           .courseParticipationRoleStudentsAnonymityAllowed ===
-                          "courseParticipationRoleStudentsAnonymityAllowedEveryone" ||
-                        request.state.courseConversationMessage
-                          .courseConversationMessageAnonymity ===
-                          "courseConversationMessageAnonymityEveryone"
+                        "courseParticipationRoleStudentsAnonymityAllowedEveryone"
                           ? html`<input
                                 type="radio"
                                 name="courseConversationMessageAnonymity"
@@ -1161,10 +1164,7 @@ export default async (application: Application): Promise<void> => {
                       </button>
                       $${request.state.course
                         .courseParticipationRoleStudentsAnonymityAllowed ===
-                        "courseParticipationRoleStudentsAnonymityAllowedEveryone" ||
-                      request.state.courseConversationMessage
-                        .courseConversationMessageAnonymity ===
-                        "courseConversationMessageAnonymityEveryone"
+                      "courseParticipationRoleStudentsAnonymityAllowedEveryone"
                         ? html`
                             <button
                               type="button"
