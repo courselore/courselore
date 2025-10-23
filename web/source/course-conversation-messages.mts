@@ -565,6 +565,11 @@ export default async (application: Application): Promise<void> => {
                         },
                       ).toString()}"
                       >See in Courselore</a
+                    > ·
+                    <a
+                      href="https://${application.configuration
+                        .hostname}/settings"
+                      >Change email notification preferences</a
                     >
                   </small>
                 </p>
@@ -610,16 +615,6 @@ export default async (application: Application): Promise<void> => {
                     mode: "emailNotification",
                   },
                 )}
-                <hr />
-                <p>
-                  <small>
-                    <a
-                      href="https://${application.configuration
-                        .hostname}/settings"
-                      >Change email notification preferences</a
-                    >
-                  </small>
-                </p>
               `,
             });
         }
