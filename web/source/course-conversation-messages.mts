@@ -1335,9 +1335,9 @@ export default async (application: Application): Promise<void> => {
           update "courseConversationMessages"
           set
             "updatedAt" = ${new Date().toISOString()},
-            "courseConversationMessageType" = ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
-            "courseConversationMessageVisibility" = ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
-            "courseConversationMessageAnonymity" = ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
+            $${typeof request.body.courseConversationMessageType === "string" ? sql`"courseConversationMessageType" = ${request.body.courseConversationMessageType},` : sql``}
+            $${typeof request.body.courseConversationMessageVisibility === "string" ? sql`"courseConversationMessageVisibility" = ${request.body.courseConversationMessageVisibility},` : sql``}
+            $${typeof request.body.courseConversationMessageAnonymity === "string" ? sql`"courseConversationMessageAnonymity" = ${request.body.courseConversationMessageAnonymity},` : sql``}
             "content" = ${request.body.content},
             "contentSearch" = ${utilities
               .tokenize(contentTextContent, {
