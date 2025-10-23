@@ -3186,7 +3186,7 @@ export default async (application: Application): Promise<void> => {
                               ? "courseConversationMessageVisibilityEveryone"
                               : "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
                           },
-                          ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityCourseParticipationRoleInstructors"},
+                          ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityEveryone"},
                           ${courseConversationMessageContent},
                           ${utilities
                             .tokenize(courseConversationMessageContent, {
