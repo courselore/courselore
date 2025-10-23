@@ -3154,6 +3154,7 @@ You may also use the buttons on the message content editor to ${
         sql`
           update "courseConversationMessages"
           set
+            "updatedAt" = ${new Date().toISOString()},
             "content" = ${request.state.courseConversationMessage.content},
             "contentSearch" = ${utilities
               .tokenize(request.state.courseConversationMessage.content, {
