@@ -564,7 +564,7 @@ export default async (application: Application): Promise<void> => {
                           message: courseConversationMessage.publicId,
                         },
                       ).toString()}"
-                      >See in Courselore</a
+                      >See message in Courselore</a
                     > ·
                     <a
                       href="https://${application.configuration
