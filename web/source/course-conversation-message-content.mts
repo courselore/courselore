@@ -2281,7 +2281,7 @@ You may also use the buttons on the message content editor to ${
           element.setAttribute("controls", "");
           element.setAttribute("preload", "metadata");
         }
-      if (mode === "emailNotification")
+      if (mode !== "emailNotification")
         for (const element of document.querySelectorAll("input"))
           element.setAttribute("class", "input--checkbox");
       for (const [elementIndex, element] of [
