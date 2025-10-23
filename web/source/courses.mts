@@ -26,7 +26,7 @@ export type ApplicationCourses = {
           courseParticipationRoleStudentsAnonymityAllowed:
             | "courseParticipationRoleStudentsAnonymityAllowedNone"
             | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-            | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+            | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
           courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
           courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
           courseState: "courseStateActive" | "courseStateArchived";
@@ -236,7 +236,7 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsAnonymityAllowed:
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+          | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
         courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
@@ -390,7 +390,7 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsAnonymityAllowed:
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+          | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
         courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
@@ -870,10 +870,10 @@ export default async (application: Application): Promise<void> => {
                               <input
                                 type="radio"
                                 name="courseParticipationRoleStudentsAnonymityAllowed"
-                                value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                                value="courseParticipationRoleStudentsAnonymityAllowedEveryone"
                                 $${request.state.course
                                   .courseParticipationRoleStudentsAnonymityAllowed ===
-                                "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                                "courseParticipationRoleStudentsAnonymityAllowedEveryone"
                                   ? html`checked`
                                   : html``}
                                 class="input--radio"
@@ -2944,7 +2944,7 @@ export default async (application: Application): Promise<void> => {
           courseParticipationRoleStudentsAnonymityAllowed:
             | "courseParticipationRoleStudentsAnonymityAllowedNone"
             | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-            | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+            | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
           courseParticipationRoleStudentsMayHavePrivateCourseConversations: "on";
           courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: "on";
           courseState: "courseStateActive" | "courseStateArchived";
@@ -2969,7 +2969,7 @@ export default async (application: Application): Promise<void> => {
           request.body.courseParticipationRoleStudentsAnonymityAllowed !==
             "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
           request.body.courseParticipationRoleStudentsAnonymityAllowed !==
-            "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors") ||
+            "courseParticipationRoleStudentsAnonymityAllowedEveryone") ||
         (request.body.courseState !== "courseStateActive" &&
           request.body.courseState !== "courseStateArchived")
       )
@@ -3269,7 +3269,7 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsAnonymityAllowed:
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+          | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
         courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
@@ -3776,7 +3776,7 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsAnonymityAllowed:
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
+          | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
         courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";

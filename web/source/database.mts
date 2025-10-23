@@ -2840,7 +2840,7 @@ export default async (application: Application): Promise<void> => {
                       ${Number(Math.random() < 0.8)},
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
-                      ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"},
+                      ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedEveryone"},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${courseData.courseState ?? "courseStateActive"},

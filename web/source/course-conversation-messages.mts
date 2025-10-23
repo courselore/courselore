@@ -1046,7 +1046,7 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" ||
                     request.state.course
                       .courseParticipationRoleStudentsAnonymityAllowed ===
-                      "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors")
+                      "courseParticipationRoleStudentsAnonymityAllowedEveryone")
                 )
                   courseConversationMessageEditOptionsHTML += html`
                     <button
@@ -1103,7 +1103,7 @@ export default async (application: Application): Promise<void> => {
                           >Anonymous to students</span
                         >$${request.state.course
                           .courseParticipationRoleStudentsAnonymityAllowed ===
-                          "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors" ||
+                          "courseParticipationRoleStudentsAnonymityAllowedEveryone" ||
                         request.state.courseConversationMessage
                           .courseConversationMessageAnonymity ===
                           "courseConversationMessageAnonymityEveryone"
@@ -1161,7 +1161,7 @@ export default async (application: Application): Promise<void> => {
                       </button>
                       $${request.state.course
                         .courseParticipationRoleStudentsAnonymityAllowed ===
-                        "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors" ||
+                        "courseParticipationRoleStudentsAnonymityAllowedEveryone" ||
                       request.state.courseConversationMessage
                         .courseConversationMessageAnonymity ===
                         "courseConversationMessageAnonymityEveryone"
