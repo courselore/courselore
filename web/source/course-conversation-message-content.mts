@@ -3157,10 +3157,20 @@ You may also use the buttons on the message content editor to ${
             "updatedAt" = ${new Date().toISOString()},
             "content" = ${request.state.courseConversationMessage.content},
             "contentSearch" = ${utilities
-              .tokenize(request.state.courseConversationMessage.content, {
-                stopWords: application.privateConfiguration.stopWords,
-                stem: (token) => natural.PorterStemmer.stem(token),
-              })
+              .tokenize(
+                await application.partials.courseConversationMessageContentProcessor(
+                  {
+                    course: request.state.course,
+                    courseConversationMessageContent:
+                      request.state.courseConversationMessage.content,
+                    mode: "textContent",
+                  },
+                ),
+                {
+                  stopWords: application.privateConfiguration.stopWords,
+                  stem: (token) => natural.PorterStemmer.stem(token),
+                },
+              )
               .map((tokenWithPosition) => tokenWithPosition.token)
               .join(" ")}
           where "id" = ${request.state.courseConversationMessage.id};
