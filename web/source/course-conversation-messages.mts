@@ -1124,7 +1124,7 @@ export default async (application: Application): Promise<void> => {
                                     display: none;
                                   }
                                 `}"
-                                >Anonymous to instructors</span
+                                >Anonymous to everyone</span
                               >`
                           : html``} <i class="bi bi-chevron-down"></i>
                       </form>
@@ -1175,7 +1175,7 @@ export default async (application: Application): Promise<void> => {
                                 };
                               `}"
                             >
-                              Anonymous to instructors
+                              Anonymous to everyone
                             </button>
                           `
                         : html``}
