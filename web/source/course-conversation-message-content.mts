@@ -2059,35 +2059,37 @@ You may also use the buttons on the message content editor to ${
                 "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, a, code, ins, del, sup, sub, br, img, video, audio, ul, ol, li, input, poll, votes, blockquote, table, thead, tbody, tr, th, td, details, summary, pre",
               ) ||
                 (child.matches("a") &&
-                  (() => {
-                    try {
-                      const url = new URL(
-                        child.getAttribute("href"),
-                        `https://${application.configuration.hostname}`,
-                      );
-                      return (
-                        url.protocol !== "https:" &&
-                        url.protocol !== "http:" &&
-                        url.protocol !== "mailto:"
-                      );
-                    } catch {
-                      return true;
-                    }
-                  })()) ||
+                  (typeof child.getAttribute("href") !== "string" ||
+                    (() => {
+                      try {
+                        const url = new URL(
+                          child.getAttribute("href"),
+                          `https://${application.configuration.hostname}`,
+                        );
+                        return (
+                          url.protocol !== "https:" &&
+                          url.protocol !== "http:" &&
+                          url.protocol !== "mailto:"
+                        );
+                      } catch {
+                        return true;
+                      }
+                    })())) ||
                 (child.matches("img, video, audio") &&
-                  (() => {
-                    try {
-                      const url = new URL(
-                        child.getAttribute("src"),
-                        `https://${application.configuration.hostname}`,
-                      );
-                      return !(
-                        url.protocol === "https:" || url.protocol === "http:"
-                      );
-                    } catch {
-                      return true;
-                    }
-                  })()) ||
+                  (typeof child.getAttribute("src") !== "string" ||
+                    (() => {
+                      try {
+                        const url = new URL(
+                          child.getAttribute("src"),
+                          `https://${application.configuration.hostname}`,
+                        );
+                        return !(
+                          url.protocol === "https:" || url.protocol === "http:"
+                        );
+                      } catch {
+                        return true;
+                      }
+                    })())) ||
                 (child.matches("img, video") &&
                   ((typeof child.getAttribute("width") === "string" &&
                     !child.getAttribute("width").match(/^\d+$/)) ||
@@ -2205,29 +2207,26 @@ You may also use the buttons on the message content editor to ${
           sanitize(child);
         }
       })(document);
-      for (const element of document.querySelectorAll("a")) {
-        const url = new URL(
-          element.getAttribute("href"),
-          `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
-        );
-        if (mode === "emailNotification") {
-          element.setAttribute("href", url.href);
-          continue;
-        }
-        if (
-          !(
-            url.protocol === "https:" &&
-            url.hostname === application.configuration.hostname &&
-            url.pathname.match(
-              new RegExp(
-                `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
-              ),
+      if (mode !== "emailNotification")
+        for (const element of document.querySelectorAll("a")) {
+          const url = new URL(
+            element.getAttribute("href"),
+            `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
+          );
+          if (
+            !(
+              url.protocol === "https:" &&
+              url.hostname === application.configuration.hostname &&
+              url.pathname.match(
+                new RegExp(
+                  `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
+                ),
+              )
             )
           )
-        )
-          element.setAttribute("target", "_blank");
-        element.setAttribute("class", "link");
-      }
+            element.setAttribute("target", "_blank");
+          element.setAttribute("class", "link");
+        }
       for (const element of document.querySelectorAll("img, video, audio")) {
         const url = new URL(
           element.getAttribute("src"),
@@ -2878,21 +2877,13 @@ You may also use the buttons on the message content editor to ${
                   );
                   if (mentionCourseConversation === undefined) return match;
                   if (courseConversationMessagePublicId === undefined)
-                    return mode === "emailNotification"
-                      ? html`
-                          <a
-                            href="https://${application.configuration
-                              .hostname}/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
-                            >${match}</a
-                          >
-                        `
-                      : html`
-                          <a
-                            href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
-                            class="link"
-                            >${match}</a
-                          >
-                        `;
+                    return html`
+                      <a
+                        href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
+                        class="link"
+                        >${match}</a
+                      >
+                    `;
                   const mentionCourseConversationMessage =
                     application.database.get<{ publicId: string }>(
                       sql`
@@ -2914,31 +2905,15 @@ You may also use the buttons on the message content editor to ${
                     );
                   if (mentionCourseConversationMessage === undefined)
                     return match;
-                  return mode === "emailNotification"
-                    ? html`
-                        <a
-                          href="https://${application.configuration
-                            .hostname}/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?${new URLSearchParams(
-                            {
-                              message:
-                                mentionCourseConversationMessage.publicId,
-                            },
-                          ).toString()}"
-                          >${match}</a
-                        >
-                      `
-                    : html`
-                        <a
-                          href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?${new URLSearchParams(
-                            {
-                              message:
-                                mentionCourseConversationMessage.publicId,
-                            },
-                          ).toString()}"
-                          class="link"
-                          >${match}</a
-                        >
-                      `;
+                  return html`
+                    <a
+                      href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?${new URLSearchParams(
+                        { message: mentionCourseConversationMessage.publicId },
+                      ).toString()}"
+                      class="link"
+                      >${match}</a
+                    >
+                  `;
                 },
               );
           parent.removeChild(child);
@@ -3028,6 +3003,26 @@ You may also use the buttons on the message content editor to ${
         if (mentionCourseConversationMessage === undefined) continue;
         element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
       }
+      for (const element of document.querySelectorAll("a"))
+        if (mode === "emailNotification")
+          element.setAttribute(
+            "href",
+            new URL(
+              element.getAttribute("href"),
+              `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
+            ).href,
+          );
+        else if (
+          element
+            .getAttribute("href")
+            .startsWith(`https://${application.configuration.hostname}/`)
+        )
+          element.setAttribute(
+            "href",
+            element
+              .getAttribute("href")
+              .slice(`https://${application.configuration.hostname}`.length),
+          );
       return mode === "textContent"
         ? document.textContent
         : mode === "emailNotification"
