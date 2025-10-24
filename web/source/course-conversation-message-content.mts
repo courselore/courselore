@@ -483,6 +483,7 @@ export default async (application: Application): Promise<void> => {
             >
               $${application.database
                 .all<{
+                  publicId: string;
                   user: number;
                   courseParticipationRole:
                     | "courseParticipationRoleInstructor"
@@ -490,6 +491,7 @@ export default async (application: Application): Promise<void> => {
                 }>(
                   sql`
                     select
+                      "courseParticipations"."publicId" as "publicId",
                       "courseParticipations"."user" as "user",
                       "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
                     from "courseParticipations"
@@ -586,7 +588,7 @@ export default async (application: Application): Promise<void> => {
                           element.click();
                           element.focus();
                           element.selectionEnd = element.selectionStart;
-                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@\${${courseParticipationUser.name.toLowerCase().replaceAll(/[^a-z\-]/g, "-")}}--\${${courseParticipationUser.publicId}} \`);
+                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@\${${courseParticipationUser.name.toLowerCase().replaceAll(/[^a-z\-]/g, "-")}}--\${${courseParticipation.publicId}} \`);
                         };
                       `}"
                     >
