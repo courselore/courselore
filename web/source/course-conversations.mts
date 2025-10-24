@@ -5686,11 +5686,15 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--size--2);
                       `}"
                       javascript="${javascript`
-                        this.onsubmit = () => {
+                        this.onsubmit = async () => {
                           this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value.trim();
                           this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
                           if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
                             this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
+                          // TODO
+                          console.log("ONSUBMIT 1");
+                          await this.querySelector('[key~="courseConversationMessage--new--courseConversationMessageContentEditor"]').oninputPromise;
+                          console.log("ONSUBMIT 2");
                           javascript.reset(this);
                         };
                       `}"
@@ -5774,9 +5778,13 @@ export default async (application: Application): Promise<void> => {
                           })()
                         : html``}
                       <div
+                        key="courseConversationMessage--new--courseConversationMessageContentEditor"
                         javascript="${javascript`
                           this.isModified = false;
-                          this.oninput = utilities.foregroundJob(async () => {
+                          this.oninput = () => {
+                            this.oninputPromise = this.oninputForegroundJob();
+                          };
+                          this.oninputForegroundJob ??= utilities.foregroundJob(async () => {
                             await fetch(${`/courses/${
                               request.state.course.publicId
                             }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {
