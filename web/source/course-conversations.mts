@@ -4596,7 +4596,7 @@ export default async (application: Application): Promise<void> => {
                                 request.search.message ===
                                 courseConversationMessage.publicId
                               } && this.scrolled === undefined) {
-                                this.scrollIntoView({ block: "center" });
+                                this.scrollIntoView();
                                 this.scrolled = true;
                               }
                             `}"
