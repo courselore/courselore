@@ -4592,13 +4592,12 @@ export default async (application: Application): Promise<void> => {
                               : css``}"
                             javascript="${javascript`
                               this.content = ${courseConversationMessage.content};
-                              if (${
+                              const shouldScroll = ${
                                 request.search.message ===
                                 courseConversationMessage.publicId
-                              } && this.scrolled === undefined) {
-                                this.scrollIntoView();
-                                this.scrolled = true;
-                              }
+                              };
+                              if (shouldScroll && this.hasScrolled !== true) this.scrollIntoView();
+                              this.hasScrolled = shouldScroll;
                             `}"
                           >
                             <div key="courseConversationMessage--sidebar">
