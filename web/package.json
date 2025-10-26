@@ -8,7 +8,7 @@
   "dependencies": {
     "@node-saml/node-saml": "^5.1.0",
     "@radically-straightforward/ffmpeg": "^1.0.0",
-    "@radically-straightforward/production": "^1.0.44",
+    "@radically-straightforward/production": "^1.0.45",
     "argon2": "^0.44.0",
     "crypto-random-string": "^5.0.0",
     "email-addresses": "^5.0.0",
@@ -29,7 +29,7 @@
     "remark-rehype": "^11.1.2",
     "saml-idp": "^1.2.1",
     "sharp": "^0.34.4",
-    "shiki": "^3.13.0",
+    "shiki": "^3.14.0",
     "unified": "^11.0.5"
   },
   "devDependencies": {
