@@ -5691,11 +5691,11 @@ export default async (application: Application): Promise<void> => {
                           this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
                           if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
                             this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
-                          // TODO
+                          // TODO: Address all the ‘console.log()’s
                           console.log("ONSUBMIT 1");
                           await this.querySelector('[key~="courseConversationMessage--new--courseConversationMessageContentEditor"]').oninputPromise;
                           console.log("ONSUBMIT 2");
-                          javascript.reset(this);
+                          this.querySelector('[key~="courseConversationMessageContentEditor--textarea"]').value = "";
                         };
                       `}"
                     >
@@ -5782,7 +5782,9 @@ export default async (application: Application): Promise<void> => {
                         javascript="${javascript`
                           this.isModified = false;
                           this.oninput = () => {
+                            console.log("ONINPUT 1");
                             this.oninputPromise = this.oninputForegroundJob();
+                            console.log("ONINPUT 2");
                           };
                           this.oninputForegroundJob ??= utilities.foregroundJob(async () => {
                             await fetch(${`/courses/${
