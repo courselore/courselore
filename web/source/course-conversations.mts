@@ -5693,7 +5693,7 @@ export default async (application: Application): Promise<void> => {
                           if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
                             this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
                           this.querySelector('[key~="courseConversationMessageContentEditor--textarea"]').value = "";
-                          await this.querySelector('[key~="courseConversationMessage--new--courseConversationMessageContentEditor"]').oninputPromise;
+                          await this.querySelector('[key~="courseConversationMessage--new--courseConversationMessageContentEditor"]').oninput.promise;
                         };
                       `}"
                     >
@@ -5779,10 +5779,7 @@ export default async (application: Application): Promise<void> => {
                         key="courseConversationMessage--new--courseConversationMessageContentEditor"
                         javascript="${javascript`
                           this.isModified = false;
-                          this.oninput = () => {
-                            this.oninputPromise = this.oninputForegroundJob();
-                          };
-                          this.oninputForegroundJob ??= utilities.foregroundJob(async () => {
+                          this.oninput = utilities.foregroundJob(async () => {
                             await fetch(${`/courses/${
                               request.state.course.publicId
                             }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {
