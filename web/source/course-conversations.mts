@@ -5605,6 +5605,7 @@ export default async (application: Application): Promise<void> => {
                     animation: var(--animation--pulse);
                   `}"
                   javascript="${javascript`
+                    this.morph = false;
                     this.hidden = true;
                   `}"
                 >
