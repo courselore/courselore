@@ -5690,9 +5690,9 @@ export default async (application: Application): Promise<void> => {
                         this.onsubmit = async () => {
                           this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value.trim();
                           this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
+                          this.querySelector('[name="content"]').value = "";
                           if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
                             this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
-                          this.querySelector('[key~="courseConversationMessageContentEditor--textarea"]').value = "";
                           await this.querySelector('[key~="courseConversationMessage--new--courseConversationMessageContentEditor"]').oninput.promise;
                         };
                       `}"
