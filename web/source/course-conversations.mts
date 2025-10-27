@@ -5778,6 +5778,18 @@ export default async (application: Application): Promise<void> => {
                       <div
                         key="courseConversationMessage--new--courseConversationMessageContentEditor"
                         javascript="${javascript`
+                          if (${request.liveConnection === undefined})
+                            this.querySelector('[name="content"]').value = ${
+                              application.database.get<{ content: string }>(
+                                sql`
+                                  select "content"
+                                  from "courseConversationMessageDrafts"
+                                  where
+                                    "courseConversation" = ${request.state.courseConversation.id} and
+                                    "createdByCourseParticipation" = ${request.state.courseParticipation.id};
+                                `,
+                              )?.content ?? ""
+                            };
                           this.isModified = false;
                           this.oninput = utilities.foregroundJob(async () => {
                             await fetch(${`/courses/${
@@ -5797,16 +5809,6 @@ export default async (application: Application): Promise<void> => {
                               request.state.courseParticipation,
                             courseConversation:
                               request.state.courseConversation,
-                            courseConversationMessageContent:
-                              application.database.get<{ content: string }>(
-                                sql`
-                                  select "content"
-                                  from "courseConversationMessageDrafts"
-                                  where
-                                    "courseConversation" = ${request.state.courseConversation.id} and
-                                    "createdByCourseParticipation" = ${request.state.courseParticipation.id};
-                                `,
-                              )?.content,
                           },
                         )}
                       </div>
