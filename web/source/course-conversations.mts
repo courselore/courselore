@@ -5794,7 +5794,7 @@ export default async (application: Application): Promise<void> => {
                       <div
                         key="courseConversationMessage--new--courseConversationMessageContentEditor"
                         javascript="${javascript`
-                          if (${request.liveConnection === undefined})
+                          if (this.firstMount === undefined)
                             this.querySelector('[name="content"]').value = ${
                               application.database.get<{ content: string }>(
                                 sql`
@@ -5806,6 +5806,7 @@ export default async (application: Application): Promise<void> => {
                                 `,
                               )?.content ?? ""
                             };
+                          this.firstMount = false;
                           this.isModified = false;
                           this.oninput = utilities.foregroundJob(async () => {
                             await fetch(${`/courses/${
