@@ -2065,7 +2065,7 @@ export default async (application: Application): Promise<void> => {
                             `}"
                             javascript="${javascript`
                               this.onsubmit = () => {
-                                this.querySelector('[name="courseInvitationEmails"]').value = "";
+                                javascript.reset(this);
                               };
                             `}"
                           >
