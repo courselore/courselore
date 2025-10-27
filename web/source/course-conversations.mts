@@ -5619,7 +5619,6 @@ export default async (application: Application): Promise<void> => {
                     animation: var(--animation--pulse);
                   `}"
                   javascript="${javascript`
-                    this.morph = false;
                     if (${request.liveConnection === undefined}) this.hidden = true;
                   `}"
                 >
@@ -5680,6 +5679,9 @@ export default async (application: Application): Promise<void> => {
                         key="courseConversationMessage--main--content--show--content"
                         css="${css`
                           white-space: pre-line;
+                        `}"
+                        javascript="${javascript`
+                          this.morph = false;
                         `}"
                       ></div>
                     </div>
