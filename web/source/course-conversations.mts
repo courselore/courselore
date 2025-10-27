@@ -5691,11 +5691,11 @@ export default async (application: Application): Promise<void> => {
                           this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
                           if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
                             this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
+                          this.querySelector('[key~="courseConversationMessageContentEditor--textarea"]').value = "";
                           // TODO: Address all the ‘console.log()’s
                           console.log("ONSUBMIT 1");
                           await this.querySelector('[key~="courseConversationMessage--new--courseConversationMessageContentEditor"]').oninputPromise;
                           console.log("ONSUBMIT 2");
-                          this.querySelector('[key~="courseConversationMessageContentEditor--textarea"]').value = "";
                         };
                       `}"
                     >
