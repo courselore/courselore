@@ -5606,7 +5606,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                   javascript="${javascript`
                     this.morph = false;
-                    this.hidden = true;
+                    if (${request.liveConnection === undefined}) this.hidden = true;
                   `}"
                 >
                   <div key="courseConversationMessage--sidebar">
