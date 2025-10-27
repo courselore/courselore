@@ -2760,6 +2760,20 @@ export default async (application: Application): Promise<void> => {
         )!;
         application.database.run(
           sql`
+            insert into "courseConversationMessageViews" (
+              "courseConversationMessage",
+              "courseParticipation",
+              "createdAt"
+            )
+            values (
+              ${courseConversationMessage.id},
+              ${request.state.courseParticipation!.id},
+              ${new Date().toISOString()}
+            );
+          `,
+        );
+        application.database.run(
+          sql`
             insert into "_backgroundJobs" (
               "type",
               "startAt",
