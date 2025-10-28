@@ -5731,13 +5731,23 @@ export default async (application: Application): Promise<void> => {
                           gap: var(--size--2);
                         `}"
                         javascript="${javascript`
+                          this.isModified = false;
+                          this.oninput = utilities.foregroundJob(async () => {
+                            await fetch(${`/courses/${
+                              request.state.course.publicId
+                            }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {
+                              method: "POST",
+                              headers: { "CSRF-Protection": "true" },
+                              body: new URLSearchParams(javascript.serialize(this)),
+                            });
+                          });
                           this.onsubmit = async () => {
                             this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value.trim();
                             this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
                             this.querySelector('[name="content"]').value = "";
                             if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
                               this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
-                            await this.querySelector('[key~="courseConversationMessage--new--courseConversationMessageContentEditor"]').oninput.promise;
+                            await this.oninput.promise;
                           };
                         `}"
                       >
@@ -5821,23 +5831,12 @@ export default async (application: Application): Promise<void> => {
                             })()
                           : html``}
                         <div
-                          key="courseConversationMessage--new--courseConversationMessageContentEditor"
                           javascript="${javascript`
                             if (this.firstMount === undefined && ${courseConversationMessageDraft !== undefined})
                               this.querySelector('[name="content"]').value = ${
                                 courseConversationMessageDraft?.content ?? ""
                               };
                             this.firstMount = false;
-                            this.isModified = false;
-                            this.oninput = utilities.foregroundJob(async () => {
-                              await fetch(${`/courses/${
-                                request.state.course.publicId
-                              }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {
-                                method: "POST",
-                                headers: { "CSRF-Protection": "true" },
-                                body: new URLSearchParams(javascript.serialize(this)),
-                              });
-                            });
                           `}"
                         >
                           $${application.partials.courseConversationMessageContentEditor(
