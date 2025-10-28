@@ -288,9 +288,9 @@ export default async (application: Application): Promise<void> => {
                       const firstCourseConversationMessage =
                         application.database.get<{
                           publicId: string;
+                          createdByCourseParticipation: number | null;
                           createdAt: string;
                           updatedAt: string | null;
-                          createdByCourseParticipation: number | null;
                           courseConversationMessageAnonymity:
                             | "courseConversationMessageAnonymityNone"
                             | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -300,9 +300,9 @@ export default async (application: Application): Promise<void> => {
                           sql`
                             select
                               "publicId",
+                              "createdByCourseParticipation",
                               "createdAt",
                               "updatedAt",
-                              "createdByCourseParticipation",
                               "courseConversationMessageAnonymity",
                               "content"
                             from "courseConversationMessages"
@@ -1158,16 +1158,16 @@ export default async (application: Application): Promise<void> => {
           for (const courseConversationMessage of application.database.all<{
             publicId: string;
             courseConversation: number;
-            updatedAt: string | null;
             createdByCourseParticipation: number | null;
+            updatedAt: string | null;
             content: string;
           }>(
             sql`
               select
                 "courseConversationMessages"."publicId" as "publicId",
                 "courseConversationMessages"."courseConversation" as "courseConversation",
-                "courseConversationMessages"."updatedAt" as "updatedAt",
                 "courseConversationMessages"."createdByCourseParticipation" as "createdByCourseParticipation",
+                "courseConversationMessages"."updatedAt" as "updatedAt",
                 "courseConversationMessages"."content" as "content"
               from "courseConversationMessages"
               join "search_courseConversationMessages_contentSearch" on
@@ -2726,9 +2726,9 @@ export default async (application: Application): Promise<void> => {
                   insert into "courseConversationMessages" (
                     "publicId",
                     "courseConversation",
+                    "createdByCourseParticipation",
                     "createdAt",
                     "updatedAt",
-                    "createdByCourseParticipation",
                     "courseConversationMessageType",
                     "courseConversationMessageVisibility",
                     "courseConversationMessageAnonymity",
@@ -2738,9 +2738,9 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
                     ${courseConversation.id},
+                    ${request.state.courseParticipation!.id},
                     ${new Date().toISOString()},
                     ${null},
-                    ${request.state.courseParticipation!.id},
                     ${"courseConversationMessageTypeMessage"},
                     ${"courseConversationMessageVisibilityEveryone"},
                     ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
@@ -4465,9 +4465,9 @@ export default async (application: Application): Promise<void> => {
                       .all<{
                         id: number;
                         publicId: string;
+                        createdByCourseParticipation: number | null;
                         createdAt: string;
                         updatedAt: string | null;
-                        createdByCourseParticipation: number | null;
                         courseConversationMessageType:
                           | "courseConversationMessageTypeMessage"
                           | "courseConversationMessageTypeAnswer"
@@ -4485,9 +4485,9 @@ export default async (application: Application): Promise<void> => {
                           select
                             "id",
                             "publicId",
+                            "createdByCourseParticipation",
                             "createdAt",
                             "updatedAt",
-                            "createdByCourseParticipation",
                             "courseConversationMessageType",
                             "courseConversationMessageVisibility",
                             "courseConversationMessageAnonymity",

@@ -15,9 +15,9 @@ export type ApplicationCourseConversationMessages = {
         courseConversationMessage: {
           id: number;
           publicId: string;
+          createdByCourseParticipation: number | null;
           createdAt: string;
           updatedAt: string | null;
-          createdByCourseParticipation: number | null;
           courseConversationMessageType:
             | "courseConversationMessageTypeMessage"
             | "courseConversationMessageTypeAnswer"
@@ -241,9 +241,9 @@ export default async (application: Application): Promise<void> => {
                   insert into "courseConversationMessages" (
                     "publicId",
                     "courseConversation",
+                    "createdByCourseParticipation",
                     "createdAt",
                     "updatedAt",
-                    "createdByCourseParticipation",
                     "courseConversationMessageType",
                     "courseConversationMessageVisibility",
                     "courseConversationMessageAnonymity",
@@ -253,9 +253,9 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
                     ${request.state.courseConversation!.id},
+                    ${request.state.courseParticipation!.id},
                     ${new Date().toISOString()},
                     ${null},
-                    ${request.state.courseParticipation!.id},
                     ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
                     ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
                     ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
@@ -327,8 +327,8 @@ export default async (application: Application): Promise<void> => {
           id: number;
           publicId: string;
           courseConversation: number;
-          updatedAt: string | null;
           createdByCourseParticipation: number | null;
+          updatedAt: string | null;
           courseConversationMessageVisibility:
             | "courseConversationMessageVisibilityEveryone"
             | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
@@ -343,8 +343,8 @@ export default async (application: Application): Promise<void> => {
               "id",
               "publicId",
               "courseConversation",
-              "updatedAt",
               "createdByCourseParticipation",
+              "updatedAt",
               "courseConversationMessageVisibility",
               "courseConversationMessageAnonymity",
               "content"
@@ -674,9 +674,9 @@ export default async (application: Application): Promise<void> => {
       request.state.courseConversationMessage = application.database.get<{
         id: number;
         publicId: string;
+        createdByCourseParticipation: number | null;
         createdAt: string;
         updatedAt: string | null;
-        createdByCourseParticipation: number | null;
         courseConversationMessageType:
           | "courseConversationMessageTypeMessage"
           | "courseConversationMessageTypeAnswer"
@@ -694,9 +694,9 @@ export default async (application: Application): Promise<void> => {
             select 
               "id",
               "publicId",
+              "createdByCourseParticipation",
               "createdAt",
               "updatedAt",
-              "createdByCourseParticipation",
               "courseConversationMessageType",
               "courseConversationMessageVisibility",
               "courseConversationMessageAnonymity",

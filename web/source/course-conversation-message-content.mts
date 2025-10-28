@@ -90,8 +90,8 @@ export type ApplicationCourseConversationMessageContent = {
         };
         courseConversationMessage?: {
           publicId: string;
-          updatedAt: string | null;
           createdByCourseParticipation: number | null;
+          updatedAt: string | null;
           content: string;
         };
         courseConversationMessageContent?: string;
@@ -127,8 +127,8 @@ export type ApplicationCourseConversationMessageContent = {
         };
         courseConversationMessage?: {
           publicId: string;
-          updatedAt: string | null;
           createdByCourseParticipation: number | null;
+          updatedAt: string | null;
           content: string;
         };
         courseConversationMessageContent?: string;
