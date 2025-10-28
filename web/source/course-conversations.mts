@@ -2781,7 +2781,7 @@ export default async (application: Application): Promise<void> => {
             )
             values (
               'courseConversationMessageEmailNotification',
-              ${new Date(Date.now() /* TODO: + 5 * 60 * 1000 */).toISOString()},
+              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
               ${JSON.stringify({
                 courseConversationMessageId: courseConversationMessage.id,
                 announcement: request.body.announcement === "on",

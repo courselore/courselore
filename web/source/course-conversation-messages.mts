@@ -42,8 +42,7 @@ export default async (application: Application): Promise<void> => {
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/draft$",
     ),
-    // TODO: Remove `async`
-    handler: async (
+    handler: (
       request: serverTypes.Request<
         {},
         {},
@@ -53,8 +52,6 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      // TODO
-      await utilities.sleep(3000);
       if (
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
@@ -299,7 +296,7 @@ export default async (application: Application): Promise<void> => {
             )
             values (
               'courseConversationMessageEmailNotification',
-              ${new Date(Date.now() /* TODO: + 5 * 60 * 1000 */).toISOString()},
+              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
               ${JSON.stringify({ courseConversationMessageId: courseConversationMessage.id })}
             );
           `,
