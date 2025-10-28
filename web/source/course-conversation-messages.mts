@@ -47,7 +47,20 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        { content: string },
+        {
+          content: string;
+          courseConversationMessageType:
+            | "courseConversationMessageTypeMessage"
+            | "courseConversationMessageTypeAnswer"
+            | "courseConversationMessageTypeFollowUpQuestion";
+          courseConversationMessageVisibility:
+            | "courseConversationMessageVisibilityEveryone"
+            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+          courseConversationMessageAnonymity:
+            | "courseConversationMessageAnonymityNone"
+            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+            | "courseConversationMessageAnonymityEveryone";
+        },
         Application["types"]["states"]["CourseConversation"]
       >,
       response,
@@ -59,7 +72,48 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversation === undefined
       )
         return;
-      if (typeof request.body.content !== "string") throw "validation";
+      if (
+        typeof request.body.content !== "string" ||
+        (typeof request.body.courseConversationMessageType === "string" &&
+          (request.state.courseConversation.courseConversationType !==
+            "courseConversationTypeQuestion" ||
+            (request.body.courseConversationMessageType !==
+              "courseConversationMessageTypeMessage" &&
+              request.body.courseConversationMessageType !==
+                "courseConversationMessageTypeAnswer" &&
+              request.body.courseConversationMessageType !==
+                "courseConversationMessageTypeFollowUpQuestion"))) ||
+        (typeof request.body.courseConversationMessageVisibility === "string" &&
+          (request.state.courseParticipation.courseParticipationRole !==
+            "courseParticipationRoleInstructor" ||
+            (request.body.courseConversationMessageVisibility !==
+              "courseConversationMessageVisibilityEveryone" &&
+              request.body.courseConversationMessageVisibility !==
+                "courseConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
+        (typeof request.body.courseConversationMessageAnonymity === "string" &&
+          (request.state.courseParticipation.courseParticipationRole !==
+            "courseParticipationRoleStudent" ||
+            (request.body.courseConversationMessageAnonymity !==
+              "courseConversationMessageAnonymityNone" &&
+              request.body.courseConversationMessageAnonymity !==
+                "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+              request.body.courseConversationMessageAnonymity !==
+                "courseConversationMessageAnonymityEveryone") ||
+            (request.body.courseConversationMessageAnonymity ===
+              "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+              request.state.course
+                .courseParticipationRoleStudentsAnonymityAllowed ===
+                "courseParticipationRoleStudentsAnonymityAllowedNone") ||
+            (request.body.courseConversationMessageAnonymity ===
+              "courseConversationMessageAnonymityEveryone" &&
+              (request.state.course
+                .courseParticipationRoleStudentsAnonymityAllowed ===
+                "courseParticipationRoleStudentsAnonymityAllowedNone" ||
+                request.state.course
+                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                  "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"))))
+      )
+        throw "validation";
       let sendLiveConnectionUpdates = false;
       application.database.executeTransaction(() => {
         const existingCourseConversationMessageDraft = application.database.get(
@@ -91,12 +145,18 @@ export default async (application: Application): Promise<void> => {
                 "courseConversation",
                 "createdByCourseParticipation",
                 "createdAt",
+                "courseConversationMessageType",
+                "courseConversationMessageVisibility",
+                "courseConversationMessageAnonymity",
                 "content"
               )
               values (
                 ${request.state.courseConversation!.id},
                 ${request.state.courseParticipation!.id},
                 ${new Date().toISOString()},
+                ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
+                ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
+                ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
                 ${request.body.content}
               );
             `,
