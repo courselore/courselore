@@ -3243,12 +3243,18 @@ export default async (application: Application): Promise<void> => {
                     "courseConversation",
                     "createdByCourseParticipation",
                     "createdAt",
+                    "courseConversationMessageType",
+                    "courseConversationMessageVisibility",
+                    "courseConversationMessageAnonymity",
                     "content"
                   )
                   values (
                     ${courseConversation.id},
                     ${courseParticipation.id},
                     ${new Date().toISOString()},
+                    ${"courseConversationMessageTypeMessage"},
+                    ${"courseConversationMessageVisibilityEveryone"},
+                    ${"courseConversationMessageAnonymityNone"},
                     ${markdown`
                       # Headings
 
