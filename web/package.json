@@ -8,7 +8,7 @@
   "dependencies": {
     "@node-saml/node-saml": "^5.1.0",
     "@radically-straightforward/ffmpeg": "^1.0.0",
-    "@radically-straightforward/production": "^1.0.48",
+    "@radically-straightforward/production": "^1.0.49",
     "argon2": "^0.44.0",
     "crypto-random-string": "^5.0.0",
     "email-addresses": "^5.0.0",
