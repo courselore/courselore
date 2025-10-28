@@ -5689,519 +5689,583 @@ export default async (application: Application): Promise<void> => {
                 </div>
               </div>
               $${request.state.course.courseState === "courseStateActive"
-                ? html`
-                    <div
-                      type="form"
-                      key="courseConversationMessage--new"
-                      method="POST"
-                      action="/courses/${request.state.course
-                        .publicId}/conversations/${request.state
-                        .courseConversation.publicId}/messages"
-                      css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--size--2);
-                      `}"
-                      javascript="${javascript`
-                        this.onsubmit = async () => {
-                          this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value.trim();
-                          this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
-                          this.querySelector('[name="content"]').value = "";
-                          if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
-                            this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
-                          await this.querySelector('[key~="courseConversationMessage--new--courseConversationMessageContentEditor"]').oninput.promise;
-                        };
-                      `}"
-                    >
-                      $${request.state.courseParticipation
-                        .courseParticipationRole ===
-                      "courseParticipationRoleInstructor"
-                        ? (() => {
-                            const drafts = application.database.all<{
-                              createdByCourseParticipation: number;
-                            }>(
-                              sql`
-                                select "createdByCourseParticipation"
-                                from "courseConversationMessageDrafts"
-                                where
-                                  "courseConversation" = ${request.state.courseConversation.id} and
-                                  "createdByCourseParticipation" != ${request.state.courseParticipation.id} and
-                                  ${new Date(Date.now() - 2 * 60 * 1000).toISOString()} < "createdAt"
-                                order by "createdAt" asc;
-                              `,
-                            );
-                            return 0 < drafts.length
-                              ? html`
-                                  <div
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      color: light-dark(
-                                        var(--color--green--500),
-                                        var(--color--green--500)
-                                      );
-                                    `}"
-                                  >
-                                    <span
-                                      css="${css`
-                                        font-weight: 600;
-                                      `}"
-                                      >Typing:</span
-                                    >
-                                    $${drafts
-                                      .map((draft) => {
-                                        const courseParticipation =
-                                          application.database.get<{
-                                            user: number;
-                                            courseParticipationRole:
-                                              | "courseParticipationRoleInstructor"
-                                              | "courseParticipationRoleStudent";
-                                          }>(
-                                            sql`
-                                              select
-                                                "user",
-                                                "courseParticipationRole"
-                                              from "courseParticipations"
-                                              where "id" = ${draft.createdByCourseParticipation};
-                                            `,
-                                          );
-                                        if (courseParticipation === undefined)
-                                          throw new Error();
-                                        const user = application.database.get<{
-                                          name: string;
-                                        }>(
-                                          sql`
-                                              select "name"
-                                              from "users"
-                                              where "id" = ${courseParticipation.user};
-                                            `,
-                                        );
-                                        if (user === undefined)
-                                          throw new Error();
-                                        return html`${user.name}${courseParticipation.courseParticipationRole ===
-                                        "courseParticipationRoleInstructor"
-                                          ? " (instructor)"
-                                          : ""}`;
-                                      })
-                                      .join(", ")}
-                                  </div>
-                                `
-                              : html``;
-                          })()
-                        : html``}
+                ? (() => {
+                    const courseConversationMessageDraft =
+                      application.database.get<{
+                        courseConversationMessageType:
+                          | "courseConversationMessageTypeMessage"
+                          | "courseConversationMessageTypeAnswer"
+                          | "courseConversationMessageTypeFollowUpQuestion";
+                        courseConversationMessageVisibility:
+                          | "courseConversationMessageVisibilityEveryone"
+                          | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+                        courseConversationMessageAnonymity:
+                          | "courseConversationMessageAnonymityNone"
+                          | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                          | "courseConversationMessageAnonymityEveryone";
+                        content: string;
+                      }>(
+                        sql`
+                          select
+                            "courseConversationMessageType",
+                            "courseConversationMessageVisibility",
+                            "courseConversationMessageAnonymity",
+                            "content"
+                          from "courseConversationMessageDrafts"
+                          where
+                            "courseConversation" = ${request.state.courseConversation.id} and
+                            "createdByCourseParticipation" = ${request.state.courseParticipation.id};
+                        `,
+                      );
+                    return html`
                       <div
-                        key="courseConversationMessage--new--courseConversationMessageContentEditor"
+                        type="form"
+                        key="courseConversationMessage--new"
+                        method="POST"
+                        action="/courses/${request.state.course
+                          .publicId}/conversations/${request.state
+                          .courseConversation.publicId}/messages"
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--size--2);
+                        `}"
                         javascript="${javascript`
-                          if (this.firstMount === undefined)
-                            this.querySelector('[name="content"]').value = ${
-                              application.database.get<{ content: string }>(
+                          this.onsubmit = async () => {
+                            this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value.trim();
+                            this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
+                            this.querySelector('[name="content"]').value = "";
+                            if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
+                              this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
+                            await this.querySelector('[key~="courseConversationMessage--new--courseConversationMessageContentEditor"]').oninput.promise;
+                          };
+                        `}"
+                      >
+                        $${request.state.courseParticipation
+                          .courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? (() => {
+                              const drafts = application.database.all<{
+                                createdByCourseParticipation: number;
+                              }>(
                                 sql`
-                                  select "content"
+                                  select "createdByCourseParticipation"
                                   from "courseConversationMessageDrafts"
                                   where
                                     "courseConversation" = ${request.state.courseConversation.id} and
-                                    "createdByCourseParticipation" = ${request.state.courseParticipation.id};
+                                    "createdByCourseParticipation" != ${request.state.courseParticipation.id} and
+                                    ${new Date(Date.now() - 2 * 60 * 1000).toISOString()} < "createdAt"
+                                  order by "createdAt" asc;
                                 `,
-                              )?.content ?? ""
-                            };
-                          this.firstMount = false;
-                          this.isModified = false;
-                          this.oninput = utilities.foregroundJob(async () => {
-                            await fetch(${`/courses/${
-                              request.state.course.publicId
-                            }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {
-                              method: "POST",
-                              headers: { "CSRF-Protection": "true" },
-                              body: new URLSearchParams(javascript.serialize(this)),
+                              );
+                              return 0 < drafts.length
+                                ? html`
+                                    <div
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        color: light-dark(
+                                          var(--color--green--500),
+                                          var(--color--green--500)
+                                        );
+                                      `}"
+                                    >
+                                      <span
+                                        css="${css`
+                                          font-weight: 600;
+                                        `}"
+                                        >Typing:</span
+                                      >
+                                      $${drafts
+                                        .map((draft) => {
+                                          const courseParticipation =
+                                            application.database.get<{
+                                              user: number;
+                                              courseParticipationRole:
+                                                | "courseParticipationRoleInstructor"
+                                                | "courseParticipationRoleStudent";
+                                            }>(
+                                              sql`
+                                                select
+                                                  "user",
+                                                  "courseParticipationRole"
+                                                from "courseParticipations"
+                                                where "id" = ${draft.createdByCourseParticipation};
+                                              `,
+                                            );
+                                          if (courseParticipation === undefined)
+                                            throw new Error();
+                                          const user =
+                                            application.database.get<{
+                                              name: string;
+                                            }>(
+                                              sql`
+                                                select "name"
+                                                from "users"
+                                                where "id" = ${courseParticipation.user};
+                                              `,
+                                            );
+                                          if (user === undefined)
+                                            throw new Error();
+                                          return html`${user.name}${courseParticipation.courseParticipationRole ===
+                                          "courseParticipationRoleInstructor"
+                                            ? " (instructor)"
+                                            : ""}`;
+                                        })
+                                        .join(", ")}
+                                    </div>
+                                  `
+                                : html``;
+                            })()
+                          : html``}
+                        <div
+                          key="courseConversationMessage--new--courseConversationMessageContentEditor"
+                          javascript="${javascript`
+                            if (this.firstMount === undefined && ${courseConversationMessageDraft !== undefined})
+                              this.querySelector('[name="content"]').value = ${
+                                courseConversationMessageDraft?.content ?? ""
+                              };
+                            this.firstMount = false;
+                            this.isModified = false;
+                            this.oninput = utilities.foregroundJob(async () => {
+                              await fetch(${`/courses/${
+                                request.state.course.publicId
+                              }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {
+                                method: "POST",
+                                headers: { "CSRF-Protection": "true" },
+                                body: new URLSearchParams(javascript.serialize(this)),
+                              });
                             });
-                          });
-                        `}"
-                      >
-                        $${application.partials.courseConversationMessageContentEditor(
-                          {
-                            course: request.state.course,
-                            courseParticipation:
-                              request.state.courseParticipation,
-                            courseConversation:
-                              request.state.courseConversation,
-                          },
-                        )}
-                      </div>
-                      <div
-                        css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                          font-weight: 600;
-                          color: light-dark(
-                            var(--color--slate--600),
-                            var(--color--slate--400)
-                          );
-                          display: flex;
-                          align-items: baseline;
-                          gap: var(--size--4);
-                        `}"
-                      >
-                        <div>
-                          <button
-                            type="submit"
-                            class="button button--rectangle button--blue"
-                          >
-                            Send
-                          </button>
+                          `}"
+                        >
+                          $${application.partials.courseConversationMessageContentEditor(
+                            {
+                              course: request.state.course,
+                              courseParticipation:
+                                request.state.courseParticipation,
+                              courseConversation:
+                                request.state.courseConversation,
+                            },
+                          )}
                         </div>
-                        $${(() => {
-                          let courseConversationMessageNewOptionsHTML = html``;
-                          if (
-                            request.state.courseConversation
-                              .courseConversationType ===
-                            "courseConversationTypeQuestion"
-                          )
-                            courseConversationMessageNewOptionsHTML += html`
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.popover({ element: this, trigger: "click" });
-                                `}"
-                              >
-                                <form>
-                                  <span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
-                                    `}"
-                                    >Type:</span
-                                  >  <input
-                                    type="radio"
-                                    name="courseConversationMessageType"
-                                    value="courseConversationMessageTypeMessage"
-                                    required
-                                    checked
-                                    hidden
-                                  /><span
-                                    css="${css`
-                                      :not(:checked) + & {
-                                        display: none;
-                                      }
-                                    `}"
-                                    >Message</span
-                                  ><input
-                                    type="radio"
-                                    name="courseConversationMessageType"
-                                    value="courseConversationMessageTypeAnswer"
-                                    required
-                                    hidden
-                                  /><span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--green--500),
-                                        var(--color--green--500)
-                                      );
-                                      :not(:checked) + & {
-                                        display: none;
-                                      }
-                                    `}"
-                                    >Answer</span
-                                  ><input
-                                    type="radio"
-                                    name="courseConversationMessageType"
-                                    value="courseConversationMessageTypeFollowUpQuestion"
-                                    required
-                                    hidden
-                                  /><span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--red--500),
-                                        var(--color--red--500)
-                                      );
-                                      :not(:checked) + & {
-                                        display: none;
-                                      }
-                                    `}"
-                                    >Follow-up question</span
-                                  > <i class="bi bi-chevron-down"></i>
-                                </form>
-                              </button>
-                              <div
-                                type="popover"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--2);
-                                `}"
-                              >
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--600),
+                              var(--color--slate--400)
+                            );
+                            display: flex;
+                            align-items: baseline;
+                            gap: var(--size--4);
+                          `}"
+                        >
+                          <div>
+                            <button
+                              type="submit"
+                              class="button button--rectangle button--blue"
+                            >
+                              Send
+                            </button>
+                          </div>
+                          $${(() => {
+                            let courseConversationMessageNewOptionsHTML = html``;
+                            if (
+                              request.state.courseConversation
+                                .courseConversationType ===
+                              "courseConversationTypeQuestion"
+                            )
+                              courseConversationMessageNewOptionsHTML += html`
                                 <button
                                   type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  class="button button--rectangle button--transparent"
                                   javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
-                                    };
+                                    javascript.popover({ element: this, trigger: "click" });
                                   `}"
                                 >
-                                  Message
+                                  <form>
+                                    <span
+                                      css="${css`
+                                        color: light-dark(
+                                          var(--color--slate--500),
+                                          var(--color--slate--500)
+                                        );
+                                      `}"
+                                      >Type:</span
+                                    >  <input
+                                      type="radio"
+                                      name="courseConversationMessageType"
+                                      value="courseConversationMessageTypeMessage"
+                                      required
+                                      $${courseConversationMessageDraft ===
+                                        undefined ||
+                                      courseConversationMessageDraft.courseConversationMessageType ===
+                                        "courseConversationMessageTypeMessage"
+                                        ? html`checked`
+                                        : html``}
+                                      hidden
+                                    /><span
+                                      css="${css`
+                                        :not(:checked) + & {
+                                          display: none;
+                                        }
+                                      `}"
+                                      >Message</span
+                                    ><input
+                                      type="radio"
+                                      name="courseConversationMessageType"
+                                      value="courseConversationMessageTypeAnswer"
+                                      required
+                                      $${courseConversationMessageDraft?.courseConversationMessageType ===
+                                      "courseConversationMessageTypeAnswer"
+                                        ? html`checked`
+                                        : html``}
+                                      hidden
+                                    /><span
+                                      css="${css`
+                                        color: light-dark(
+                                          var(--color--green--500),
+                                          var(--color--green--500)
+                                        );
+                                        :not(:checked) + & {
+                                          display: none;
+                                        }
+                                      `}"
+                                      >Answer</span
+                                    ><input
+                                      type="radio"
+                                      name="courseConversationMessageType"
+                                      value="courseConversationMessageTypeFollowUpQuestion"
+                                      required
+                                      $${courseConversationMessageDraft?.courseConversationMessageType ===
+                                      "courseConversationMessageTypeFollowUpQuestion"
+                                        ? html`checked`
+                                        : html``}
+                                      hidden
+                                    /><span
+                                      css="${css`
+                                        color: light-dark(
+                                          var(--color--red--500),
+                                          var(--color--red--500)
+                                        );
+                                        :not(:checked) + & {
+                                          display: none;
+                                        }
+                                      `}"
+                                      >Follow-up question</span
+                                    > <i class="bi bi-chevron-down"></i>
+                                  </form>
                                 </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
-                                    };
+                                <div
+                                  type="popover"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--2);
                                   `}"
                                 >
-                                  Answer
-                                </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
-                                    };
-                                  `}"
-                                >
-                                  Follow-up question
-                                </button>
-                              </div>
-                            `;
-                          if (
-                            request.state.courseParticipation
-                              .courseParticipationRole ===
-                            "courseParticipationRoleInstructor"
-                          )
-                            courseConversationMessageNewOptionsHTML += html`
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.popover({ element: this, trigger: "click" });
-                                `}"
-                              >
-                                <form>
-                                  <span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
+                                      };
                                     `}"
-                                    >Visibility:</span
-                                  >  <input
-                                    type="radio"
-                                    name="courseConversationMessageVisibility"
-                                    value="courseConversationMessageVisibilityEveryone"
-                                    required
-                                    checked
-                                    hidden
-                                  /><span
-                                    css="${css`
-                                      :not(:checked) + & {
-                                        display: none;
-                                      }
+                                  >
+                                    Message
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
+                                      };
                                     `}"
-                                    >Everyone</span
-                                  ><input
-                                    type="radio"
-                                    name="courseConversationMessageVisibility"
-                                    value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"
-                                    required
-                                    hidden
-                                  /><span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--blue--500),
-                                        var(--color--blue--500)
-                                      );
-                                      :not(:checked) + & {
-                                        display: none;
-                                      }
+                                  >
+                                    Answer
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
+                                      };
                                     `}"
-                                    >Instructors</span
-                                  > <i class="bi bi-chevron-down"></i>
-                                </form>
-                              </button>
-                              <div
-                                type="popover"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--2);
-                                `}"
-                              >
+                                  >
+                                    Follow-up question
+                                  </button>
+                                </div>
+                              `;
+                            if (
+                              request.state.courseParticipation
+                                .courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
+                            )
+                              courseConversationMessageNewOptionsHTML += html`
                                 <button
                                   type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  class="button button--rectangle button--transparent"
                                   javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
-                                    };
+                                    javascript.popover({ element: this, trigger: "click" });
                                   `}"
                                 >
-                                  Everyone
+                                  <form>
+                                    <span
+                                      css="${css`
+                                        color: light-dark(
+                                          var(--color--slate--500),
+                                          var(--color--slate--500)
+                                        );
+                                      `}"
+                                      >Visibility:</span
+                                    >  <input
+                                      type="radio"
+                                      name="courseConversationMessageVisibility"
+                                      value="courseConversationMessageVisibilityEveryone"
+                                      required
+                                      $${courseConversationMessageDraft ===
+                                        undefined ||
+                                      courseConversationMessageDraft.courseConversationMessageVisibility ===
+                                        "courseConversationMessageVisibilityEveryone"
+                                        ? html`checked`
+                                        : html``}
+                                      hidden
+                                    /><span
+                                      css="${css`
+                                        :not(:checked) + & {
+                                          display: none;
+                                        }
+                                      `}"
+                                      >Everyone</span
+                                    ><input
+                                      type="radio"
+                                      name="courseConversationMessageVisibility"
+                                      value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                                      required
+                                      $${courseConversationMessageDraft?.courseConversationMessageVisibility ===
+                                      "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                                        ? html`checked`
+                                        : html``}
+                                      hidden
+                                    /><span
+                                      css="${css`
+                                        color: light-dark(
+                                          var(--color--blue--500),
+                                          var(--color--blue--500)
+                                        );
+                                        :not(:checked) + & {
+                                          display: none;
+                                        }
+                                      `}"
+                                      >Instructors</span
+                                    > <i class="bi bi-chevron-down"></i>
+                                  </form>
                                 </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
-                                    };
+                                <div
+                                  type="popover"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--2);
                                   `}"
                                 >
-                                  Instructors
-                                </button>
-                              </div>
-                            `;
-                          if (
-                            request.state.courseParticipation
-                              .courseParticipationRole ===
-                              "courseParticipationRoleStudent" &&
-                            (request.state.course
-                              .courseParticipationRoleStudentsAnonymityAllowed ===
-                              "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" ||
-                              request.state.course
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
+                                      };
+                                    `}"
+                                  >
+                                    Everyone
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
+                                      };
+                                    `}"
+                                  >
+                                    Instructors
+                                  </button>
+                                </div>
+                              `;
+                            if (
+                              request.state.courseParticipation
+                                .courseParticipationRole ===
+                                "courseParticipationRoleStudent" &&
+                              (request.state.course
                                 .courseParticipationRoleStudentsAnonymityAllowed ===
-                                "courseParticipationRoleStudentsAnonymityAllowedEveryone")
-                          )
-                            courseConversationMessageNewOptionsHTML += html`
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.popover({ element: this, trigger: "click" });
-                                `}"
-                              >
-                                <form>
-                                  <span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
+                                "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" ||
+                                request.state.course
+                                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                                  "courseParticipationRoleStudentsAnonymityAllowedEveryone")
+                            )
+                              courseConversationMessageNewOptionsHTML += html`
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent"
+                                  javascript="${javascript`
+                                    javascript.popover({ element: this, trigger: "click" });
+                                  `}"
+                                >
+                                  <form>
+                                    <span
+                                      css="${css`
+                                        color: light-dark(
+                                          var(--color--slate--500),
+                                          var(--color--slate--500)
+                                        );
+                                      `}"
+                                      >Anonymity:</span
+                                    >  <input
+                                      type="radio"
+                                      name="courseConversationMessageAnonymity"
+                                      value="courseConversationMessageAnonymityNone"
+                                      $${courseConversationMessageDraft ===
+                                        undefined ||
+                                      courseConversationMessageDraft.courseConversationMessageAnonymity ===
+                                        "courseConversationMessageAnonymityNone"
+                                        ? html`checked`
+                                        : html``}
+                                      required
+                                      hidden
+                                    /><span
+                                      css="${css`
+                                        :not(:checked) + & {
+                                          display: none;
+                                        }
+                                      `}"
+                                      >None</span
+                                    ><input
+                                      type="radio"
+                                      name="courseConversationMessageAnonymity"
+                                      value="courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                                      required
+                                      $${courseConversationMessageDraft?.courseConversationMessageAnonymity ===
+                                        "courseConversationMessageAnonymityCourseParticipationRoleStudents" ||
+                                      (request.state.course
+                                        .courseParticipationRoleStudentsAnonymityAllowed ===
+                                        "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
+                                        courseConversationMessageDraft?.courseConversationMessageAnonymity ===
+                                          "courseConversationMessageAnonymityEveryone")
+                                        ? html`checked`
+                                        : html``}
+                                      hidden
+                                    /><span
+                                      css="${css`
+                                        :not(:checked) + & {
+                                          display: none;
+                                        }
+                                      `}"
+                                      >Anonymous to students</span
+                                    >$${request.state.course
+                                      .courseParticipationRoleStudentsAnonymityAllowed ===
+                                    "courseParticipationRoleStudentsAnonymityAllowedEveryone"
+                                      ? html`<input
+                                            type="radio"
+                                            name="courseConversationMessageAnonymity"
+                                            value="courseConversationMessageAnonymityEveryone"
+                                            required
+                                            $${courseConversationMessageDraft?.courseConversationMessageAnonymity ===
+                                            "courseConversationMessageAnonymityEveryone"
+                                              ? html`checked`
+                                              : html``}
+                                            hidden
+                                          /><span
+                                            css="${css`
+                                              :not(:checked) + & {
+                                                display: none;
+                                              }
+                                            `}"
+                                            >Anonymous to everyone</span
+                                          >`
+                                      : html``} <i
+                                      class="bi bi-chevron-down"
+                                    ></i>
+                                  </form>
+                                </button>
+                                <div
+                                  type="popover"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--2);
+                                  `}"
+                                >
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
+                                      };
                                     `}"
-                                    >Anonymity:</span
-                                  >  <input
-                                    type="radio"
-                                    name="courseConversationMessageAnonymity"
-                                    value="courseConversationMessageAnonymityNone"
-                                    checked
-                                    required
-                                    hidden
-                                  /><span
-                                    css="${css`
-                                      :not(:checked) + & {
-                                        display: none;
-                                      }
+                                  >
+                                    None
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
+                                      };
                                     `}"
-                                    >None</span
-                                  ><input
-                                    type="radio"
-                                    name="courseConversationMessageAnonymity"
-                                    value="courseConversationMessageAnonymityCourseParticipationRoleStudents"
-                                    required
-                                    hidden
-                                  /><span
-                                    css="${css`
-                                      :not(:checked) + & {
-                                        display: none;
-                                      }
-                                    `}"
-                                    >Anonymous to students</span
-                                  >$${request.state.course
+                                  >
+                                    Anonymous to students
+                                  </button>
+                                  $${request.state.course
                                     .courseParticipationRoleStudentsAnonymityAllowed ===
                                   "courseParticipationRoleStudentsAnonymityAllowedEveryone"
-                                    ? html`<input
-                                          type="radio"
-                                          name="courseConversationMessageAnonymity"
-                                          value="courseConversationMessageAnonymityEveryone"
-                                          required
-                                          hidden
-                                        /><span
-                                          css="${css`
-                                            :not(:checked) + & {
-                                              display: none;
-                                            }
+                                    ? html`
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = () => {
+                                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityEveryone"]').click();
+                                            };
                                           `}"
-                                          >Anonymous to everyone</span
-                                        >`
-                                    : html``} <i class="bi bi-chevron-down"></i>
-                                </form>
-                              </button>
-                              <div
-                                type="popover"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--2);
-                                `}"
-                              >
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
-                                    };
-                                  `}"
-                                >
-                                  None
-                                </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
-                                    };
-                                  `}"
-                                >
-                                  Anonymous to students
-                                </button>
-                                $${request.state.course
-                                  .courseParticipationRoleStudentsAnonymityAllowed ===
-                                "courseParticipationRoleStudentsAnonymityAllowedEveryone"
-                                  ? html`
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--transparent button--dropdown-menu"
-                                        javascript="${javascript`
-                                          this.onclick = () => {
-                                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityEveryone"]').click();
-                                          };
-                                        `}"
-                                      >
-                                        Anonymous to everyone
-                                      </button>
-                                    `
-                                  : html``}
-                              </div>
-                            `;
-                          return courseConversationMessageNewOptionsHTML !==
-                            html``
-                            ? html`
-                                <div
-                                  css="${css`
-                                    flex: 1;
-                                    display: flex;
-                                    align-items: baseline;
-                                    flex-wrap: wrap;
-                                    column-gap: var(--size--4);
-                                    row-gap: var(--size--2);
-                                  `}"
-                                >
-                                  $${courseConversationMessageNewOptionsHTML}
+                                        >
+                                          Anonymous to everyone
+                                        </button>
+                                      `
+                                    : html``}
                                 </div>
-                              `
-                            : html``;
-                        })()}
+                              `;
+                            return courseConversationMessageNewOptionsHTML !==
+                              html``
+                              ? html`
+                                  <div
+                                    css="${css`
+                                      flex: 1;
+                                      display: flex;
+                                      align-items: baseline;
+                                      flex-wrap: wrap;
+                                      column-gap: var(--size--4);
+                                      row-gap: var(--size--2);
+                                    `}"
+                                  >
+                                    $${courseConversationMessageNewOptionsHTML}
+                                  </div>
+                                `
+                              : html``;
+                          })()}
+                        </div>
                       </div>
-                    </div>
-                  `
+                    `;
+                  })()
                 : html``}
             </div>
           `,
