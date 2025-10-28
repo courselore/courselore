@@ -116,19 +116,22 @@ export default async (application: Application): Promise<void> => {
         throw "validation";
       let sendLiveConnectionUpdates = false;
       application.database.executeTransaction(() => {
-        const existingCourseConversationMessageDraft = application.database.get(
-          sql`
-            select true
-            from "courseConversationMessageDrafts"
-            where
-              "courseConversation" = ${request.state.courseConversation!.id} and
-              "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
-          `,
-        );
+        const previousCourseConversationMessageDraft =
+          application.database.get<{ content: string }>(
+            sql`
+              select "content"
+              from "courseConversationMessageDrafts"
+              where
+                "courseConversation" = ${request.state.courseConversation!.id} and
+                "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
+            `,
+          );
         sendLiveConnectionUpdates =
-          (existingCourseConversationMessageDraft === undefined &&
+          ((previousCourseConversationMessageDraft === undefined ||
+            previousCourseConversationMessageDraft.content.trim() === "") &&
             request.body.content!.trim() !== "") ||
-          (existingCourseConversationMessageDraft !== undefined &&
+          (previousCourseConversationMessageDraft !== undefined &&
+            previousCourseConversationMessageDraft.content.trim() !== "" &&
             request.body.content!.trim() === "");
         application.database.run(
           sql`
@@ -138,29 +141,28 @@ export default async (application: Application): Promise<void> => {
               "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
           `,
         );
-        if (request.body.content!.trim() !== "")
-          application.database.run(
-            sql`
-              insert into "courseConversationMessageDrafts" (
-                "courseConversation",
-                "createdByCourseParticipation",
-                "createdAt",
-                "courseConversationMessageType",
-                "courseConversationMessageVisibility",
-                "courseConversationMessageAnonymity",
-                "content"
-              )
-              values (
-                ${request.state.courseConversation!.id},
-                ${request.state.courseParticipation!.id},
-                ${new Date().toISOString()},
-                ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
-                ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
-                ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
-                ${request.body.content}
-              );
-            `,
-          );
+        application.database.run(
+          sql`
+            insert into "courseConversationMessageDrafts" (
+              "courseConversation",
+              "createdByCourseParticipation",
+              "createdAt",
+              "courseConversationMessageType",
+              "courseConversationMessageVisibility",
+              "courseConversationMessageAnonymity",
+              "content"
+            )
+            values (
+              ${request.state.courseConversation!.id},
+              ${request.state.courseParticipation!.id},
+              ${new Date().toISOString()},
+              ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
+              ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
+              ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
+              ${request.body.content}
+            );
+          `,
+        );
       });
       response.end();
       if (sendLiveConnectionUpdates)

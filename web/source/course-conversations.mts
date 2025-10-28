@@ -5764,7 +5764,8 @@ export default async (application: Application): Promise<void> => {
                                   where
                                     "courseConversation" = ${request.state.courseConversation.id} and
                                     "createdByCourseParticipation" != ${request.state.courseParticipation.id} and
-                                    ${new Date(Date.now() - 2 * 60 * 1000).toISOString()} < "createdAt"
+                                    ${new Date(Date.now() - 2 * 60 * 1000).toISOString()} < "createdAt" and
+                                    trim("content") != ''
                                   order by "createdAt" asc;
                                 `,
                               );
