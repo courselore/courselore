@@ -2560,6 +2560,9 @@ export default async (application: Application): Promise<void> => {
             "courseConversation" integer not null references "courseConversations",
             "createdByCourseParticipation" integer not null references "courseParticipations",
             "createdAt" text not null,
+            "courseConversationMessageType" text not null,
+            "courseConversationMessageVisibility" text not null,
+            "courseConversationMessageAnonymity" text not null,
             "content" text not null,
             unique ("courseConversation", "createdByCourseParticipation")
           ) strict;
@@ -2568,9 +2571,9 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "publicId" text not null unique,
             "courseConversation" integer not null references "courseConversations",
+            "createdByCourseParticipation" integer null references "courseParticipations",
             "createdAt" text not null,
             "updatedAt" text null,
-            "createdByCourseParticipation" integer null references "courseParticipations",
             "courseConversationMessageType" text not null,
             "courseConversationMessageVisibility" text not null,
             "courseConversationMessageAnonymity" text not null,
