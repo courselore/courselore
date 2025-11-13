@@ -304,7 +304,7 @@ export default async (application: Application): Promise<void> => {
               `
             : css``}"
       javascript="${javascript`
-        if (${request.liveConnection === undefined && request.method === "GET" && response.statusCode === 200})
+        if (${response.mayStartLiveConnection()})
           javascript.liveConnection(${request.id}, { reloadOnReconnect: ${application.configuration.environment === "development"} });
       `}"
     >
