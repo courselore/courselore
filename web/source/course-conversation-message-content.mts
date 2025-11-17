@@ -3173,7 +3173,7 @@ You may also use the buttons on the message content editor to ${
           where "id" = ${request.state.courseConversationMessage.id};
         `,
       );
-      response.redirect(
+      response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.privateConfiguration.ports)

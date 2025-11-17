@@ -340,7 +340,7 @@ export default async (application: Application): Promise<void> => {
         `}"
       >
         $${(() => {
-          const flash = request.getFlash();
+          const flash = request.getFlash?.();
           return typeof flash === "string"
             ? html`
                 <div

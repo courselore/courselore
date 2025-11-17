@@ -2790,7 +2790,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect(
+      response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${courseConversation!.publicId}`,
       );
       for (const port of application.privateConfiguration.ports)
@@ -6460,7 +6460,7 @@ export default async (application: Application): Promise<void> => {
             `,
           );
       });
-      response.redirect(
+      response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.privateConfiguration.ports)
@@ -6560,7 +6560,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect(`/courses/${request.state.course.publicId}`);
+      response.redirect!(`/courses/${request.state.course.publicId}`);
       for (const port of application.privateConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
