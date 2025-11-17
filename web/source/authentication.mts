@@ -101,7 +101,7 @@ export default async (application: Application): Promise<void> => {
               select true from "sqlite_sequence" where "name" = 'userSessions';
             `,
           ) !== undefined ||
-          request.liveConnection !== undefined
+          typeof request.liveConnection === "string"
         )
           return;
         const userSession = application.database.get<{
@@ -213,7 +213,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.userSession === undefined) {
-        if (request.liveConnection !== undefined) return;
+        if (typeof request.liveConnection === "string") return;
         response.deleteCookie("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect(
@@ -231,7 +231,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         delete request.state.userSession;
-        if (request.liveConnection !== undefined) return;
+        if (typeof request.liveConnection === "string") return;
         response.deleteCookie("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect(
