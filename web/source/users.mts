@@ -69,7 +69,8 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.systemOptions === undefined ||
-        request.state.user === undefined
+        request.state.user === undefined ||
+        typeof request.liveConnection === "string"
       )
         return;
       const courseParticipation = application.database.get<{
@@ -103,7 +104,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (course === undefined) throw new Error();
-        response.redirect(`/courses/${course.publicId}`);
+        response.redirect!(`/courses/${course.publicId}`);
         return;
       }
       response.end(
@@ -1693,10 +1694,10 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">General settings updated successfully.</div>
       `);
-      response.redirect("/settings");
+      response.redirect!("/settings");
     },
   });
 
@@ -1746,7 +1747,7 @@ export default async (application: Application): Promise<void> => {
             }) !== null
           : true;
       if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             Invalid “Password
             confirmation”${Boolean(
@@ -1756,7 +1757,7 @@ export default async (application: Application): Promise<void> => {
               : ""}.
           </div>
         `);
-        response.redirect("/settings");
+        response.redirect!("/settings");
         return;
       }
       request.state.user.emailVerificationEmail = request.body.email;
@@ -1878,12 +1879,12 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">
           Check your inbox to verify the new email address.
         </div>
       `);
-      response.redirect("/settings");
+      response.redirect!("/settings");
     },
   });
 
@@ -1937,7 +1938,7 @@ export default async (application: Application): Promise<void> => {
             }) !== null
           : true;
       if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             Invalid “Current
             password”${Boolean(
@@ -1947,7 +1948,7 @@ export default async (application: Application): Promise<void> => {
               : ""}.
           </div>
         `);
-        response.redirect("/settings");
+        response.redirect!("/settings");
         return;
       }
       request.state.user.password = await argon2.hash(
@@ -2011,10 +2012,10 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">Password updated successfully.</div>
       `);
-      response.redirect("/settings");
+      response.redirect!("/settings");
     },
   });
 
@@ -2053,10 +2054,10 @@ export default async (application: Application): Promise<void> => {
           application.privateConfiguration.argon2,
         ))
       ) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">Invalid “Password confirmation”.</div>
         `);
-        response.redirect(request.search.redirect ?? "/settings");
+        response.redirect!(request.search.redirect ?? "/settings");
         return;
       }
       request.state.user.twoFactorAuthenticationSecret =
@@ -2075,7 +2076,7 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.redirect(
+      response.redirect!(
         `/settings/two-factor-authentication${request.URL.search}`,
       );
     },
@@ -2283,12 +2284,12 @@ export default async (application: Application): Promise<void> => {
           token: request.body.twoFactorAuthenticationConfirmation,
         }) === null
       ) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             Invalid “Two-factor authentication code”.
           </div>
         `);
-        response.redirect(
+        response.redirect!(
           `/settings/two-factor-authentication${request.URL.search}`,
         );
         return;
@@ -2315,12 +2316,12 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">
           Two-factor authentication enabled successfully.
         </div>
       `);
-      response.redirect(request.search.redirect ?? "/settings");
+      response.redirect!(request.search.redirect ?? "/settings");
     },
   });
 
@@ -2367,12 +2368,12 @@ export default async (application: Application): Promise<void> => {
           token: request.body.twoFactorAuthenticationConfirmation,
         }) !== null;
       if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             Invalid “Password confirmation” or “Two-factor authentication code”.
           </div>
         `);
-        response.redirect("/settings");
+        response.redirect!("/settings");
         return;
       }
       request.state.user.twoFactorAuthenticationEnabled = Number(false);
@@ -2395,12 +2396,12 @@ export default async (application: Application): Promise<void> => {
           where "user" = ${request.state.user.id};
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">
           Two-factor authentication disabled successfully.
         </div>
       `);
-      response.redirect("/settings");
+      response.redirect!("/settings");
     },
   });
 
@@ -2434,10 +2435,10 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">Email notification updated successfully.</div>
       `);
-      response.redirect("/settings");
+      response.redirect!("/settings");
     },
   });
 
@@ -2483,7 +2484,7 @@ export default async (application: Application): Promise<void> => {
             }) !== null
           : true;
       if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             Invalid “Password
             confirmation”${Boolean(
@@ -2493,7 +2494,7 @@ export default async (application: Application): Promise<void> => {
               : ""}.
           </div>
         `);
-        response.redirect("/settings");
+        response.redirect!("/settings");
         return;
       }
       application.database.executeTransaction(() => {
@@ -2604,10 +2605,10 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">Account deleted.</div>
       `);
-      response.redirect("/");
+      response.redirect!("/");
     },
   });
 
