@@ -141,8 +141,8 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        response.setCookie("session", userSession.publicId);
-        response.redirect("/");
+        response.setCookie!("session", userSession.publicId);
+        response.redirect!("/");
       },
     });
 
