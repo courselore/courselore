@@ -3535,7 +3535,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect(
+      response.redirect!(
         request.search.redirect ??
           `/courses/${request.state.invitationCourse.publicId}`,
       );
@@ -3708,10 +3708,10 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       }
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">Invitation emails sent successfully.</div>
       `);
-      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
     },
   });
 
@@ -4036,7 +4036,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect(
+      response.redirect!(
         request.search.redirect ??
           `/courses/${request.state.invitationCourse.publicId}`,
       );
@@ -4119,12 +4119,12 @@ export default async (application: Application): Promise<void> => {
             );
         }
       });
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">
           Pending invitation emails updated successfully.
         </div>
       `);
-      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
     },
   });
 
@@ -4261,12 +4261,12 @@ export default async (application: Application): Promise<void> => {
           }
         }
       });
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">
           Course participants updated successfully.
         </div>
       `);
-      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
       for (const port of application.privateConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
@@ -4343,12 +4343,12 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">
           You removed yourself from “${request.state.course.name}” successfully.
         </div>
       `);
-      response.redirect("/");
+      response.redirect!("/");
       for (const port of application.privateConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
