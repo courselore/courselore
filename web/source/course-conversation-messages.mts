@@ -364,7 +364,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect(
+      response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.privateConfiguration.ports)
@@ -1425,7 +1425,7 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.courseConversationMessage.id};
         `,
       );
-      response.redirect(
+      response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.privateConfiguration.ports)
@@ -1499,7 +1499,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect(
+      response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.privateConfiguration.ports)
@@ -1612,7 +1612,7 @@ export default async (application: Application): Promise<void> => {
             `,
           );
       });
-      response.redirect(
+      response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.privateConfiguration.ports)
@@ -1668,7 +1668,7 @@ export default async (application: Application): Promise<void> => {
             `,
           );
       });
-      response.redirect(
+      response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.privateConfiguration.ports)
