@@ -360,7 +360,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
       )!;
-      response.redirect(`/courses/${request.state.course.publicId}`);
+      response.redirect!(`/courses/${request.state.course.publicId}`);
     },
   });
 
@@ -511,7 +511,8 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.course === undefined ||
-        request.state.courseParticipation === undefined
+        request.state.courseParticipation === undefined ||
+        typeof request.liveConnection === "string"
       )
         return;
       const courseConversation =
@@ -582,7 +583,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       if (courseConversation !== undefined) {
-        response.redirect(
+        response.redirect!(
           `/courses/${request.state.course.publicId}/conversations/${courseConversation.publicId}`,
         );
         return;
@@ -591,7 +592,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseParticipation.courseParticipationRole ===
         "courseParticipationRoleStudent"
       ) {
-        response.redirect(
+        response.redirect!(
           `/courses/${request.state.course.publicId}/conversations/new`,
         );
         return;
@@ -2987,10 +2988,10 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.course.id};
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">General settings updated successfully.</div>
       `);
-      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
       for (const port of application.privateConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
@@ -3106,10 +3107,10 @@ export default async (application: Application): Promise<void> => {
             );
           }
       });
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">Conversation tags updated successfully.</div>
       `);
-      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
       for (const port of application.privateConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
@@ -3155,10 +3156,10 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.course.id};
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">Invitation links updated successfully.</div>
       `);
-      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
     },
   });
 
@@ -3209,10 +3210,10 @@ export default async (application: Application): Promise<void> => {
             where "id" = ${request.state.course.id};
           `,
         );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">Invitation link renewed successfully.</div>
       `);
-      response.redirect(`/courses/${request.state.course.publicId}/settings`);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
     },
   });
 
