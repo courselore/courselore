@@ -1303,7 +1303,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect(
+      response.redirect!(
         `/authentication/email-verification${request.URL.search}`,
       );
     },
@@ -1529,7 +1529,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      response.redirect(
+      response.redirect!(
         `/authentication/email-verification${request.URL.search}`,
       );
     },
