@@ -183,9 +183,10 @@ export default async (application: Application): Promise<void> => {
             application.configuration.hostname === "courselore.org" &&
             request.URL.pathname === "/"
           ) &&
-          !request.URL.pathname.match(new RegExp("^/authentication(?:$|/)"))
+          !request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")) &&
+          request.liveConnection === undefined
         )
-          response.redirect(
+          response.redirect!(
             `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
           );
         return;
@@ -214,9 +215,9 @@ export default async (application: Application): Promise<void> => {
       );
       if (request.state.userSession === undefined) {
         if (typeof request.liveConnection === "string") return;
-        response.deleteCookie("session");
+        response.deleteCookie!("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
-          response.redirect(
+          response.redirect!(
             `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
           );
         return;
@@ -232,9 +233,9 @@ export default async (application: Application): Promise<void> => {
         );
         delete request.state.userSession;
         if (typeof request.liveConnection === "string") return;
-        response.deleteCookie("session");
+        response.deleteCookie!("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
-          response.redirect(
+          response.redirect!(
             `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
           );
         return;
@@ -249,7 +250,7 @@ export default async (application: Application): Promise<void> => {
             delete from "userSessions" where "id" = ${request.state.userSession.id};
           `,
         );
-        response.deleteCookie("session");
+        response.deleteCookie!("session");
         request.state.userSession = application.database.get<{
           id: number;
           publicId: string;
@@ -287,7 +288,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        response.setCookie("session", request.state.userSession.publicId);
+        response.setCookie!("session", request.state.userSession.publicId);
       }
       request.state.user = application.database.get<{
         id: number;
@@ -383,11 +384,12 @@ export default async (application: Application): Promise<void> => {
           ),
         )
       ) {
-        response.redirect(
-          `/authentication/email-verification?${new URLSearchParams({
-            redirect: request.URL.pathname + request.URL.search,
-          }).toString()}`,
-        );
+        if (request.liveConnection === undefined)
+          response.redirect!(
+            `/authentication/email-verification?${new URLSearchParams({
+              redirect: request.URL.pathname + request.URL.search,
+            }).toString()}`,
+          );
         return;
       }
       if (
@@ -398,11 +400,12 @@ export default async (application: Application): Promise<void> => {
           ),
         )
       ) {
-        response.redirect(
-          `/authentication/set-password?${new URLSearchParams({
-            redirect: request.URL.pathname + request.URL.search,
-          }).toString()}`,
-        );
+        if (request.liveConnection === undefined)
+          response.redirect!(
+            `/authentication/set-password?${new URLSearchParams({
+              redirect: request.URL.pathname + request.URL.search,
+            }).toString()}`,
+          );
         return;
       }
       if (
@@ -415,11 +418,14 @@ export default async (application: Application): Promise<void> => {
           ),
         )
       ) {
-        response.redirect(
-          `/authentication/set-two-factor-authentication?${new URLSearchParams({
-            redirect: request.URL.pathname + request.URL.search,
-          }).toString()}`,
-        );
+        if (request.liveConnection === undefined)
+          response.redirect!(
+            `/authentication/set-two-factor-authentication?${new URLSearchParams(
+              {
+                redirect: request.URL.pathname + request.URL.search,
+              },
+            ).toString()}`,
+          );
         return;
       }
       if (
@@ -430,11 +436,12 @@ export default async (application: Application): Promise<void> => {
           ),
         )
       ) {
-        response.redirect(
-          `/authentication/sign-in/two-factor-authentication?${new URLSearchParams(
-            { redirect: request.URL.pathname + request.URL.search },
-          ).toString()}`,
-        );
+        if (request.liveConnection === undefined)
+          response.redirect!(
+            `/authentication/sign-in/two-factor-authentication?${new URLSearchParams(
+              { redirect: request.URL.pathname + request.URL.search },
+            ).toString()}`,
+          );
         return;
       }
     },
