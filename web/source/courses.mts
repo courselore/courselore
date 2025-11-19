@@ -3251,7 +3251,8 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (request.state.course !== undefined) {
-        response.redirect(
+        if (typeof request.liveConnection === "string") throw new Error();
+        response.redirect!(
           request.search.redirect ??
             `/courses/${request.state.course.publicId}`,
         );
@@ -3758,7 +3759,8 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (request.state.course !== undefined) {
-        response.redirect(
+        if (typeof request.liveConnection === "string") throw new Error();
+        response.redirect!(
           request.search.redirect ??
             `/courses/${request.state.course.publicId}`,
         );
