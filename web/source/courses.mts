@@ -3251,11 +3251,11 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (request.state.course !== undefined) {
-        if (typeof request.liveConnection === "string") throw new Error();
-        response.redirect!(
-          request.search.redirect ??
-            `/courses/${request.state.course.publicId}`,
-        );
+        if (request.liveConnection === undefined)
+          response.redirect!(
+            request.search.redirect ??
+              `/courses/${request.state.course.publicId}`,
+          );
         return;
       }
       request.state.invitationCourse = application.database.get<{
@@ -3759,11 +3759,11 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (request.state.course !== undefined) {
-        if (typeof request.liveConnection === "string") throw new Error();
-        response.redirect!(
-          request.search.redirect ??
-            `/courses/${request.state.course.publicId}`,
-        );
+        if (request.liveConnection === undefined)
+          response.redirect!(
+            request.search.redirect ??
+              `/courses/${request.state.course.publicId}`,
+          );
         return;
       }
       request.state.invitationCourse = application.database.get<{
