@@ -1567,10 +1567,12 @@ export default async (application: Application): Promise<void> => {
         request.state.user !== undefined &&
         request.state.user.emailVerificationEmail === null
       ) {
-        response.setFlash(html`
-          <div class="flash--green">The email has already been verified.</div>
-        `);
-        response.redirect(request.search.redirect ?? "/");
+        if (request.liveConnection === undefined) {
+          response.setFlash!(html`
+            <div class="flash--green">The email has already been verified.</div>
+          `);
+          response.redirect!(request.search.redirect ?? "/");
+        }
         return;
       }
       response.end(
@@ -1792,13 +1794,13 @@ export default async (application: Application): Promise<void> => {
         request.state.user.emailVerificationCreatedAt <
           new Date(Date.now() - 15 * 60 * 1000).toISOString()
       ) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             There’s something wrong with this email verification. Please request
             a new email verification.
           </div>
         `);
-        response.redirect(
+        response.redirect!(
           `/authentication/email-verification${request.URL.search}`,
         );
         return;
@@ -1818,10 +1820,10 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">The email was verified successfully.</div>
       `);
-      response.redirect(request.search.redirect ?? "/");
+      response.redirect!(request.search.redirect ?? "/");
     },
   });
 
@@ -1942,10 +1944,10 @@ export default async (application: Application): Promise<void> => {
         application.privateConfiguration.argon2,
       );
       if (request.state.user === undefined || !passwordVerify) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">Invalid email or password.</div>
         `);
-        response.redirect(`/authentication${request.URL.search}`);
+        response.redirect!(`/authentication${request.URL.search}`);
         return;
       }
       request.state.userSession = application.database.get<{
@@ -1985,7 +1987,7 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       )!;
-      response.setCookie("session", request.state.userSession.publicId);
+      response.setCookie!("session", request.state.userSession.publicId);
       application.database.run(
         sql`
           insert into "_backgroundJobs" (
@@ -2028,7 +2030,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      response.redirect(request.search.redirect ?? "/");
+      response.redirect!(request.search.redirect ?? "/");
     },
   });
 
@@ -2434,7 +2436,7 @@ export default async (application: Application): Promise<void> => {
             )
           ).includes(true))
       ) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             Invalid
             ${typeof request.body.twoFactorAuthenticationCode === "string"
@@ -2447,7 +2449,7 @@ export default async (application: Application): Promise<void> => {
                   })()}.
           </div>
         `);
-        response.redirect(
+        response.redirect!(
           `/authentication/sign-in/two-factor-authentication${request.URL.search}`,
         );
         return;
@@ -2475,13 +2477,13 @@ export default async (application: Application): Promise<void> => {
             where "user" = ${request.state.user.id};
           `,
         );
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--green">
             Two-factor authentication was disabled because you used a recovery
             code. Please consider enabling it again.
           </div>
         `);
-        response.redirect("/settings");
+        response.redirect!("/settings");
         return;
       }
       request.state.userSession.needsTwoFactorAuthentication = Number(false);
@@ -2492,7 +2494,7 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.userSession.id};
         `,
       );
-      response.redirect(request.search.redirect ?? "/");
+      response.redirect!(request.search.redirect ?? "/");
     },
   });
 
@@ -2680,7 +2682,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       }
-      response.redirect(`/authentication/reset-password${request.URL.search}`);
+      response.redirect!(`/authentication/reset-password${request.URL.search}`);
     },
   });
 
@@ -2754,12 +2756,14 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (request.state.user !== undefined) {
-        response.setFlash(html`
-          <div class="flash--red">
-            You can’t reset the password because you’re already signed in.
-          </div>
-        `);
-        response.redirect(request.search.redirect ?? "/");
+        if (request.liveConnection === undefined) {
+          response.setFlash!(html`
+            <div class="flash--red">
+              You can’t reset the password because you’re already signed in.
+            </div>
+          `);
+          response.redirect!(request.search.redirect ?? "/");
+        }
         return;
       }
       response.end(
@@ -3018,13 +3022,13 @@ export default async (application: Application): Promise<void> => {
         request.state.user.passwordResetCreatedAt <
           new Date(Date.now() - 15 * 60 * 1000).toISOString()
       ) {
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             There’s something wrong with this password reset. Please request a
             new password reset.
           </div>
         `);
-        response.redirect(`/authentication${request.URL.search}`);
+        response.redirect!(`/authentication${request.URL.search}`);
         return;
       }
       request.state.user.password = password;
@@ -3087,10 +3091,10 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">The password was reset successfully.</div>
       `);
-      response.redirect(`/authentication${request.URL.search}`);
+      response.redirect!(`/authentication${request.URL.search}`);
     },
   });
 
@@ -3195,8 +3199,9 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       const saml = samls?.[request.pathname.samlIdentifier];
-      if (saml === undefined) return;
-      response.redirect(
+      if (saml === undefined || typeof request.liveConnection === "string")
+        return;
+      response.redirect!(
         await saml.saml.getAuthorizeUrlAsync(
           request.URL.search.slice(1),
           undefined,
@@ -3230,7 +3235,7 @@ export default async (application: Application): Promise<void> => {
           : "/";
       if (!redirect.startsWith("/")) redirect = "/";
       if (request.state.user !== undefined) {
-        response.redirect(redirect);
+        response.redirect!(redirect);
         return;
       }
       const saml = samls?.[request.pathname.samlIdentifier];
@@ -3264,12 +3269,12 @@ export default async (application: Application): Promise<void> => {
           throw new Error();
       } catch (error) {
         request.log("ERROR", String(error));
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             Something went wrong. Please try signing in again.
           </div>
         `);
-        response.redirect(
+        response.redirect!(
           `/authentication?${typeof request.body.RelayState === "string" && request.body.RelayState.trim() !== "" ? request.body.RelayState : ""}`,
         );
         return;
@@ -3539,7 +3544,7 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       )!;
-      response.setCookie("session", request.state.userSession.publicId);
+      response.setCookie!("session", request.state.userSession.publicId);
       application.database.run(
         sql`
           insert into "_backgroundJobs" (
@@ -3582,7 +3587,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      response.redirect(redirect);
+      response.redirect!(redirect);
     },
   });
 
@@ -3765,10 +3770,10 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.setFlash(html`
+      response.setFlash!(html`
         <div class="flash--green">The password was set successfully.</div>
       `);
-      response.redirect(request.search.redirect ?? "/");
+      response.redirect!(request.search.redirect ?? "/");
     },
   });
 
@@ -3791,24 +3796,24 @@ export default async (application: Application): Promise<void> => {
           delete from "userSessions" where "id" = ${request.state.userSession.id};
         `,
       );
-      response.deleteCookie("session");
+      response.deleteCookie!("session");
       if (
         typeof request.state.userSession.samlIdentifier === "string" &&
         typeof request.state.userSession.samlProfile === "string"
       ) {
         const saml = samls?.[request.state.userSession.samlIdentifier];
         if (saml === undefined) {
-          response.redirect("/", "live-navigation");
+          response.redirect!("/", "live-navigation");
           return;
         }
-        response.redirect(
+        response.redirect!(
           await saml.saml.getLogoutUrlAsync(
             JSON.parse(request.state.userSession.samlProfile),
             "",
             {},
           ),
         );
-      } else response.redirect("/", "live-navigation");
+      } else response.redirect!("/", "live-navigation");
     },
   });
 
@@ -3832,7 +3837,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.SAMLRequest !== "string" ||
         typeof request.body.RelayState !== "string"
       ) {
-        response.redirect("/");
+        response.redirect!("/");
         return;
       }
       const saml = samls?.[request.pathname.samlIdentifier];
@@ -3851,12 +3856,12 @@ export default async (application: Application): Promise<void> => {
         );
       } catch (error) {
         request.log("ERROR", String(error));
-        response.setFlash(html`
+        response.setFlash!(html`
           <div class="flash--red">
             Something went wrong. Please try signing out again.
           </div>
         `);
-        response.redirect("/");
+        response.redirect!("/");
         return;
       }
       if (
@@ -3887,10 +3892,10 @@ export default async (application: Application): Promise<void> => {
               delete from "userSessions" where "id" = ${request.state.userSession.id};
             `,
           );
-          response.deleteCookie("session");
+          response.deleteCookie!("session");
         }
       }
-      response.redirect(redirect);
+      response.redirect!(redirect);
     },
   });
 };
