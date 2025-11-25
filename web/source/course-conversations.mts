@@ -2328,7 +2328,7 @@ export default async (application: Application): Promise<void> => {
                                         "/settings/anonymity-preferred", {
                                           method: "PATCH",
                                           headers: { "CSRF-Protection": "true" },
-                                          body: javascript.serialize(this),
+                                          body: new URLSearchParams(javascript.serialize(this)),
                                         }
                                       );
                                     };

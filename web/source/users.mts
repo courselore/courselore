@@ -2842,10 +2842,10 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
-          userAnonymityPreferred:
-            | "userAnonymityPreferredNone"
-            | "userAnonymityPreferredCourseParticipationRoleStudents"
-            | "userAnonymityPreferredEveryone";
+          courseConversationMessageAnonymity:
+            | "courseConversationMessageAnonymityNone"
+            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+            | "courseConversationMessageAnonymityEveryone";
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -2853,16 +2853,31 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (request.state.user === undefined) return;
       if (
-        request.body.userAnonymityPreferred !== "userAnonymityPreferredNone" &&
-        request.body.userAnonymityPreferred !==
-          "userAnonymityPreferredCourseParticipationRoleStudents" &&
-        request.body.userAnonymityPreferred !== "userAnonymityPreferredEveryone"
+        request.body.courseConversationMessageAnonymity !==
+          "courseConversationMessageAnonymityNone" &&
+        request.body.courseConversationMessageAnonymity !==
+          "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+        request.body.courseConversationMessageAnonymity !==
+          "courseConversationMessageAnonymityEveryone"
       )
         throw "validation";
       application.database.run(
         sql`
           update "users"
-          set "userAnonymityPreferred" = ${request.body.userAnonymityPreferred}
+          set "userAnonymityPreferred" = ${
+            request.body.courseConversationMessageAnonymity ===
+            "courseConversationMessageAnonymityNone"
+              ? "userAnonymityPreferredNone"
+              : request.body.courseConversationMessageAnonymity ===
+                  "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                ? "userAnonymityPreferredCourseParticipationRoleStudents"
+                : request.body.courseConversationMessageAnonymity ===
+                    "courseConversationMessageAnonymityEveryone"
+                  ? "userAnonymityPreferredEveryone"
+                  : (() => {
+                      throw new Error();
+                    })()
+          }
           where "id" = ${request.state.user.id};
         `,
       );
