@@ -2339,13 +2339,11 @@ export default async (application: Application): Promise<void> => {
                                       "courseConversationMessageAnonymityNone" ||
                                     (prefill.courseConversationMessageAnonymity !==
                                       "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
-                                      !(
-                                        request.state.course
-                                          .courseParticipationRoleStudentsAnonymityAllowed ===
-                                          "courseParticipationRoleStudentsAnonymityAllowedEveryone" &&
-                                        prefill.courseConversationMessageAnonymity ===
-                                          "courseConversationMessageAnonymityEveryone"
-                                      ))
+                                      prefill.courseConversationMessageAnonymity !==
+                                        "courseConversationMessageAnonymityEveryone" &&
+                                      request.state.user
+                                        .userAnonymityPreferred ===
+                                        "userAnonymityPreferredNone")
                                       ? html`checked`
                                       : html``}
                                     hidden
@@ -2362,7 +2360,14 @@ export default async (application: Application): Promise<void> => {
                                     value="courseConversationMessageAnonymityCourseParticipationRoleStudents"
                                     required
                                     $${prefill.courseConversationMessageAnonymity ===
-                                    "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                                      "courseConversationMessageAnonymityCourseParticipationRoleStudents" ||
+                                    (prefill.courseConversationMessageAnonymity !==
+                                      "courseConversationMessageAnonymityNone" &&
+                                      prefill.courseConversationMessageAnonymity !==
+                                        "courseConversationMessageAnonymityEveryone" &&
+                                      request.state.user
+                                        .userAnonymityPreferred ===
+                                        "userAnonymityPreferredCourseParticipationRoleStudents")
                                       ? html`checked`
                                       : html``}
                                     hidden
@@ -2382,7 +2387,14 @@ export default async (application: Application): Promise<void> => {
                                           value="courseConversationMessageAnonymityEveryone"
                                           required
                                           $${prefill.courseConversationMessageAnonymity ===
-                                          "courseConversationMessageAnonymityEveryone"
+                                            "courseConversationMessageAnonymityEveryone" ||
+                                          (prefill.courseConversationMessageAnonymity !==
+                                            "courseConversationMessageAnonymityNone" &&
+                                            prefill.courseConversationMessageAnonymity !==
+                                              "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                                            request.state.user
+                                              .userAnonymityPreferred ===
+                                              "userAnonymityPreferredCourseParticipationRoleInstructors")
                                             ? html`checked`
                                             : html``}
                                           hidden
