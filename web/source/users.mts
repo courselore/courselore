@@ -2832,4 +2832,41 @@ export default async (application: Application): Promise<void> => {
         : html``}
     </div>
   `;
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: "/settings/anonymity-preferred",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          userAnonymityPreferred:
+            | "userAnonymityPreferredNone"
+            | "userAnonymityPreferredCourseParticipationRoleStudents"
+            | "userAnonymityPreferredEveryone";
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      if (
+        request.body.userAnonymityPreferred !== "userAnonymityPreferredNone" &&
+        request.body.userAnonymityPreferred !==
+          "userAnonymityPreferredCourseParticipationRoleStudents" &&
+        request.body.userAnonymityPreferred !== "userAnonymityPreferredEveryone"
+      )
+        throw "validation";
+      application.database.run(
+        sql`
+          update "users"
+          set "userAnonymityPreferred" = ${request.body.userAnonymityPreferred}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.send();
+    },
+  });
 };

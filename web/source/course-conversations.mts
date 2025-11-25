@@ -2321,7 +2321,19 @@ export default async (application: Application): Promise<void> => {
                                   javascript.popover({ element: this, trigger: "click" });
                                 `}"
                               >
-                                <form>
+                                <form
+                                  javascript="${javascript`
+                                    this.oninput = async () => {
+                                      await fetch(
+                                        "/settings/anonymity-preferred", {
+                                          method: "PATCH",
+                                          headers: { "CSRF-Protection": "true" },
+                                          body: javascript.serialize(this),
+                                        }
+                                      );
+                                    };
+                                  `}"
+                                >
                                   <span
                                     css="${css`
                                       color: light-dark(
