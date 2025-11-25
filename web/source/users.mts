@@ -383,7 +383,7 @@ export default async (application: Application): Promise<void> => {
                             accept="image/jpeg, image/png"
                             hidden
                             javascript="${javascript`
-                              this.onchange = async () => {
+                              this.oninput = async () => {
                                 if (this.files.length !== 1) return;
                                 const image = await new Promise((resolve) => {
                                   const reader = new FileReader();
@@ -432,7 +432,7 @@ export default async (application: Application): Promise<void> => {
                             name="avatarImage--remove"
                             hidden
                             javascript="${javascript`
-                              this.onchange = () => {
+                              this.oninput = () => {
                                 if (!this.checked) return;
                                 this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = false;
                                 this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = true;
@@ -1282,7 +1282,7 @@ export default async (application: Application): Promise<void> => {
                           : html``}
                         class="input--checkbox"
                         javascript="${javascript`
-                          this.onchange = () => {
+                          this.oninput = () => {
                             if (this.checked)
                               for (const element of this.closest('[type~="form"]').querySelectorAll("input"))
                                 element.checked = true;
@@ -1302,7 +1302,7 @@ export default async (application: Application): Promise<void> => {
                           : html``}
                         class="input--checkbox"
                         javascript="${javascript`
-                          this.onchange = () => {
+                          this.oninput = () => {
                             if (!this.checked)
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
                           };
@@ -1327,7 +1327,7 @@ export default async (application: Application): Promise<void> => {
                           : html``}
                         class="input--checkbox"
                         javascript="${javascript`
-                          this.onchange = () => {
+                          this.oninput = () => {
                             if (!this.checked)
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
                             else
@@ -1349,7 +1349,7 @@ export default async (application: Application): Promise<void> => {
                           : html``}
                         class="input--checkbox"
                         javascript="${javascript`
-                          this.onchange = () => {
+                          this.oninput = () => {
                             if (!this.checked) {
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;

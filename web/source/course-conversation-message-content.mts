@@ -260,7 +260,7 @@ export default async (application: Application): Promise<void> => {
                       target: this.querySelector("label").nextElementSibling.nextElementSibling,
                       trigger: "none",
                     });
-                    this.onchange = utilities.foregroundJob(async () => {
+                    this.oninput = utilities.foregroundJob(async () => {
                       popover.showPopover();
                       const responseText = await (
                         await fetch(
@@ -769,13 +769,13 @@ export default async (application: Application): Promise<void> => {
         >
           <label
             javascript="${javascript`
-              this.onchange = () => {
+              this.oninput = () => {
                 if (this.querySelector("input").checked)
                   this.querySelector("div").classList.add("button--blue");
                 else
                   this.querySelector("div").classList.remove("button--blue");
               };
-              this.onchange();
+              this.oninput();
             `}"
           >
             <input
@@ -915,13 +915,7 @@ export default async (application: Application): Promise<void> => {
               if (0 < event.clipboardData.files.length) {
                 event.preventDefault();
                 this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.clipboardData.files;
-                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(
-                  new Event("change", {
-                    bubbles: true,
-                    cancelable: false,
-                    composed: false,
-                  }),
-                );
+                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(new Event("input", { bubbles: true }));
                 return;
               }
               if (
@@ -971,13 +965,7 @@ export default async (application: Application): Promise<void> => {
                 event.preventDefault();
                 javascript.stateRemove(this, "dragging");
                 this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.dataTransfer.files;
-                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(
-                  new Event("change", {
-                    bubbles: true,
-                    cancelable: false,
-                    composed: false,
-                  }),
-                );
+                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(new Event("input", { bubbles: true }));
               };
             }
           `}"

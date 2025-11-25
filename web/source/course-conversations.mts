@@ -1657,7 +1657,7 @@ export default async (application: Application): Promise<void> => {
                               : html``}
                             hidden
                             javascript="${javascript`
-                              this.onchange = () => {
+                              this.oninput = () => {
                                 if (!this.checked) return;
                                 this.closest('[type~="form"]').querySelector('[key~="announcement"]')?.removeAttribute("hidden");
                                 this.closest('[type~="form"]').querySelector('[name="announcement"]')?.removeAttribute("disabled");
@@ -1686,7 +1686,7 @@ export default async (application: Application): Promise<void> => {
                               : html``}
                             hidden
                             javascript="${javascript`
-                              this.onchange = () => {
+                              this.oninput = () => {
                                 if (!this.checked) return;
                                 this.closest('[type~="form"]').querySelector('[key~="announcement"]')?.setAttribute("hidden", "");
                                 this.closest('[type~="form"]').querySelector('[name="announcement"]')?.setAttribute("disabled", "");
@@ -2006,7 +2006,7 @@ export default async (application: Application): Promise<void> => {
                                           margin-top: var(--size--1);
                                         `}"
                                         javascript="${javascript`
-                                          this.onchange = () => {
+                                          this.oninput = () => {
                                             const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
                                             for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
                                               if (
@@ -3870,7 +3870,7 @@ export default async (application: Application): Promise<void> => {
                                                 ? html`checked`
                                                 : html``}
                                               javascript="${javascript`
-                                                this.onchange = () => {
+                                                this.oninput = () => {
                                                   const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
                                                   for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
                                                     if (
@@ -3891,7 +3891,7 @@ export default async (application: Application): Promise<void> => {
                                                   this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
                                                 };
                                                 window.setTimeout(() => {
-                                                  this.onchange();
+                                                  this.oninput();
                                                 });
                                               `}"
                                             />
