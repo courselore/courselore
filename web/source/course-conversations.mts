@@ -1733,7 +1733,6 @@ export default async (application: Application): Promise<void> => {
                           Question
                         </button>
                       </div>
-
                       <button
                         type="button"
                         class="button button--rectangle button--transparent"

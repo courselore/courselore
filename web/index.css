@@ -1,0 +1,4369 @@
+
+        /********************************************************************************/
+
+@import "@radically-straightforward/javascript/static/index.css";
+@import "@fontsource-variable/roboto-flex/slnt.css";
+@import "@fontsource-variable/roboto-serif/wght.css";
+@import "@fontsource-variable/roboto-serif/wght-italic.css";
+@import "@fontsource-variable/roboto-mono/wght.css";
+@import "@fontsource-variable/roboto-mono/wght-italic.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+.input--text {
+  --csstools-light-dark-toggle--0: var(--csstools-color-scheme--light) var(--color--slate--950);
+  background-color: var(--csstools-light-dark-toggle--0, var(--color--slate--50));
+  padding: var(--size--1) var(--size--2);
+  --csstools-light-dark-toggle--1: var(--csstools-color-scheme--light) var(--color--slate--600);
+  border: var(--border-width--1) solid
+    var(--csstools-light-dark-toggle--1, var(--color--slate--400));
+  border-radius: var(--border-radius--1);
+  transition-property: var(--transition-property--colors);
+  transition-duration: var(--transition-duration--150);
+  transition-timing-function: var(--transition-timing-function--ease-in-out);
+  &:focus-within {
+    --csstools-light-dark-toggle--2: var(--csstools-color-scheme--light) var(--color--blue--500);
+    border-color: var(--csstools-light-dark-toggle--2, var(--color--blue--500));
+  }
+
+@supports (color: light-dark(red, red)){
+&:focus-within {
+    border-color: light-dark(var(--color--blue--500), var(--color--blue--500));
+  }
+}
+}
+
+@supports (color: light-dark(red, red)){
+.input--text {
+  background-color: light-dark(
+    var(--color--slate--50),
+    var(--color--slate--950)
+  );
+  border: var(--border-width--1) solid
+    light-dark(var(--color--slate--400), var(--color--slate--600))
+}
+}
+
+.input--checkbox,
+.input--radio {
+  --csstools-light-dark-toggle--3: var(--csstools-color-scheme--light) var(--color--slate--950);
+  color: var(--csstools-light-dark-toggle--3, var(--color--slate--50));
+  --csstools-light-dark-toggle--4: var(--csstools-color-scheme--light) var(--color--slate--950);
+  background-color: var(--csstools-light-dark-toggle--4, var(--color--slate--50));
+  width: var(--size--3-5);
+  height: var(--size--3-5);
+  --csstools-light-dark-toggle--5: var(--csstools-color-scheme--light) var(--color--slate--600);
+  border: var(--border-width--1) solid
+    var(--csstools-light-dark-toggle--5, var(--color--slate--400));
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition-property: var(--transition-property--colors);
+  transition-duration: var(--transition-duration--150);
+  transition-timing-function: var(--transition-timing-function--ease-in-out);
+  &:checked {
+    --csstools-light-dark-toggle--6: var(--csstools-color-scheme--light) var(--color--blue--500);
+    background-color: var(--csstools-light-dark-toggle--6, var(--color--blue--500));
+    --csstools-light-dark-toggle--7: var(--csstools-color-scheme--light) var(--color--blue--600);
+    border-color: var(--csstools-light-dark-toggle--7, var(--color--blue--600));
+  }
+
+@supports (color: light-dark(red, red)){
+&:checked {
+    background-color: light-dark(
+      var(--color--blue--500),
+      var(--color--blue--500)
+    );
+    border-color: light-dark(var(--color--blue--600), var(--color--blue--600));
+  }
+}
+}
+
+@supports (color: light-dark(red, red)){
+.input--checkbox,
+.input--radio {
+  color: light-dark(var(--color--slate--50), var(--color--slate--950));
+  background-color: light-dark(
+    var(--color--slate--50),
+    var(--color--slate--950)
+  );
+  border: var(--border-width--1) solid
+    light-dark(var(--color--slate--400), var(--color--slate--600))
+}
+}
+
+.input--checkbox {
+  vertical-align: var(--size---0-5);
+  border-radius: var(--border-radius--1);
+  &::after {
+    content: "\f633";
+    font-family: "bootstrap-icons";
+  }
+}
+
+.input--radio {
+  vertical-align: var(--size--px);
+  border-radius: var(--border-radius--circle);
+  font-size: var(--size--1-5);
+  &::after {
+    content: "\f287";
+    font-family: "bootstrap-icons";
+  }
+}
+
+.button {
+  border-radius: var(--border-radius--1);
+  cursor: pointer;
+  user-select: none;
+  transition-property: var(--transition-property--colors);
+  transition-duration: var(--transition-duration--150);
+  transition-timing-function: var(--transition-timing-function--ease-in-out);
+  &.button--rectangle {
+    padding: var(--size--1) var(--size--2);
+  }
+  &.button--square {
+    aspect-ratio: var(--aspect-ratio--square);
+    padding: var(--size--1);
+  }
+  &.button--icon .bi {
+    display: flex;
+  }
+  &.button--transparent {
+    &.button--rectangle {
+      margin: var(--size---1) var(--size---2);
+    }
+    &.button--square {
+      margin: var(--size---1);
+    }
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--8: var(--csstools-color-scheme--light) var(--color--slate--800);
+      background-color: var(--csstools-light-dark-toggle--8, var(--color--slate--100));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--slate--100),
+        var(--color--slate--800)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--9: var(--csstools-color-scheme--light) var(--color--slate--900);
+      background-color: var(--csstools-light-dark-toggle--9, var(--color--slate--200));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--slate--200),
+        var(--color--slate--900)
+      );
+    }
+}
+  }
+
+  &.button--red {
+    font-weight: 600;
+    --csstools-light-dark-toggle--10: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--10, var(--color--white));
+    --csstools-light-dark-toggle--11: var(--csstools-color-scheme--light) var(--color--red--500);
+    background-color: var(--csstools-light-dark-toggle--11, var(--color--red--500));
+    --csstools-light-dark-toggle--12: var(--csstools-color-scheme--light) var(--color--red--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--12, var(--color--red--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--13: var(--csstools-color-scheme--light) var(--color--red--400);
+      background-color: var(--csstools-light-dark-toggle--13, var(--color--red--400));
+      --csstools-light-dark-toggle--14: var(--csstools-color-scheme--light) var(--color--red--500);
+      border-color: var(--csstools-light-dark-toggle--14, var(--color--red--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--red--400),
+        var(--color--red--400)
+      );
+      border-color: light-dark(var(--color--red--500), var(--color--red--500));
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--15: var(--csstools-color-scheme--light) var(--color--red--600);
+      background-color: var(--csstools-light-dark-toggle--15, var(--color--red--600));
+      --csstools-light-dark-toggle--16: var(--csstools-color-scheme--light) var(--color--red--700);
+      border-color: var(--csstools-light-dark-toggle--16, var(--color--red--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--red--600),
+        var(--color--red--600)
+      );
+      border-color: light-dark(var(--color--red--700), var(--color--red--700));
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--red {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--red--500),
+      var(--color--red--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--red--600), var(--color--red--600))
+  }
+}
+
+  &.button--orange {
+    font-weight: 600;
+    --csstools-light-dark-toggle--17: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--17, var(--color--white));
+    --csstools-light-dark-toggle--18: var(--csstools-color-scheme--light) var(--color--orange--500);
+    background-color: var(--csstools-light-dark-toggle--18, var(--color--orange--500));
+    --csstools-light-dark-toggle--19: var(--csstools-color-scheme--light) var(--color--orange--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--19, var(--color--orange--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--20: var(--csstools-color-scheme--light) var(--color--orange--400);
+      background-color: var(--csstools-light-dark-toggle--20, var(--color--orange--400));
+      --csstools-light-dark-toggle--21: var(--csstools-color-scheme--light) var(--color--orange--500);
+      border-color: var(--csstools-light-dark-toggle--21, var(--color--orange--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--orange--400),
+        var(--color--orange--400)
+      );
+      border-color: light-dark(
+        var(--color--orange--500),
+        var(--color--orange--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--22: var(--csstools-color-scheme--light) var(--color--orange--600);
+      background-color: var(--csstools-light-dark-toggle--22, var(--color--orange--600));
+      --csstools-light-dark-toggle--23: var(--csstools-color-scheme--light) var(--color--orange--700);
+      border-color: var(--csstools-light-dark-toggle--23, var(--color--orange--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--orange--600),
+        var(--color--orange--600)
+      );
+      border-color: light-dark(
+        var(--color--orange--700),
+        var(--color--orange--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--orange {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--orange--500),
+      var(--color--orange--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--orange--600), var(--color--orange--600))
+  }
+}
+
+  &.button--amber {
+    font-weight: 600;
+    --csstools-light-dark-toggle--24: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--24, var(--color--white));
+    --csstools-light-dark-toggle--25: var(--csstools-color-scheme--light) var(--color--amber--500);
+    background-color: var(--csstools-light-dark-toggle--25, var(--color--amber--500));
+    --csstools-light-dark-toggle--26: var(--csstools-color-scheme--light) var(--color--amber--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--26, var(--color--amber--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--27: var(--csstools-color-scheme--light) var(--color--amber--400);
+      background-color: var(--csstools-light-dark-toggle--27, var(--color--amber--400));
+      --csstools-light-dark-toggle--28: var(--csstools-color-scheme--light) var(--color--amber--500);
+      border-color: var(--csstools-light-dark-toggle--28, var(--color--amber--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--amber--400),
+        var(--color--amber--400)
+      );
+      border-color: light-dark(
+        var(--color--amber--500),
+        var(--color--amber--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--29: var(--csstools-color-scheme--light) var(--color--amber--600);
+      background-color: var(--csstools-light-dark-toggle--29, var(--color--amber--600));
+      --csstools-light-dark-toggle--30: var(--csstools-color-scheme--light) var(--color--amber--700);
+      border-color: var(--csstools-light-dark-toggle--30, var(--color--amber--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--amber--600),
+        var(--color--amber--600)
+      );
+      border-color: light-dark(
+        var(--color--amber--700),
+        var(--color--amber--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--amber {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--amber--500),
+      var(--color--amber--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--amber--600), var(--color--amber--600))
+  }
+}
+
+  &.button--yellow {
+    font-weight: 600;
+    --csstools-light-dark-toggle--31: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--31, var(--color--white));
+    --csstools-light-dark-toggle--32: var(--csstools-color-scheme--light) var(--color--yellow--500);
+    background-color: var(--csstools-light-dark-toggle--32, var(--color--yellow--500));
+    --csstools-light-dark-toggle--33: var(--csstools-color-scheme--light) var(--color--yellow--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--33, var(--color--yellow--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--34: var(--csstools-color-scheme--light) var(--color--yellow--400);
+      background-color: var(--csstools-light-dark-toggle--34, var(--color--yellow--400));
+      --csstools-light-dark-toggle--35: var(--csstools-color-scheme--light) var(--color--yellow--500);
+      border-color: var(--csstools-light-dark-toggle--35, var(--color--yellow--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--yellow--400),
+        var(--color--yellow--400)
+      );
+      border-color: light-dark(
+        var(--color--yellow--500),
+        var(--color--yellow--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--36: var(--csstools-color-scheme--light) var(--color--yellow--600);
+      background-color: var(--csstools-light-dark-toggle--36, var(--color--yellow--600));
+      --csstools-light-dark-toggle--37: var(--csstools-color-scheme--light) var(--color--yellow--700);
+      border-color: var(--csstools-light-dark-toggle--37, var(--color--yellow--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--yellow--600),
+        var(--color--yellow--600)
+      );
+      border-color: light-dark(
+        var(--color--yellow--700),
+        var(--color--yellow--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--yellow {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--yellow--500),
+      var(--color--yellow--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--yellow--600), var(--color--yellow--600))
+  }
+}
+
+  &.button--lime {
+    font-weight: 600;
+    --csstools-light-dark-toggle--38: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--38, var(--color--white));
+    --csstools-light-dark-toggle--39: var(--csstools-color-scheme--light) var(--color--lime--500);
+    background-color: var(--csstools-light-dark-toggle--39, var(--color--lime--500));
+    --csstools-light-dark-toggle--40: var(--csstools-color-scheme--light) var(--color--lime--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--40, var(--color--lime--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--41: var(--csstools-color-scheme--light) var(--color--lime--400);
+      background-color: var(--csstools-light-dark-toggle--41, var(--color--lime--400));
+      --csstools-light-dark-toggle--42: var(--csstools-color-scheme--light) var(--color--lime--500);
+      border-color: var(--csstools-light-dark-toggle--42, var(--color--lime--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--lime--400),
+        var(--color--lime--400)
+      );
+      border-color: light-dark(
+        var(--color--lime--500),
+        var(--color--lime--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--43: var(--csstools-color-scheme--light) var(--color--lime--600);
+      background-color: var(--csstools-light-dark-toggle--43, var(--color--lime--600));
+      --csstools-light-dark-toggle--44: var(--csstools-color-scheme--light) var(--color--lime--700);
+      border-color: var(--csstools-light-dark-toggle--44, var(--color--lime--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--lime--600),
+        var(--color--lime--600)
+      );
+      border-color: light-dark(
+        var(--color--lime--700),
+        var(--color--lime--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--lime {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--lime--500),
+      var(--color--lime--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--lime--600), var(--color--lime--600))
+  }
+}
+
+  &.button--green {
+    font-weight: 600;
+    --csstools-light-dark-toggle--45: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--45, var(--color--white));
+    --csstools-light-dark-toggle--46: var(--csstools-color-scheme--light) var(--color--green--500);
+    background-color: var(--csstools-light-dark-toggle--46, var(--color--green--500));
+    --csstools-light-dark-toggle--47: var(--csstools-color-scheme--light) var(--color--green--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--47, var(--color--green--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--48: var(--csstools-color-scheme--light) var(--color--green--400);
+      background-color: var(--csstools-light-dark-toggle--48, var(--color--green--400));
+      --csstools-light-dark-toggle--49: var(--csstools-color-scheme--light) var(--color--green--500);
+      border-color: var(--csstools-light-dark-toggle--49, var(--color--green--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--green--400),
+        var(--color--green--400)
+      );
+      border-color: light-dark(
+        var(--color--green--500),
+        var(--color--green--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--50: var(--csstools-color-scheme--light) var(--color--green--600);
+      background-color: var(--csstools-light-dark-toggle--50, var(--color--green--600));
+      --csstools-light-dark-toggle--51: var(--csstools-color-scheme--light) var(--color--green--700);
+      border-color: var(--csstools-light-dark-toggle--51, var(--color--green--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--green--600),
+        var(--color--green--600)
+      );
+      border-color: light-dark(
+        var(--color--green--700),
+        var(--color--green--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--green {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--green--500),
+      var(--color--green--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--green--600), var(--color--green--600))
+  }
+}
+
+  &.button--emerald {
+    font-weight: 600;
+    --csstools-light-dark-toggle--52: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--52, var(--color--white));
+    --csstools-light-dark-toggle--53: var(--csstools-color-scheme--light) var(--color--emerald--500);
+    background-color: var(--csstools-light-dark-toggle--53, var(--color--emerald--500));
+    --csstools-light-dark-toggle--54: var(--csstools-color-scheme--light) var(--color--emerald--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--54, var(--color--emerald--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--55: var(--csstools-color-scheme--light) var(--color--emerald--400);
+      background-color: var(--csstools-light-dark-toggle--55, var(--color--emerald--400));
+      --csstools-light-dark-toggle--56: var(--csstools-color-scheme--light) var(--color--emerald--500);
+      border-color: var(--csstools-light-dark-toggle--56, var(--color--emerald--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--emerald--400),
+        var(--color--emerald--400)
+      );
+      border-color: light-dark(
+        var(--color--emerald--500),
+        var(--color--emerald--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--57: var(--csstools-color-scheme--light) var(--color--emerald--600);
+      background-color: var(--csstools-light-dark-toggle--57, var(--color--emerald--600));
+      --csstools-light-dark-toggle--58: var(--csstools-color-scheme--light) var(--color--emerald--700);
+      border-color: var(--csstools-light-dark-toggle--58, var(--color--emerald--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--emerald--600),
+        var(--color--emerald--600)
+      );
+      border-color: light-dark(
+        var(--color--emerald--700),
+        var(--color--emerald--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--emerald {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--emerald--500),
+      var(--color--emerald--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--emerald--600), var(--color--emerald--600))
+  }
+}
+
+  &.button--teal {
+    font-weight: 600;
+    --csstools-light-dark-toggle--59: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--59, var(--color--white));
+    --csstools-light-dark-toggle--60: var(--csstools-color-scheme--light) var(--color--teal--500);
+    background-color: var(--csstools-light-dark-toggle--60, var(--color--teal--500));
+    --csstools-light-dark-toggle--61: var(--csstools-color-scheme--light) var(--color--teal--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--61, var(--color--teal--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--62: var(--csstools-color-scheme--light) var(--color--teal--400);
+      background-color: var(--csstools-light-dark-toggle--62, var(--color--teal--400));
+      --csstools-light-dark-toggle--63: var(--csstools-color-scheme--light) var(--color--teal--500);
+      border-color: var(--csstools-light-dark-toggle--63, var(--color--teal--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--teal--400),
+        var(--color--teal--400)
+      );
+      border-color: light-dark(
+        var(--color--teal--500),
+        var(--color--teal--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--64: var(--csstools-color-scheme--light) var(--color--teal--600);
+      background-color: var(--csstools-light-dark-toggle--64, var(--color--teal--600));
+      --csstools-light-dark-toggle--65: var(--csstools-color-scheme--light) var(--color--teal--700);
+      border-color: var(--csstools-light-dark-toggle--65, var(--color--teal--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--teal--600),
+        var(--color--teal--600)
+      );
+      border-color: light-dark(
+        var(--color--teal--700),
+        var(--color--teal--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--teal {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--teal--500),
+      var(--color--teal--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--teal--600), var(--color--teal--600))
+  }
+}
+
+  &.button--cyan {
+    font-weight: 600;
+    --csstools-light-dark-toggle--66: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--66, var(--color--white));
+    --csstools-light-dark-toggle--67: var(--csstools-color-scheme--light) var(--color--cyan--500);
+    background-color: var(--csstools-light-dark-toggle--67, var(--color--cyan--500));
+    --csstools-light-dark-toggle--68: var(--csstools-color-scheme--light) var(--color--cyan--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--68, var(--color--cyan--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--69: var(--csstools-color-scheme--light) var(--color--cyan--400);
+      background-color: var(--csstools-light-dark-toggle--69, var(--color--cyan--400));
+      --csstools-light-dark-toggle--70: var(--csstools-color-scheme--light) var(--color--cyan--500);
+      border-color: var(--csstools-light-dark-toggle--70, var(--color--cyan--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--cyan--400),
+        var(--color--cyan--400)
+      );
+      border-color: light-dark(
+        var(--color--cyan--500),
+        var(--color--cyan--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--71: var(--csstools-color-scheme--light) var(--color--cyan--600);
+      background-color: var(--csstools-light-dark-toggle--71, var(--color--cyan--600));
+      --csstools-light-dark-toggle--72: var(--csstools-color-scheme--light) var(--color--cyan--700);
+      border-color: var(--csstools-light-dark-toggle--72, var(--color--cyan--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--cyan--600),
+        var(--color--cyan--600)
+      );
+      border-color: light-dark(
+        var(--color--cyan--700),
+        var(--color--cyan--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--cyan {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--cyan--500),
+      var(--color--cyan--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--cyan--600), var(--color--cyan--600))
+  }
+}
+
+  &.button--sky {
+    font-weight: 600;
+    --csstools-light-dark-toggle--73: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--73, var(--color--white));
+    --csstools-light-dark-toggle--74: var(--csstools-color-scheme--light) var(--color--sky--500);
+    background-color: var(--csstools-light-dark-toggle--74, var(--color--sky--500));
+    --csstools-light-dark-toggle--75: var(--csstools-color-scheme--light) var(--color--sky--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--75, var(--color--sky--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--76: var(--csstools-color-scheme--light) var(--color--sky--400);
+      background-color: var(--csstools-light-dark-toggle--76, var(--color--sky--400));
+      --csstools-light-dark-toggle--77: var(--csstools-color-scheme--light) var(--color--sky--500);
+      border-color: var(--csstools-light-dark-toggle--77, var(--color--sky--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--sky--400),
+        var(--color--sky--400)
+      );
+      border-color: light-dark(var(--color--sky--500), var(--color--sky--500));
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--78: var(--csstools-color-scheme--light) var(--color--sky--600);
+      background-color: var(--csstools-light-dark-toggle--78, var(--color--sky--600));
+      --csstools-light-dark-toggle--79: var(--csstools-color-scheme--light) var(--color--sky--700);
+      border-color: var(--csstools-light-dark-toggle--79, var(--color--sky--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--sky--600),
+        var(--color--sky--600)
+      );
+      border-color: light-dark(var(--color--sky--700), var(--color--sky--700));
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--sky {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--sky--500),
+      var(--color--sky--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--sky--600), var(--color--sky--600))
+  }
+}
+
+  &.button--blue {
+    font-weight: 600;
+    --csstools-light-dark-toggle--80: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--80, var(--color--white));
+    --csstools-light-dark-toggle--81: var(--csstools-color-scheme--light) var(--color--blue--500);
+    background-color: var(--csstools-light-dark-toggle--81, var(--color--blue--500));
+    --csstools-light-dark-toggle--82: var(--csstools-color-scheme--light) var(--color--blue--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--82, var(--color--blue--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--83: var(--csstools-color-scheme--light) var(--color--blue--400);
+      background-color: var(--csstools-light-dark-toggle--83, var(--color--blue--400));
+      --csstools-light-dark-toggle--84: var(--csstools-color-scheme--light) var(--color--blue--500);
+      border-color: var(--csstools-light-dark-toggle--84, var(--color--blue--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--blue--400),
+        var(--color--blue--400)
+      );
+      border-color: light-dark(
+        var(--color--blue--500),
+        var(--color--blue--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--85: var(--csstools-color-scheme--light) var(--color--blue--600);
+      background-color: var(--csstools-light-dark-toggle--85, var(--color--blue--600));
+      --csstools-light-dark-toggle--86: var(--csstools-color-scheme--light) var(--color--blue--700);
+      border-color: var(--csstools-light-dark-toggle--86, var(--color--blue--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--blue--600),
+        var(--color--blue--600)
+      );
+      border-color: light-dark(
+        var(--color--blue--700),
+        var(--color--blue--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--blue {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--blue--500),
+      var(--color--blue--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--blue--600), var(--color--blue--600))
+  }
+}
+
+  &.button--indigo {
+    font-weight: 600;
+    --csstools-light-dark-toggle--87: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--87, var(--color--white));
+    --csstools-light-dark-toggle--88: var(--csstools-color-scheme--light) var(--color--indigo--500);
+    background-color: var(--csstools-light-dark-toggle--88, var(--color--indigo--500));
+    --csstools-light-dark-toggle--89: var(--csstools-color-scheme--light) var(--color--indigo--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--89, var(--color--indigo--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--90: var(--csstools-color-scheme--light) var(--color--indigo--400);
+      background-color: var(--csstools-light-dark-toggle--90, var(--color--indigo--400));
+      --csstools-light-dark-toggle--91: var(--csstools-color-scheme--light) var(--color--indigo--500);
+      border-color: var(--csstools-light-dark-toggle--91, var(--color--indigo--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--indigo--400),
+        var(--color--indigo--400)
+      );
+      border-color: light-dark(
+        var(--color--indigo--500),
+        var(--color--indigo--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--92: var(--csstools-color-scheme--light) var(--color--indigo--600);
+      background-color: var(--csstools-light-dark-toggle--92, var(--color--indigo--600));
+      --csstools-light-dark-toggle--93: var(--csstools-color-scheme--light) var(--color--indigo--700);
+      border-color: var(--csstools-light-dark-toggle--93, var(--color--indigo--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--indigo--600),
+        var(--color--indigo--600)
+      );
+      border-color: light-dark(
+        var(--color--indigo--700),
+        var(--color--indigo--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--indigo {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--indigo--500),
+      var(--color--indigo--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--indigo--600), var(--color--indigo--600))
+  }
+}
+
+  &.button--violet {
+    font-weight: 600;
+    --csstools-light-dark-toggle--94: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--94, var(--color--white));
+    --csstools-light-dark-toggle--95: var(--csstools-color-scheme--light) var(--color--violet--500);
+    background-color: var(--csstools-light-dark-toggle--95, var(--color--violet--500));
+    --csstools-light-dark-toggle--96: var(--csstools-color-scheme--light) var(--color--violet--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--96, var(--color--violet--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--97: var(--csstools-color-scheme--light) var(--color--violet--400);
+      background-color: var(--csstools-light-dark-toggle--97, var(--color--violet--400));
+      --csstools-light-dark-toggle--98: var(--csstools-color-scheme--light) var(--color--violet--500);
+      border-color: var(--csstools-light-dark-toggle--98, var(--color--violet--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--violet--400),
+        var(--color--violet--400)
+      );
+      border-color: light-dark(
+        var(--color--violet--500),
+        var(--color--violet--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--99: var(--csstools-color-scheme--light) var(--color--violet--600);
+      background-color: var(--csstools-light-dark-toggle--99, var(--color--violet--600));
+      --csstools-light-dark-toggle--100: var(--csstools-color-scheme--light) var(--color--violet--700);
+      border-color: var(--csstools-light-dark-toggle--100, var(--color--violet--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--violet--600),
+        var(--color--violet--600)
+      );
+      border-color: light-dark(
+        var(--color--violet--700),
+        var(--color--violet--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--violet {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--violet--500),
+      var(--color--violet--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--violet--600), var(--color--violet--600))
+  }
+}
+
+  &.button--purple {
+    font-weight: 600;
+    --csstools-light-dark-toggle--101: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--101, var(--color--white));
+    --csstools-light-dark-toggle--102: var(--csstools-color-scheme--light) var(--color--purple--500);
+    background-color: var(--csstools-light-dark-toggle--102, var(--color--purple--500));
+    --csstools-light-dark-toggle--103: var(--csstools-color-scheme--light) var(--color--purple--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--103, var(--color--purple--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--104: var(--csstools-color-scheme--light) var(--color--purple--400);
+      background-color: var(--csstools-light-dark-toggle--104, var(--color--purple--400));
+      --csstools-light-dark-toggle--105: var(--csstools-color-scheme--light) var(--color--purple--500);
+      border-color: var(--csstools-light-dark-toggle--105, var(--color--purple--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--purple--400),
+        var(--color--purple--400)
+      );
+      border-color: light-dark(
+        var(--color--purple--500),
+        var(--color--purple--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--106: var(--csstools-color-scheme--light) var(--color--purple--600);
+      background-color: var(--csstools-light-dark-toggle--106, var(--color--purple--600));
+      --csstools-light-dark-toggle--107: var(--csstools-color-scheme--light) var(--color--purple--700);
+      border-color: var(--csstools-light-dark-toggle--107, var(--color--purple--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--purple--600),
+        var(--color--purple--600)
+      );
+      border-color: light-dark(
+        var(--color--purple--700),
+        var(--color--purple--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--purple {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--purple--500),
+      var(--color--purple--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--purple--600), var(--color--purple--600))
+  }
+}
+
+  &.button--fuchsia {
+    font-weight: 600;
+    --csstools-light-dark-toggle--108: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--108, var(--color--white));
+    --csstools-light-dark-toggle--109: var(--csstools-color-scheme--light) var(--color--fuchsia--500);
+    background-color: var(--csstools-light-dark-toggle--109, var(--color--fuchsia--500));
+    --csstools-light-dark-toggle--110: var(--csstools-color-scheme--light) var(--color--fuchsia--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--110, var(--color--fuchsia--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--111: var(--csstools-color-scheme--light) var(--color--fuchsia--400);
+      background-color: var(--csstools-light-dark-toggle--111, var(--color--fuchsia--400));
+      --csstools-light-dark-toggle--112: var(--csstools-color-scheme--light) var(--color--fuchsia--500);
+      border-color: var(--csstools-light-dark-toggle--112, var(--color--fuchsia--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--fuchsia--400),
+        var(--color--fuchsia--400)
+      );
+      border-color: light-dark(
+        var(--color--fuchsia--500),
+        var(--color--fuchsia--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--113: var(--csstools-color-scheme--light) var(--color--fuchsia--600);
+      background-color: var(--csstools-light-dark-toggle--113, var(--color--fuchsia--600));
+      --csstools-light-dark-toggle--114: var(--csstools-color-scheme--light) var(--color--fuchsia--700);
+      border-color: var(--csstools-light-dark-toggle--114, var(--color--fuchsia--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--fuchsia--600),
+        var(--color--fuchsia--600)
+      );
+      border-color: light-dark(
+        var(--color--fuchsia--700),
+        var(--color--fuchsia--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--fuchsia {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--fuchsia--500),
+      var(--color--fuchsia--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--fuchsia--600), var(--color--fuchsia--600))
+  }
+}
+
+  &.button--pink {
+    font-weight: 600;
+    --csstools-light-dark-toggle--115: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--115, var(--color--white));
+    --csstools-light-dark-toggle--116: var(--csstools-color-scheme--light) var(--color--pink--500);
+    background-color: var(--csstools-light-dark-toggle--116, var(--color--pink--500));
+    --csstools-light-dark-toggle--117: var(--csstools-color-scheme--light) var(--color--pink--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--117, var(--color--pink--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--118: var(--csstools-color-scheme--light) var(--color--pink--400);
+      background-color: var(--csstools-light-dark-toggle--118, var(--color--pink--400));
+      --csstools-light-dark-toggle--119: var(--csstools-color-scheme--light) var(--color--pink--500);
+      border-color: var(--csstools-light-dark-toggle--119, var(--color--pink--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--pink--400),
+        var(--color--pink--400)
+      );
+      border-color: light-dark(
+        var(--color--pink--500),
+        var(--color--pink--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--120: var(--csstools-color-scheme--light) var(--color--pink--600);
+      background-color: var(--csstools-light-dark-toggle--120, var(--color--pink--600));
+      --csstools-light-dark-toggle--121: var(--csstools-color-scheme--light) var(--color--pink--700);
+      border-color: var(--csstools-light-dark-toggle--121, var(--color--pink--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--pink--600),
+        var(--color--pink--600)
+      );
+      border-color: light-dark(
+        var(--color--pink--700),
+        var(--color--pink--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--pink {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--pink--500),
+      var(--color--pink--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--pink--600), var(--color--pink--600))
+  }
+}
+
+  &.button--rose {
+    font-weight: 600;
+    --csstools-light-dark-toggle--122: var(--csstools-color-scheme--light) var(--color--white);
+    color: var(--csstools-light-dark-toggle--122, var(--color--white));
+    --csstools-light-dark-toggle--123: var(--csstools-color-scheme--light) var(--color--rose--500);
+    background-color: var(--csstools-light-dark-toggle--123, var(--color--rose--500));
+    --csstools-light-dark-toggle--124: var(--csstools-color-scheme--light) var(--color--rose--600);
+    border: var(--border-width--1) solid
+      var(--csstools-light-dark-toggle--124, var(--color--rose--600));
+    &:hover,
+    &:focus-within {
+      --csstools-light-dark-toggle--125: var(--csstools-color-scheme--light) var(--color--rose--400);
+      background-color: var(--csstools-light-dark-toggle--125, var(--color--rose--400));
+      --csstools-light-dark-toggle--126: var(--csstools-color-scheme--light) var(--color--rose--500);
+      border-color: var(--csstools-light-dark-toggle--126, var(--color--rose--500));
+    }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--rose--400),
+        var(--color--rose--400)
+      );
+      border-color: light-dark(
+        var(--color--rose--500),
+        var(--color--rose--500)
+      );
+    }
+}
+    &:active {
+      --csstools-light-dark-toggle--127: var(--csstools-color-scheme--light) var(--color--rose--600);
+      background-color: var(--csstools-light-dark-toggle--127, var(--color--rose--600));
+      --csstools-light-dark-toggle--128: var(--csstools-color-scheme--light) var(--color--rose--700);
+      border-color: var(--csstools-light-dark-toggle--128, var(--color--rose--700));
+    }
+
+@supports (color: light-dark(red, red)){
+&:active {
+      background-color: light-dark(
+        var(--color--rose--600),
+        var(--color--rose--600)
+      );
+      border-color: light-dark(
+        var(--color--rose--700),
+        var(--color--rose--700)
+      );
+    }
+}
+  }
+
+@supports (color: light-dark(red, red)){
+&.button--rose {
+    color: light-dark(var(--color--white), var(--color--white));
+    background-color: light-dark(
+      var(--color--rose--500),
+      var(--color--rose--500)
+    );
+    border: var(--border-width--1) solid
+      light-dark(var(--color--rose--600), var(--color--rose--600))
+  }
+}
+
+  &.button--dropdown-menu {
+    font-weight: 400;
+    width: calc(var(--size--2) + 100% + var(--size--2));
+    border: none;
+    border-radius: calc(var(--border-radius--1) - var(--border-width--1));
+  }
+}
+
+.link {
+  text-decoration: underline;
+  --csstools-light-dark-toggle--129: var(--csstools-color-scheme--light) var(--color--blue--500);
+  color: var(--csstools-light-dark-toggle--129, var(--color--blue--500));
+  cursor: pointer;
+  transition-property: var(--transition-property--colors);
+  transition-duration: var(--transition-duration--150);
+  transition-timing-function: var(--transition-timing-function--ease-in-out);
+  &:hover,
+  &:focus-within {
+    --csstools-light-dark-toggle--130: var(--csstools-color-scheme--light) var(--color--blue--400);
+    color: var(--csstools-light-dark-toggle--130, var(--color--blue--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+  &:focus-within {
+    color: light-dark(var(--color--blue--400), var(--color--blue--400));
+  }
+}
+  &:active {
+    --csstools-light-dark-toggle--131: var(--csstools-color-scheme--light) var(--color--blue--600);
+    color: var(--csstools-light-dark-toggle--131, var(--color--blue--600));
+  }
+
+@supports (color: light-dark(red, red)){
+&:active {
+    color: light-dark(var(--color--blue--600), var(--color--blue--600));
+  }
+}
+}
+
+@supports (color: light-dark(red, red)){
+.link {
+  color: light-dark(var(--color--blue--500), var(--color--blue--500))
+}
+}
+
+.highlight {
+  --csstools-light-dark-toggle--132: var(--csstools-color-scheme--light) var(--color--yellow--800);
+  background-color: var(--csstools-light-dark-toggle--132, var(--color--yellow--200));
+  padding: var(--size--0-5) var(--size--1);
+  border-radius: var(--border-radius--1);
+}
+
+@supports (color: light-dark(red, red)){
+.highlight {
+  background-color: light-dark(
+    var(--color--yellow--200),
+    var(--color--yellow--800)
+  );
+}
+}
+
+.separator {
+  --csstools-light-dark-toggle--133: var(--csstools-color-scheme--light) var(--color--slate--800);
+  border-bottom: var(--border-width--1) solid
+    var(--csstools-light-dark-toggle--133, var(--color--slate--200));
+}
+
+@supports (color: light-dark(red, red)){
+.separator {
+  border-bottom: var(--border-width--1) solid
+    light-dark(var(--color--slate--200), var(--color--slate--800));
+}
+}
+
+
+
+
+        @layer __RADICALLY_STRAIGHTFORWARD__INLINE__ {
+          /********************************************************************************/
+
+@layer hclxovipnvffyl {
+[css~="hclxovipnvffyl"] { display: flex;
+flex-direction: column;
+gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer dmhkugqaqbxdlx {
+[css~="dmhkugqaqbxdlx"] { font-size: var(--font-size--4);
+line-height: var(--font-size--4--line-height);
+font-weight: 800;
+ }
+}
+
+/********************************************************************************/
+
+@layer duolwffqzksvwy {
+[css~="duolwffqzksvwy"] { font-weight: 500;
+ }
+}
+
+/********************************************************************************/
+
+@layer dvfzbwpnvrmydj {
+[css~="dvfzbwpnvrmydj"] { display: inline-block;
+transition-property: var(--transition-property--transform);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+details[open] > summary > & {
+  rotate: var(--rotate--90);
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer gxxrvkevxnljgy {
+[css~="gxxrvkevxnljgy"] { padding: var(--size--2) var(--size--0);
+--csstools-light-dark-toggle--134: var(--csstools-color-scheme--light) var(--color--slate--800);
+border-bottom: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--134, var(--color--slate--200));
+display: flex;
+flex-direction: column;
+gap: var(--size--4);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="gxxrvkevxnljgy"] {
+border-bottom: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer hdvputstympela {
+[css~="hdvputstympela"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--135: var(--csstools-color-scheme--light) var(--color--slate--500);
+color: var(--csstools-light-dark-toggle--135, var(--color--slate--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="hdvputstympela"] {
+color: light-dark(var(--color--slate--500), var(--color--slate--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer gbpvcqkxyrldld {
+[css~="gbpvcqkxyrldld"] { display: flex;
+ }
+}
+
+/********************************************************************************/
+
+@layer bntsemgyvjtodc {
+[css~="bntsemgyvjtodc"] { flex: 1;
+ }
+}
+
+/********************************************************************************/
+
+@layer ctltmlrlbmtrvu {
+[css~="ctltmlrlbmtrvu"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+ }
+}
+
+/********************************************************************************/
+
+@layer vnmhzxhdkwwnm {
+[css~="vnmhzxhdkwwnm"] { padding: var(--size--2) var(--size--0);
+display: flex;
+flex-direction: column;
+gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer gkwefmwbpoknmz {
+[css~="gkwefmwbpoknmz"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--136: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--136, var(--color--slate--600));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="gkwefmwbpoknmz"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer corihhrymbudi {
+[css~="corihhrymbudi"] { display: flex;
+flex-direction: column;
+gap: var(--size--4);
+ }
+}
+
+/********************************************************************************/
+
+@layer exxcyncafmekbb {
+[css~="exxcyncafmekbb"] { display: flex;
+flex-direction: column;
+gap: var(--size--1);
+ }
+}
+
+/********************************************************************************/
+
+@layer cdqwlyccvobqbq {
+[css~="cdqwlyccvobqbq"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+--csstools-light-dark-toggle--137: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--137, var(--color--slate--600));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cdqwlyccvobqbq"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dhmcezvunhwnxo {
+[css~="dhmcezvunhwnxo"] { padding: var(--size--0);
+display: flex;
+flex-direction: column;
+ }
+}
+
+/********************************************************************************/
+
+@layer dlbrmkmwaecmti {
+[css~="dlbrmkmwaecmti"] { --csstools-light-dark-toggle--138: var(--csstools-color-scheme--light) var(--color--slate--400); color: var(--csstools-light-dark-toggle--138, var(--color--slate--600));
+padding: var(--size--1-5) var(--size--2);
+--csstools-light-dark-toggle--139: var(--csstools-color-scheme--light) var(--color--slate--800);
+border-bottom: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--139, var(--color--slate--200));
+display: flex;
+justify-content: space-between;
+gap: var(--size--4);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="dlbrmkmwaecmti"] { color: light-dark(var(--color--slate--600), var(--color--slate--400));
+border-bottom: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer hefsthcevwcjim {
+[css~="hefsthcevwcjim"] { display: flex;
+gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer czsyhmcxbkdseb {
+[css~="czsyhmcxbkdseb"] { --csstools-light-dark-toggle--140: var(--csstools-color-scheme--light) var(--color--slate--400); color: var(--csstools-light-dark-toggle--140, var(--color--slate--600));
+animation: var(--animation--pulse);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="czsyhmcxbkdseb"] { color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer fjjfemsdprrmbd {
+[css~="fjjfemsdprrmbd"] { height: var(--size--28);
+padding: var(--size--1) var(--size--2);
+margin: var(--size---1) var(--size---2);
+overflow: auto;
+display: flex;
+flex-direction: column;
+gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer greteaqfwgzjll {
+[css~="greteaqfwgzjll"] { margin-top: var(--size--0-5);
+ }
+}
+
+/********************************************************************************/
+
+@layer cbwaprytxaurdb {
+[css~="cbwaprytxaurdb"] { height: var(--size--60);
+padding: var(--size--1) var(--size--2);
+margin: var(--size---1) var(--size---2);
+overflow: auto;
+display: flex;
+flex-direction: column;
+gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer fhcslrxqkypbrm {
+[css~="fhcslrxqkypbrm"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 500;
+--csstools-light-dark-toggle--141: var(--csstools-color-scheme--light) var(--color--slate--600);
+color: var(--csstools-light-dark-toggle--141, var(--color--slate--400));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="fhcslrxqkypbrm"] {
+color: light-dark(var(--color--slate--400), var(--color--slate--600));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer cfaecobptqpspm {
+[css~="cfaecobptqpspm"] { border: none;
+ }
+}
+
+/********************************************************************************/
+
+@layer cysqqoprbqrkqj {
+[css~="cysqqoprbqrkqj"] { display: flex;
+justify-content: center;
+align-items: center;
+& > * {
+  flex: 1;
+  padding: var(--size--1) var(--size--2);
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer egjdsyvjaredyg {
+[css~="egjdsyvjaredyg"] { font-family: "Roboto Mono Variable", var(--font-family--monospace);
+height: var(--size--44);
+border-bottom-left-radius: var(--border-radius--1);
+border-bottom-right-radius: var(--border-radius--1);
+transition-property: var(--transition-property--colors);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+&[state~="dragging"] {
+  --csstools-light-dark-toggle--142: var(--csstools-color-scheme--light) var(--color--blue--800);
+  background-color: var(--csstools-light-dark-toggle--142, var(--color--blue--200));
+}
+
+@supports (color: light-dark(red, red)){
+&[state~="dragging"] {
+  background-color: light-dark(
+    var(--color--blue--200),
+    var(--color--blue--800)
+  );
+}
+}
+[key~="courseConversationMessageContentEditor"][state] & {
+  display: none;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer cevdbosdslrzbi {
+[css~="cevdbosdslrzbi"] { font-size: var(--size--12);
+--csstools-light-dark-toggle--143: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--143, var(--color--slate--600));
+height: var(--size--44);
+display: flex;
+justify-content: center;
+align-items: center;
+animation: var(--animation--pulse);
+[key~="courseConversationMessageContentEditor"]:not([state~="loading"]) & {
+  display: none;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cevdbosdslrzbi"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer fohetwgpddcsnp {
+[css~="fohetwgpddcsnp"] { min-width: var(--size--0);
+[key~="courseConversationMessageContentEditor"]:not([state~="preview"]) & {
+  display: none;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer jngxtmlpdptnx {
+[css~="jngxtmlpdptnx"] { h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: var(--size--4) var(--size--0) var(--size--2) var(--size--0);
+}
+
+h1 {
+  font-weight: 600;
+}
+
+h2 {
+  font-style: italic;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size--3);
+  line-height: var(--font-size--3--line-height);
+  font-weight: 600;
+  --csstools-light-dark-toggle--144: var(--csstools-color-scheme--light) var(--color--slate--400);
+  color: var(--csstools-light-dark-toggle--144, var(--color--slate--600));
+}
+
+@supports (color: light-dark(red, red)){
+h3,
+h4,
+h5,
+h6 {
+  color: light-dark(var(--color--slate--600), var(--color--slate--400));
+}
+}
+
+p + p {
+  margin-top: var(--size--2);
+}
+
+hr {
+  margin: var(--size--2) var(--size--0);
+  --csstools-light-dark-toggle--145: var(--csstools-color-scheme--light) var(--color--slate--800);
+  border-bottom: var(--border-width--1) solid
+    var(--csstools-light-dark-toggle--145, var(--color--slate--200));
+}
+
+@supports (color: light-dark(red, red)){
+hr {
+  border-bottom: var(--border-width--1) solid
+    light-dark(var(--color--slate--200), var(--color--slate--800));
+}
+}
+
+strong {
+  font-weight: 600;
+}
+
+em {
+  font-style: italic;
+}
+
+u {
+  text-decoration: underline;
+}
+
+code {
+  font-family: "Roboto Mono Variable", var(--font-family--monospace);
+}
+
+ins {
+  --csstools-light-dark-toggle--146: var(--csstools-color-scheme--light) var(--color--green--600);
+  color: var(--csstools-light-dark-toggle--146, var(--color--green--600));
+}
+
+@supports (color: light-dark(red, red)){
+ins {
+  color: light-dark(var(--color--green--600), var(--color--green--600));
+}
+}
+
+del {
+  text-decoration: line-through;
+  --csstools-light-dark-toggle--147: var(--csstools-color-scheme--light) var(--color--red--600);
+  color: var(--csstools-light-dark-toggle--147, var(--color--red--600));
+}
+
+@supports (color: light-dark(red, red)){
+del {
+  color: light-dark(var(--color--red--600), var(--color--red--600));
+}
+}
+
+sup,
+sub {
+  font-size: var(--font-size--2-5);
+  line-height: var(--font-size--2-5--line-height);
+}
+
+sup {
+  vertical-align: var(--size--1);
+}
+
+sub {
+  vertical-align: var(--size---1);
+}
+
+img,
+video,
+audio {
+  --csstools-light-dark-toggle--148: var(--csstools-color-scheme--light) var(--color--white);
+  background-color: var(--csstools-light-dark-toggle--148, var(--color--white));
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius--1);
+}
+
+@supports (color: light-dark(red, red)){
+img,
+video,
+audio {
+  background-color: light-dark(var(--color--white), var(--color--white));
+}
+}
+
+ul,
+ol {
+  margin: var(--size--2) var(--size--0) var(--size--2) var(--size--4);
+}
+
+li + li {
+  margin-top: var(--size--2);
+}
+
+ul > li {
+  list-style: disc;
+}
+
+ol > li {
+  list-style: decimal;
+}
+
+input {
+  position: absolute;
+  translate: calc(-100% - var(--size--1)) 20%;
+}
+
+blockquote {
+  --csstools-light-dark-toggle--149: var(--csstools-color-scheme--light) var(--color--slate--400);
+  color: var(--csstools-light-dark-toggle--149, var(--color--slate--600));
+  padding-left: calc(var(--size--4) - var(--border-width--4));
+  --csstools-light-dark-toggle--150: var(--csstools-color-scheme--light) var(--color--slate--800);
+  border-left: var(--border-width--4) solid
+    var(--csstools-light-dark-toggle--150, var(--color--slate--200));
+  margin: var(--size--2) var(--size--0);
+}
+
+@supports (color: light-dark(red, red)){
+blockquote {
+  color: light-dark(var(--color--slate--600), var(--color--slate--400));
+  border-left: var(--border-width--4) solid
+    light-dark(var(--color--slate--200), var(--color--slate--800));
+}
+}
+
+table {
+  margin: var(--size--2) var(--size--0);
+  border-collapse: collapse;
+}
+
+thead {
+  --csstools-light-dark-toggle--151: var(--csstools-color-scheme--light) var(--color--slate--800);
+  border-bottom: var(--border-width--2) solid
+    var(--csstools-light-dark-toggle--151, var(--color--slate--200));
+}
+
+@supports (color: light-dark(red, red)){
+thead {
+  border-bottom: var(--border-width--2) solid
+    light-dark(var(--color--slate--200), var(--color--slate--800));
+}
+}
+
+th,
+td {
+  padding: var(--size--1) var(--size--2);
+  &[align="left"] {
+    text-align: left;
+  }
+  &[align="center"] {
+    text-align: center;
+  }
+  &[align="right"] {
+    text-align: right;
+  }
+}
+
+th {
+  font-weight: 500;
+}
+
+details {
+  margin: var(--size--2) var(--size--0);
+}
+
+summary {
+  font-weight: 500;
+  details[open] > & {
+    margin-bottom: var(--size--1);
+  }
+}
+
+pre {
+  margin: var(--size--2) var(--size--0);
+}
+
+.shiki {
+  font-size: var(--font-size--3);
+  line-height: var(--font-size--3-5--line-height);
+  padding: var(--size--2) var(--size--4);
+  border-radius: var(--border-radius--1);
+  overflow: auto hidden;
+  &,
+  & span {
+    --csstools-light-dark-toggle--152: var(--csstools-color-scheme--light) var(--shiki-dark);
+    color: var(--csstools-light-dark-toggle--152, var(--shiki-light));
+    --csstools-light-dark-toggle--153: var(--csstools-color-scheme--light) var(--shiki-dark-bg);
+    background-color: var(--csstools-light-dark-toggle--153, var(--shiki-light-bg));
+  }
+
+@supports (color: light-dark(red, red)){
+&,
+  & span {
+    color: light-dark(var(--shiki-light), var(--shiki-dark));
+    background-color: light-dark(var(--shiki-light-bg), var(--shiki-dark-bg));
+  }
+}
+}
+
+& > :first-child {
+  margin-top: var(--size--0);
+}
+
+& > :last-child {
+  margin-bottom: var(--size--0);
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer lsdzgeuqnhwmb {
+[css~="lsdzgeuqnhwmb"] { padding-left: var(--size--6);
+margin-left: var(--size---6);
+display: block;
+ }
+}
+
+/********************************************************************************/
+
+@layer cctxgcmcelylvg {
+[css~="cctxgcmcelylvg"] { margin: var(--size--0);
+ }
+}
+
+/********************************************************************************/
+
+@layer efjtlynnydrpto {
+[css~="efjtlynnydrpto"] { margin: var(--size--1) var(--size--0) var(--size--0) var(--size--0);
+ }
+}
+
+/********************************************************************************/
+
+@layer cefsofzhrelhpf {
+[css~="cefsofzhrelhpf"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+position: relative;
+ }
+}
+
+/********************************************************************************/
+
+@layer fzwxymxrekkceu {
+[css~="fzwxymxrekkceu"] { --csstools-light-dark-toggle--154: var(--csstools-color-scheme--light) var(--color--blue--500); background-color: var(--csstools-light-dark-toggle--154, var(--color--blue--500));
+height: var(--border-width--4);
+border-radius: var(--border-radius--round);
+position: absolute;
+top: var(--size--0);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="fzwxymxrekkceu"] { background-color: light-dark(var(--color--blue--500), var(--color--blue--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer lufeuhtcdcjsz {
+[css~="lufeuhtcdcjsz"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--155: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--155, var(--color--slate--600));
+margin: var(--size--2) var(--size--0);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="lufeuhtcdcjsz"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer cpbtyjkmcsfbew {
+[css~="cpbtyjkmcsfbew"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+--csstools-light-dark-toggle--156: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--156, var(--color--slate--600));
+padding-top: var(--size--2);
+--csstools-light-dark-toggle--157: var(--csstools-color-scheme--light) var(--color--slate--800);
+border-top: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--157, var(--color--slate--200));
+margin-top: var(--size--2);
+& > ol {
+  margin-top: var(--size--0);
+  margin-bottom: var(--size--0);
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cpbtyjkmcsfbew"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+border-top: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer qyckxkcrhujes {
+[css~="qyckxkcrhujes"] { text-align: center;
+max-width: 100%;
+max-height: var(--size--128);
+margin: var(--size--2) var(--size--0);
+overflow: auto;
+ }
+}
+
+/********************************************************************************/
+
+@layer efktjplajglgqv {
+[css~="efktjplajglgqv"] { display: inline-block;
+max-width: 100%;
+max-height: var(--size--64);
+vertical-align: var(--size---1-5);
+overflow: auto;
+& > svg {
+  overflow: visible;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer fiwsznzthyrzkp {
+[css~="fiwsznzthyrzkp"] { font-size: var(--font-size--4-5);
+--csstools-light-dark-toggle--158: var(--csstools-color-scheme--light) var(--color--slate--500);
+color: var(--csstools-light-dark-toggle--158, var(--color--slate--500));
+margin-left: var(--size--0);
+display: block;
+position: absolute;
+translate: -100%;
+transition-property:
+  var(--transition-property--opacity), var(--transition-property--colors);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+&:not(:hover, :focus-within, :active) {
+  --csstools-light-dark-toggle--159: var(--csstools-color-scheme--light) var(--color--black);
+  background-color: var(--csstools-light-dark-toggle--159, var(--color--white));
+}
+
+@supports (color: light-dark(red, red)){
+&:not(:hover, :focus-within, :active) {
+  background-color: light-dark(var(--color--white), var(--color--black));
+}
+}
+:not(:hover) > & {
+  opacity: var(--opacity--0);
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="fiwsznzthyrzkp"] {
+color: light-dark(var(--color--slate--500), var(--color--slate--500))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer fttemxwbslowjs {
+[css~="fttemxwbslowjs"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--160: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--160, var(--color--slate--600));
+display: flex;
+justify-content: space-between;
+gap: var(--size--4);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="fttemxwbslowjs"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer fzgmvyssrferhb {
+[css~="fzgmvyssrferhb"] { display: flex;
+align-items: baseline;
+gap: var(--size--4);
+ }
+}
+
+/********************************************************************************/
+
+@layer hfpktkckertuna {
+[css~="hfpktkckertuna"] { --csstools-light-dark-toggle--161: var(--csstools-color-scheme--light) var(--color--slate--500); color: var(--csstools-light-dark-toggle--161, var(--color--slate--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="hfpktkckertuna"] { color: light-dark(var(--color--slate--500), var(--color--slate--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer bgbrvjonxuqboi {
+[css~="bgbrvjonxuqboi"] { :not(:checked) + & {
+  display: none;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer dswhfvimbahhrq {
+[css~="dswhfvimbahhrq"] { --csstools-light-dark-toggle--162: var(--csstools-color-scheme--light) var(--color--green--500); color: var(--csstools-light-dark-toggle--162, var(--color--green--500));
+:not(:checked) + & {
+  display: none;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="dswhfvimbahhrq"] { color: light-dark(var(--color--green--500), var(--color--green--500))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer cmriidqrmbbajc {
+[css~="cmriidqrmbbajc"] { --csstools-light-dark-toggle--163: var(--csstools-color-scheme--light) var(--color--red--500); color: var(--csstools-light-dark-toggle--163, var(--color--red--500));
+:not(:checked) + & {
+  display: none;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cmriidqrmbbajc"] { color: light-dark(var(--color--red--500), var(--color--red--500))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dfujvzzukkqxcy {
+[css~="dfujvzzukkqxcy"] { --csstools-light-dark-toggle--164: var(--csstools-color-scheme--light) var(--color--blue--500); color: var(--csstools-light-dark-toggle--164, var(--color--blue--500));
+:not(:checked) + & {
+  display: none;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="dfujvzzukkqxcy"] { color: light-dark(var(--color--blue--500), var(--color--blue--500))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer vnrrgqrcxvnev {
+[css~="vnrrgqrcxvnev"] { flex: 1;
+display: flex;
+align-items: baseline;
+flex-wrap: wrap;
+column-gap: var(--size--4);
+row-gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer ggcxytxmpdvpdg {
+[css~="ggcxytxmpdvpdg"] { width: 100%;
+height: 100%;
+display: flex;
+ }
+}
+
+/********************************************************************************/
+
+@layer bhtquvbadcjjd {
+[css~="bhtquvbadcjjd"] { --csstools-light-dark-toggle--165: var(--csstools-color-scheme--light) var(--color--slate--800); border-right: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--165, var(--color--slate--200));
+display: flex;
+flex-direction: column;
+@media (max-width: 899px) {
+  --csstools-light-dark-toggle--166: var(--csstools-color-scheme--light) var(--color--black);
+  background-color: var(--csstools-light-dark-toggle--166, var(--color--white));
+  max-width: var(--size--112);
+  position: fixed;
+  inset: var(--size--0) var(--size--14) var(--size--0) var(--size--0);
+  z-index: 100;
+  transition-property: var(--transition-property--transform);
+  transition-duration: var(--transition-duration--200);
+  transition-timing-function: var(--transition-timing-function--ease-in-out);
+  [key~="main--two-column-layout"]:not([state~="sidebar--open"]) & {
+    translate: -101%;
+  }
+  [key~="main--two-column-layout"][state~="sidebar--open"] & {
+    box-shadow: var(--box-shadow--25);
+  }
+}
+
+@supports (color: light-dark(red, red)){
+@media (max-width: 899px) {
+  background-color: light-dark(var(--color--white), var(--color--black))
+}
+}
+@media (min-width: 900px) {
+  width: var(--width);
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="bhtquvbadcjjd"] { border-right: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer cfbrhorqblycfh {
+[css~="cfbrhorqblycfh"] { --csstools-light-dark-toggle--167: var(--csstools-color-scheme--light) var(--color--slate--800); border-bottom: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--167, var(--color--slate--200));
+padding: var(--size--2) var(--size--4);
+display: flex;
+@media (min-width: 900px) {
+  display: none;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cfbrhorqblycfh"] { border-bottom: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer btzfyqspnuciqo {
+[css~="btzfyqspnuciqo"] { font-size: var(--font-size--4);
+line-height: var(--size--0);
+ }
+}
+
+/********************************************************************************/
+
+@layer cwekvqareobprb {
+[css~="cwekvqareobprb"] { --csstools-light-dark-toggle--168: var(--csstools-color-scheme--light) var(--color--slate--800); border-bottom: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--168, var(--color--slate--200));
+padding: var(--size--2) var(--size--4);
+display: flex;
+gap: var(--size--2);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cwekvqareobprb"] { border-bottom: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer ghjzmpavfjatph {
+[css~="ghjzmpavfjatph"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+display: flex;
+align-items: center;
+ }
+}
+
+/********************************************************************************/
+
+@layer chfyfobywxqdkp {
+[css~="chfyfobywxqdkp"] { flex: 1;
+min-width: var(--size--0);
+display: flex;
+ }
+}
+
+/********************************************************************************/
+
+@layer aknkypntkfzwd {
+[css~="aknkypntkfzwd"] { flex: 1;
+min-width: var(--size--0);
+ }
+}
+
+/********************************************************************************/
+
+@layer gufqredoqdloid {
+[css~="gufqredoqdloid"] { padding: var(--size--2) var(--size--4);
+--csstools-light-dark-toggle--169: var(--csstools-color-scheme--light) var(--color--slate--800);
+border-bottom: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--169, var(--color--slate--200));
+display: flex;
+gap: var(--size--2);
+cursor: pointer;
+transition-property: var(--transition-property--colors);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="gufqredoqdloid"] {
+border-bottom: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer cirishscbkzyyp {
+[css~="cirishscbkzyyp"] { --csstools-light-dark-toggle--170: var(--csstools-color-scheme--light) var(--color--white); color: var(--csstools-light-dark-toggle--170, var(--color--white));
+--csstools-light-dark-toggle--171: var(--csstools-color-scheme--light) var(--color--blue--500);
+background-color: var(--csstools-light-dark-toggle--171, var(--color--blue--500));
+&:hover,
+&:focus-within {
+  --csstools-light-dark-toggle--172: var(--csstools-color-scheme--light) var(--color--blue--400);
+  background-color: var(--csstools-light-dark-toggle--172, var(--color--blue--400));
+}
+
+@supports (color: light-dark(red, red)){
+&:hover,
+&:focus-within {
+  background-color: light-dark(
+    var(--color--blue--400),
+    var(--color--blue--400)
+  );
+}
+}
+&:active {
+  --csstools-light-dark-toggle--173: var(--csstools-color-scheme--light) var(--color--blue--600);
+  background-color: var(--csstools-light-dark-toggle--173, var(--color--blue--600));
+}
+
+@supports (color: light-dark(red, red)){
+&:active {
+  background-color: light-dark(
+    var(--color--blue--600),
+    var(--color--blue--600)
+  );
+}
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cirishscbkzyyp"] { color: light-dark(var(--color--white), var(--color--white));
+background-color: light-dark(var(--color--blue--500), var(--color--blue--500))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer ejxzpuqarkvxvv {
+[css~="ejxzpuqarkvxvv"] { &:hover,
+&:focus-within {
+  --csstools-light-dark-toggle--174: var(--csstools-color-scheme--light) var(--color--slate--950);
+  background-color: var(--csstools-light-dark-toggle--174, var(--color--slate--50));
+}
+
+@supports (color: light-dark(red, red)){
+&:hover,
+&:focus-within {
+  background-color: light-dark(
+    var(--color--slate--50),
+    var(--color--slate--950)
+  );
+}
+}
+&:active {
+  --csstools-light-dark-toggle--175: var(--csstools-color-scheme--light) var(--color--slate--900);
+  background-color: var(--csstools-light-dark-toggle--175, var(--color--slate--100));
+}
+
+@supports (color: light-dark(red, red)){
+&:active {
+  background-color: light-dark(
+    var(--color--slate--100),
+    var(--color--slate--900)
+  );
+}
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer grkrgpehtshsay {
+[css~="grkrgpehtshsay"] { display: flex;
+align-items: center;
+ }
+}
+
+/********************************************************************************/
+
+@layer bwkflktsktrjob {
+[css~="bwkflktsktrjob"] { font-size: var(--size--1-5);
+--csstools-light-dark-toggle--176: var(--csstools-color-scheme--light) var(--color--blue--500);
+color: var(--csstools-light-dark-toggle--176, var(--color--blue--500));
+position: absolute;
+translate: calc(-100% - var(--size--1));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="bwkflktsktrjob"] {
+color: light-dark(var(--color--blue--500), var(--color--blue--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer femozddturblwq {
+[css~="femozddturblwq"] { display: flex;
+align-items: baseline;
+gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer eawakvxcjyfdjq {
+[css~="eawakvxcjyfdjq"] { flex: 1;
+font-weight: 600;
+ }
+}
+
+/********************************************************************************/
+
+@layer dfopopzoathxoo {
+[css~="dfopopzoathxoo"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 500;
+ }
+}
+
+/********************************************************************************/
+
+@layer ehgravglrjiory {
+[css~="ehgravglrjiory"] { --csstools-light-dark-toggle--177: var(--csstools-color-scheme--light) var(--color--blue--300); color: var(--csstools-light-dark-toggle--177, var(--color--blue--300));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="ehgravglrjiory"] { color: light-dark(var(--color--blue--300), var(--color--blue--300));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer elbnvnyhwwnkuh {
+[css~="elbnvnyhwwnkuh"] { --csstools-light-dark-toggle--178: var(--csstools-color-scheme--light) var(--color--slate--600); color: var(--csstools-light-dark-toggle--178, var(--color--slate--400));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="elbnvnyhwwnkuh"] { color: light-dark(var(--color--slate--400), var(--color--slate--600));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer gvthrntyontgvy {
+[css~="gvthrntyontgvy"] { --csstools-light-dark-toggle--179: var(--csstools-color-scheme--light) var(--color--blue--200); color: var(--csstools-light-dark-toggle--179, var(--color--blue--200));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="gvthrntyontgvy"] { color: light-dark(var(--color--blue--200), var(--color--blue--200));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer gfufdttzgcgldo {
+[css~="gfufdttzgcgldo"] { --csstools-light-dark-toggle--180: var(--csstools-color-scheme--light) var(--color--slate--400); color: var(--csstools-light-dark-toggle--180, var(--color--slate--600));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="gfufdttzgcgldo"] { color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer fqjgstsniwcixq {
+[css~="fqjgstsniwcixq"] { font-weight: 600;
+ }
+}
+
+/********************************************************************************/
+
+@layer cnpnvzkatxgqnl {
+[css~="cnpnvzkatxgqnl"] {  }
+}
+
+/********************************************************************************/
+
+@layer ainmtrqflxrzv {
+[css~="ainmtrqflxrzv"] { --csstools-light-dark-toggle--181: var(--csstools-color-scheme--light) var(--color--red--500); color: var(--csstools-light-dark-toggle--181, var(--color--red--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="ainmtrqflxrzv"] { color: light-dark(var(--color--red--500), var(--color--red--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer eulpsbkzhnplqj {
+[css~="eulpsbkzhnplqj"] { --csstools-light-dark-toggle--182: var(--csstools-color-scheme--light) var(--color--green--500); color: var(--csstools-light-dark-toggle--182, var(--color--green--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="eulpsbkzhnplqj"] { color: light-dark(var(--color--green--500), var(--color--green--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dstsfkoqhdsbhr {
+[css~="dstsfkoqhdsbhr"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+ }
+}
+
+/********************************************************************************/
+
+@layer etxnzyktfmbvmo {
+[css~="etxnzyktfmbvmo"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--183: var(--csstools-color-scheme--light) var(--color--slate--500);
+color: var(--csstools-light-dark-toggle--183, var(--color--slate--500));
+--csstools-light-dark-toggle--184: var(--csstools-color-scheme--light) var(--color--slate--900);
+background-color: var(--csstools-light-dark-toggle--184, var(--color--slate--100));
+padding: var(--size--1-5) var(--size--4);
+--csstools-light-dark-toggle--185: var(--csstools-color-scheme--light) var(--color--slate--800);
+border-bottom: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--185, var(--color--slate--200));
+cursor: pointer;
+user-select: none;
+transition-property: var(--transition-property--colors);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+&:hover,
+&:focus-within {
+  --csstools-light-dark-toggle--186: var(--csstools-color-scheme--light) var(--color--slate--800);
+  background-color: var(--csstools-light-dark-toggle--186, var(--color--slate--200));
+}
+
+@supports (color: light-dark(red, red)){
+&:hover,
+&:focus-within {
+  background-color: light-dark(
+    var(--color--slate--200),
+    var(--color--slate--800)
+  );
+}
+}
+&:active {
+  --csstools-light-dark-toggle--187: var(--csstools-color-scheme--light) var(--color--slate--700);
+  background-color: var(--csstools-light-dark-toggle--187, var(--color--slate--300));
+}
+
+@supports (color: light-dark(red, red)){
+&:active {
+  background-color: light-dark(
+    var(--color--slate--300),
+    var(--color--slate--700)
+  );
+}
+}
+[key~="courseConversations--groups--group"].current & {
+  --csstools-light-dark-toggle--188: var(--csstools-color-scheme--light) var(--color--white);
+  color: var(--csstools-light-dark-toggle--188, var(--color--white));
+  --csstools-light-dark-toggle--189: var(--csstools-color-scheme--light) var(--color--blue--500);
+  background-color: var(--csstools-light-dark-toggle--189, var(--color--blue--500));
+  &:hover,
+  &:focus-within {
+    --csstools-light-dark-toggle--190: var(--csstools-color-scheme--light) var(--color--blue--400);
+    background-color: var(--csstools-light-dark-toggle--190, var(--color--blue--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&:hover,
+  &:focus-within {
+    background-color: light-dark(
+      var(--color--blue--400),
+      var(--color--blue--400)
+    );
+  }
+}
+  &:active {
+    --csstools-light-dark-toggle--191: var(--csstools-color-scheme--light) var(--color--blue--600);
+    background-color: var(--csstools-light-dark-toggle--191, var(--color--blue--600));
+  }
+
+@supports (color: light-dark(red, red)){
+&:active {
+    background-color: light-dark(
+      var(--color--blue--600),
+      var(--color--blue--600)
+    );
+  }
+}
+}
+
+@supports (color: light-dark(red, red)){
+[key~="courseConversations--groups--group"].current & {
+  color: light-dark(var(--color--white), var(--color--white));
+  background-color: light-dark(
+    var(--color--blue--500),
+    var(--color--blue--500)
+  )
+}
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="etxnzyktfmbvmo"] {
+color: light-dark(var(--color--slate--500), var(--color--slate--500));
+background-color: light-dark(
+  var(--color--slate--100),
+  var(--color--slate--900)
+);
+border-bottom: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer hhqvtogzofovtc {
+[css~="hhqvtogzofovtc"] { font-size: var(--size--1-5);
+--csstools-light-dark-toggle--192: var(--csstools-color-scheme--light) var(--color--blue--500);
+color: var(--csstools-light-dark-toggle--192, var(--color--blue--500));
+position: absolute;
+translate: calc(-100% - var(--size--1));
+transition-property: var(--transition-property--opacity);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+&:not(.visible),
+[key~="courseConversations--groups--group"].current & {
+  visibility: hidden;
+  opacity: var(--opacity--0);
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="hhqvtogzofovtc"] {
+color: light-dark(var(--color--blue--500), var(--color--blue--500))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer bssfmvyihyapwb {
+[css~="bssfmvyihyapwb"] { display: inline-block;
+transition-property: var(--transition-property--transform);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+[key~="courseConversations--groups--group"][open] > summary > div > & {
+  rotate: var(--rotate--90);
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer cktrafhntfsmhe {
+[css~="cktrafhntfsmhe"] { --csstools-light-dark-toggle--193: var(--csstools-color-scheme--light) var(--color--white); background-color: var(--csstools-light-dark-toggle--193, var(--color--black));
+position: fixed;
+inset: var(--size--0);
+z-index: 99;
+visibility: hidden;
+opacity: var(--opacity--0);
+cursor: pointer;
+transition-property: var(--transition-property--opacity);
+transition-duration: var(--transition-duration--200);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+@media (max-width: 899px) {
+  [key~="main--two-column-layout"][state~="sidebar--open"] & {
+    visibility: visible;
+    opacity: var(--opacity--30);
+  }
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cktrafhntfsmhe"] { background-color: light-dark(var(--color--black), var(--color--white))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer ynvtpwsghhxvv {
+[css~="ynvtpwsghhxvv"] { position: relative;
+@media (max-width: 899px) {
+  display: none;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer doftnadnxbbvwi {
+[css~="doftnadnxbbvwi"] { width: var(--border-width--4);
+height: 100%;
+position: absolute;
+translate: -50%;
+z-index: 100;
+cursor: col-resize;
+pointer-events: auto;
+transition-property: var(--transition-property--colors);
+transition-delay: var(--transition-duration--150);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+&:hover,
+&[state~="active"] {
+  --csstools-light-dark-toggle--194: var(--csstools-color-scheme--light) var(--color--blue--500);
+  background-color: var(--csstools-light-dark-toggle--194, var(--color--blue--500));
+}
+
+@supports (color: light-dark(red, red)){
+&:hover,
+&[state~="active"] {
+  background-color: light-dark(
+    var(--color--blue--500),
+    var(--color--blue--500)
+  );
+}
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer hdwtnmndlxpmyl {
+[css~="hdwtnmndlxpmyl"] { max-width: var(--size--168);
+padding: var(--size--2) var(--size--4);
+@media (max-width: 899px) {
+  margin: var(--size--0) auto;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer fvontomsdgyqxt {
+[css~="fvontomsdgyqxt"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--195: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--195, var(--color--slate--600));
+display: flex;
+align-items: baseline;
+flex-wrap: wrap;
+column-gap: var(--size--4);
+row-gap: var(--size--2);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="fvontomsdgyqxt"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dfwfvhumknxflg {
+[css~="dfwfvhumknxflg"] { max-height: var(--size--36);
+padding: var(--size--1) var(--size--2);
+margin: var(--size---1) var(--size---2);
+overflow: auto;
+display: flex;
+flex-direction: column;
+gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer djxqbsbgunanbr {
+[css~="djxqbsbgunanbr"] { margin-top: var(--size--1);
+ }
+}
+
+/********************************************************************************/
+
+@layer cxlsurkovtvhzq {
+[css~="cxlsurkovtvhzq"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--196: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--196, var(--color--slate--600));
+display: flex;
+align-items: baseline;
+gap: var(--size--1-5);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cxlsurkovtvhzq"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer wjxqdssrnxfmt {
+[css~="wjxqdssrnxfmt"] { flex: 1;
+display: flex;
+flex-wrap: wrap;
+column-gap: var(--size--4);
+row-gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer fxtxactjntsgmw {
+[css~="fxtxactjntsgmw"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--197: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--197, var(--color--slate--600));
+display: flex;
+align-items: baseline;
+gap: var(--size--4);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="fxtxactjntsgmw"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer eicykspnfdvevt {
+[css~="eicykspnfdvevt"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--198: var(--csstools-color-scheme--light) var(--color--red--500);
+color: var(--csstools-light-dark-toggle--198, var(--color--red--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="eicykspnfdvevt"] {
+color: light-dark(var(--color--red--500), var(--color--red--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer drqmcoslofahnd {
+[css~="drqmcoslofahnd"] { display: flex;
+flex-direction: column;
+gap: var(--size--6);
+ }
+}
+
+/********************************************************************************/
+
+@layer dziupzncyahlce {
+[css~="dziupzncyahlce"] { display: flex;
+gap: var(--size--4);
+align-items: baseline;
+ }
+}
+
+/********************************************************************************/
+
+@layer czpmpbxjjdmrgs {
+[css~="czpmpbxjjdmrgs"] { flex: 1;
+display: flex;
+ }
+}
+
+/********************************************************************************/
+
+@layer ftkyoucvpxfsfv {
+[css~="ftkyoucvpxfsfv"] { max-height: var(--size--56);
+padding: var(--size--1) var(--size--2);
+margin: var(--size---1) var(--size---2);
+overflow: auto;
+display: flex;
+flex-direction: column;
+gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer bqrcfwqhetgqgc {
+[css~="bqrcfwqhetgqgc"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--199: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--199, var(--color--slate--600));
+display: flex;
+align-items: baseline;
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="bqrcfwqhetgqgc"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dccjcmqpposiu {
+[css~="dccjcmqpposiu"] { gap: var(--size--2-5);
+ }
+}
+
+/********************************************************************************/
+
+@layer bodovexzakocyn {
+[css~="bodovexzakocyn"] { gap: var(--size--1-5);
+ }
+}
+
+/********************************************************************************/
+
+@layer xyfqxfkzbhszc {
+[css~="xyfqxfkzbhszc"] { --csstools-light-dark-toggle--200: var(--csstools-color-scheme--light) var(--color--slate--950); background-color: var(--csstools-light-dark-toggle--200, var(--color--slate--50));
+padding: var(--size--2);
+border-radius: var(--border-radius--1);
+margin: var(--size---2);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="xyfqxfkzbhszc"] { background-color: light-dark(var(--color--slate--50), var(--color--slate--950));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer esjdwlktnvoicy {
+[css~="esjdwlktnvoicy"] { font-size: var(--size--1-5);
+--csstools-light-dark-toggle--201: var(--csstools-color-scheme--light) var(--color--blue--500);
+color: var(--csstools-light-dark-toggle--201, var(--color--blue--500));
+position: absolute;
+translate: calc(-100% - var(--size--1));
+transition-property: var(--transition-property--opacity);
+transition-delay: 2s;
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+&[state~="viewed"] {
+  visibility: hidden;
+  opacity: var(--opacity--0);
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="esjdwlktnvoicy"] {
+color: light-dark(var(--color--blue--500), var(--color--blue--500))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer armvlxqlsycir {
+[css~="armvlxqlsycir"] { flex: 1;
+min-width: var(--size--0);
+display: flex;
+flex-direction: column;
+gap: var(--size--1);
+ }
+}
+
+/********************************************************************************/
+
+@layer eipqxiyzrbfdne {
+[css~="eipqxiyzrbfdne"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+--csstools-light-dark-toggle--202: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--202, var(--color--slate--600));
+display: flex;
+gap: var(--size--2);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="eipqxiyzrbfdne"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer gqiyaoietdhupn {
+[css~="gqiyaoietdhupn"] { font-weight: 700;
+ }
+}
+
+/********************************************************************************/
+
+@layer hahsepzfgpdfjx {
+[css~="hahsepzfgpdfjx"] { font-weight: 700;
+--csstools-light-dark-toggle--203: var(--csstools-color-scheme--light) var(--color--red--500);
+color: var(--csstools-light-dark-toggle--203, var(--color--red--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="hahsepzfgpdfjx"] {
+color: light-dark(var(--color--red--500), var(--color--red--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer eqaujbftwvmrmo {
+[css~="eqaujbftwvmrmo"] { font-weight: 700;
+--csstools-light-dark-toggle--204: var(--csstools-color-scheme--light) var(--color--blue--500);
+color: var(--csstools-light-dark-toggle--204, var(--color--blue--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="eqaujbftwvmrmo"] {
+color: light-dark(var(--color--blue--500), var(--color--blue--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dsjlnsxcqrygps {
+[css~="dsjlnsxcqrygps"] { margin-right: var(--size---0-5);
+ }
+}
+
+/********************************************************************************/
+
+@layer pikqnjynzytnc {
+[css~="pikqnjynzytnc"] { display: flex;
+flex-direction: column;
+gap: var(--size--1);
+[key~="courseConversationMessage--main--content--body"][state] & {
+  display: none;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer sgweynpufxqbo {
+[css~="sgweynpufxqbo"] { --csstools-light-dark-toggle--205: var(--csstools-color-scheme--light) var(--color--blue--500); color: var(--csstools-light-dark-toggle--205, var(--color--blue--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="sgweynpufxqbo"] { color: light-dark(var(--color--blue--500), var(--color--blue--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dsvmjwieqjkzxm {
+[css~="dsvmjwieqjkzxm"] { font-size: var(--size--12);
+--csstools-light-dark-toggle--206: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--206, var(--color--slate--600));
+height: var(--size--44);
+display: flex;
+justify-content: center;
+align-items: center;
+animation: var(--animation--pulse);
+[key~="courseConversationMessage--main--content--body"]:not([state~="loading"])
+  & {
+  display: none;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="dsvmjwieqjkzxm"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dgtgbvaeytixiv {
+[css~="dgtgbvaeytixiv"] { [key~="courseConversationMessage--main--content--body"]:not([state~="edit"]) & {
+  display: none;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer fhiknsrbbaaipb {
+[css~="fhiknsrbbaaipb"] { display: flex;
+gap: var(--size--2);
+animation: var(--animation--pulse);
+ }
+}
+
+/********************************************************************************/
+
+@layer ghvpfnvbqljhlj {
+[css~="ghvpfnvbqljhlj"] { white-space: pre-line;
+ }
+}
+
+/********************************************************************************/
+
+@layer fbqsttzrelqjac {
+[css~="fbqsttzrelqjac"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+--csstools-light-dark-toggle--207: var(--csstools-color-scheme--light) var(--color--green--500);
+color: var(--csstools-light-dark-toggle--207, var(--color--green--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="fbqsttzrelqjac"] {
+color: light-dark(var(--color--green--500), var(--color--green--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer cdspfstzrothes {
+[css~="cdspfstzrothes"] { display: flex;
+align-items: center;
+gap: var(--size--3);
+ }
+}
+
+/********************************************************************************/
+
+@layer tsrqvwjwwocrd {
+[css~="tsrqvwjwwocrd"] { --csstools-light-dark-toggle--208: var(--csstools-color-scheme--light) var(--color--slate--400); color: var(--csstools-light-dark-toggle--208, var(--color--slate--600));
+display: flex;
+flex-direction: column;
+gap: var(--size--1);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="tsrqvwjwwocrd"] { color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer bhirkwtsajsnlz {
+[css~="bhirkwtsajsnlz"] { flex: 1;
+display: flex;
+flex-direction: column;
+gap: var(--size--2);
+ }
+}
+
+/********************************************************************************/
+
+@layer ryvvpnqameopk {
+[css~="ryvvpnqameopk"] { font-family: "Roboto Mono Variable", var(--font-family--monospace);
+ }
+}
+
+/********************************************************************************/
+
+@layer fynusyonfgiifz {
+[css~="fynusyonfgiifz"] { display: flex;
+justify-content: center;
+ }
+}
+
+/********************************************************************************/
+
+@layer gvijlxyanydukr {
+[css~="gvijlxyanydukr"] { max-width: var(--size--48);
+width: 100%;
+ }
+}
+
+/********************************************************************************/
+
+@layer dgjhqwzqmxntrh {
+[css~="dgjhqwzqmxntrh"] { font-family: "Roboto Mono Variable", var(--font-family--monospace);
+height: var(--size--48);
+ }
+}
+
+/********************************************************************************/
+
+@layer fpdtardzppyanw {
+[css~="fpdtardzppyanw"] { font-family: "Roboto Mono Variable", var(--font-family--monospace);
+font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+--csstools-light-dark-toggle--209: var(--csstools-color-scheme--light) var(--color--slate--400);
+color: var(--csstools-light-dark-toggle--209, var(--color--slate--600));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="fpdtardzppyanw"] {
+color: light-dark(var(--color--slate--600), var(--color--slate--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer cnqlpqywffsqxz {
+[css~="cnqlpqywffsqxz"] { width: 100%;
+height: 100%;
+ }
+}
+
+/********************************************************************************/
+
+@layer hhhwacrzagwytt {
+[css~="hhhwacrzagwytt"] { padding: var(--size--20) var(--size--4) var(--size--0) var(--size--4);
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: var(--size--32);
+@media (prefers-color-scheme: light) {
+  background-image: url("data:image/svg+xml,%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Csvg%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%2216%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%2216%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20fill%3D%22black%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%3D%228%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20y%3D%228%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20opacity%3D%220.3%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20");
+}
+@media (prefers-color-scheme: dark) {
+  background-image: url("data:image/svg+xml,%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Csvg%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%2216%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%2216%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20fill%3D%22white%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%3D%228%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20y%3D%228%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20opacity%3D%220.3%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20");
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer kjrdjvmfrehyh {
+[css~="kjrdjvmfrehyh"] { font-family: "Roboto Serif Variable", var(--font-family--serif);
+font-weight: 900;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: var(--size--2);
+@media (max-width: 599px) {
+  font-size: var(--font-size--5);
+  line-height: var(--font-size--5--line-height);
+}
+@media (min-width: 600px) {
+  font-size: var(--font-size--9);
+  line-height: var(--font-size--9--line-height);
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer fkzipjhwnyqsxe {
+[css~="fkzipjhwnyqsxe"] { position: relative;
+z-index: 0;
+&::before {
+  content: "";
+  --csstools-light-dark-toggle--210: var(--csstools-color-scheme--light) var(--color--yellow--700);
+  background-color: var(--csstools-light-dark-toggle--210, var(--color--yellow--300));
+  opacity: var(--opacity--50);
+  position: absolute;
+  top: var(--size---1);
+  right: var(--size---8);
+  bottom: var(--size---3);
+  left: var(--size---8);
+  z-index: -1;
+  mask-image: url("data:image/svg+xml,%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Csvg%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20viewBox%3D%220%200%20291.2677%2071.839319%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20preserveAspectRatio%3D%22none%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20d%3D%22m%2051.968069%2C71.829835%20c%20-1.969897%2C-0.0877%20-3.636327%2C-0.38212%20-5.006141%2C-0.88458%20-1.12814%2C-0.41381%20-3.372524%2C-1.50396%20-4.407259%2C-2.1407%20-0.768269%2C-0.47277%20-1.981173%2C-1.58199%20-2.775053%2C-2.53782%20-1.698629%2C-2.04515%20-3.425589%2C-5.43646%20-3.934162%2C-7.72571%20-0.203311%2C-0.91515%20-0.393653%2C-3.6578%20-0.32226%2C-4.64346%200.121763%2C-1.68109%201.081341%2C-4.66998%202.196718%2C-6.84236%200.697856%2C-1.35919%201.674862%2C-2.73305%202.591069%2C-3.64354%200.234007%2C-0.23255%200.4104%2C-0.43705%200.391983%2C-0.45444%20-0.0184%2C-0.0174%20-2.629378%2C0.69609%20-5.802141%2C1.58554%20-8.977181%2C2.51664%20-12.067013%2C3.30514%20-15.890849%2C4.05522%20-8.758575%2C1.71807%20-14.2606425%2C0.97979%20-16.4627335%2C-2.209%20-1.245626%2C-1.80377%20-1.99230803%2C-4.349495%20-2.51874503%2C-8.58736%20-0.1702476%2C-1.370519%200.463366%2C-13.190452%200.813861%2C-18.264987%20C%201.0147775%2C15.211651%2025.566961%2C10.738099%2037.206299%2C8.8901093%2049.03831%2C6.8718853%2050.768433%2C6.6112653%2057.52672%2C5.8291243%20c%204.571597%2C-0.529074%209.640963%2C-0.889846%2023.400653%2C-1.66536%2025.146167%2C-1.417273%2041.553387%2C-2.256154%2061.404237%2C-3.139524%207.96727%2C-0.35454703%2032.20997%2C-1.04359003%2036.02406%2C-1.02382402829%204.66677%2C0.0240899983%208.83398%2C0.12935399829%209.58528%2C0.24212499829%200.10581%2C0.01588%200.65857%2C0.05259%201.22835%2C0.08157%201.9097%2C0.09713%204.06726%2C0.489222%205.66133%2C1.02883403%201.22258%2C0.413865%202.88965%2C1.195586%203.58206%2C1.679701%201.79345%2C1.253947%204.3218%2C4.1866%205.47855%2C6.354605%20l%200.45243%2C0.8479377%200.27245%2C-0.04533%20c%200.30084%2C-0.05006%202.7154%2C-0.3334447%205.54255%2C-0.6505037%204.63089%2C-0.519344%206.95267%2C-0.691477%2013.38159%2C-0.992082%20l%203.74976%2C-0.175333%202.77934%2C-0.618209%20c%203.05974%2C-0.680582%204.46641%2C-0.964909%206.24757%2C-1.262822%201.00134%2C-0.167479%201.4223%2C-0.198715%202.75279%2C-0.204259%202.11892%2C-0.0088%202.68115%2C0.117944%205.30481%2C1.196144%202.87675%2C1.18221%203.43959%2C1.516771%204.92755%2C2.9290267%201.111%2C1.05447%202.20532%2C2.352106%202.9177%2C3.459772%200.54501%2C0.847416%201.31335%2C2.343732%201.62553%2C3.165621%200.26672%2C0.702228%200.69002%2C2.280787%200.69931%2C2.607826%200.004%2C0.140954%200.0459%2C0.199998%200.13969%2C0.196878%200.22593%2C-0.0076%203.22635%2C-0.382613%205.90923%2C-0.738744%208.52717%2C-1.13192%2010.51753%2C-1.335325%2014.05473%2C-1.436325%208.54772%2C-0.24417%2012.16783%2C1.584345%2014.43504%2C7.290781%202.90396%2C7.309071%202.91388%2C19.150725%200.0214%2C25.603735%20-0.59672%2C1.33129%20-1.17677%2C2.25362%20-1.91054%2C3.03788%20-0.71%2C0.75887%20-1.33237%2C1.23764%20-2.24968%2C1.73067%20-1.67481%2C0.90015%20-3.76529%2C1.468%20-6.53952%2C1.77638%20-1.40041%2C0.15567%20-6.2673%2C0.2247%20-8.15751%2C0.1157%20-4.06054%2C-0.23413%20-5.99193%2C-0.4269%20-17.32856%2C-1.72944%20-10.25647%2C-1.17845%20-13.63373%2C-1.38412%20-21.07062%2C-1.28325%20-16.55505%2C0.22456%20-49.44377%2C1.11093%20-59.03445%2C1.59101%20-12.8058%2C0.64103%20-21.24141%2C1.2413%20-31.54501%2C2.24474%20-12.00183%2C1.16881%20-36.70678%2C4.08646%20-42.767841%2C5.05085%20-4.88316%2C0.77698%20-6.64983%2C1.17386%20-11.078603%2C2.48875%20-6.207941%2C1.84315%20-7.242349%2C2.10403%20-12.173178%2C3.07023%20-9.27584%2C1.81759%20-14.472626%2C2.64294%20-19.070806%2C3.02881%20-1.309825%2C0.10991%20-3.397206%2C0.1824%20-4.210348%2C0.14623%20z%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20");
+  mask-size: 100% 100%;
+}
+
+@supports (color: light-dark(red, red)){
+&::before {
+  background-color: light-dark(
+    var(--color--yellow--300),
+    var(--color--yellow--700)
+  );
+}
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer eqdxywqexvpies {
+[css~="eqdxywqexvpies"] { max-width: 100%;
+height: auto;
+--csstools-light-dark-toggle--211: var(--csstools-color-scheme--light) var(--color--slate--800);
+border: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--211, var(--color--slate--200));
+border-top-left-radius: var(--border-radius--1);
+border-top-right-radius: var(--border-radius--1);
+&& {
+  border-bottom: none;
+}
+box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.25);
+@media (prefers-color-scheme: dark) {
+  display: none;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="eqdxywqexvpies"] {
+border: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer cgdrtacvjdaizf {
+[css~="cgdrtacvjdaizf"] { max-width: 100%;
+height: auto;
+--csstools-light-dark-toggle--212: var(--csstools-color-scheme--light) var(--color--slate--800);
+border: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--212, var(--color--slate--200));
+border-top-left-radius: var(--border-radius--1);
+border-top-right-radius: var(--border-radius--1);
+&& {
+  border-bottom: none;
+}
+box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.25);
+@media (prefers-color-scheme: light) {
+  display: none;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cgdrtacvjdaizf"] {
+border: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer bjnfgfwjbowgty {
+[css~="bjnfgfwjbowgty"] { --csstools-light-dark-toggle--213: var(--csstools-color-scheme--light) var(--color--fuchsia--100); color: var(--csstools-light-dark-toggle--213, var(--color--fuchsia--100));
+--csstools-light-dark-toggle--214:
+  var(--csstools-color-scheme--light) var(--color--violet--800);
+--csstools-light-dark-toggle--215:
+  var(--csstools-color-scheme--light) var(--color--rose--800);
+background-image:
+  url("data:image/svg+xml,%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Csvg%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cfilter%20id%3D%22filter%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3CfeTurbulence%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20baseFrequency%3D%220.8%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stitchTiles%3D%22stitch%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Ffilter%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%3D%220%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20y%3D%220%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20filter%3D%22url(%23filter)%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20opacity%3D%220.7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20"),
+  radial-gradient(
+    ellipse at top,
+    var(--csstools-light-dark-toggle--214, var(--color--violet--800)),
+    transparent
+  ),
+  radial-gradient(
+    ellipse at bottom,
+    var(--csstools-light-dark-toggle--215, var(--color--rose--800)),
+    transparent
+  );
+--csstools-light-dark-toggle--216: var(--csstools-color-scheme--light) var(--color--fuchsia--800);
+background-color: var(--csstools-light-dark-toggle--216, var(--color--fuchsia--800));
+min-height: 100vh;
+padding: var(--size--20) var(--size--4);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: var(--size--20);
+@media (max-width: 999px) {
+  flex-direction: column;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="bjnfgfwjbowgty"] { color: light-dark(var(--color--fuchsia--100), var(--color--fuchsia--100));
+background-image:
+  url("data:image/svg+xml,%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Csvg%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cfilter%20id%3D%22filter%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3CfeTurbulence%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20baseFrequency%3D%220.8%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stitchTiles%3D%22stitch%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Ffilter%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%3D%220%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20y%3D%220%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20filter%3D%22url(%23filter)%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20opacity%3D%220.7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20"),
+  radial-gradient(
+    ellipse at top,
+    light-dark(var(--color--violet--800), var(--color--violet--800)),
+    transparent
+  ),
+  radial-gradient(
+    ellipse at bottom,
+    light-dark(var(--color--rose--800), var(--color--rose--800)),
+    transparent
+  );
+background-color: light-dark(
+  var(--color--fuchsia--800),
+  var(--color--fuchsia--800)
+)
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dgoqjdxxfohxas {
+[css~="dgoqjdxxfohxas"] { font-family: "Roboto Serif Variable", var(--font-family--serif);
+font-weight: 900;
+@media (max-width: 599px) {
+  font-size: var(--font-size--5);
+  line-height: var(--font-size--5--line-height);
+}
+@media (min-width: 600px) {
+  font-size: var(--font-size--9);
+  line-height: var(--font-size--9--line-height);
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer gzmtpcjhenppmr {
+[css~="gzmtpcjhenppmr"] { font-weight: 400;
+--csstools-light-dark-toggle--217: var(--csstools-color-scheme--light) var(--color--fuchsia--400);
+color: var(--csstools-light-dark-toggle--217, var(--color--fuchsia--400));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="gzmtpcjhenppmr"] {
+color: light-dark(var(--color--fuchsia--400), var(--color--fuchsia--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer cwizhxabosskjc {
+[css~="cwizhxabosskjc"] { display: inline-flex;
+flex-direction: column;
+ }
+}
+
+/********************************************************************************/
+
+@layer hiitmyrjsdjffb {
+[css~="hiitmyrjsdjffb"] { text-align: center;
+ }
+}
+
+/********************************************************************************/
+
+@layer gcvwteukpfztde {
+[css~="gcvwteukpfztde"] { flex: 1;
+max-width: var(--size--96);
+display: flex;
+flex-direction: column;
+gap: var(--size--4);
+ }
+}
+
+/********************************************************************************/
+
+@layer heuwdleakxhlnw {
+[css~="heuwdleakxhlnw"] { font-weight: 900;
+ }
+}
+
+/********************************************************************************/
+
+@layer cheicjofjdhfnt {
+[css~="cheicjofjdhfnt"] { --csstools-light-dark-toggle--218: var(--csstools-color-scheme--light) var(--color--blue--100); color: var(--csstools-light-dark-toggle--218, var(--color--blue--100));
+--csstools-light-dark-toggle--219:
+  var(--csstools-color-scheme--light) var(--color--cyan--800);
+--csstools-light-dark-toggle--220:
+  var(--csstools-color-scheme--light) var(--color--violet--800);
+background-image:
+  url("data:image/svg+xml,%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Csvg%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cfilter%20id%3D%22filter%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3CfeTurbulence%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20baseFrequency%3D%220.8%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stitchTiles%3D%22stitch%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Ffilter%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%3D%220%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20y%3D%220%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20filter%3D%22url(%23filter)%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20opacity%3D%220.7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20"),
+  radial-gradient(
+    ellipse at top,
+    var(--csstools-light-dark-toggle--219, var(--color--cyan--800)),
+    transparent
+  ),
+  radial-gradient(
+    ellipse at bottom,
+    var(--csstools-light-dark-toggle--220, var(--color--violet--800)),
+    transparent
+  );
+--csstools-light-dark-toggle--221: var(--csstools-color-scheme--light) var(--color--blue--800);
+background-color: var(--csstools-light-dark-toggle--221, var(--color--blue--800));
+min-height: 100vh;
+padding: var(--size--20) var(--size--4);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: var(--size--20);
+@media (max-width: 999px) {
+  flex-direction: column;
+}
+@media (min-width: 1000px) {
+  flex-direction: row-reverse;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cheicjofjdhfnt"] { color: light-dark(var(--color--blue--100), var(--color--blue--100));
+background-image:
+  url("data:image/svg+xml,%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Csvg%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cfilter%20id%3D%22filter%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3CfeTurbulence%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20baseFrequency%3D%220.8%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stitchTiles%3D%22stitch%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Ffilter%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%3D%220%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20y%3D%220%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20width%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20height%3D%221000%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20filter%3D%22url(%23filter)%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20opacity%3D%220.7%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20"),
+  radial-gradient(
+    ellipse at top,
+    light-dark(var(--color--cyan--800), var(--color--cyan--800)),
+    transparent
+  ),
+  radial-gradient(
+    ellipse at bottom,
+    light-dark(var(--color--violet--800), var(--color--violet--800)),
+    transparent
+  );
+background-color: light-dark(var(--color--blue--800), var(--color--blue--800))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer tpuazoategssj {
+[css~="tpuazoategssj"] { font-weight: 400;
+--csstools-light-dark-toggle--222: var(--csstools-color-scheme--light) var(--color--blue--400);
+color: var(--csstools-light-dark-toggle--222, var(--color--blue--400));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="tpuazoategssj"] {
+color: light-dark(var(--color--blue--400), var(--color--blue--400));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer zewmvvygqyebt {
+[css~="zewmvvygqyebt"] { flex: 1;
+max-width: var(--size--96);
+ }
+}
+
+/********************************************************************************/
+
+@layer fdaspbzvdxwjga {
+[css~="fdaspbzvdxwjga"] { --csstools-color-scheme--light: initial; color-scheme: light dark;
+ }
+@media (prefers-color-scheme: dark){
+[css~="fdaspbzvdxwjga"] { --csstools-color-scheme--light:  ;
+ }
+    }
+}
+
+/********************************************************************************/
+
+@layer giwwlqtfwzqjuf {
+[css~="giwwlqtfwzqjuf"] { --csstools-color-scheme--light: initial; color-scheme: light;
+ }
+}
+
+/********************************************************************************/
+
+@layer ewdsoyfsjqqcgb {
+[css~="ewdsoyfsjqqcgb"] { --csstools-color-scheme--light:  ; color-scheme: dark;
+ }
+}
+
+/********************************************************************************/
+
+@layer bzhcogxfgsnqud {
+[css~="bzhcogxfgsnqud"] { font-family: "Roboto Flex Variable", var(--font-family--sans-serif);
+font-size: var(--font-size--3-5);
+line-height: var(--font-size--3-5--line-height);
+--csstools-light-dark-toggle--223: var(--csstools-color-scheme--light) var(--color--white);
+color: var(--csstools-light-dark-toggle--223, var(--color--black));
+--csstools-light-dark-toggle--224: var(--csstools-color-scheme--light) var(--color--black);
+background-color: var(--csstools-light-dark-toggle--224, var(--color--white));
+position: fixed;
+inset: var(--size--0);
+overflow: hidden;
+display: flex;
+flex-direction: column;
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="bzhcogxfgsnqud"] {
+color: light-dark(var(--color--black), var(--color--white));
+background-color: light-dark(var(--color--white), var(--color--black));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer eghwenmbuukouh {
+[css~="eghwenmbuukouh"] { transition-property: var(--transition-property--opacity);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+
+&[state~="hidden"] {
+  visibility: hidden;
+  opacity: var(--opacity--0);
+}
+
+& > * {
+  width: max-content;
+  max-width: min(calc(100% - var(--size--8)), var(--size--96));
+  padding: var(--size--1) var(--size--2);
+  border: var(--border-width--1) solid;
+  border-radius: var(--border-radius--1);
+  margin: var(--size--0) auto;
+  box-shadow: var(--box-shadow--4);
+  position: fixed;
+  top: var(--size--8);
+  left: var(--size--2);
+  right: var(--size--2);
+  z-index: 1500;
+
+  &.flash--red {
+    --csstools-light-dark-toggle--225: var(--csstools-color-scheme--light) var(--color--red--200);
+    color: var(--csstools-light-dark-toggle--225, var(--color--red--800));
+    --csstools-light-dark-toggle--226: var(--csstools-color-scheme--light) var(--color--red--950);
+    background-color: var(--csstools-light-dark-toggle--226, var(--color--red--50));
+    --csstools-light-dark-toggle--227: var(--csstools-color-scheme--light) var(--color--red--600);
+    border-color: var(--csstools-light-dark-toggle--227, var(--color--red--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--red {
+    color: light-dark(var(--color--red--800), var(--color--red--200));
+    background-color: light-dark(var(--color--red--50), var(--color--red--950));
+    border-color: light-dark(var(--color--red--400), var(--color--red--600));
+  }
+}
+
+  &.flash--orange {
+    --csstools-light-dark-toggle--228: var(--csstools-color-scheme--light) var(--color--orange--200);
+    color: var(--csstools-light-dark-toggle--228, var(--color--orange--800));
+    --csstools-light-dark-toggle--229: var(--csstools-color-scheme--light) var(--color--orange--950);
+    background-color: var(--csstools-light-dark-toggle--229, var(--color--orange--50));
+    --csstools-light-dark-toggle--230: var(--csstools-color-scheme--light) var(--color--orange--600);
+    border-color: var(--csstools-light-dark-toggle--230, var(--color--orange--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--orange {
+    color: light-dark(var(--color--orange--800), var(--color--orange--200));
+    background-color: light-dark(
+      var(--color--orange--50),
+      var(--color--orange--950)
+    );
+    border-color: light-dark(
+      var(--color--orange--400),
+      var(--color--orange--600)
+    );
+  }
+}
+
+  &.flash--amber {
+    --csstools-light-dark-toggle--231: var(--csstools-color-scheme--light) var(--color--amber--200);
+    color: var(--csstools-light-dark-toggle--231, var(--color--amber--800));
+    --csstools-light-dark-toggle--232: var(--csstools-color-scheme--light) var(--color--amber--950);
+    background-color: var(--csstools-light-dark-toggle--232, var(--color--amber--50));
+    --csstools-light-dark-toggle--233: var(--csstools-color-scheme--light) var(--color--amber--600);
+    border-color: var(--csstools-light-dark-toggle--233, var(--color--amber--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--amber {
+    color: light-dark(var(--color--amber--800), var(--color--amber--200));
+    background-color: light-dark(
+      var(--color--amber--50),
+      var(--color--amber--950)
+    );
+    border-color: light-dark(
+      var(--color--amber--400),
+      var(--color--amber--600)
+    );
+  }
+}
+
+  &.flash--yellow {
+    --csstools-light-dark-toggle--234: var(--csstools-color-scheme--light) var(--color--yellow--200);
+    color: var(--csstools-light-dark-toggle--234, var(--color--yellow--800));
+    --csstools-light-dark-toggle--235: var(--csstools-color-scheme--light) var(--color--yellow--950);
+    background-color: var(--csstools-light-dark-toggle--235, var(--color--yellow--50));
+    --csstools-light-dark-toggle--236: var(--csstools-color-scheme--light) var(--color--yellow--600);
+    border-color: var(--csstools-light-dark-toggle--236, var(--color--yellow--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--yellow {
+    color: light-dark(var(--color--yellow--800), var(--color--yellow--200));
+    background-color: light-dark(
+      var(--color--yellow--50),
+      var(--color--yellow--950)
+    );
+    border-color: light-dark(
+      var(--color--yellow--400),
+      var(--color--yellow--600)
+    );
+  }
+}
+
+  &.flash--lime {
+    --csstools-light-dark-toggle--237: var(--csstools-color-scheme--light) var(--color--lime--200);
+    color: var(--csstools-light-dark-toggle--237, var(--color--lime--800));
+    --csstools-light-dark-toggle--238: var(--csstools-color-scheme--light) var(--color--lime--950);
+    background-color: var(--csstools-light-dark-toggle--238, var(--color--lime--50));
+    --csstools-light-dark-toggle--239: var(--csstools-color-scheme--light) var(--color--lime--600);
+    border-color: var(--csstools-light-dark-toggle--239, var(--color--lime--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--lime {
+    color: light-dark(var(--color--lime--800), var(--color--lime--200));
+    background-color: light-dark(
+      var(--color--lime--50),
+      var(--color--lime--950)
+    );
+    border-color: light-dark(var(--color--lime--400), var(--color--lime--600));
+  }
+}
+
+  &.flash--green {
+    --csstools-light-dark-toggle--240: var(--csstools-color-scheme--light) var(--color--green--200);
+    color: var(--csstools-light-dark-toggle--240, var(--color--green--800));
+    --csstools-light-dark-toggle--241: var(--csstools-color-scheme--light) var(--color--green--950);
+    background-color: var(--csstools-light-dark-toggle--241, var(--color--green--50));
+    --csstools-light-dark-toggle--242: var(--csstools-color-scheme--light) var(--color--green--600);
+    border-color: var(--csstools-light-dark-toggle--242, var(--color--green--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--green {
+    color: light-dark(var(--color--green--800), var(--color--green--200));
+    background-color: light-dark(
+      var(--color--green--50),
+      var(--color--green--950)
+    );
+    border-color: light-dark(
+      var(--color--green--400),
+      var(--color--green--600)
+    );
+  }
+}
+
+  &.flash--emerald {
+    --csstools-light-dark-toggle--243: var(--csstools-color-scheme--light) var(--color--emerald--200);
+    color: var(--csstools-light-dark-toggle--243, var(--color--emerald--800));
+    --csstools-light-dark-toggle--244: var(--csstools-color-scheme--light) var(--color--emerald--950);
+    background-color: var(--csstools-light-dark-toggle--244, var(--color--emerald--50));
+    --csstools-light-dark-toggle--245: var(--csstools-color-scheme--light) var(--color--emerald--600);
+    border-color: var(--csstools-light-dark-toggle--245, var(--color--emerald--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--emerald {
+    color: light-dark(var(--color--emerald--800), var(--color--emerald--200));
+    background-color: light-dark(
+      var(--color--emerald--50),
+      var(--color--emerald--950)
+    );
+    border-color: light-dark(
+      var(--color--emerald--400),
+      var(--color--emerald--600)
+    );
+  }
+}
+
+  &.flash--teal {
+    --csstools-light-dark-toggle--246: var(--csstools-color-scheme--light) var(--color--teal--200);
+    color: var(--csstools-light-dark-toggle--246, var(--color--teal--800));
+    --csstools-light-dark-toggle--247: var(--csstools-color-scheme--light) var(--color--teal--950);
+    background-color: var(--csstools-light-dark-toggle--247, var(--color--teal--50));
+    --csstools-light-dark-toggle--248: var(--csstools-color-scheme--light) var(--color--teal--600);
+    border-color: var(--csstools-light-dark-toggle--248, var(--color--teal--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--teal {
+    color: light-dark(var(--color--teal--800), var(--color--teal--200));
+    background-color: light-dark(
+      var(--color--teal--50),
+      var(--color--teal--950)
+    );
+    border-color: light-dark(var(--color--teal--400), var(--color--teal--600));
+  }
+}
+
+  &.flash--cyan {
+    --csstools-light-dark-toggle--249: var(--csstools-color-scheme--light) var(--color--cyan--200);
+    color: var(--csstools-light-dark-toggle--249, var(--color--cyan--800));
+    --csstools-light-dark-toggle--250: var(--csstools-color-scheme--light) var(--color--cyan--950);
+    background-color: var(--csstools-light-dark-toggle--250, var(--color--cyan--50));
+    --csstools-light-dark-toggle--251: var(--csstools-color-scheme--light) var(--color--cyan--600);
+    border-color: var(--csstools-light-dark-toggle--251, var(--color--cyan--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--cyan {
+    color: light-dark(var(--color--cyan--800), var(--color--cyan--200));
+    background-color: light-dark(
+      var(--color--cyan--50),
+      var(--color--cyan--950)
+    );
+    border-color: light-dark(var(--color--cyan--400), var(--color--cyan--600));
+  }
+}
+
+  &.flash--sky {
+    --csstools-light-dark-toggle--252: var(--csstools-color-scheme--light) var(--color--sky--200);
+    color: var(--csstools-light-dark-toggle--252, var(--color--sky--800));
+    --csstools-light-dark-toggle--253: var(--csstools-color-scheme--light) var(--color--sky--950);
+    background-color: var(--csstools-light-dark-toggle--253, var(--color--sky--50));
+    --csstools-light-dark-toggle--254: var(--csstools-color-scheme--light) var(--color--sky--600);
+    border-color: var(--csstools-light-dark-toggle--254, var(--color--sky--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--sky {
+    color: light-dark(var(--color--sky--800), var(--color--sky--200));
+    background-color: light-dark(var(--color--sky--50), var(--color--sky--950));
+    border-color: light-dark(var(--color--sky--400), var(--color--sky--600));
+  }
+}
+
+  &.flash--blue {
+    --csstools-light-dark-toggle--255: var(--csstools-color-scheme--light) var(--color--blue--200);
+    color: var(--csstools-light-dark-toggle--255, var(--color--blue--800));
+    --csstools-light-dark-toggle--256: var(--csstools-color-scheme--light) var(--color--blue--950);
+    background-color: var(--csstools-light-dark-toggle--256, var(--color--blue--50));
+    --csstools-light-dark-toggle--257: var(--csstools-color-scheme--light) var(--color--blue--600);
+    border-color: var(--csstools-light-dark-toggle--257, var(--color--blue--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--blue {
+    color: light-dark(var(--color--blue--800), var(--color--blue--200));
+    background-color: light-dark(
+      var(--color--blue--50),
+      var(--color--blue--950)
+    );
+    border-color: light-dark(var(--color--blue--400), var(--color--blue--600));
+  }
+}
+
+  &.flash--indigo {
+    --csstools-light-dark-toggle--258: var(--csstools-color-scheme--light) var(--color--indigo--200);
+    color: var(--csstools-light-dark-toggle--258, var(--color--indigo--800));
+    --csstools-light-dark-toggle--259: var(--csstools-color-scheme--light) var(--color--indigo--950);
+    background-color: var(--csstools-light-dark-toggle--259, var(--color--indigo--50));
+    --csstools-light-dark-toggle--260: var(--csstools-color-scheme--light) var(--color--indigo--600);
+    border-color: var(--csstools-light-dark-toggle--260, var(--color--indigo--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--indigo {
+    color: light-dark(var(--color--indigo--800), var(--color--indigo--200));
+    background-color: light-dark(
+      var(--color--indigo--50),
+      var(--color--indigo--950)
+    );
+    border-color: light-dark(
+      var(--color--indigo--400),
+      var(--color--indigo--600)
+    );
+  }
+}
+
+  &.flash--violet {
+    --csstools-light-dark-toggle--261: var(--csstools-color-scheme--light) var(--color--violet--200);
+    color: var(--csstools-light-dark-toggle--261, var(--color--violet--800));
+    --csstools-light-dark-toggle--262: var(--csstools-color-scheme--light) var(--color--violet--950);
+    background-color: var(--csstools-light-dark-toggle--262, var(--color--violet--50));
+    --csstools-light-dark-toggle--263: var(--csstools-color-scheme--light) var(--color--violet--600);
+    border-color: var(--csstools-light-dark-toggle--263, var(--color--violet--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--violet {
+    color: light-dark(var(--color--violet--800), var(--color--violet--200));
+    background-color: light-dark(
+      var(--color--violet--50),
+      var(--color--violet--950)
+    );
+    border-color: light-dark(
+      var(--color--violet--400),
+      var(--color--violet--600)
+    );
+  }
+}
+
+  &.flash--purple {
+    --csstools-light-dark-toggle--264: var(--csstools-color-scheme--light) var(--color--purple--200);
+    color: var(--csstools-light-dark-toggle--264, var(--color--purple--800));
+    --csstools-light-dark-toggle--265: var(--csstools-color-scheme--light) var(--color--purple--950);
+    background-color: var(--csstools-light-dark-toggle--265, var(--color--purple--50));
+    --csstools-light-dark-toggle--266: var(--csstools-color-scheme--light) var(--color--purple--600);
+    border-color: var(--csstools-light-dark-toggle--266, var(--color--purple--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--purple {
+    color: light-dark(var(--color--purple--800), var(--color--purple--200));
+    background-color: light-dark(
+      var(--color--purple--50),
+      var(--color--purple--950)
+    );
+    border-color: light-dark(
+      var(--color--purple--400),
+      var(--color--purple--600)
+    );
+  }
+}
+
+  &.flash--fuchsia {
+    --csstools-light-dark-toggle--267: var(--csstools-color-scheme--light) var(--color--fuchsia--200);
+    color: var(--csstools-light-dark-toggle--267, var(--color--fuchsia--800));
+    --csstools-light-dark-toggle--268: var(--csstools-color-scheme--light) var(--color--fuchsia--950);
+    background-color: var(--csstools-light-dark-toggle--268, var(--color--fuchsia--50));
+    --csstools-light-dark-toggle--269: var(--csstools-color-scheme--light) var(--color--fuchsia--600);
+    border-color: var(--csstools-light-dark-toggle--269, var(--color--fuchsia--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--fuchsia {
+    color: light-dark(var(--color--fuchsia--800), var(--color--fuchsia--200));
+    background-color: light-dark(
+      var(--color--fuchsia--50),
+      var(--color--fuchsia--950)
+    );
+    border-color: light-dark(
+      var(--color--fuchsia--400),
+      var(--color--fuchsia--600)
+    );
+  }
+}
+
+  &.flash--pink {
+    --csstools-light-dark-toggle--270: var(--csstools-color-scheme--light) var(--color--pink--200);
+    color: var(--csstools-light-dark-toggle--270, var(--color--pink--800));
+    --csstools-light-dark-toggle--271: var(--csstools-color-scheme--light) var(--color--pink--950);
+    background-color: var(--csstools-light-dark-toggle--271, var(--color--pink--50));
+    --csstools-light-dark-toggle--272: var(--csstools-color-scheme--light) var(--color--pink--600);
+    border-color: var(--csstools-light-dark-toggle--272, var(--color--pink--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--pink {
+    color: light-dark(var(--color--pink--800), var(--color--pink--200));
+    background-color: light-dark(
+      var(--color--pink--50),
+      var(--color--pink--950)
+    );
+    border-color: light-dark(var(--color--pink--400), var(--color--pink--600));
+  }
+}
+
+  &.flash--rose {
+    --csstools-light-dark-toggle--273: var(--csstools-color-scheme--light) var(--color--rose--200);
+    color: var(--csstools-light-dark-toggle--273, var(--color--rose--800));
+    --csstools-light-dark-toggle--274: var(--csstools-color-scheme--light) var(--color--rose--950);
+    background-color: var(--csstools-light-dark-toggle--274, var(--color--rose--50));
+    --csstools-light-dark-toggle--275: var(--csstools-color-scheme--light) var(--color--rose--600);
+    border-color: var(--csstools-light-dark-toggle--275, var(--color--rose--400));
+  }
+
+@supports (color: light-dark(red, red)){
+&.flash--rose {
+    color: light-dark(var(--color--rose--800), var(--color--rose--200));
+    background-color: light-dark(
+      var(--color--rose--50),
+      var(--color--rose--950)
+    );
+    border-color: light-dark(var(--color--rose--400), var(--color--rose--600));
+  }
+}
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer hhuxdbwpurlgba {
+[css~="hhuxdbwpurlgba"] { --csstools-light-dark-toggle--276: var(--csstools-color-scheme--light) var(--background-color--dark); background-color: var(--csstools-light-dark-toggle--276, var(--background-color--light));
+height: var(--size--1);
+--csstools-light-dark-toggle--277: var(--csstools-color-scheme--light) var(--border-color--dark);
+border-bottom: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--277, var(--border-color--light));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="hhuxdbwpurlgba"] { background-color: light-dark(
+  var(--background-color--light),
+  var(--background-color--dark)
+);
+border-bottom: var(--border-width--1) solid
+  light-dark(var(--border-color--light), var(--border-color--dark));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer fbfbvkszsieefg {
+[css~="fbfbvkszsieefg"] { padding: var(--size--2) var(--size--4);
+--csstools-light-dark-toggle--278: var(--csstools-color-scheme--light) var(--color--slate--800);
+border-bottom: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--278, var(--color--slate--200));
+display: flex;
+align-items: center;
+gap: var(--size--4);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="fbfbvkszsieefg"] {
+border-bottom: var(--border-width--1) solid
+  light-dark(var(--color--slate--200), var(--color--slate--800));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dbbstjmkndxjzq {
+[css~="dbbstjmkndxjzq"] { font-size: var(--font-size--5);
+line-height: var(--size--0);
+@media (min-width: 900px) {
+  display: none;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer eilqxsaftbkhnx {
+[css~="eilqxsaftbkhnx"] { font-family: "Roboto Serif Variable", var(--font-family--serif);
+font-weight: 900;
+font-size: var(--font-size--4);
+line-height: var(--font-size--4--line-height);
+display: flex;
+gap: var(--size--1);
+align-items: center;
+ }
+}
+
+/********************************************************************************/
+
+@layer chpjycqbxcdtxn {
+[css~="chpjycqbxcdtxn"] { max-width: 100%;
+display: flex;
+gap: var(--size--1);
+align-items: center;
+ }
+}
+
+/********************************************************************************/
+
+@layer hicxrysgtgxkvu {
+[css~="hicxrysgtgxkvu"] { white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+ }
+}
+
+/********************************************************************************/
+
+@layer fcgobfbcfgfqif {
+[css~="fcgobfbcfgfqif"] { font-weight: 700;
+[key~="course-selector"]:not(.button--blue) & {
+  --csstools-light-dark-toggle--279: var(--csstools-color-scheme--light) var(--color--red--500);
+  color: var(--csstools-light-dark-toggle--279, var(--color--red--500));
+}
+
+@supports (color: light-dark(red, red)){
+[key~="course-selector"]:not(.button--blue) & {
+  color: light-dark(var(--color--red--500), var(--color--red--500));
+}
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer cywkhwxrmbgnui {
+[css~="cywkhwxrmbgnui"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+[key~="course-selector"]:not(.button--blue) & {
+  --csstools-light-dark-toggle--280: var(--csstools-color-scheme--light) var(--color--slate--400);
+  color: var(--csstools-light-dark-toggle--280, var(--color--slate--600));
+}
+
+@supports (color: light-dark(red, red)){
+[key~="course-selector"]:not(.button--blue) & {
+  color: light-dark(var(--color--slate--600), var(--color--slate--400));
+}
+}
+[key~="course-selector"].button--blue & {
+  --csstools-light-dark-toggle--281: var(--csstools-color-scheme--light) var(--color--blue--200);
+  color: var(--csstools-light-dark-toggle--281, var(--color--blue--200));
+}
+
+@supports (color: light-dark(red, red)){
+[key~="course-selector"].button--blue & {
+  color: light-dark(var(--color--blue--200), var(--color--blue--200));
+}
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer cblsmsazhipyeq {
+[css~="cblsmsazhipyeq"] { font-size: var(--size--1-5);
+line-height: var(--font-size--3-5--line-height);
+--csstools-light-dark-toggle--282: var(--csstools-color-scheme--light) var(--color--blue--500);
+color: var(--csstools-light-dark-toggle--282, var(--color--blue--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cblsmsazhipyeq"] {
+color: light-dark(var(--color--blue--500), var(--color--blue--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer hjtcupmealkoqp {
+[css~="hjtcupmealkoqp"] { visibility: hidden;
+ }
+}
+
+/********************************************************************************/
+
+@layer bwoiohdndanccw {
+[css~="bwoiohdndanccw"] { display: flex;
+gap: var(--size--4);
+@media (max-width: 539px) {
+  align-items: center;
+}
+@media (min-width: 540px) {
+  align-items: baseline;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer fijcvanhxnsesd {
+[css~="fijcvanhxnsesd"] { @media (max-width: 539px) {
+  display: none;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer bzfehabvavulbp {
+[css~="bzfehabvavulbp"] { --csstools-light-dark-toggle--283: var(--csstools-color-scheme--light) var(--color--slate--400); color: var(--csstools-light-dark-toggle--283, var(--color--slate--600));
+@media (min-width: 540px) {
+  display: none;
+}
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="bzfehabvavulbp"] { color: light-dark(var(--color--slate--600), var(--color--slate--400))
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer fqwlxfhstuuruv {
+[css~="fqwlxfhstuuruv"] { flex: 1;
+min-height: var(--size--0);
+ }
+}
+
+/********************************************************************************/
+
+@layer esoxhasazjwenu {
+[css~="esoxhasazjwenu"] { max-width: var(--size--168);
+padding: var(--size--2) var(--size--4);
+margin: var(--size--0) auto;
+ }
+}
+
+/********************************************************************************/
+
+@layer hibbtmpgbjlmwt {
+[css~="hibbtmpgbjlmwt"] { display: flex;
+flex-direction: column;
+gap: var(--size--1-5);
+ }
+}
+
+/********************************************************************************/
+
+@layer fdtbzkhdibovwg {
+[css~="fdtbzkhdibovwg"] { flex: 1;
+font-family: "Roboto Mono Variable", var(--font-family--monospace);
+ }
+}
+
+/********************************************************************************/
+
+@layer dimqcsbgvqeekr {
+[css~="dimqcsbgvqeekr"] { font-size: var(--font-size--3);
+line-height: var(--font-size--3--line-height);
+font-weight: 600;
+--csstools-light-dark-toggle--284: var(--csstools-color-scheme--light) var(--color--green--500);
+color: var(--csstools-light-dark-toggle--284, var(--color--green--500));
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="dimqcsbgvqeekr"] {
+color: light-dark(var(--color--green--500), var(--color--green--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer mdwiqttzlhbts {
+[css~="mdwiqttzlhbts"] { font-family: "Roboto Mono Variable", var(--font-family--monospace);
+columns: 2;
+ }
+}
+
+/********************************************************************************/
+
+@layer rqrqmrdagqyxz {
+[css~="rqrqmrdagqyxz"] { user-select: none;
+display: grid;
+& > * {
+  grid-area: 1 / 1;
+}
+ }
+}
+
+/********************************************************************************/
+
+@layer gqlrdqvcdbxuoc {
+[css~="gqlrdqvcdbxuoc"] { --csstools-light-dark-toggle--285: var(--csstools-color-scheme--light) var(--color--white); background-color: var(--csstools-light-dark-toggle--285, var(--color--white));
+border-radius: var(--border-radius--1);
+display: block;
+object-fit: cover;
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="gqlrdqvcdbxuoc"] { background-color: light-dark(var(--color--white), var(--color--white));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer fctsnxbrkyebbl {
+[css~="fctsnxbrkyebbl"] { width: var(--size--6);
+height: var(--size--6);
+ }
+}
+
+/********************************************************************************/
+
+@layer gsttlcclxjwjsp {
+[css~="gsttlcclxjwjsp"] { width: var(--size--9);
+height: var(--size--9);
+ }
+}
+
+/********************************************************************************/
+
+@layer gedgwjjnienesp {
+[css~="gedgwjjnienesp"] { font-family: "Roboto Serif Variable", var(--font-family--serif);
+line-height: var(--size--0);
+font-weight: 900;
+--csstools-light-dark-toggle--286: var(--csstools-color-scheme--light) var(--color--dark);
+color: var(--csstools-light-dark-toggle--286, var(--color--light));
+--csstools-light-dark-toggle--287: var(--csstools-color-scheme--light) var(--background-color--dark);
+background-color: var(--csstools-light-dark-toggle--287, var(--background-color--light));
+--csstools-light-dark-toggle--288: var(--csstools-color-scheme--light) var(--border-color--dark);
+border: var(--border-width--1) solid
+  var(--csstools-light-dark-toggle--288, var(--border-color--light));
+border-radius: var(--border-radius--1);
+overflow: hidden;
+display: flex;
+justify-content: center;
+align-items: center;
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="gedgwjjnienesp"] {
+color: light-dark(var(--color--light), var(--color--dark));
+background-color: light-dark(
+  var(--background-color--light),
+  var(--background-color--dark)
+);
+border: var(--border-width--1) solid
+  light-dark(var(--border-color--light), var(--border-color--dark));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer fddzlwmkjzfqou {
+[css~="fddzlwmkjzfqou"] { font-size: var(--font-size--2-5);
+ }
+}
+
+/********************************************************************************/
+
+@layer esezctttknvztm {
+[css~="esezctttknvztm"] { font-size: var(--font-size--4);
+ }
+}
+
+/********************************************************************************/
+
+@layer hdupphwnlsuyfy {
+[css~="hdupphwnlsuyfy"] { font-size: var(--font-size--3-5);
+ }
+}
+
+/********************************************************************************/
+
+@layer ekxtmopeykpndp {
+[css~="ekxtmopeykpndp"] { font-size: var(--font-size--6);
+ }
+}
+
+/********************************************************************************/
+
+@layer cuidjnxxcjwtvz {
+[css~="cuidjnxxcjwtvz"] { font-size: var(--size--1-5);
+line-height: var(--size--0);
+--csstools-light-dark-toggle--289: var(--csstools-color-scheme--light) var(--color--green--500);
+color: var(--csstools-light-dark-toggle--289, var(--color--green--500));
+justify-self: end;
+align-self: end;
+translate: 40% 40%;
+transition-property: var(--transition-property--opacity);
+transition-duration: var(--transition-duration--150);
+transition-timing-function: var(--transition-timing-function--ease-in-out);
+ }
+
+@supports (color: light-dark(red, red)){
+[css~="cuidjnxxcjwtvz"] {
+color: light-dark(var(--color--green--500), var(--color--green--500));
+ }
+}
+}
+
+/********************************************************************************/
+
+@layer dbvtevqaxdwjca {
+[css~="dbvtevqaxdwjca"] { opacity: var(--opacity--0);
+ }
+}
+
+
+        }
+      
