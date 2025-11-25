@@ -2779,7 +2779,7 @@ export default async (application: Application): Promise<void> => {
                         ${Number(Math.random() < 0.9)},
                         ${Number(Math.random() < 0.9)},
                         ${Number(Math.random() < 0.9)},
-                        ${Math.random() < 0.8 ? "userAnonymityPreferredNone" : Math.random() < 0.8 ? "userAnonymityPreferredCourseParticipationRoleStudents" : "userAnonymityPreferredCourseParticipationRoleInstructors"},
+                        ${Math.random() < 0.8 ? "userAnonymityPreferredNone" : Math.random() < 0.8 ? "userAnonymityPreferredCourseParticipationRoleStudents" : "userAnonymityPreferredEveryone"},
                         ${null}
                       );
                     `,

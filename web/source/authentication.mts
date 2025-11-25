@@ -83,7 +83,7 @@ export type ApplicationAuthentication = {
           userAnonymityPreferred:
             | "userAnonymityPreferredNone"
             | "userAnonymityPreferredCourseParticipationRoleStudents"
-            | "userAnonymityPreferredCourseParticipationRoleInstructors";
+            | "userAnonymityPreferredEveryone";
           mostRecentlyVisitedCourseParticipation: number | null;
         };
       };
@@ -340,7 +340,7 @@ export default async (application: Application): Promise<void> => {
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
-          | "userAnonymityPreferredCourseParticipationRoleInstructors";
+          | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
       }>(
         sql`
@@ -1164,7 +1164,7 @@ export default async (application: Application): Promise<void> => {
           userAnonymityPreferred:
             | "userAnonymityPreferredNone"
             | "userAnonymityPreferredCourseParticipationRoleStudents"
-            | "userAnonymityPreferredCourseParticipationRoleInstructors";
+            | "userAnonymityPreferredEveryone";
           mostRecentlyVisitedCourseParticipation: number | null;
         }>(
           sql`
@@ -1903,7 +1903,7 @@ export default async (application: Application): Promise<void> => {
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
-          | "userAnonymityPreferredCourseParticipationRoleInstructors";
+          | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
       }>(
         sql`
@@ -2575,7 +2575,7 @@ export default async (application: Application): Promise<void> => {
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
-          | "userAnonymityPreferredCourseParticipationRoleInstructors";
+          | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
       }>(
         sql`
@@ -2975,7 +2975,7 @@ export default async (application: Application): Promise<void> => {
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
-          | "userAnonymityPreferredCourseParticipationRoleInstructors";
+          | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
       }>(
         sql`
@@ -3330,7 +3330,7 @@ export default async (application: Application): Promise<void> => {
           userAnonymityPreferred:
             | "userAnonymityPreferredNone"
             | "userAnonymityPreferredCourseParticipationRoleStudents"
-            | "userAnonymityPreferredCourseParticipationRoleInstructors";
+            | "userAnonymityPreferredEveryone";
           mostRecentlyVisitedCourseParticipation: number | null;
         }>(
           sql`
@@ -3414,7 +3414,7 @@ export default async (application: Application): Promise<void> => {
           userAnonymityPreferred:
             | "userAnonymityPreferredNone"
             | "userAnonymityPreferredCourseParticipationRoleStudents"
-            | "userAnonymityPreferredCourseParticipationRoleInstructors";
+            | "userAnonymityPreferredEveryone";
           mostRecentlyVisitedCourseParticipation: number | null;
         }>(
           sql`

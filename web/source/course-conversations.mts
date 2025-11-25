@@ -2394,7 +2394,7 @@ export default async (application: Application): Promise<void> => {
                                               "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
                                             request.state.user
                                               .userAnonymityPreferred ===
-                                              "userAnonymityPreferredCourseParticipationRoleInstructors")
+                                              "userAnonymityPreferredEveryone")
                                             ? html`checked`
                                             : html``}
                                           hidden
