@@ -48,9 +48,6 @@ export type ApplicationCourses = {
             | "emerald"
             | "teal"
             | "cyan"
-            | "sky"
-            | "blue"
-            | "indigo"
             | "violet"
             | "purple"
             | "fuchsia"
@@ -297,9 +294,6 @@ export default async (application: Application): Promise<void> => {
           | "emerald"
           | "teal"
           | "cyan"
-          | "sky"
-          | "blue"
-          | "indigo"
           | "violet"
           | "purple"
           | "fuchsia"
@@ -335,9 +329,6 @@ export default async (application: Application): Promise<void> => {
                         "emerald",
                         "teal",
                         "cyan",
-                        "sky",
-                        "blue",
-                        "indigo",
                         "violet",
                         "purple",
                         "fuchsia",
@@ -433,9 +424,6 @@ export default async (application: Application): Promise<void> => {
           | "emerald"
           | "teal"
           | "cyan"
-          | "sky"
-          | "blue"
-          | "indigo"
           | "violet"
           | "purple"
           | "fuchsia"
@@ -3505,9 +3493,6 @@ export default async (application: Application): Promise<void> => {
                   "emerald",
                   "teal",
                   "cyan",
-                  "sky",
-                  "blue",
-                  "indigo",
                   "violet",
                   "purple",
                   "fuchsia",
@@ -4009,9 +3994,6 @@ export default async (application: Application): Promise<void> => {
                   "emerald",
                   "teal",
                   "cyan",
-                  "sky",
-                  "blue",
-                  "indigo",
                   "violet",
                   "purple",
                   "fuchsia",
@@ -4175,9 +4157,6 @@ export default async (application: Application): Promise<void> => {
             | "emerald"
             | "teal"
             | "cyan"
-            | "sky"
-            | "blue"
-            | "indigo"
             | "violet"
             | "purple"
             | "fuchsia"
