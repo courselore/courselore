@@ -6,7 +6,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     handler: (request, response) => {
       response.statusCode = 404;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -56,7 +56,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     error: true,
     handler: (request, response) => {
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,

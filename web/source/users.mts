@@ -107,7 +107,7 @@ export default async (application: Application): Promise<void> => {
         response.redirect!(`/courses/${course.publicId}`);
         return;
       }
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -198,7 +198,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (request.state.user === undefined) return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -2103,7 +2103,7 @@ export default async (application: Application): Promise<void> => {
           "string"
       )
         return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,

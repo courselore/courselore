@@ -102,7 +102,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -597,7 +597,7 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -668,7 +668,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversationsTags === undefined
       )
         return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -3335,7 +3335,7 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       if (request.state.invitationCourse === undefined) {
-        response.end(
+        response.send(
           application.layouts.main({
             request,
             response,
@@ -3364,7 +3364,7 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -3858,7 +3858,7 @@ export default async (application: Application): Promise<void> => {
         request.state.invitationCourse === undefined ||
         request.state.courseInvitationEmail === undefined
       ) {
-        response.end(
+        response.send(
           application.layouts.main({
             request,
             response,
@@ -3887,7 +3887,7 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,

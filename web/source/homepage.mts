@@ -20,7 +20,7 @@ export default async (application: Application): Promise<void> => {
         response,
       ) => {
         if (request.state.user !== undefined) return;
-        response.end(
+        response.send(
           application.layouts.base({
             request,
             response,

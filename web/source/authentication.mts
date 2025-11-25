@@ -470,7 +470,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (request.state.user !== undefined) return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -1334,7 +1334,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user.emailVerificationEmail === null
       )
         return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -1575,7 +1575,7 @@ export default async (application: Application): Promise<void> => {
         }
         return;
       }
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -2055,7 +2055,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -2161,7 +2161,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined
       )
         return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -2700,7 +2700,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (request.state.user !== undefined) return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -2766,7 +2766,7 @@ export default async (application: Application): Promise<void> => {
         }
         return;
       }
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,
@@ -3169,7 +3169,7 @@ export default async (application: Application): Promise<void> => {
       if (saml === undefined) return;
       response
         .setHeader("Content-Type", "application/xml; charset=utf-8")
-        .end(
+        .send(
           saml.saml.generateServiceProviderMetadata(
             saml.configuration.options.decryptionCert ?? null,
             request.state.systemOptions.certificate,
@@ -3609,7 +3609,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.state.user.password === "string"
       )
         return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,

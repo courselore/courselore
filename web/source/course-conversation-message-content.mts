@@ -1151,7 +1151,7 @@ ${courseConversationMessageContent}</textarea
         }
         markdown.push(`[Attachment](/${relativePath})`);
       }
-      response.end(markdown.join("\n\n"));
+      response.send(markdown.join("\n\n"));
     },
   });
 
@@ -1189,7 +1189,7 @@ ${courseConversationMessageContent}</textarea
         request.body.content.trim() === ""
       )
         throw "validation";
-      response.end(
+      response.send(
         await application.partials.courseConversationMessageContentProcessor({
           course: request.state.course,
           courseParticipation: request.state.courseParticipation,
@@ -1223,7 +1223,7 @@ ${courseConversationMessageContent}</textarea
         request.state.courseParticipation === undefined
       )
         return;
-      response.end(
+      response.send(
         application.layouts.main({
           request,
           response,

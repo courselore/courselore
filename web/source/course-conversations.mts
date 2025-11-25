@@ -1280,7 +1280,7 @@ export default async (application: Application): Promise<void> => {
             `);
           }
       }
-      response.end(html`
+      response.send(html`
         <div
           css="${css`
             display: flex;
@@ -1335,7 +1335,7 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.end();
+      response.send();
     },
   });
 
@@ -1504,7 +1504,7 @@ export default async (application: Application): Promise<void> => {
           };
       }
       prefill = { ...prefill, ...request.search };
-      response.end(
+      response.send(
         await (
           application.database.get(
             sql`
@@ -2904,7 +2904,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversation === undefined
       )
         return;
-      response.end(
+      response.send(
         await courseConversationsLayout({
           request,
           response,

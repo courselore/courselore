@@ -137,7 +137,7 @@ await layouts(application);
 // TODO
 application.server?.push({
   handler: (request, response) => {
-    if (request.liveConnection === "connectingWithoutUpdate") response.end();
+    if (request.liveConnection === "connectingWithoutUpdate") response.send();
   },
 });
 await authentication(application);

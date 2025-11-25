@@ -164,7 +164,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.end();
+      response.send();
       if (sendLiveConnectionUpdates)
         for (const port of application.privateConfiguration.ports)
           fetch(`http://localhost:${port}/__live-connections`, {
@@ -814,7 +814,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         return;
-      response.end(html`
+      response.send(html`
         <div
           type="form"
           method="PATCH"
@@ -1560,7 +1560,7 @@ export default async (application: Application): Promise<void> => {
             `,
           );
       });
-      response.end();
+      response.send();
     },
   });
 
