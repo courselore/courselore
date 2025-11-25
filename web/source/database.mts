@@ -2947,7 +2947,7 @@ export default async (application: Application): Promise<void> => {
                               "fuchsia",
                               "pink",
                               "rose",
-                            ][Math.floor(Math.random() * 17)]
+                            ][Math.floor(Math.random() * 14)]
                           },
                           ${null}
                         );
