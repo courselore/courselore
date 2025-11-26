@@ -6178,10 +6178,13 @@ export default async (application: Application): Promise<void> => {
                                       type="radio"
                                       name="courseConversationMessageAnonymity"
                                       value="courseConversationMessageAnonymityNone"
-                                      $${courseConversationMessageDraft ===
-                                        undefined ||
-                                      courseConversationMessageDraft.courseConversationMessageAnonymity ===
-                                        "courseConversationMessageAnonymityNone"
+                                      $${courseConversationMessageDraft?.courseConversationMessageAnonymity ===
+                                        "courseConversationMessageAnonymityNone" ||
+                                      (courseConversationMessageDraft ===
+                                        undefined &&
+                                        request.state.user
+                                          .userAnonymityPreferred ===
+                                          "userAnonymityPreferredNone")
                                         ? html`checked`
                                         : html``}
                                       required
@@ -6200,11 +6203,22 @@ export default async (application: Application): Promise<void> => {
                                       required
                                       $${courseConversationMessageDraft?.courseConversationMessageAnonymity ===
                                         "courseConversationMessageAnonymityCourseParticipationRoleStudents" ||
-                                      (request.state.course
-                                        .courseParticipationRoleStudentsAnonymityAllowed ===
-                                        "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
-                                        courseConversationMessageDraft?.courseConversationMessageAnonymity ===
-                                          "courseConversationMessageAnonymityEveryone")
+                                      (courseConversationMessageDraft ===
+                                        undefined &&
+                                        (request.state.user
+                                          .userAnonymityPreferred ===
+                                          "userAnonymityPreferredCourseParticipationRoleStudents" ||
+                                          (request.state.user
+                                            .userAnonymityPreferred ===
+                                            "userAnonymityPreferredEveryone" &&
+                                            request.state.course
+                                              .courseParticipationRoleStudentsAnonymityAllowed !==
+                                              "courseParticipationRoleStudentsAnonymityAllowedEveryone"))) ||
+                                      (courseConversationMessageDraft?.courseConversationMessageAnonymity ===
+                                        "courseConversationMessageAnonymityEveryone" &&
+                                        request.state.course
+                                          .courseParticipationRoleStudentsAnonymityAllowed !==
+                                          "courseParticipationRoleStudentsAnonymityAllowedEveryone")
                                         ? html`checked`
                                         : html``}
                                       hidden
@@ -6224,7 +6238,12 @@ export default async (application: Application): Promise<void> => {
                                             value="courseConversationMessageAnonymityEveryone"
                                             required
                                             $${courseConversationMessageDraft?.courseConversationMessageAnonymity ===
-                                            "courseConversationMessageAnonymityEveryone"
+                                              "courseConversationMessageAnonymityEveryone" ||
+                                            (courseConversationMessageDraft ===
+                                              undefined &&
+                                              request.state.user
+                                                .userAnonymityPreferred ===
+                                                "userAnonymityPreferredEveryone")
                                               ? html`checked`
                                               : html``}
                                             hidden
