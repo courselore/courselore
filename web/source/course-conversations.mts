@@ -2377,9 +2377,20 @@ export default async (application: Application): Promise<void> => {
                                       "courseConversationMessageAnonymityNone" &&
                                       prefill.courseConversationMessageAnonymity !==
                                         "courseConversationMessageAnonymityEveryone" &&
-                                      request.state.user
+                                      (request.state.user
                                         .userAnonymityPreferred ===
-                                        "userAnonymityPreferredCourseParticipationRoleStudents")
+                                        "userAnonymityPreferredCourseParticipationRoleStudents" ||
+                                        (request.state.user
+                                          .userAnonymityPreferred ===
+                                          "userAnonymityPreferredEveryone" &&
+                                          request.state.course
+                                            .courseParticipationRoleStudentsAnonymityAllowed !==
+                                            "courseParticipationRoleStudentsAnonymityAllowedEveryone"))) ||
+                                    (prefill.courseConversationMessageAnonymity ===
+                                      "courseConversationMessageAnonymityEveryone" &&
+                                      request.state.course
+                                        .courseParticipationRoleStudentsAnonymityAllowed !==
+                                        "courseParticipationRoleStudentsAnonymityAllowedEveryone")
                                       ? html`checked`
                                       : html``}
                                     hidden
