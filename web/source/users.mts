@@ -70,7 +70,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.systemOptions === undefined ||
         request.state.user === undefined ||
-        typeof request.liveConnection === "string"
+        request.liveConnection
       )
         return;
       const courseParticipation = application.database.get<{

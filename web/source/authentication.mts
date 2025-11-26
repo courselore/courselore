@@ -101,7 +101,7 @@ export default async (application: Application): Promise<void> => {
               select true from "sqlite_sequence" where "name" = 'userSessions';
             `,
           ) !== undefined ||
-          typeof request.liveConnection === "string"
+          request.liveConnection
         )
           return;
         const userSession = application.database.get<{
@@ -184,7 +184,7 @@ export default async (application: Application): Promise<void> => {
             request.URL.pathname === "/"
           ) &&
           !request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")) &&
-          request.liveConnection === undefined
+          !request.liveConnection
         )
           response.redirect!(
             `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
@@ -214,7 +214,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.userSession === undefined) {
-        if (typeof request.liveConnection === "string") return;
+        if (request.liveConnection) return;
         response.deleteCookie!("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect!(
@@ -225,7 +225,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.userSession.createdAt <
           new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString() &&
-        request.liveConnection === undefined
+        !request.liveConnection
       ) {
         application.database.run(
           sql`
@@ -366,7 +366,7 @@ export default async (application: Application): Promise<void> => {
           ),
         )
       ) {
-        if (request.liveConnection === undefined)
+        if (!request.liveConnection)
           response.redirect!(
             `/authentication/email-verification?${new URLSearchParams({
               redirect: request.URL.pathname + request.URL.search,
@@ -382,7 +382,7 @@ export default async (application: Application): Promise<void> => {
           ),
         )
       ) {
-        if (request.liveConnection === undefined)
+        if (!request.liveConnection)
           response.redirect!(
             `/authentication/set-password?${new URLSearchParams({
               redirect: request.URL.pathname + request.URL.search,
@@ -400,7 +400,7 @@ export default async (application: Application): Promise<void> => {
           ),
         )
       ) {
-        if (request.liveConnection === undefined)
+        if (!request.liveConnection)
           response.redirect!(
             `/authentication/set-two-factor-authentication?${new URLSearchParams(
               {
@@ -418,7 +418,7 @@ export default async (application: Application): Promise<void> => {
           ),
         )
       ) {
-        if (request.liveConnection === undefined)
+        if (!request.liveConnection)
           response.redirect!(
             `/authentication/sign-in/two-factor-authentication?${new URLSearchParams(
               { redirect: request.URL.pathname + request.URL.search },
@@ -1557,7 +1557,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user !== undefined &&
         request.state.user.emailVerificationEmail === null
       ) {
-        if (request.liveConnection === undefined) {
+        if (!request.liveConnection) {
           response.setFlash!(html`
             <div class="flash--green">The email has already been verified.</div>
           `);
@@ -2746,7 +2746,7 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (request.state.user !== undefined) {
-        if (request.liveConnection === undefined) {
+        if (!request.liveConnection) {
           response.setFlash!(html`
             <div class="flash--red">
               You can’t reset the password because you’re already signed in.
@@ -3189,7 +3189,7 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       const saml = samls?.[request.pathname.samlIdentifier];
-      if (saml === undefined || typeof request.liveConnection === "string")
+      if (saml === undefined || request.liveConnection)
         return;
       response.redirect!(
         await saml.saml.getAuthorizeUrlAsync(

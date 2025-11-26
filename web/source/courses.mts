@@ -500,7 +500,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
-        typeof request.liveConnection === "string"
+        request.liveConnection
       )
         return;
       const courseConversation =
@@ -3239,7 +3239,7 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (request.state.course !== undefined) {
-        if (request.liveConnection === undefined)
+        if (!request.liveConnection)
           response.redirect!(
             request.search.redirect ??
               `/courses/${request.state.course.publicId}`,
@@ -3744,7 +3744,7 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (request.state.course !== undefined) {
-        if (request.liveConnection === undefined)
+        if (!request.liveConnection)
           response.redirect!(
             request.search.redirect ??
               `/courses/${request.state.course.publicId}`,

@@ -4643,7 +4643,7 @@ export default async (application: Application): Promise<void> => {
                               if (${
                                 request.search.message ===
                                   courseConversationMessage.publicId &&
-                                request.liveConnection === undefined
+                                !request.liveConnection
                               })
                                 this.scrollIntoView();
                             `}"
@@ -5653,7 +5653,7 @@ export default async (application: Application): Promise<void> => {
                     animation: var(--animation--pulse);
                   `}"
                   javascript="${javascript`
-                    if (${request.liveConnection === undefined}) this.hidden = true;
+                    if (${!request.liveConnection}) this.hidden = true;
                   `}"
                 >
                   <div key="courseConversationMessage--sidebar">
