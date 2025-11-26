@@ -2820,7 +2820,7 @@ export default async (application: Application): Promise<void> => {
                   --transition-timing-function--ease-in-out
                 );
               `} ${user.lastSeenOnlineAt <
-              new Date(Date.now() - 5 * 60 * 1000).toISOString()
+              new Date(Date.now() - 6 * 60 * 1000).toISOString()
                 ? css`
                     opacity: var(--opacity--0);
                   `
