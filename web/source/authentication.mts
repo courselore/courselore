@@ -224,24 +224,6 @@ export default async (application: Application): Promise<void> => {
       }
       if (
         request.state.userSession.createdAt <
-        new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString()
-      ) {
-        application.database.run(
-          sql`
-            delete from "userSessions" where "id" = ${request.state.userSession.id};
-          `,
-        );
-        delete request.state.userSession;
-        if (typeof request.liveConnection === "string") return;
-        response.deleteCookie!("session");
-        if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
-          response.redirect!(
-            `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
-          );
-        return;
-      }
-      if (
-        request.state.userSession.createdAt <
           new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString() &&
         request.liveConnection === undefined
       ) {
@@ -444,6 +426,14 @@ export default async (application: Application): Promise<void> => {
           );
         return;
       }
+      request.state.user.lastSeenOnlineAt = new Date().toISOString();
+      application.database.run(
+        sql`
+          update "users"
+          set "lastSeenOnlineAt" = ${request.state.user.lastSeenOnlineAt}
+          where "id" = ${request.state.user.id};
+        `,
+      );
     },
   });
 
