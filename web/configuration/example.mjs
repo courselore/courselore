@@ -13,6 +13,7 @@ export default {
     from: "courselore@example.com",
   },
 
+  // [Optional] SAML configuration
   // saml: {
   //   // The metadata for the SAML Service Provider is available at: https://example.com/authentication/saml/example-university/metadata
   //   "example-university": {
@@ -45,13 +46,13 @@ export default {
   //   },
   // },
 
-  // The following is the default `dataDirectory`, but you may change it if necessary.
+  // [Optional] The directory in which Courselore stores the database and files.
   // dataDirectory: "/root/courselore/data/",
 
-  // Enable the following if you can. See https://hstspreload.org/.
+  // [Optional] Enable HSTS Preload if you can: https://hstspreload.org/
   // hstsPreload: true,
 
-  // [Caddyfile](TODO) directives, for example, to redirect `www.example.com` to `example.com`.
+  // [Optional] Caddyfile configuration: TODO
   // extraCaddyfile: `
   //   www.example.com {
   //     redir https://example.com{uri}
