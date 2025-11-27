@@ -1,7 +1,7 @@
 export default {
   hostname: "example.com",
 
-  systemAdministratorEmail: "administrator@example.com",
+  systemAdministratorEmail: "system-administrator@example.com",
 
   // Nodemailer email configuration: https://nodemailer.com/
   email: {
@@ -10,7 +10,7 @@ export default {
       user: "maddison53@ethereal.email",
       pass: "jn7jnAPss4f63QBp6D",
     },
-    from: "Courselore <courselore@example.com>",
+    from: "courselore@example.com",
   },
 
   // saml: {
@@ -51,7 +51,7 @@ export default {
   // Enable the following if you can. See https://hstspreload.org/.
   // hstsPreload: true,
 
-  // Add some extra Caddyfile directives, for example, to redirect `www.example.com` to `example.com`.
+  // [Caddyfile](TODO) directives, for example, to redirect `www.example.com` to `example.com`.
   // extraCaddyfile: `
   //   www.example.com {
   //     redir https://example.com{uri}
