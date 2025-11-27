@@ -27,7 +27,6 @@ export type ApplicationCourses = {
             | "courseParticipationRoleStudentsAnonymityAllowedNone"
             | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
             | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-          courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
           courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
           courseState: "courseStateActive" | "courseStateArchived";
           courseConversationsNextPublicId: number;
@@ -234,7 +233,6 @@ export default async (application: Application): Promise<void> => {
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-        courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
@@ -253,7 +251,6 @@ export default async (application: Application): Promise<void> => {
                   "invitationLinkCourseParticipationRoleStudentsToken",
                   "courseConversationRequiresTagging",
                   "courseParticipationRoleStudentsAnonymityAllowed",
-                  "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
                   "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
                   "courseState",
                   "courseConversationsNextPublicId"
@@ -268,7 +265,6 @@ export default async (application: Application): Promise<void> => {
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
                   ${Number(true)},
                   ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
-                  ${Number(true)},
                   ${Number(true)},
                   ${"courseStateActive"},
                   ${1}
@@ -382,7 +378,6 @@ export default async (application: Application): Promise<void> => {
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-        courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
@@ -399,7 +394,6 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseParticipationRoleStudentsToken",
             "courseConversationRequiresTagging",
             "courseParticipationRoleStudentsAnonymityAllowed",
-            "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
             "courseConversationsNextPublicId"
@@ -898,23 +892,6 @@ export default async (application: Application): Promise<void> => {
                               gap: var(--size--2);
                             `}"
                           >
-                            <label
-                              class="button button--rectangle button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="courseParticipationRoleStudentsMayHavePrivateCourseConversations"
-                                $${Boolean(
-                                  request.state.course
-                                    .courseParticipationRoleStudentsMayHavePrivateCourseConversations,
-                                )
-                                  ? html`checked`
-                                  : html``}
-                                class="input--checkbox"
-                              />  Students may create private conversations
-                              among other students that aren’t visible by
-                              instructors
-                            </label>
                             <label
                               class="button button--rectangle button--transparent"
                             >
@@ -2934,7 +2911,6 @@ export default async (application: Application): Promise<void> => {
             | "courseParticipationRoleStudentsAnonymityAllowedNone"
             | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
             | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-          courseParticipationRoleStudentsMayHavePrivateCourseConversations: "on";
           courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: "on";
           courseState: "courseStateActive" | "courseStateArchived";
         },
@@ -2970,7 +2946,6 @@ export default async (application: Application): Promise<void> => {
             "name" = ${request.body.name},
             "information" = ${request.body.information.trim() !== "" ? request.body.information : null},
             "courseParticipationRoleStudentsAnonymityAllowed" = ${request.body.courseParticipationRoleStudentsAnonymityAllowed},
-            "courseParticipationRoleStudentsMayHavePrivateCourseConversations" = ${Number(request.body.courseParticipationRoleStudentsMayHavePrivateCourseConversations === "on")},
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent" = ${Number(request.body.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent === "on")},
             "courseState" = ${request.body.courseState}
           where "id" = ${request.state.course.id};
@@ -3260,7 +3235,6 @@ export default async (application: Application): Promise<void> => {
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-        courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
@@ -3277,7 +3251,6 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseParticipationRoleStudentsToken",
             "courseConversationRequiresTagging",
             "courseParticipationRoleStudentsAnonymityAllowed",
-            "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
             "courseConversationsNextPublicId"
@@ -3765,7 +3738,6 @@ export default async (application: Application): Promise<void> => {
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-        courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
@@ -3782,7 +3754,6 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseParticipationRoleStudentsToken",
             "courseConversationRequiresTagging",
             "courseParticipationRoleStudentsAnonymityAllowed",
-            "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
             "courseConversationsNextPublicId"

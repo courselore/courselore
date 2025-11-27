@@ -2473,7 +2473,6 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseParticipationRoleStudentsToken" text not null unique,
             "courseConversationRequiresTagging" integer not null,
             "courseParticipationRoleStudentsAnonymityAllowed" text not null,
-            "courseParticipationRoleStudentsMayHavePrivateCourseConversations" integer not null,
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent" integer not null,
             "courseState" text not null,
             "courseConversationsNextPublicId" integer not null
@@ -2829,7 +2828,6 @@ export default async (application: Application): Promise<void> => {
                       "invitationLinkCourseParticipationRoleStudentsToken",
                       "courseConversationRequiresTagging",
                       "courseParticipationRoleStudentsAnonymityAllowed",
-                      "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
                       "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
                       "courseState",
                       "courseConversationsNextPublicId"
@@ -2844,7 +2842,6 @@ export default async (application: Application): Promise<void> => {
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
                       ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedEveryone"},
-                      ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${courseData.courseState ?? "courseStateActive"},
                       ${courseData.courseConversationsNextPublicId ?? 4}
