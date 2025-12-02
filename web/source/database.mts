@@ -2651,8 +2651,76 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      if (application.configuration.environment !== "development")
-        throw new Error("TODO: Migration");
+      for (const user of database.all<{
+        id: number;
+        lastSeenOnlineAt: string;
+        reference: string;
+        email: string;
+        password: string | null;
+        emailVerifiedAt: string | null;
+        name: string;
+        avatar: string | null;
+        avatarlessBackgroundColor: "TODO";
+        systemRole: "TODO";
+        emailNotificationsForAllMessages: "TODO";
+        emailNotificationsForMentionsAt: "TODO";
+        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt: "TODO";
+        emailNotificationsForMessagesInConversationsYouStartedAt: "TODO";
+      }>(
+        sql`
+          select
+            "id",
+            "lastSeenOnlineAt",
+            "reference",
+            "email",
+            "password",
+            "emailVerifiedAt",
+            "name",
+            "avatar",
+            "avatarlessBackgroundColor",
+            "systemRole",
+            "emailNotificationsForAllMessages",
+            "emailNotificationsForMentionsAt",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+            "emailNotificationsForMessagesInConversationsYouStartedAt"
+          from "old_users"
+          order by "id" asc;
+        `,
+      ))
+        database.run(
+          sql`
+            insert into "users" (
+              "id",
+              "publicId",
+              "name",
+              "email",
+              "emailVerificationEmail",
+              "emailVerificationNonce",
+              "emailVerificationCreatedAt",
+              "password",
+              "passwordResetNonce",
+              "passwordResetCreatedAt",
+              "twoFactorAuthenticationEnabled",
+              "twoFactorAuthenticationSecret",
+              "twoFactorAuthenticationRecoveryCodes",
+              "avatarColor",
+              "avatarImage",
+              "userRole",
+              "lastSeenOnlineAt",
+              "darkMode",
+              "sidebarWidth",
+              "emailNotificationsForAllMessages",
+              "emailNotificationsForMessagesIncludingAMention",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+              "emailNotificationsForMessagesInConversationsThatYouStarted",
+              "userAnonymityPreferred",
+              "mostRecentlyVisitedCourseParticipation"
+            )
+            values (
+
+            );
+          `,
+        );
 
       database.execute(
         sql`
