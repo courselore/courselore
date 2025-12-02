@@ -2660,12 +2660,35 @@ export default async (application: Application): Promise<void> => {
         emailVerifiedAt: string | null;
         name: string;
         avatar: string | null;
-        avatarlessBackgroundColor: "TODO";
-        systemRole: "TODO";
-        emailNotificationsForAllMessages: "TODO";
-        emailNotificationsForMentionsAt: "TODO";
-        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt: "TODO";
-        emailNotificationsForMessagesInConversationsYouStartedAt: "TODO";
+        avatarlessBackgroundColor:
+          | "red"
+          | "orange"
+          | "amber"
+          | "yellow"
+          | "lime"
+          | "green"
+          | "emerald"
+          | "teal"
+          | "cyan"
+          | "sky"
+          | "blue"
+          | "indigo"
+          | "violet"
+          | "purple"
+          | "fuchsia"
+          | "pink"
+          | "rose";
+        systemRole: "none" | "staff" | "administrator";
+        emailNotificationsForAllMessages:
+          | "none"
+          | "instant"
+          | "hourly-digests"
+          | "daily-digests";
+        emailNotificationsForMentionsAt: string | null;
+        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+          | string
+          | null;
+        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
       }>(
         sql`
           select
