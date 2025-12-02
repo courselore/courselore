@@ -2392,13 +2392,14 @@ export default async (application: Application): Promise<void> => {
           drop table "passwordResets";
           drop table "liveConnectionsMetadata";
           drop table "flashes";
+          drop table "samlCache";
+          drop table "emailNotificationDeliveries";
           
           alter table "administrationOptions" rename to "old_administrationOptions";
           alter table "conversations" rename to "old_conversations";
           alter table "conversationSelectedParticipants" rename to "old_conversationSelectedParticipants";
           alter table "courseParticipants" rename to "old_courseParticipants";
           alter table "courses" rename to "old_courses";
-          alter table "emailNotificationDeliveries" rename to "old_emailNotificationDeliveries";
           alter table "endorsements" rename to "old_endorsements";
           alter table "invitations" rename to "old_invitations";
           alter table "likes" rename to "old_likes";
@@ -2408,7 +2409,6 @@ export default async (application: Application): Promise<void> => {
           alter table "messagePollVotes" rename to "old_messagePollVotes";
           alter table "messages" rename to "old_messages";
           alter table "readings" rename to "old_readings";
-          alter table "samlCache" rename to "old_samlCache";
           alter table "sessions" rename to "old_sessions";
           alter table "taggings" rename to "old_taggings";
           alter table "tags" rename to "old_tags";
@@ -2661,7 +2661,6 @@ export default async (application: Application): Promise<void> => {
           drop table "old_conversationSelectedParticipants";
           drop table "old_courseParticipants";
           drop table "old_courses";
-          drop table "old_emailNotificationDeliveries";
           drop table "old_endorsements";
           drop table "old_invitations";
           drop table "old_likes";
@@ -2671,7 +2670,6 @@ export default async (application: Application): Promise<void> => {
           drop table "old_messagePollVotes";
           drop table "old_messages";
           drop table "old_readings";
-          drop table "old_samlCache";
           drop table "old_sessions";
           drop table "old_taggings";
           drop table "old_tags";
