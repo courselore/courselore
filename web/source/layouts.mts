@@ -318,7 +318,7 @@ export default async (application: Application): Promise<void> => {
         <script src="/${caddy.staticFiles["index.mjs"]}"></script>
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1"
+          content="width=device-width, initial-scale=1, maximum-scale=1, interactive-widget=resizes-content"
         />
         $${head}
       </head>
