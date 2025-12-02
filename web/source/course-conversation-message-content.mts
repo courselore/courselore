@@ -1941,6 +1941,8 @@ You may also use the buttons on the message content editor to ${
                     table {
                       margin: var(--size--2) var(--size--0);
                       border-collapse: collapse;
+                      display: block;
+                      overflow: auto hidden;
                     }
 
                     thead {
