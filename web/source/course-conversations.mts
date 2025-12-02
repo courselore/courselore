@@ -69,6 +69,9 @@ export default async (application: Application): Promise<void> => {
             height: 100%;
             display: flex;
           `}"
+          javascript="${javascript`
+            if (${!request.liveConnection}) this.removeAttribute("state");
+          `}"
         >
           <div
             key="sidebar /courses/${request.state.course.publicId}"
