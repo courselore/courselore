@@ -2757,6 +2757,9 @@ export default async (application: Application): Promise<void> => {
                   : null
               },
               ${user.emailVerifiedAt === null ? new Date().toISOString() : null},
+              ${user.password},
+              ${null},
+              ${null},
               ${Number(false)},
               ${null},
               ${null},
