@@ -2740,7 +2740,44 @@ export default async (application: Application): Promise<void> => {
               "mostRecentlyVisitedCourseParticipation"
             )
             values (
-
+              ${user.id},
+              ${user.reference},
+              ${user.name},
+              ${user.email},
+              ${user.emailVerifiedAt === null ? user.email : null},
+              ${
+                user.emailVerifiedAt === null
+                  ? await argon2.hash(
+                      cryptoRandomString({
+                        length: 100,
+                        type: "numeric",
+                      }),
+                      application.privateConfiguration.argon2,
+                    )
+                  : null
+              },
+              ${user.emailVerifiedAt === null ? new Date().toISOString() : null},
+              ${Number(false)},
+              ${null},
+              ${null},
+              ${user.avatarlessBackgroundColor},
+              ${typeof user.avatar === "string" ? new URL(user.avatar).pathname : null},
+              ${
+                {
+                  none: "userRoleUser",
+                  staff: "userRoleStaff",
+                  administrator: "userRoleSystemAdministrator",
+                }[user.systemRole]
+              },
+              ${user.lastSeenOnlineAt},
+              ${"userDarkModeSystem"},
+              ${80 * 4},
+              ${Number(user.emailNotificationsForAllMessages !== "none")},
+              ${Number(typeof user.emailNotificationsForMentionsAt === "string")},
+              ${Number(typeof user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt === "string")},
+              ${Number(typeof user.emailNotificationsForMessagesInConversationsYouStartedAt === "string")},
+              ${"userAnonymityPreferredNone"},
+              ${null}
             );
           `,
         );
