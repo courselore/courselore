@@ -3009,6 +3009,75 @@ export default async (application: Application): Promise<void> => {
               );
             `,
           );
+        for (const old_conversation of database.all<{
+          id: number;
+          reference: string;
+          participants: "everyone" | "course-staff" | "selected-participants";
+          type: "question" | "note" | "chat";
+          pinnedAt: string | null;
+          resolvedAt: string | null;
+          title: string;
+        }>(
+          sql`
+              select
+                "id",
+                "reference",
+                "participants",
+                "type",
+                "pinnedAt",
+                "resolvedAt",
+                "title"
+              where "course" = ${old_course.id}
+              order by "id" asc;
+            `,
+        )) {
+          database.run(
+            sql`
+              insert into "courseConversations" (
+                "id",
+                "publicId",
+                "course",
+                "courseConversationType",
+                "questionResolved",
+                "courseConversationVisibility",
+                "pinned",
+                "title",
+                "titleSearch"
+              )
+              values (
+                ${old_conversation.id},
+                ${old_conversation.reference},
+                ${old_course.id},
+                ${
+                  {
+                    question: "courseConversationTypeQuestion",
+                    note: "courseConversationTypeNote",
+                    chat: "courseConversationTypeNote",
+                  }[old_conversation.type]
+                },
+                ${Number(old_conversation.type === "question" && typeof old_conversation.resolvedAt === "string")},
+                ${
+                  {
+                    everyone: "courseConversationVisibilityEveryone",
+                    "course-staff":
+                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations",
+                    "selected-participants":
+                      "courseConversationVisibilityCourseConversationParticipations",
+                  }[old_conversation.participants]
+                },
+                ${Number(typeof old_conversation.pinnedAt === "string")},
+                ${old_conversation.title},
+                ${utilities
+                  .tokenize(old_conversation.title, {
+                    stopWords: application.privateConfiguration.stopWords,
+                    stem: (token) => natural.PorterStemmer.stem(token),
+                  })
+                  .map((tokenWithPosition) => tokenWithPosition.token)
+                  .join(" ")}
+              );
+            `,
+          );
+        }
       }
 
       database.execute(
