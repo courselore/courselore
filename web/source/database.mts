@@ -3123,6 +3123,81 @@ export default async (application: Application): Promise<void> => {
                 );
               `,
             );
+          for (const old_message of database.all<{
+            id: number;
+            createdAt: string;
+            updatedAt: string | null;
+            reference: string;
+            authorCourseParticipant: number | null;
+            anonymousAt: string | null;
+            type:
+              | "message"
+              | "answer"
+              | "follow-up-question"
+              | "course-staff-whisper";
+            contentSource: string;
+          }>(
+            sql`
+              select
+                "id",
+                "createdAt",
+                "updatedAt",
+                "reference",
+                "authorCourseParticipant",
+                "anonymousAt",
+                "type",
+                "contentSource"
+              from "old_messages"
+              where "conversation" = ${old_conversation.id}
+              order by "id" asc;
+            `,
+          )) {
+            database.run(
+              sql`
+                insert into "courseConversationMessages" (
+                  "id",
+                  "publicId",
+                  "courseConversation",
+                  "createdByCourseParticipation",
+                  "createdAt",
+                  "updatedAt",
+                  "courseConversationMessageType",
+                  "courseConversationMessageVisibility",
+                  "courseConversationMessageAnonymity",
+                  "content",
+                  "contentSearch"
+                )
+                values (
+                  ${old_message.id},
+                  ${old_message.reference},
+                  ${old_conversation.id},
+                  ${old_message.authorCourseParticipant},
+                  ${old_message.createdAt},
+                  ${old_message.updatedAt},
+                  ${
+                    {
+                      message: "courseConversationMessageTypeMessage",
+                      answer: "courseConversationMessageTypeAnswer",
+                      "follow-up-question":
+                        "courseConversationMessageTypeFollowUpQuestion",
+                      "course-staff-whisper":
+                        "courseConversationMessageTypeMessage",
+                    }[old_message.type]
+                  },
+                  ${old_message.type === "course-staff-whisper" ? "courseConversationMessageVisibilityCourseParticipationRoleInstructors" : "courseConversationMessageVisibilityEveryone"},
+                  ${typeof old_message.anonymousAt === "string" ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityNone"},
+                  ${old_message.contentSource},
+                  ${utilities
+                    .tokenize(old_message.contentSource, {
+                      stopWords: application.privateConfiguration.stopWords,
+                      stem: (token) => natural.PorterStemmer.stem(token),
+                    })
+                    .map((tokenWithPosition) => tokenWithPosition.token)
+                    .join(" ")}
+                );
+              `,
+            );
+          }
         }
       }
 
