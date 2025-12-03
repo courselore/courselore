@@ -3225,6 +3225,61 @@ export default async (application: Application): Promise<void> => {
                   );
                 `,
               );
+            for (const old_like of database.all<{
+              courseParticipant: number;
+            }>(
+              sql`
+                select "courseParticipant"
+                from "old_likes"
+                where "message" = ${old_message.id}
+                order by "id" asc;
+              `,
+            ))
+              database.run(
+                sql`
+                  insert into "courseConversationMessageLikes" (
+                    "courseConversationMessage",
+                    "courseParticipation"
+                  )
+                  values (
+                    ${old_message.id},
+                    ${old_like.courseParticipant}
+                  );
+                `,
+              );
+            for (const old_endorsement of database.all<{
+              courseParticipant: number;
+            }>(
+              sql`
+                select "courseParticipant"
+                from "old_endorsements"
+                where "message" = ${old_message.id}
+                order by "id" asc;
+              `,
+            ))
+              if (
+                database.get(
+                  sql`
+                    select true
+                    from "courseConversationMessageLikes"
+                    where
+                      "courseConversationMessage" = ${old_message.id} and
+                      "courseParticipation" = ${old_endorsement.courseParticipant}
+                  `,
+                ) === undefined
+              )
+                database.run(
+                  sql`
+                  insert into "courseConversationMessageLikes" (
+                    "courseConversationMessage",
+                    "courseParticipation"
+                  )
+                  values (
+                    ${old_message.id},
+                    ${old_endorsement.courseParticipant}
+                  );
+                `,
+                );
           }
         }
       }
