@@ -2615,7 +2615,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
 
-      const administrationOptions =
+      const old_administrationOptions =
         database.get<{
           privateKey: string;
           certificate: string;
@@ -2639,19 +2639,19 @@ export default async (application: Application): Promise<void> => {
             "userRolesWhoMayCreateCourses"
           )
           values (
-            ${administrationOptions.privateKey},
-            ${administrationOptions.certificate},
+            ${old_administrationOptions.privateKey},
+            ${old_administrationOptions.certificate},
             ${
               {
                 all: "userRoleUser",
                 "staff-and-administrators": "userRoleStaff",
                 administrators: "userRoleSystemAdministrator",
-              }[administrationOptions.userSystemRolesWhoMayCreateCourses]
+              }[old_administrationOptions.userSystemRolesWhoMayCreateCourses]
             }
           );
         `,
       );
-      for (const user of database.all<{
+      for (const old_user of database.all<{
         id: number;
         lastSeenOnlineAt: string;
         reference: string;
@@ -2740,13 +2740,13 @@ export default async (application: Application): Promise<void> => {
               "mostRecentlyVisitedCourseParticipation"
             )
             values (
-              ${user.id},
-              ${user.reference},
-              ${user.name},
-              ${user.email},
-              ${user.emailVerifiedAt === null ? user.email : null},
+              ${old_user.id},
+              ${old_user.reference},
+              ${old_user.name},
+              ${old_user.email},
+              ${old_user.emailVerifiedAt === null ? old_user.email : null},
               ${
-                user.emailVerifiedAt === null
+                old_user.emailVerifiedAt === null
                   ? await argon2.hash(
                       cryptoRandomString({
                         length: 100,
@@ -2756,35 +2756,35 @@ export default async (application: Application): Promise<void> => {
                     )
                   : null
               },
-              ${user.emailVerifiedAt === null ? new Date().toISOString() : null},
-              ${user.password},
+              ${old_user.emailVerifiedAt === null ? new Date().toISOString() : null},
+              ${old_user.password},
               ${null},
               ${null},
               ${Number(false)},
               ${null},
               ${null},
-              ${user.avatarlessBackgroundColor},
-              ${typeof user.avatar === "string" ? new URL(user.avatar).pathname : null},
+              ${old_user.avatarlessBackgroundColor},
+              ${typeof old_user.avatar === "string" ? new URL(old_user.avatar).pathname : null},
               ${
                 {
                   none: "userRoleUser",
                   staff: "userRoleStaff",
                   administrator: "userRoleSystemAdministrator",
-                }[user.systemRole]
+                }[old_user.systemRole]
               },
-              ${user.lastSeenOnlineAt},
+              ${old_user.lastSeenOnlineAt},
               ${"userDarkModeSystem"},
               ${80 * 4},
-              ${Number(user.emailNotificationsForAllMessages !== "none")},
-              ${Number(typeof user.emailNotificationsForMentionsAt === "string")},
-              ${Number(typeof user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt === "string")},
-              ${Number(typeof user.emailNotificationsForMessagesInConversationsYouStartedAt === "string")},
+              ${Number(old_user.emailNotificationsForAllMessages !== "none")},
+              ${Number(typeof old_user.emailNotificationsForMentionsAt === "string")},
+              ${Number(typeof old_user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt === "string")},
+              ${Number(typeof old_user.emailNotificationsForMessagesInConversationsYouStartedAt === "string")},
               ${"userAnonymityPreferredNone"},
               ${null}
             );
           `,
         );
-      for (const session of database.all<{
+      for (const old_session of database.all<{
         createdAt: string;
         token: string;
         user: number;
@@ -2800,7 +2800,7 @@ export default async (application: Application): Promise<void> => {
           order by "id" asc;
         `,
       ))
-        if (session.samlIdentifier === null)
+        if (old_session.samlIdentifier === null)
           database.run(
             sql`
               insert into "userSessions" (
@@ -2811,16 +2811,16 @@ export default async (application: Application): Promise<void> => {
                 "samlIdentifier",
                 "samlProfile"
               ) values (
-                ${session.token},
-                ${session.user},
-                ${session.createdAt},
+                ${old_session.token},
+                ${old_session.user},
+                ${old_session.createdAt},
                 ${Number(false)},
                 ${null},
                 ${null}
               );
             `,
           );
-      for (const course of database.all<{
+      for (const old_course of database.all<{
         id: number;
         reference: string;
         name: string;
@@ -2847,10 +2847,10 @@ export default async (application: Application): Promise<void> => {
         `,
       )) {
         const courseInformation = [
-          course.year,
-          course.term,
-          course.institution,
-          course.code,
+          old_course.year,
+          old_course.term,
+          old_course.institution,
+          old_course.code,
         ]
           .filter(
             (courseInformationPart) =>
@@ -2866,7 +2866,7 @@ export default async (application: Application): Promise<void> => {
             from "old_invitations"
             where
               "expiresAt" is null and
-              "course" = ${course.id} and
+              "course" = ${old_course.id} and
               "email" is null and
               "name" is null and
               "courseRole" = ${"course-staff"}
@@ -2882,7 +2882,7 @@ export default async (application: Application): Promise<void> => {
             from "old_invitations"
             where
               "expiresAt" is null and
-              "course" = ${course.id} and
+              "course" = ${old_course.id} and
               "email" is null and
               "name" is null and
               "courseRole" = ${"student"}
@@ -2908,9 +2908,9 @@ export default async (application: Application): Promise<void> => {
               "courseConversationsNextPublicId"
             )
             values (
-              ${course.id},
-              ${course.reference},
-              ${course.name},
+              ${old_course.id},
+              ${old_course.reference},
+              ${old_course.name},
               ${courseInformation !== "" ? courseInformation : null},
               ${Number(invitationLinkCourseParticipationRoleInstructors !== undefined)},
               ${invitationLinkCourseParticipationRoleInstructors?.reference ?? cryptoRandomString({ length: 20, type: "numeric" })},
@@ -2919,12 +2919,12 @@ export default async (application: Application): Promise<void> => {
               ${Number(true)},
               ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
               ${Number(true)},
-              ${course.archivedAt === null ? "courseStateActive" : "courseStateArchived"},
-              ${course.nextConversationReference}
+              ${old_course.archivedAt === null ? "courseStateActive" : "courseStateArchived"},
+              ${old_course.nextConversationReference}
             );
           `,
         );
-        for (const courseParticipant of database.all<{
+        for (const old_courseParticipant of database.all<{
           id: number;
           user: number;
           reference: string;
@@ -2939,7 +2939,7 @@ export default async (application: Application): Promise<void> => {
               "courseRole",
               "accentColor"
             from "old_courseParticipants"
-            where "course" = ${course.id}
+            where "course" = ${old_course.id}
             order by "id" asc;
           `,
         ))
@@ -2955,22 +2955,22 @@ export default async (application: Application): Promise<void> => {
                 "mostRecentlyVisitedCourseConversation"
               )
               values (
-                ${courseParticipant.id},
-                ${courseParticipant.reference},
-                ${courseParticipant.user},
-                ${course.id},
+                ${old_courseParticipant.id},
+                ${old_courseParticipant.reference},
+                ${old_courseParticipant.user},
+                ${old_course.id},
                 ${
                   {
                     student: "courseParticipationRoleStudent",
                     "course-staff": "courseParticipationRoleInstructor",
-                  }[courseParticipant.courseRole]
+                  }[old_courseParticipant.courseRole]
                 },
-                ${courseParticipant.accentColor === "sky" ? "cyan" : courseParticipant.accentColor},
+                ${old_courseParticipant.accentColor === "sky" ? "cyan" : old_courseParticipant.accentColor},
                 ${null}
               );
             `,
           );
-        for (const tag of database.all<{
+        for (const old_tag of database.all<{
           id: number;
           reference: string;
           order: number;
@@ -2985,7 +2985,7 @@ export default async (application: Application): Promise<void> => {
               "name",
               "courseStaffOnlyAt"
             from "old_tags"
-            where "course" = ${course.id}
+            where "course" = ${old_course.id}
             order by "id" asc;
           `,
         ))
@@ -3000,12 +3000,12 @@ export default async (application: Application): Promise<void> => {
                 "privateToCourseParticipationRoleInstructors"
               )
               values (
-                ${tag.id},
-                ${tag.reference},
-                ${course.id},
-                ${tag.order},
-                ${tag.name},
-                ${Number(typeof tag.courseStaffOnlyAt === "string")}
+                ${old_tag.id},
+                ${old_tag.reference},
+                ${old_course.id},
+                ${old_tag.order},
+                ${old_tag.name},
+                ${Number(typeof old_tag.courseStaffOnlyAt === "string")}
               );
             `,
           );
