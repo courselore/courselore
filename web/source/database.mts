@@ -2970,6 +2970,45 @@ export default async (application: Application): Promise<void> => {
               );
             `,
           );
+        for (const tag of database.all<{
+          id: number;
+          reference: string;
+          order: number;
+          name: string;
+          courseStaffOnlyAt: string | null;
+        }>(
+          sql`
+            select
+              "id",
+              "reference",
+              "order",
+              "name",
+              "courseStaffOnlyAt"
+            from "old_tags"
+            where "course" = ${course.id}
+            order by "id" asc;
+          `,
+        ))
+          database.run(
+            sql`
+              insert into "courseConversationsTags" (
+                "id",
+                "publicId",
+                "course",
+                "order",
+                "name",
+                "privateToCourseParticipationRoleInstructors"
+              )
+              values (
+                ${tag.id},
+                ${tag.reference},
+                ${course.id},
+                ${tag.order},
+                ${tag.name},
+                ${Number(typeof tag.courseStaffOnlyAt === "string")}
+              );
+            `,
+          );
       }
 
       database.execute(
