@@ -2796,7 +2796,7 @@ export default async (application: Application): Promise<void> => {
             "token",
             "user",
             "samlIdentifier"
-          from "sessions"
+          from "old_sessions"
           order by "id" asc;
         `,
       ))
@@ -2820,6 +2820,109 @@ export default async (application: Application): Promise<void> => {
               );
             `,
           );
+      for (const course of database.all<{
+        id: number;
+        reference: string;
+        name: string;
+        year: string | null;
+        term: string | null;
+        institution: string | null;
+        code: string | null;
+        nextConversationReference: number;
+        archivedAt: string | null;
+      }>(
+        sql`
+          select
+            "id",
+            "reference",
+            "name",
+            "year",
+            "term",
+            "institution",
+            "code",
+            "nextConversationReference",
+            "archivedAt"
+          from "old_courses"
+          order by "id" asc;
+        `,
+      )) {
+        const courseInformation = [
+          course.year,
+          course.term,
+          course.institution,
+          course.code,
+        ]
+          .filter(
+            (courseInformationPart) =>
+              typeof courseInformationPart === "string",
+          )
+          .join(" / ")
+          .trim();
+        const invitationLinkCourseParticipationRoleInstructors = database.get<{
+          reference: string;
+        }>(
+          sql`
+            select "reference"
+            from "old_invitations"
+            where
+              "expiresAt" is null and
+              "course" = ${course.id} and
+              "email" is null and
+              "name" is null and
+              "courseRole" = ${"course-staff"}
+            order by "id" asc
+            limit 1;
+          `,
+        );
+        const invitationLinkCourseParticipationRoleStudents = database.get<{
+          reference: string;
+        }>(
+          sql`
+            select "reference"
+            from "old_invitations"
+            where
+              "expiresAt" is null and
+              "course" = ${course.id} and
+              "email" is null and
+              "name" is null and
+              "courseRole" = ${"student"}
+            order by "id" asc
+            limit 1;
+          `,
+        );
+        database.run(
+          sql`
+            insert into "courses" (
+              "id",
+              "publicId",
+              "name",
+              "information",
+              "invitationLinkCourseParticipationRoleInstructorsEnabled",
+              "invitationLinkCourseParticipationRoleInstructorsToken",
+              "invitationLinkCourseParticipationRoleStudentsEnabled",
+              "invitationLinkCourseParticipationRoleStudentsToken",
+              "courseConversationRequiresTagging",
+              "courseParticipationRoleStudentsAnonymityAllowed",
+              "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+              "courseState",
+              "courseConversationsNextPublicId"
+            )
+            values (
+              ${course.id},
+              ${course.reference},
+              ${course.name},
+              ${courseInformation !== "" ? courseInformation : null},
+              ${Number(invitationLinkCourseParticipationRoleInstructors !== undefined)},
+              ${invitationLinkCourseParticipationRoleInstructors?.reference ?? cryptoRandomString({ length: 20, type: "numeric" })},
+              ${Number(invitationLinkCourseParticipationRoleStudents !== undefined)},
+              ${invitationLinkCourseParticipationRoleStudents?.reference ?? cryptoRandomString({ length: 20, type: "numeric" })},
+              ${Number(true)},
+              ${typeof course.archivedAt === "string" ? "courseStateActive" : "courseStateArchived"},
+              ${course.nextConversationReference}
+            );
+          `,
+        );
+      }
 
       database.execute(
         sql`
