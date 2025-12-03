@@ -3152,8 +3152,8 @@ export default async (application: Application): Promise<void> => {
               order by "id" asc;
             `,
           )) {
-            const courseConversationMessageContent =
-              old_message.contentSource.replaceAll(
+            const courseConversationMessageContent = old_message.contentSource
+              .replaceAll(
                 /<courselore-poll\s+reference="(?<pollReference>\d+)"><\/courselore-poll>/g,
                 (match, pollReference) => {
                   const old_messagePoll = database.get<{ id: number }>(
@@ -3201,7 +3201,9 @@ export default async (application: Application): Promise<void> => {
                     })
                     .join("\n");
                 },
-              );
+              )
+              .replaceAll("@course-staff", "@instructors")
+              .replaceAll("messages%5BmessageReference%5D", "message");
             database.run(
               sql`
                 insert into "courseConversationMessages" (
