@@ -2784,6 +2784,42 @@ export default async (application: Application): Promise<void> => {
             );
           `,
         );
+      for (const session of database.all<{
+        createdAt: string;
+        token: string;
+        user: number;
+        samlIdentifier: string | null;
+      }>(
+        sql`
+          select
+            "createdAt",
+            "token",
+            "user",
+            "samlIdentifier"
+          from "sessions"
+          order by "id" asc;
+        `,
+      ))
+        if (session.samlIdentifier === null)
+          database.run(
+            sql`
+              insert into "userSessions" (
+                "publicId",
+                "user",
+                "createdAt",
+                "needsTwoFactorAuthentication",
+                "samlIdentifier",
+                "samlProfile"
+              ) values (
+                ${session.token},
+                ${session.user},
+                ${session.createdAt},
+                ${Number(false)},
+                ${null},
+                ${null}
+              );
+            `,
+          );
 
       database.execute(
         sql`
