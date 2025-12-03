@@ -3197,6 +3197,34 @@ export default async (application: Application): Promise<void> => {
                 );
               `,
             );
+            // TODO: Polls
+            for (const old_reading of database.all<{
+              createdAt: string;
+              courseParticipant: number;
+            }>(
+              sql`
+                select
+                  "createdAt",
+                  "courseParticipant"
+                from "old_readings"
+                where "message" = ${old_message.id}
+                order by "id" asc;
+              `,
+            ))
+              database.run(
+                sql`
+                  insert into "courseConversationMessageViews" (
+                    "courseConversationMessage",
+                    "courseParticipation",
+                    "createdAt"
+                  )
+                  values (
+                    ${old_message.id},
+                    ${old_reading.courseParticipant},
+                    ${old_reading.createdAt}
+                  );
+                `,
+              );
           }
         }
       }
