@@ -2922,6 +2922,51 @@ export default async (application: Application): Promise<void> => {
             );
           `,
         );
+        for (const courseParticipant of database.all<{
+          id: number;
+          user: number;
+          reference: string;
+          courseRole: "student" | "course-staff";
+          accentColor: "red" | "yellow" | "emerald" | "sky" | "violet" | "pink";
+        }>(
+          sql`
+            select
+              "id",
+              "user",
+              "reference",
+              "courseRole",
+              "accentColor"
+            from "old_courseParticipants"
+            where "course" = ${course.id}
+            order by "id" asc;
+          `,
+        ))
+          database.run(
+            sql`
+              insert into "courseParticipations" (
+                "id",
+                "publicId",
+                "user",
+                "course",
+                "courseParticipationRole",
+                "decorationColor",
+                "mostRecentlyVisitedCourseConversation"
+              )
+              values (
+                ${courseParticipant.id},
+                ${courseParticipant.user},
+                ${courseParticipant.reference},
+                ${
+                  {
+                    student: "courseParticipationRoleStudent",
+                    "course-staff": "courseParticipationRoleInstructor",
+                  }[courseParticipant.courseRole]
+                },
+                ${courseParticipant.accentColor === "sky" ? "cyan" : courseParticipant.accentColor},
+                ${null}
+              );
+            `,
+          );
       }
 
       database.execute(
