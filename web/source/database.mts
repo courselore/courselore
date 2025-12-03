@@ -3077,6 +3077,32 @@ export default async (application: Application): Promise<void> => {
               );
             `,
           );
+          if (
+            old_conversation.participants === "course-staff" ||
+            old_conversation.participants === "selected-participants"
+          )
+            for (const old_conversationSelectedParticipant of database.all<{
+              courseParticipant: number;
+            }>(
+              sql`
+                select "courseParticipant"
+                from "old_conversationSelectedParticipants"
+                where "conversation" = ${old_conversation.id}
+                order by "id" asc;
+              `,
+            ))
+              database.run(
+                sql`
+                  insert into "courseConversationParticipations" (
+                    "courseConversation",
+                    "courseParticipation"
+                  )
+                  values (
+                    ${old_conversation.id},
+                    ${old_conversationSelectedParticipant.courseParticipant}
+                  );
+                `,
+              );
         }
       }
 
