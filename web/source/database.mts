@@ -3152,8 +3152,56 @@ export default async (application: Application): Promise<void> => {
               order by "id" asc;
             `,
           )) {
-            let courseConversationMessageContent = old_message.contentSource;
-            // TODO: Polls
+            const courseConversationMessageContent =
+              old_message.contentSource.replaceAll(
+                /<courselore-poll\s+reference="(?<pollReference>\d+)"><\/courselore-poll>/g,
+                (match, pollReference) => {
+                  const old_messagePoll = database.get<{ id: number }>(
+                    sql`
+                      select "id"
+                      from "old_messagePolls"
+                      where
+                        "course" = ${old_course.id} and
+                        "reference" = ${pollReference};
+                    `,
+                  );
+                  if (old_messagePoll === undefined) return markdown``;
+                  return database
+                    .all<{ id: number; contentSource: string }>(
+                      sql`
+                        select
+                          "id",
+                          "contentSource"
+                        from "old_messagePollOptions"
+                        where "messagePoll" = ${old_messagePoll.id}
+                        order by "order" asc;
+                      `,
+                    )
+                    .map((old_messagePollOption) => {
+                      const old_messagePollVotesCourseParticipations = database
+                        .all<{ courseParticipant: number }>(
+                          sql`
+                            select "courseParticipant"
+                            from "old_messagePollVotes"
+                            where "messagePollOption" = ${old_messagePollOption.id}
+                            order by "id" asc;
+                          `,
+                        )
+                        .map(
+                          (old_messagePollVote) =>
+                            database.get<{ publicId: string }>(
+                              sql`
+                                select "publicId"
+                                from "courseParticipations"
+                                where "id" = ${old_messagePollVote.courseParticipant};
+                              `,
+                            )?.publicId ?? "0",
+                        );
+                      return markdown`- ${0 < old_messagePollVotesCourseParticipations.length ? markdown`<votes>${JSON.stringify(old_messagePollVotesCourseParticipations)}</votes> ` : markdown``}${old_messagePollOption.contentSource}`;
+                    })
+                    .join("\n");
+                },
+              );
             database.run(
               sql`
                 insert into "courseConversationMessages" (
