@@ -3152,6 +3152,8 @@ export default async (application: Application): Promise<void> => {
               order by "id" asc;
             `,
           )) {
+            let courseConversationMessageContent = old_message.contentSource;
+            // TODO: Polls
             database.run(
               sql`
                 insert into "courseConversationMessages" (
@@ -3186,9 +3188,9 @@ export default async (application: Application): Promise<void> => {
                   },
                   ${old_message.type === "course-staff-whisper" ? "courseConversationMessageVisibilityCourseParticipationRoleInstructors" : "courseConversationMessageVisibilityEveryone"},
                   ${typeof old_message.anonymousAt === "string" ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityNone"},
-                  ${old_message.contentSource},
+                  ${courseConversationMessageContent},
                   ${utilities
-                    .tokenize(old_message.contentSource, {
+                    .tokenize(courseConversationMessageContent, {
                       stopWords: application.privateConfiguration.stopWords,
                       stem: (token) => natural.PorterStemmer.stem(token),
                     })
@@ -3197,7 +3199,6 @@ export default async (application: Application): Promise<void> => {
                 );
               `,
             );
-            // TODO: Polls
             for (const old_reading of database.all<{
               createdAt: string;
               courseParticipant: number;
