@@ -2065,7 +2065,7 @@ export default async (application: Application): Promise<void> => {
                               </label>
                             </form>
                             <textarea
-                              name="courseInvitationEmails"
+                              name="coursePendingInvitationEmails"
                               placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, ...`}"
                               required
                               maxlength="50000"
@@ -2108,7 +2108,7 @@ export default async (application: Application): Promise<void> => {
                           </div>
                         </details>
                         $${(() => {
-                          const courseInvitationEmails =
+                          const coursePendingInvitationEmails =
                             application.database.all<{
                               publicId: string;
                               email: string;
@@ -2121,12 +2121,12 @@ export default async (application: Application): Promise<void> => {
                                   "publicId",
                                   "email",
                                   "courseParticipationRole"
-                                from "courseInvitationEmails"
+                                from "coursePendingInvitationEmails"
                                 where "course" = ${request.state.course.id}
                                 order by "id" desc;
                               `,
                             );
-                          return 0 < courseInvitationEmails.length
+                          return 0 < coursePendingInvitationEmails.length
                             ? html`
                                 <details>
                                   <summary
@@ -2189,10 +2189,10 @@ export default async (application: Application): Promise<void> => {
                                       };
                                     `}"
                                   >
-                                    $${courseInvitationEmails.map(
-                                      (courseInvitationEmail) => html`
+                                    $${coursePendingInvitationEmails.map(
+                                      (coursePendingInvitationEmail) => html`
                                         <div
-                                          key="courseInvitationEmail ${courseInvitationEmail.publicId}"
+                                          key="coursePendingInvitationEmail ${coursePendingInvitationEmail.publicId}"
                                           css="${css`
                                             display: flex;
                                             flex-direction: column;
@@ -2206,7 +2206,7 @@ export default async (application: Application): Promise<void> => {
                                                 var(--font-family--monospace);
                                             `}"
                                           >
-                                            ${courseInvitationEmail.email}
+                                            ${coursePendingInvitationEmail.email}
                                           </div>
                                           <div
                                             css="${css`
@@ -2244,10 +2244,10 @@ export default async (application: Application): Promise<void> => {
                                                   >Role:</span
                                                 >  <input
                                                   type="radio"
-                                                  name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
+                                                  name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"
                                                   value="courseParticipationRoleInstructor"
                                                   required
-                                                  $${courseInvitationEmail.courseParticipationRole ===
+                                                  $${coursePendingInvitationEmail.courseParticipationRole ===
                                                   "courseParticipationRoleInstructor"
                                                     ? html`checked`
                                                     : html``}
@@ -2261,10 +2261,10 @@ export default async (application: Application): Promise<void> => {
                                                   >Instructor</span
                                                 ><input
                                                   type="radio"
-                                                  name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
+                                                  name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"
                                                   value="courseParticipationRoleStudent"
                                                   required
-                                                  $${courseInvitationEmail.courseParticipationRole ===
+                                                  $${coursePendingInvitationEmail.courseParticipationRole ===
                                                   "courseParticipationRoleStudent"
                                                     ? html`checked`
                                                     : html``}
@@ -2294,7 +2294,7 @@ export default async (application: Application): Promise<void> => {
                                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                                 javascript="${javascript`
                                                   this.onclick = () => {
-                                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
+                                                    this.closest('[key~="coursePendingInvitationEmail"]').querySelector(${`[name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
                                                   };
                                                 `}"
                                               >
@@ -2305,7 +2305,7 @@ export default async (application: Application): Promise<void> => {
                                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                                 javascript="${javascript`
                                                   this.onclick = () => {
-                                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                                    this.closest('[key~="coursePendingInvitationEmail"]').querySelector(${`[name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
                                                   };
                                                 `}"
                                               >
@@ -2318,7 +2318,7 @@ export default async (application: Application): Promise<void> => {
                                               javascript="${javascript`
                                                 this.onclick = () => {
                                                   this.closest('[type~="form"]').isModified = true;
-                                                  this.closest('[key~="courseInvitationEmail"]').remove();
+                                                  this.closest('[key~="coursePendingInvitationEmail"]').remove();
                                                 };
                                               `}"
                                             >
@@ -3487,7 +3487,7 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            delete from "courseInvitationEmails"
+            delete from "coursePendingInvitationEmails"
             where
               "course" = ${request.state.invitationCourse!.id} and
               "email" = ${request.state.user!.email};
@@ -3515,7 +3515,7 @@ export default async (application: Application): Promise<void> => {
           courseParticipationRole:
             | "courseParticipationRoleInstructor"
             | "courseParticipationRoleStudent";
-          courseInvitationEmails: string;
+          coursePendingInvitationEmails: string;
         },
         Application["types"]["states"]["Course"]
       >,
@@ -3533,12 +3533,12 @@ export default async (application: Application): Promise<void> => {
           "courseParticipationRoleInstructor" &&
           request.body.courseParticipationRole !==
             "courseParticipationRoleStudent") ||
-        typeof request.body.courseInvitationEmails !== "string" ||
-        request.body.courseInvitationEmails.trim() === ""
+        typeof request.body.coursePendingInvitationEmails !== "string" ||
+        request.body.coursePendingInvitationEmails.trim() === ""
       )
         throw "validation";
       const addresses = emailAddresses.parseAddressList(
-        request.body.courseInvitationEmails.replaceAll(/\n+/g, " , "),
+        request.body.coursePendingInvitationEmails.replaceAll(/\n+/g, " , "),
       );
       if (
         addresses === null ||
@@ -3571,15 +3571,15 @@ export default async (application: Application): Promise<void> => {
           application.database.get(
             sql`
               select true
-              from "courseInvitationEmails"
+              from "coursePendingInvitationEmails"
               where
-                "courseInvitationEmails"."course" = ${request.state.course.id} and
-                "courseInvitationEmails"."email" = ${userEmail};
+                "coursePendingInvitationEmails"."course" = ${request.state.course.id} and
+                "coursePendingInvitationEmails"."email" = ${userEmail};
             `,
           ) !== undefined
         )
           continue;
-        const courseInvitationEmail = application.database.get<{
+        const coursePendingInvitationEmail = application.database.get<{
           id: number;
           publicId: string;
           email: string;
@@ -3588,10 +3588,10 @@ export default async (application: Application): Promise<void> => {
             | "courseParticipationRoleStudent";
         }>(
           sql`
-            select * from "courseInvitationEmails" where "id" = ${
+            select * from "coursePendingInvitationEmails" where "id" = ${
               application.database.run(
                 sql`
-                  insert into "courseInvitationEmails" (
+                  insert into "coursePendingInvitationEmails" (
                     "publicId",
                     "course",
                     "email",
@@ -3637,10 +3637,10 @@ export default async (application: Application): Promise<void> => {
                     <a
                       href="https://${application.configuration
                         .hostname}/courses/${request.state.course
-                        .publicId}/invitation-emails/${courseInvitationEmail.publicId}"
+                        .publicId}/invitation-emails/${coursePendingInvitationEmail.publicId}"
                       >https://${application.configuration
                         .hostname}/courses/${request.state.course
-                        .publicId}/invitation-emails/${courseInvitationEmail.publicId}</a
+                        .publicId}/invitation-emails/${coursePendingInvitationEmail.publicId}</a
                     >
                   </p>
                   <p>
@@ -3674,9 +3674,9 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  type StateCourseInvitationEmail = Application["types"]["states"]["Course"] & {
+  type StateCoursePendingInvitationEmail = Application["types"]["states"]["Course"] & {
     invitationCourse: Application["types"]["states"]["Course"]["course"];
-    courseInvitationEmail: {
+    coursePendingInvitationEmail: {
       id: number;
       publicId: string;
       email: string;
@@ -3688,24 +3688,24 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<courseInvitationEmailPublicId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailPublicId>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
         {
           coursePublicId: string;
-          courseInvitationEmailPublicId: string;
+          coursePendingInvitationEmailPublicId: string;
         },
         { redirect: string },
         {},
         {},
-        StateCourseInvitationEmail
+        StateCoursePendingInvitationEmail
       >,
       response,
     ) => {
       if (
         typeof request.pathname.coursePublicId !== "string" ||
-        typeof request.pathname.courseInvitationEmailPublicId !== "string" ||
+        typeof request.pathname.coursePendingInvitationEmailPublicId !== "string" ||
         request.state.user === undefined
       )
         return;
@@ -3762,7 +3762,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.invitationCourse === undefined) return;
-      request.state.courseInvitationEmail = application.database.get<{
+      request.state.coursePendingInvitationEmail = application.database.get<{
         id: number;
         publicId: string;
         email: string;
@@ -3776,43 +3776,43 @@ export default async (application: Application): Promise<void> => {
             "publicId",
             "email",
             "courseParticipationRole"
-          from "courseInvitationEmails"
+          from "coursePendingInvitationEmails"
           where
-            "publicId" = ${request.pathname.courseInvitationEmailPublicId} and
+            "publicId" = ${request.pathname.coursePendingInvitationEmailPublicId} and
             "course" = ${request.state.invitationCourse.id} and
             "email" = ${request.state.user.email};
         `,
       );
-      if (request.state.courseInvitationEmail === undefined) return;
+      if (request.state.coursePendingInvitationEmail === undefined) return;
     },
   });
 
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<courseInvitationEmailPublicId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailPublicId>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
         {
           coursePublicId: string;
-          courseInvitationEmailPublicId: string;
+          coursePendingInvitationEmailPublicId: string;
         },
         {},
         {},
         {},
-        StateCourseInvitationEmail
+        StateCoursePendingInvitationEmail
       >,
       response,
     ) => {
       if (
         typeof request.pathname.coursePublicId !== "string" ||
-        typeof request.pathname.courseInvitationEmailPublicId !== "string"
+        typeof request.pathname.coursePendingInvitationEmailPublicId !== "string"
       )
         return;
       if (
         request.state.invitationCourse === undefined ||
-        request.state.courseInvitationEmail === undefined
+        request.state.coursePendingInvitationEmail === undefined
       ) {
         response.send(
           application.layouts.main({
@@ -3875,7 +3875,7 @@ export default async (application: Application): Promise<void> => {
                 method="POST"
                 action="/courses/${request.pathname
                   .coursePublicId}/invitation-emails/${request.pathname
-                  .courseInvitationEmailPublicId}${request.URL.search}"
+                  .coursePendingInvitationEmailPublicId}${request.URL.search}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -3906,27 +3906,27 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<courseInvitationEmailPublicId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailPublicId>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
         {
           coursePublicId: string;
-          courseInvitationEmailPublicId: string;
+          coursePendingInvitationEmailPublicId: string;
         },
         { redirect: string },
         {},
         {},
-        StateCourseInvitationEmail
+        StateCoursePendingInvitationEmail
       >,
       response,
     ) => {
       if (
         typeof request.pathname.coursePublicId !== "string" ||
-        typeof request.pathname.courseInvitationEmailPublicId !== "string" ||
+        typeof request.pathname.coursePendingInvitationEmailPublicId !== "string" ||
         request.state.user === undefined ||
         request.state.invitationCourse === undefined ||
-        request.state.courseInvitationEmail === undefined
+        request.state.coursePendingInvitationEmail === undefined
       )
         return;
       if (
@@ -3953,7 +3953,7 @@ export default async (application: Application): Promise<void> => {
               ${cryptoRandomString({ length: 20, type: "numeric" })},
               ${request.state.user!.id},
               ${request.state.invitationCourse!.id},
-              ${request.state.courseInvitationEmail!.courseParticipationRole},
+              ${request.state.coursePendingInvitationEmail!.courseParticipationRole},
               ${
                 [
                   "red",
@@ -3986,8 +3986,8 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            delete from "courseInvitationEmails"
-            where "id" = ${request.state.courseInvitationEmail!.id};
+            delete from "coursePendingInvitationEmails"
+            where "id" = ${request.state.coursePendingInvitationEmail!.id};
           `,
         );
       });
@@ -4010,7 +4010,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           [
-            courseInvitationEmailsCourseParticipationRole: `courseInvitationEmails[${string}].courseParticipationRole`
+            coursePendingInvitationEmailsCourseParticipationRole: `coursePendingInvitationEmails[${string}].courseParticipationRole`
           ]:
             | "courseParticipationRoleInstructor"
             | "courseParticipationRoleStudent";
@@ -4027,7 +4027,7 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       application.database.executeTransaction(() => {
-        for (const courseInvitationEmail of application.database.all<{
+        for (const coursePendingInvitationEmail of application.database.all<{
           id: number;
           publicId: string;
           email: string;
@@ -4041,7 +4041,7 @@ export default async (application: Application): Promise<void> => {
               "publicId",
               "email",
               "courseParticipationRole"
-            from "courseInvitationEmails"
+            from "coursePendingInvitationEmails"
             where
               "course" = ${request.state.course!.id}
             order by "id" asc;
@@ -4049,27 +4049,27 @@ export default async (application: Application): Promise<void> => {
         )) {
           if (
             request.body[
-              `courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole`
+              `coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole`
             ] === "courseParticipationRoleInstructor" ||
             request.body[
-              `courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole`
+              `coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole`
             ] === "courseParticipationRoleStudent"
           )
             application.database.run(
               sql`
-                update "courseInvitationEmails"
+                update "coursePendingInvitationEmails"
                 set "courseParticipationRole" = ${
                   request.body[
-                    `courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole`
+                    `coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole`
                   ]
                 }
-                where "id" = ${courseInvitationEmail.id};
+                where "id" = ${coursePendingInvitationEmail.id};
               `,
             );
           else
             application.database.run(
               sql`
-                delete from "courseInvitationEmails" where "id" = ${courseInvitationEmail.id};
+                delete from "coursePendingInvitationEmails" where "id" = ${coursePendingInvitationEmail.id};
               `,
             );
         }

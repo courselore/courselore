@@ -2478,7 +2478,7 @@ export default async (application: Application): Promise<void> => {
             "courseConversationsNextPublicId" integer not null
           ) strict;
           
-          create table "courseInvitationEmails" (
+          create table "coursePendingInvitationEmails" (
             "id" integer primary key autoincrement,
             "publicId" text not null unique,
             "course" integer not null references "courses",
@@ -3164,18 +3164,21 @@ export default async (application: Application): Promise<void> => {
               };
             `,
           )!;
-          const usersForCourseInvitationEmailsAndCourseParticipations = [
+          const usersForCoursePendingInvitationEmailsAndCourseParticipations = [
             ...users,
           ];
-          const courseInvitationEmailsCount = Math.floor(Math.random() * 30);
+          const coursePendingInvitationEmailsCount = Math.floor(
+            Math.random() * 30,
+          );
           for (
-            let courseInvitationEmailIndex = 0;
-            courseInvitationEmailIndex < courseInvitationEmailsCount;
-            courseInvitationEmailIndex++
+            let coursePendingInvitationEmailIndex = 0;
+            coursePendingInvitationEmailIndex <
+            coursePendingInvitationEmailsCount;
+            coursePendingInvitationEmailIndex++
           )
             database.run(
               sql`
-                insert into "courseInvitationEmails" (
+                insert into "coursePendingInvitationEmails" (
                   "publicId",
                   "course",
                   "email",
@@ -3190,10 +3193,10 @@ export default async (application: Application): Promise<void> => {
                           .name()
                           .replaceAll(/[^A-Za-z]/g, "-")
                           .toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
-                      : usersForCourseInvitationEmailsAndCourseParticipations.splice(
+                      : usersForCoursePendingInvitationEmailsAndCourseParticipations.splice(
                           Math.floor(
                             Math.random() *
-                              usersForCourseInvitationEmailsAndCourseParticipations.length,
+                              usersForCoursePendingInvitationEmailsAndCourseParticipations.length,
                           ),
                           1,
                         )[0].email
@@ -3207,10 +3210,10 @@ export default async (application: Application): Promise<void> => {
             ...Array.from(
               { length: 60 + Math.floor(Math.random() * 50) },
               () =>
-                usersForCourseInvitationEmailsAndCourseParticipations.splice(
+                usersForCoursePendingInvitationEmailsAndCourseParticipations.splice(
                   Math.floor(
                     Math.random() *
-                      usersForCourseInvitationEmailsAndCourseParticipations.length,
+                      usersForCoursePendingInvitationEmailsAndCourseParticipations.length,
                   ),
                   1,
                 )[0],
