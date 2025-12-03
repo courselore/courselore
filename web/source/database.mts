@@ -3103,6 +3103,26 @@ export default async (application: Application): Promise<void> => {
                   );
                 `,
               );
+          for (const old_tagging of database.all<{ tag: number }>(
+            sql`
+              select "tag"
+              from "old_taggings"
+              where "conversation" = ${old_conversation.id}
+              order by "id" asc;
+            `,
+          ))
+            database.run(
+              sql`
+                insert into "courseConversationTaggings" (
+                  "courseConversation",
+                  "courseConversationsTag"
+                )
+                values (
+                  ${old_conversation.id},
+                  ${old_tagging.tag}
+                );
+              `,
+            );
         }
       }
 
