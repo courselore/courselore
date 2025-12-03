@@ -2917,7 +2917,9 @@ export default async (application: Application): Promise<void> => {
               ${Number(invitationLinkCourseParticipationRoleStudents !== undefined)},
               ${invitationLinkCourseParticipationRoleStudents?.reference ?? cryptoRandomString({ length: 20, type: "numeric" })},
               ${Number(true)},
-              ${typeof course.archivedAt === "string" ? "courseStateActive" : "courseStateArchived"},
+              ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
+              ${Number(true)},
+              ${course.archivedAt === null ? "courseStateActive" : "courseStateArchived"},
               ${course.nextConversationReference}
             );
           `,
@@ -2954,8 +2956,9 @@ export default async (application: Application): Promise<void> => {
               )
               values (
                 ${courseParticipant.id},
-                ${courseParticipant.user},
                 ${courseParticipant.reference},
+                ${courseParticipant.user},
+                ${course.id},
                 ${
                   {
                     student: "courseParticipationRoleStudent",
