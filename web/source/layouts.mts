@@ -27,7 +27,6 @@ export type ApplicationLayouts = {
       hamburger?: boolean;
       body: HTML;
     }) => HTML;
-
     main: ({
       request,
       response,
