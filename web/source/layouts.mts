@@ -829,7 +829,6 @@ export default async (application: Application): Promise<void> => {
                   `
                 : html``}
           </div>
-          $${headerAfter}
           $${request.state.user !== undefined
             ? html`
                 <button
@@ -910,6 +909,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
               `
             : html``}
+          $${headerAfter}
         </div>
         <div
           key="main"
