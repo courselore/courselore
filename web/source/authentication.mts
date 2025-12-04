@@ -105,13 +105,7 @@ export default async (application: Application): Promise<void> => {
         )
           return;
         const userSession = application.database.get<{
-          id: number;
           publicId: string;
-          user: number;
-          createdAt: string;
-          needsTwoFactorAuthentication: number;
-          samlIdentifier: string | null;
-          samlProfile: string | null;
         }>(
           sql`
             select * from "userSessions" where "id" = ${
@@ -3189,8 +3183,7 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       const saml = samls?.[request.pathname.samlIdentifier];
-      if (saml === undefined || request.liveConnection)
-        return;
+      if (saml === undefined || request.liveConnection) return;
       response.redirect!(
         await saml.saml.getAuthorizeUrlAsync(
           request.URL.search.slice(1),
