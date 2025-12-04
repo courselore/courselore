@@ -1984,6 +1984,7 @@ You may also use the buttons on the message content editor to ${
 
                     pre {
                       margin: var(--size--2) var(--size--0);
+                      overflow: auto hidden;
                     }
 
                     .shiki {
@@ -1991,7 +1992,6 @@ You may also use the buttons on the message content editor to ${
                       line-height: var(--font-size--3-5--line-height);
                       padding: var(--size--2) var(--size--4);
                       border-radius: var(--border-radius--1);
-                      overflow: auto hidden;
                       &,
                       & span {
                         color: light-dark(
