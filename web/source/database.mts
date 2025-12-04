@@ -3128,7 +3128,6 @@ export default async (application: Application): Promise<void> => {
             id: number;
             createdAt: string;
             updatedAt: string | null;
-            reference: string;
             authorCourseParticipant: number | null;
             anonymousAt: string | null;
             type:
@@ -3143,7 +3142,6 @@ export default async (application: Application): Promise<void> => {
                 "id",
                 "createdAt",
                 "updatedAt",
-                "reference",
                 "authorCourseParticipant",
                 "anonymousAt",
                 "type",
@@ -3222,7 +3220,7 @@ export default async (application: Application): Promise<void> => {
                 )
                 values (
                   ${old_message.id},
-                  ${old_message.reference},
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
                   ${old_conversation.id},
                   ${old_message.authorCourseParticipant},
                   ${old_message.createdAt},
