@@ -12,7 +12,8 @@ export type ApplicationLayouts = {
       request,
       response,
       head,
-      hamburger,
+      headerBefore,
+      headerAfter,
       body,
     }: {
       request: serverTypes.Request<
@@ -24,7 +25,8 @@ export type ApplicationLayouts = {
       >;
       response: serverTypes.Response;
       head: HTML;
-      hamburger?: boolean;
+      headerBefore?: HTML;
+      headerAfter?: HTML;
       body: HTML;
     }) => HTML;
     main: ({
@@ -283,7 +285,8 @@ export default async (application: Application): Promise<void> => {
     request,
     response,
     head,
-    hamburger = false,
+    headerBefore = html``,
+    headerAfter = html``,
     body,
   }) => html`
     <!doctype html>
@@ -473,29 +476,7 @@ export default async (application: Application): Promise<void> => {
             gap: var(--size--4);
           `}"
         >
-          $${hamburger
-            ? html`
-                <button
-                  key="header--hamburger"
-                  type="button"
-                  class="button button--square button--icon button--transparent"
-                  css="${css`
-                    font-size: var(--font-size--5);
-                    line-height: var(--size--0);
-                    @media (min-width: 900px) {
-                      display: none;
-                    }
-                  `}"
-                  javascript="${javascript`
-                    this.onclick = () => {
-                      javascript.stateAdd(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
-                    };
-                  `}"
-                >
-                  <i class="bi bi-list"></i>
-                </button>
-              `
-            : html``}
+          $${headerBefore}
           <a
             key="header--logo"
             href="/"

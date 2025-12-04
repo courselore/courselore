@@ -60,7 +60,27 @@ export default async (application: Application): Promise<void> => {
       request,
       response,
       head,
-      hamburger: true,
+      headerBefore: html`
+        <button
+          key="header--hamburger"
+          type="button"
+          class="button button--square button--icon button--transparent"
+          css="${css`
+            font-size: var(--font-size--5);
+            line-height: var(--size--0);
+            @media (min-width: 900px) {
+              display: none;
+            }
+          `}"
+          javascript="${javascript`
+            this.onclick = () => {
+              javascript.stateAdd(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
+            };
+          `}"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+      `,
       body: html`
         <div
           key="main--two-column-layout"
