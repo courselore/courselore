@@ -3027,6 +3027,7 @@ export default async (application: Application): Promise<void> => {
                 "pinnedAt",
                 "resolvedAt",
                 "title"
+              from "old_conversation"
               where "course" = ${old_course.id}
               order by "id" asc;
             `,
