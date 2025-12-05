@@ -1188,7 +1188,7 @@ export default async (application: Application): Promise<void> => {
                                       "{tag}"}].privateToCourseParticipationRoleInstructors"
                                       $${Boolean(
                                         courseConversationsTag?.privateToCourseParticipationRoleInstructors ??
-                                          false,
+                                        false,
                                       )
                                         ? html`checked`
                                         : html``}
@@ -3674,17 +3674,18 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  type StateCoursePendingInvitationEmail = Application["types"]["states"]["Course"] & {
-    invitationCourse: Application["types"]["states"]["Course"]["course"];
-    coursePendingInvitationEmail: {
-      id: number;
-      publicId: string;
-      email: string;
-      courseParticipationRole:
-        | "courseParticipationRoleInstructor"
-        | "courseParticipationRoleStudent";
+  type StateCoursePendingInvitationEmail =
+    Application["types"]["states"]["Course"] & {
+      invitationCourse: Application["types"]["states"]["Course"]["course"];
+      coursePendingInvitationEmail: {
+        id: number;
+        publicId: string;
+        email: string;
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
+      };
     };
-  };
 
   application.server?.push({
     pathname: new RegExp(
@@ -3705,7 +3706,8 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         typeof request.pathname.coursePublicId !== "string" ||
-        typeof request.pathname.coursePendingInvitationEmailPublicId !== "string" ||
+        typeof request.pathname.coursePendingInvitationEmailPublicId !==
+          "string" ||
         request.state.user === undefined
       )
         return;
@@ -3807,7 +3809,8 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         typeof request.pathname.coursePublicId !== "string" ||
-        typeof request.pathname.coursePendingInvitationEmailPublicId !== "string"
+        typeof request.pathname.coursePendingInvitationEmailPublicId !==
+          "string"
       )
         return;
       if (
@@ -3923,7 +3926,8 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         typeof request.pathname.coursePublicId !== "string" ||
-        typeof request.pathname.coursePendingInvitationEmailPublicId !== "string" ||
+        typeof request.pathname.coursePendingInvitationEmailPublicId !==
+          "string" ||
         request.state.user === undefined ||
         request.state.invitationCourse === undefined ||
         request.state.coursePendingInvitationEmail === undefined
