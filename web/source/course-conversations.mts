@@ -4717,8 +4717,14 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.content = ${courseConversationMessage.content};
                               if (${
-                                request.search.message ===
-                                  courseConversationMessage.publicId &&
+                                ((typeof request.search.message === "string" &&
+                                  request.search.message ===
+                                    courseConversationMessage.publicId) ||
+                                  (request.search.message === undefined &&
+                                    firstUnviewedCourseConversationMessage !==
+                                      undefined &&
+                                    firstUnviewedCourseConversationMessage.id ===
+                                      courseConversationMessage.id)) &&
                                 !request.liveConnection
                               })
                                 this.scrollIntoView();
