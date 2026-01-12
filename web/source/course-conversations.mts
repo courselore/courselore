@@ -4510,13 +4510,66 @@ export default async (application: Application): Promise<void> => {
                       sql`
                         select "id"
                         from "courseConversationMessages"
-                        where "courseConversation" = ${request.state.courseConversation!.id}
+                        where "courseConversation" = ${request.state.courseConversation!.id} $${
+                          request.state.courseParticipation!
+                            .courseParticipationRole !==
+                          "courseParticipationRoleInstructor"
+                            ? sql`
+                                and
+                                "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                              `
+                            : sql``
+                        }
                         order by "id" asc
                         limit 1;
                       `,
                     );
                   if (firstCourseConversationMessage === undefined)
                     throw new Error();
+                  const lastCourseConversationMessage =
+                    application.database.get<{ id: number }>(
+                      sql`
+                        select "id"
+                        from "courseConversationMessages"
+                        where "courseConversation" = ${request.state.courseConversation!.id} $${
+                          request.state.courseParticipation!
+                            .courseParticipationRole !==
+                          "courseParticipationRoleInstructor"
+                            ? sql`
+                                and
+                                "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                              `
+                            : sql``
+                        }
+                        order by "id" desc
+                        limit 1;
+                      `,
+                    );
+                  if (lastCourseConversationMessage === undefined)
+                    throw new Error();
+                  const firstUnviewedCourseConversationMessage =
+                    application.database.get<{ id: number }>(
+                      sql`
+                        select "courseConversationMessages"."id" as "id"
+                        from "courseConversationMessages"
+                        left join "courseConversationMessageViews" on
+                          "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                          "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
+                        where "courseConversationMessages"."courseConversation" = ${request.state.courseConversation!.id} $${
+                          request.state.courseParticipation!
+                            .courseParticipationRole !==
+                          "courseParticipationRoleInstructor"
+                            ? sql`
+                                and
+                                "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                              `
+                            : sql``
+                        } and
+                          "courseConversationMessageViews"."id" is null
+                        order by "courseConversationMessages"."id" asc
+                        limit 1;
+                      `,
+                    );
                   return await Promise.all(
                     application.database
                       .all<{
