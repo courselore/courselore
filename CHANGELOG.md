@@ -1,5 +1,13 @@
 # Changelog
 
+## 10.0.0 · 2026-01-12
+
+This is the biggest update to Courselore yet. Two years in the making.
+
+Courselore 10.0.0 has an redesigned user interface, a simpler story for deployment and configuration, and some long-requested quality-of-life improvements, for example, grouping the conversations on the sidebar by week.
+
+To update from Courselore 8.0.0 you must recreate the configuration following the [example](https://github.com/courselore/courselore/blob/main/web/configuration/example.mjs) while keeping the same `dataDirectory`.
+
 ## 8.0.0 · 2023-12-16
 
 **Courselore 8.0.0 is packaged in a new way and updating to it requires manual intervention from system administrators.**
