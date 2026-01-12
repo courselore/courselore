@@ -4700,6 +4700,9 @@ export default async (application: Application): Promise<void> => {
                               .state.courseConversation!
                               .publicId}/messages/${courseConversationMessage.publicId}"
                             css="${css`
+                              padding: var(--size--2);
+                              border-radius: var(--border-radius--1);
+                              margin: var(--size---2);
                               display: flex;
                               gap: var(--size--2);
                             `} ${request.search.message ===
@@ -4709,9 +4712,6 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--slate--50),
                                     var(--color--slate--950)
                                   );
-                                  padding: var(--size--2);
-                                  border-radius: var(--border-radius--1);
-                                  margin: var(--size---2);
                                 `
                               : css``}"
                             javascript="${javascript`
