@@ -885,9 +885,7 @@ export default async (application: Application): Promise<void> => {
                                 transition-timing-function: var(
                                   --transition-timing-function--ease-in-out
                                 );
-                                &:not(.visible),
-                                [key~="courseConversations--groups--group"].current
-                                  & {
+                                &:not(.visible) {
                                   visibility: hidden;
                                   opacity: var(--opacity--0);
                                 }
@@ -931,10 +929,15 @@ export default async (application: Application): Promise<void> => {
                       element.classList.add("current");
                     else
                       element.classList.remove("current");
+                    if (
+                      element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null &&
+                      !element.matches(".current")
+                    )
+                      element.querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
+                    else
+                      element.querySelector('[key~="courseConversations--groups--group--view"]').classList.remove("visible");
                   }
                   // TODO:
-                  // if (element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null)
-                  //   element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
                   // {
                   //   const preopenCourseConversationsGroups = [...courseConversationsGroups.querySelectorAll('[key~="courseConversations--groups--group"]')].slice(0, 5);
                   //   if (preopenCourseConversationsGroups[0].matches('[key~="pinned"]')) {
