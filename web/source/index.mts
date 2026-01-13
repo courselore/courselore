@@ -76,7 +76,7 @@ export type Application = {
   ApplicationCourseConversationMessages &
   ApplicationCourseConversationMessageContent;
 const application = {} as Application;
-application.version = "10.0.0";
+application.version = "10.0.1";
 application.commandLineArguments = util.parseArgs({
   options: {
     type: { type: "string" },

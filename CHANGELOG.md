@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.0.1 · 2026-01-13
+
+- Fixed an issue with scrolling in the conversation.
+
 ## 10.0.0 · 2026-01-12
 
 This is the biggest update to Courselore yet. Two years in the making.
