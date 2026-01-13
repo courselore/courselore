@@ -2208,12 +2208,7 @@ You may also use the buttons on the message content editor to ${
           if (
             !(
               url.protocol === "https:" &&
-              url.hostname === application.configuration.hostname &&
-              url.pathname.match(
-                new RegExp(
-                  `^/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}(?:$|/)`,
-                ),
-              )
+              url.hostname === application.configuration.hostname
             )
           )
             element.setAttribute("target", "_blank");
