@@ -932,16 +932,15 @@ export default async (application: Application): Promise<void> => {
                       !element.matches(".current") ? "add" : "remove"
                     ]("visible");
                   }
-                  // TODO:
-                  // {
-                  //   const preopenCourseConversationsGroups = [...courseConversationsGroups.querySelectorAll('[key~="courseConversations--groups--group"]')].slice(0, 5);
-                  //   if (preopenCourseConversationsGroups[0].matches('[key~="pinned"]')) {
-                  //     if (preopenCourseConversationsGroups[0].querySelector('[key~="courseConversations--groups--group--view"].visible') === null)
-                  //       preopenCourseConversationsGroups.shift();
-                  //   }
-                  //   else if (preopenCourseConversationsGroups.length === 5) preopenCourseConversationsGroups.pop();
-                  //   for (const element of preopenCourseConversationsGroups) element.open = true;
-                  // }
+                  if (previousCourseConversation === null) {
+                    const preopenCourseConversationsGroups = [...this.querySelector('[key~="courseConversations--groups"]').children].slice(0, 5);
+                    if (preopenCourseConversationsGroups[0].matches('[key~="pinned"]')) {
+                      if (preopenCourseConversationsGroups[0].querySelector('[key~="courseConversations--groups--group--view"].visible') === null)
+                        preopenCourseConversationsGroups.shift();
+                    }
+                    else if (preopenCourseConversationsGroups.length === 5) preopenCourseConversationsGroups.pop();
+                    for (const element of preopenCourseConversationsGroups) element.open = true;
+                  }
                   const currentCourseConversation = this.querySelector('[key~="courseConversations--groups"] [key~="courseConversation"].current');
                   if (previousCourseConversation !== currentCourseConversation) {
                     currentCourseConversation.closest('[key~="courseConversations--groups--group"]').open = true;
