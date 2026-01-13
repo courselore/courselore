@@ -924,6 +924,7 @@ export default async (application: Application): Promise<void> => {
                     ).insertAdjacentElement("beforeend", element);
                   }
                   const previousCourseConversation = this.querySelector('[key~="courseConversations--groups"] [key~="courseConversation"].current');
+                  const firstMount = previousCourseConversation === null;
                   javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
                   for (const element of this.querySelector('[key~="courseConversations--groups"]').children) {
                     element.classList[element.querySelector('[key~="courseConversation"].current') !== null ? "add" : "remove"]("current");
@@ -932,7 +933,7 @@ export default async (application: Application): Promise<void> => {
                       !element.matches(".current") ? "add" : "remove"
                     ]("visible");
                   }
-                  if (previousCourseConversation === null) {
+                  if (firstMount) {
                     const preopenCourseConversationsGroups = [...this.querySelector('[key~="courseConversations--groups"]').children].slice(0, 5);
                     if (preopenCourseConversationsGroups[0].matches('[key~="pinned"]')) {
                       if (preopenCourseConversationsGroups[0].querySelector('[key~="courseConversations--groups--group--view"].visible') === null)
@@ -946,7 +947,7 @@ export default async (application: Application): Promise<void> => {
                     currentCourseConversation.closest('[key~="courseConversations--groups--group"]').open = true;
                     scrollIntoViewIfNeeded(currentCourseConversation, {
                       scrollMode: "if-needed",
-                      block: previousCourseConversation === null ? "center" : "nearest",
+                      block: firstMount ? "center" : "nearest",
                     });
                   }
                 `}"
