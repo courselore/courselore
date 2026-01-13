@@ -410,6 +410,10 @@ export default async (application: Application): Promise<void> => {
                             .publicId}/conversations/${courseConversation.publicId}"
                           href="/courses/${request.state.course!
                             .publicId}/conversations/${courseConversation.publicId}"
+                          $${request.state.courseConversation?.id ===
+                          courseConversation.id
+                            ? html`class="current"`
+                            : html``}
                           css="${css`
                             padding: var(--size--2) var(--size--4);
                             border-bottom: var(--border-width--1) solid
