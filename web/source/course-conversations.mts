@@ -944,7 +944,10 @@ export default async (application: Application): Promise<void> => {
                   const currentCourseConversation = this.querySelector('[key~="courseConversations--groups"] [key~="courseConversation"].current');
                   if (previousCourseConversation !== currentCourseConversation) {
                     currentCourseConversation.closest('[key~="courseConversations--groups--group"]').open = true;
-                    currentCourseConversation.scrollIntoView({ block: "center" });
+                    scrollIntoViewIfNeeded(currentCourseConversation, {
+                      scrollMode: "if-needed",
+                      block: previousCourseConversation === null ? "center" : "nearest",
+                    });
                   }
                 `}"
               >

@@ -273,6 +273,7 @@ export default async (application: Application): Promise<void> => {
     import * as utilities from "@radically-straightforward/utilities";
     import html from "@radically-straightforward/html";
     import emailAddresses from "email-addresses";
+    import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
     import { unified } from "unified";
     import rehypeParse from "rehype-parse";
     import rehypeRemark from "rehype-remark";
