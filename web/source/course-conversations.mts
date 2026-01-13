@@ -433,53 +433,46 @@ export default async (application: Application): Promise<void> => {
                             transition-timing-function: var(
                               --transition-timing-function--ease-in-out
                             );
-                          `} ${request.state.courseConversation?.id ===
-                          courseConversation.id
-                            ? css`
-                                color: light-dark(
-                                  var(--color--white),
-                                  var(--color--white)
-                                );
+                            &:hover,
+                            &:focus-within {
+                              background-color: light-dark(
+                                var(--color--slate--50),
+                                var(--color--slate--950)
+                              );
+                            }
+                            &:active {
+                              background-color: light-dark(
+                                var(--color--slate--100),
+                                var(--color--slate--900)
+                              );
+                            }
+                            &.current {
+                              color: light-dark(
+                                var(--color--white),
+                                var(--color--white)
+                              );
+                              background-color: light-dark(
+                                var(--color--blue--500),
+                                var(--color--blue--500)
+                              );
+                              &:hover,
+                              &:focus-within {
                                 background-color: light-dark(
-                                  var(--color--blue--500),
-                                  var(--color--blue--500)
+                                  var(--color--blue--400),
+                                  var(--color--blue--400)
                                 );
-                                &:hover,
-                                &:focus-within {
-                                  background-color: light-dark(
-                                    var(--color--blue--400),
-                                    var(--color--blue--400)
-                                  );
-                                }
-                                &:active {
-                                  background-color: light-dark(
-                                    var(--color--blue--600),
-                                    var(--color--blue--600)
-                                  );
-                                }
-                              `
-                            : css`
-                                &:hover,
-                                &:focus-within {
-                                  background-color: light-dark(
-                                    var(--color--slate--50),
-                                    var(--color--slate--950)
-                                  );
-                                }
-                                &:active {
-                                  background-color: light-dark(
-                                    var(--color--slate--100),
-                                    var(--color--slate--900)
-                                  );
-                                }
-                              `}"
+                              }
+                              &:active {
+                                background-color: light-dark(
+                                  var(--color--blue--600),
+                                  var(--color--blue--600)
+                                );
+                              }
+                            }
+                          `}"
                           javascript="${javascript`
                             this.pinned = ${Boolean(courseConversation.pinned)};
                             this.firstCourseConversationMessageCreatedAt = ${firstCourseConversationMessage.createdAt};
-                            this.current = ${
-                              request.state.courseConversation?.id ===
-                              courseConversation.id
-                            };
                           `}"
                         >
                           <div key="courseConversation--sidebar">
@@ -931,13 +924,13 @@ export default async (application: Application): Promise<void> => {
                         </details>
                       \`))
                     ).insertAdjacentElement("beforeend", element);
-                    if (element.current)
-                      element.closest('[key~="courseConversations--groups--group"]').classList.add("current");
-                    if (element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null)
-                      element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
                   }
                   javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
                   // TODO:
+                  // if (element.current)
+                  //   element.closest('[key~="courseConversations--groups--group"]').classList.add("current");
+                  // if (element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null)
+                  //   element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
                   // {
                   //   const preopenCourseConversationsGroups = [...courseConversationsGroups.querySelectorAll('[key~="courseConversations--groups--group"]')].slice(0, 5);
                   //   if (preopenCourseConversationsGroups[0].matches('[key~="pinned"]')) {
