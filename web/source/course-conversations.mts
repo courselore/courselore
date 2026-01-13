@@ -926,11 +926,12 @@ export default async (application: Application): Promise<void> => {
                     ).insertAdjacentElement("beforeend", element);
                   }
                   javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
-                  for (const element of this.querySelector('[key~="courseConversations--groups"]').children)
-                    if (element.querySelector('[key~="courseConversation"].current') === null)
-                      element.classList.remove("current");
-                    else
+                  for (const element of this.querySelector('[key~="courseConversations--groups"]').children) {
+                    if (element.querySelector('[key~="courseConversation"].current') !== null)
                       element.classList.add("current");
+                    else
+                      element.classList.remove("current");
+                  }
                   // TODO:
                   // if (element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null)
                   //   element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
