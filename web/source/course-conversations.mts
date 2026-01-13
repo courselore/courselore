@@ -777,7 +777,7 @@ export default async (application: Application): Promise<void> => {
                 key="courseConversations--groups--container"
                 javascript="${javascript`
                   const courseConversationsGroups = javascript.stringToElement(html\`<div key="courseConversations--groups"></div>\`);
-                  for (const element of this.closest('[key~="courseConversations"]').querySelector('[key~="courseConversations--to-group"]').children) {
+                  for (const element of [...this.closest('[key~="courseConversations"]').querySelector('[key~="courseConversations--to-group"]').children]) {
                     let groupKey;
                     let groupSummary;
                     if (element.pinned) {
