@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Improved the scrolling of the conversations sidebar.
+
 ## 10.0.1 · 2026-01-13
 
 - Fixed an issue with scrolling in the conversation.
