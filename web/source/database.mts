@@ -3412,7 +3412,7 @@ export default async (application: Application): Promise<void> => {
                       values (
                         ${cryptoRandomString({ length: 20, type: "numeric" })},
                         ${userName},
-                        ${`${userIndex === 0 ? "administrator" : `${userName.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
+                        ${`${userIndex === 0 ? "system-administrator" : `${userName.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
                         ${null},
                         ${null},
                         ${null},
