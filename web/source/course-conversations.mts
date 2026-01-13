@@ -933,16 +933,16 @@ export default async (application: Application): Promise<void> => {
                       element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
                   }
                   javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
-                  {
-                    const preopenCourseConversationsGroups = [...courseConversationsGroups.querySelectorAll('[key~="courseConversations--groups--group"]')].slice(0, 5);
-                    if (preopenCourseConversationsGroups[0].matches('[key~="pinned"]')) {
-                      if (preopenCourseConversationsGroups[0].querySelector('[key~="courseConversations--groups--group--view"].visible') === null)
-                        preopenCourseConversationsGroups.shift();
-                    }
-                    else if (preopenCourseConversationsGroups.length === 5) preopenCourseConversationsGroups.pop();
-                    for (const element of preopenCourseConversationsGroups) element.open = true;
-                  }
                   // TODO:
+                  // {
+                  //   const preopenCourseConversationsGroups = [...courseConversationsGroups.querySelectorAll('[key~="courseConversations--groups--group"]')].slice(0, 5);
+                  //   if (preopenCourseConversationsGroups[0].matches('[key~="pinned"]')) {
+                  //     if (preopenCourseConversationsGroups[0].querySelector('[key~="courseConversations--groups--group--view"].visible') === null)
+                  //       preopenCourseConversationsGroups.shift();
+                  //   }
+                  //   else if (preopenCourseConversationsGroups.length === 5) preopenCourseConversationsGroups.pop();
+                  //   for (const element of preopenCourseConversationsGroups) element.open = true;
+                  // }
                   // if (element.current) {
                   //   element.closest('[key~="courseConversations--groups--group"]').open = true;
                   //   element.scrollIntoView({ block: "center" });
