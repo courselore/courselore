@@ -923,6 +923,7 @@ export default async (application: Application): Promise<void> => {
                       \`))
                     ).insertAdjacentElement("beforeend", element);
                   }
+                  const previousCourseConversation = this.querySelector('[key~="courseConversations--groups"] [key~="courseConversation"].current');
                   javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
                   for (const element of this.querySelector('[key~="courseConversations--groups"]').children) {
                     element.classList[element.querySelector('[key~="courseConversation"].current') !== null ? "add" : "remove"]("current");
@@ -941,10 +942,11 @@ export default async (application: Application): Promise<void> => {
                   //   else if (preopenCourseConversationsGroups.length === 5) preopenCourseConversationsGroups.pop();
                   //   for (const element of preopenCourseConversationsGroups) element.open = true;
                   // }
-                  // if (element.current) {
-                  //   element.closest('[key~="courseConversations--groups--group"]').open = true;
-                  //   element.scrollIntoView({ block: "center" });
-                  // }
+                  const currentCourseConversation = this.querySelector('[key~="courseConversations--groups"] [key~="courseConversation"].current');
+                  if (previousCourseConversation !== currentCourseConversation) {
+                    currentCourseConversation.closest('[key~="courseConversations--groups--group"]').open = true;
+                    currentCourseConversation.scrollIntoView({ block: "center" });
+                  }
                 `}"
               >
                 <div key="courseConversations--groups"></div>
