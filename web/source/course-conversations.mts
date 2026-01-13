@@ -780,8 +780,7 @@ export default async (application: Application): Promise<void> => {
                 key="courseConversations--groups--container"
                 javascript="${javascript`
                   const courseConversationsGroups = javascript.stringToElement(html\`<div key="courseConversations--groups"></div>\`);
-                  let currentCourseConversation;
-                  for (const element of this.closest('[key~="courseConversations"]').querySelectorAll('[key~="courseConversations--to-group"] [key~="courseConversation"]')) {
+                  for (const element of this.closest('[key~="courseConversations"]').querySelector('[key~="courseConversations--to-group"]').children) {
                     let groupKey;
                     let groupSummary;
                     if (element.pinned) {
@@ -931,7 +930,6 @@ export default async (application: Application): Promise<void> => {
                     if (element.current) {
                       element.closest('[key~="courseConversations--groups--group"]').classList.add("current");
                       element.closest('[key~="courseConversations--groups--group"]').open = true;
-                      currentCourseConversation = element;
                     }
                     if (element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null)
                       element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
