@@ -927,13 +927,12 @@ export default async (application: Application): Promise<void> => {
                         </details>
                       \`))
                     ).insertAdjacentElement("beforeend", element);
-                    if (element.current) {
+                    if (element.current)
                       element.closest('[key~="courseConversations--groups--group"]').classList.add("current");
-                      element.closest('[key~="courseConversations--groups--group"]').open = true;
-                    }
                     if (element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null)
                       element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
                   }
+                  javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
                   {
                     const preopenCourseConversationsGroups = [...courseConversationsGroups.querySelectorAll('[key~="courseConversations--groups--group"]')].slice(0, 5);
                     if (preopenCourseConversationsGroups[0].matches('[key~="pinned"]')) {
@@ -943,9 +942,11 @@ export default async (application: Application): Promise<void> => {
                     else if (preopenCourseConversationsGroups.length === 5) preopenCourseConversationsGroups.pop();
                     for (const element of preopenCourseConversationsGroups) element.open = true;
                   }
-                  javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
-                  if (this.firstMount === undefined) currentCourseConversation?.scrollIntoView({ block: "center" });
-                  this.firstMount = false;
+                  // TODO:
+                  // if (element.current) {
+                  //   element.closest('[key~="courseConversations--groups--group"]').open = true;
+                  //   element.scrollIntoView({ block: "center" });
+                  // }
                 `}"
               >
                 <div key="courseConversations--groups"></div>
