@@ -4715,10 +4715,16 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.content = ${courseConversationMessage.content};
                               if (${
-                                typeof request.search.message === "string" &&
-                                request.search.message ===
-                                  courseConversationMessage.publicId &&
-                                !request.liveConnection
+                                (typeof request.search.message === "string" &&
+                                  request.search.message ===
+                                    courseConversationMessage.publicId) ||
+                                (request.search.message === undefined &&
+                                  firstUnviewedCourseConversationMessage !==
+                                    undefined &&
+                                  firstUnviewedCourseConversationMessage.id !==
+                                    firstCourseConversationMessage.id &&
+                                  firstUnviewedCourseConversationMessage.id ===
+                                    courseConversationMessage.id)
                               })
                                 this.scrollIntoView();
                             `}"
