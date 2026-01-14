@@ -4502,6 +4502,7 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
                 javascript="${javascript`
+                  if (${!request.liveConnection}) return;
                   let courseConversationMessageToScrollTo;
                   if (${typeof request.search.message === "string"}) {
                     courseConversationMessageToScrollTo = this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
@@ -4509,10 +4510,7 @@ export default async (application: Application): Promise<void> => {
                     }/conversations/${
                       request.state.courseConversation.publicId
                     }/messages/${request.search.message}"]`}) ?? undefined;
-                    if (
-                      courseConversationMessageToScrollTo !== undefined &&
-                      ${!request.liveConnection}
-                    )
+                    if (courseConversationMessageToScrollTo !== undefined)
                       delete this.courseConversationMessageThatHasBeenScrolledTo;
                   }
                   if (courseConversationMessageToScrollTo === undefined) {
