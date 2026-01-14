@@ -4504,12 +4504,16 @@ export default async (application: Application): Promise<void> => {
                 javascript="${javascript`
                   let courseConversationMessageToScrollTo;
                   if (${typeof request.search.message === "string"}) {
-                    if (${!request.liveConnection}) delete this.courseConversationMessageThatHasBeenScrolledTo;
                     courseConversationMessageToScrollTo = this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
                       request.state.course.publicId
                     }/conversations/${
                       request.state.courseConversation.publicId
                     }/messages/${request.search.message}"]`}) ?? undefined;
+                    if (
+                      courseConversationMessageToScrollTo !== undefined &&
+                      ${!request.liveConnection}
+                    )
+                      delete this.courseConversationMessageThatHasBeenScrolledTo;
                   }
                   if (courseConversationMessageToScrollTo === undefined) {
                     const firstUnviewedCourseConversationMessage = this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]');
