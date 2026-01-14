@@ -2206,10 +2206,9 @@ You may also use the buttons on the message content editor to ${
             `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
           );
           if (
-            !(
-              url.protocol === "https:" &&
-              url.hostname === application.configuration.hostname
-            )
+            url.protocol !== "https:" ||
+            url.hostname !== application.configuration.hostname ||
+            url.pathname.startsWith("/files/")
           )
             element.setAttribute("target", "_blank");
           element.setAttribute("class", "link");
