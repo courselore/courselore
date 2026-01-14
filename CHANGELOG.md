@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Improved the scrolling of the conversations sidebar.
+- Fixed navigation to attachments in message content.
 
 ## 10.0.1 · 2026-01-13
 
