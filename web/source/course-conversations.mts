@@ -4502,7 +4502,7 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
                 javascript="${javascript`
-                  const courseConversationMessageToScroll =
+                  const element =
                     ${typeof request.search.message === "string" && !request.liveConnection} ? (
                       this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
                         request.state.course.publicId
@@ -4517,10 +4517,10 @@ export default async (application: Application): Promise<void> => {
                     ) :
                     undefined;
                   if (
-                    courseConversationMessageToScroll !== undefined &&
-                    courseConversationMessageToScroll !== this.querySelectorAll('[key~="courseConversationMessage"]')[0]
+                    element !== undefined &&
+                    element !== this.querySelectorAll('[key~="courseConversationMessage"]')[0]
                   )
-                    courseConversationMessageToScroll.scrollIntoView();
+                    element.scrollIntoView();
                   this.hasScrolled = true;
                 `}"
               >
