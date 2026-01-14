@@ -4501,6 +4501,14 @@ export default async (application: Application): Promise<void> => {
                   flex-direction: column;
                   gap: var(--size--4);
                 `}"
+                javascript="${javascript`
+                  if (${typeof request.search.message === "string" && !request.liveConnection})
+                    this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
+                      request.state.course.publicId
+                    }/conversations/${
+                      request.state.courseConversation.publicId
+                    }/messages/${request.search.message}"]`})?.scrollIntoView();
+                `}"
               >
                 $${await (async () => {
                   const firstCourseConversationMessage =
@@ -4524,50 +4532,6 @@ export default async (application: Application): Promise<void> => {
                     );
                   if (firstCourseConversationMessage === undefined)
                     throw new Error();
-                  const lastCourseConversationMessage =
-                    application.database.get<{ id: number }>(
-                      sql`
-                        select "id"
-                        from "courseConversationMessages"
-                        where "courseConversation" = ${request.state.courseConversation!.id} $${
-                          request.state.courseParticipation!
-                            .courseParticipationRole !==
-                          "courseParticipationRoleInstructor"
-                            ? sql`
-                                and
-                                "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                              `
-                            : sql``
-                        }
-                        order by "id" desc
-                        limit 1;
-                      `,
-                    );
-                  if (lastCourseConversationMessage === undefined)
-                    throw new Error();
-                  const firstUnviewedCourseConversationMessage =
-                    application.database.get<{ id: number }>(
-                      sql`
-                        select "courseConversationMessages"."id" as "id"
-                        from "courseConversationMessages"
-                        left join "courseConversationMessageViews" on
-                          "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                          "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
-                        where "courseConversationMessages"."courseConversation" = ${request.state.courseConversation!.id} $${
-                          request.state.courseParticipation!
-                            .courseParticipationRole !==
-                          "courseParticipationRoleInstructor"
-                            ? sql`
-                                and
-                                "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                              `
-                            : sql``
-                        } and
-                          "courseConversationMessageViews"."id" is null
-                        order by "courseConversationMessages"."id" asc
-                        limit 1;
-                      `,
-                    );
                   return await Promise.all(
                     application.database
                       .all<{
@@ -4714,23 +4678,6 @@ export default async (application: Application): Promise<void> => {
                               : css``}"
                             javascript="${javascript`
                               this.content = ${courseConversationMessage.content};
-                              if (${
-                                (typeof request.search.message === "string" &&
-                                  request.search.message ===
-                                    courseConversationMessage.publicId) ||
-                                (request.search.message === undefined &&
-                                  ((firstUnviewedCourseConversationMessage !==
-                                    undefined &&
-                                    firstUnviewedCourseConversationMessage.id !==
-                                      firstCourseConversationMessage.id &&
-                                    firstUnviewedCourseConversationMessage.id ===
-                                      courseConversationMessage.id) ||
-                                    (firstUnviewedCourseConversationMessage ===
-                                      undefined &&
-                                      lastCourseConversationMessage.id ===
-                                        courseConversationMessage.id)))
-                              })
-                                this.scrollIntoView();
                             `}"
                           >
                             <div key="courseConversationMessage--sidebar">
