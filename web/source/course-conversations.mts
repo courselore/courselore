@@ -4502,21 +4502,25 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
                 javascript="${javascript`
-                  if (${typeof request.search.message === "string" && !request.liveConnection})
-                    this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
-                      request.state.course.publicId
-                    }/conversations/${
-                      request.state.courseConversation.publicId
-                    }/messages/${request.search.message}"]`})?.scrollIntoView();
-                  else (this.hasScrolled !== true) {
-                    const firstUnviewedCourseConversationMessage = this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]');
-                    if (firstUnviewedCourseConversationMessage !== undefined) {
-                      if (firstUnviewedCourseConversationMessage !== this.querySelectorAll('[key~="courseConversationMessage"]')[0])
-                        firstUnviewedCourseConversationMessage.scrollIntoView();
-                    }
-                    else if (1 < this.querySelectorAll('[key~="courseConversationMessage"]').length)
-                      [...this.querySelectorAll('[key~="courseConversationMessage"]')].at(-1).scrollIntoView();
-                  }
+                  const courseConversationMessageToScroll =
+                    ${typeof request.search.message === "string" && !request.liveConnection} ? (
+                      this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
+                        request.state.course.publicId
+                      }/conversations/${
+                        request.state.courseConversation.publicId
+                      }/messages/${request.search.message}"]`}) ??
+                      undefined
+                    ) :
+                    this.hasScrolled !== true ? (
+                      this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]') ??
+                      [...this.querySelectorAll('[key~="courseConversationMessage"]')].at(-1)
+                    ) :
+                    undefined;
+                  if (
+                    courseConversationMessageToScroll !== undefined &&
+                    courseConversationMessageToScroll !== this.querySelectorAll('[key~="courseConversationMessage"]')[0]
+                  )
+                    courseConversationMessageToScroll.scrollIntoView();
                   this.hasScrolled = true;
                 `}"
               >
