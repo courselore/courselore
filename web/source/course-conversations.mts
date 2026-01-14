@@ -4502,12 +4502,22 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
                 javascript="${javascript`
-                  if (${typeof request.search.message === "string" && !request.liveConnection})
+                  if (${request.liveConnection}) return;
+                  if (${typeof request.search.message === "string"}) {
                     this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
                       request.state.course.publicId
                     }/conversations/${
                       request.state.courseConversation.publicId
                     }/messages/${request.search.message}"]`})?.scrollIntoView();
+                    return;
+                  }
+                  const firstUnviewedCourseConversationMessage = this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]');
+                  if (firstUnviewedCourseConversationMessage !== undefined) {
+                    if (firstUnviewedCourseConversationMessage !== this.children[0])
+                      firstUnviewedCourseConversationMessage.scrollIntoView();
+                    return;
+                  }
+                  [...this.children].at(-1).scrollIntoView();
                 `}"
               >
                 $${await (async () => {
