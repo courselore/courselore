@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 10.0.2 · 2026-01-14
 
 - Improved the scrolling of the conversations sidebar.
 - Improved the scrolling of the messages within a conversation.
