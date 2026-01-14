@@ -4502,7 +4502,6 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
                 javascript="${javascript`
-                  if (${request.liveConnection}) return;
                   if (${typeof request.search.message === "string"}) {
                     this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
                       request.state.course.publicId
@@ -4513,11 +4512,11 @@ export default async (application: Application): Promise<void> => {
                   }
                   const firstUnviewedCourseConversationMessage = this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]');
                   if (firstUnviewedCourseConversationMessage !== undefined) {
-                    if (firstUnviewedCourseConversationMessage !== this.children[0])
+                    if (firstUnviewedCourseConversationMessage !== this.querySelectorAll('[key~="courseConversationMessage"]')[0])
                       firstUnviewedCourseConversationMessage.scrollIntoView();
                     return;
                   }
-                  [...this.children].at(-1).scrollIntoView();
+                  [...this.querySelectorAll('[key~="courseConversationMessage"]')].at(-1).scrollIntoView();
                 `}"
               >
                 $${await (async () => {
