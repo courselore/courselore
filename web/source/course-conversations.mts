@@ -4513,7 +4513,7 @@ export default async (application: Application): Promise<void> => {
                     ) :
                     this.hasScrolled !== true ? (
                       this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]') ??
-                      [...this.querySelectorAll('[key~="courseConversationMessage"]')].at(-1)
+                      [...this.querySelectorAll('[key~="courseConversationMessage"]:not([key~="latencyCompensation"])')].at(-1)
                     ) :
                     undefined;
                   if (
