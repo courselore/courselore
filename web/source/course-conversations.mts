@@ -4502,32 +4502,23 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
                 javascript="${javascript`
-                  if (${!request.liveConnection}) return;
-                  let courseConversationMessageToScrollTo;
-                  if (${typeof request.search.message === "string"}) {
-                    courseConversationMessageToScrollTo = this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
+                  if (${typeof request.search.message === "string" && !request.liveConnection}) {
+                    this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
                       request.state.course.publicId
                     }/conversations/${
                       request.state.courseConversation.publicId
-                    }/messages/${request.search.message}"]`}) ?? undefined;
-                    if (courseConversationMessageToScrollTo !== undefined)
-                      delete this.courseConversationMessageThatHasBeenScrolledTo;
+                    }/messages/${request.search.message}"]`}).scrollIntoView();
+                    return;
                   }
-                  if (courseConversationMessageToScrollTo === undefined) {
-                    const firstUnviewedCourseConversationMessage = this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]');
-                    if (firstUnviewedCourseConversationMessage !== undefined) {
-                      if (firstUnviewedCourseConversationMessage !== this.querySelectorAll('[key~="courseConversationMessage"]')[0])
-                        courseConversationMessageToScrollTo = firstUnviewedCourseConversationMessage;
-                    }
-                    else
-                      courseConversationMessageToScrollTo = [...this.querySelectorAll('[key~="courseConversationMessage"]')].at(-1);
+                  if (this.hasScrolled === true) return;
+                  this.hasScrolled = true;
+                  const firstUnviewedCourseConversationMessage = this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]');
+                  if (firstUnviewedCourseConversationMessage !== undefined) {
+                    if (firstUnviewedCourseConversationMessage !== this.querySelectorAll('[key~="courseConversationMessage"]')[0])
+                      firstUnviewedCourseConversationMessage.scrollIntoView();
                   }
-                  if (
-                    courseConversationMessageToScrollTo !== undefined &&
-                    this.courseConversationMessageThatHasBeenScrolledTo !== courseConversationMessageToScrollTo
-                  )
-                    courseConversationMessageToScrollTo.scrollIntoView();
-                  this.courseConversationMessageThatHasBeenScrolledTo = courseConversationMessageToScrollTo;
+                  else if (1 < this.querySelectorAll('[key~="courseConversationMessage"]').length)
+                    [...this.querySelectorAll('[key~="courseConversationMessage"]')].at(-1).scrollIntoView();
                 `}"
               >
                 $${await (async () => {
