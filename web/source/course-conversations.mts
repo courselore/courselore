@@ -4513,10 +4513,10 @@ export default async (application: Application): Promise<void> => {
                     const firstUnviewedCourseConversationMessage = this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]');
                     if (firstUnviewedCourseConversationMessage !== undefined) {
                       if (firstUnviewedCourseConversationMessage !== this.querySelectorAll('[key~="courseConversationMessage"]')[0])
-                        firstUnviewedCourseConversationMessage.scrollIntoView();
-                      return;
+                        courseConversationMessageToScrollTo = firstUnviewedCourseConversationMessage;
                     }
-                    [...this.querySelectorAll('[key~="courseConversationMessage"]')].at(-1).scrollIntoView();
+                    else
+                      courseConversationMessageToScrollTo = [...this.querySelectorAll('[key~="courseConversationMessage"]')].at(-1);
                   }
                   if (
                     courseConversationMessageToScrollTo !== undefined &&
