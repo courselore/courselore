@@ -4719,12 +4719,16 @@ export default async (application: Application): Promise<void> => {
                                   request.search.message ===
                                     courseConversationMessage.publicId) ||
                                 (request.search.message === undefined &&
-                                  firstUnviewedCourseConversationMessage !==
+                                  ((firstUnviewedCourseConversationMessage !==
                                     undefined &&
-                                  firstUnviewedCourseConversationMessage.id !==
-                                    firstCourseConversationMessage.id &&
-                                  firstUnviewedCourseConversationMessage.id ===
-                                    courseConversationMessage.id)
+                                    firstUnviewedCourseConversationMessage.id !==
+                                      firstCourseConversationMessage.id &&
+                                    firstUnviewedCourseConversationMessage.id ===
+                                      courseConversationMessage.id) ||
+                                    (firstUnviewedCourseConversationMessage ===
+                                      undefined &&
+                                      lastCourseConversationMessage.id ===
+                                        courseConversationMessage.id)))
                               })
                                 this.scrollIntoView();
                             `}"
