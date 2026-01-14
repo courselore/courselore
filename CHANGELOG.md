@@ -3,7 +3,7 @@
 ## Unreleased
 
 - Improved the scrolling of the conversations sidebar.
-- Fixed navigation to attachments in message content.
+- Fixed Live Navigation from link in message content (in some circumstances it was creating a new tab when that wasn’t necessary).
 
 ## 10.0.1 · 2026-01-13
 
