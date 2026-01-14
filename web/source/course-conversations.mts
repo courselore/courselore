@@ -4503,12 +4503,14 @@ export default async (application: Application): Promise<void> => {
                 `}"
                 javascript="${javascript`
                   let courseConversationMessageToScrollTo;
-                  if (${typeof request.search.message === "string"})
+                  if (${typeof request.search.message === "string"}) {
+                    delete this.courseConversationMessageThatHasBeenScrolledTo;
                     courseConversationMessageToScrollTo = this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
                       request.state.course.publicId
                     }/conversations/${
                       request.state.courseConversation.publicId
                     }/messages/${request.search.message}"]`}) ?? undefined;
+                  }
                   else {
                     const firstUnviewedCourseConversationMessage = this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]');
                     if (firstUnviewedCourseConversationMessage !== undefined) {
