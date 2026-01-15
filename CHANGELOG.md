@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fixed an issue in which if you’re signed in and you clicked on the Courselore logo, then you’d see the home page for a little moment before the correct page loaded.
+
 ## 10.0.2 · 2026-01-14
 
 - Improved the scrolling of the conversations sidebar.
