@@ -2014,7 +2014,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      response.redirect!(request.search.redirect ?? "/");
+      response.redirect!(request.search.redirect ?? "/", "live-navigation");
     },
   });
 
