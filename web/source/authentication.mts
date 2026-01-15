@@ -664,7 +664,11 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </div>
               </details>
-              <details>
+              <details
+                javascript="${javascript`
+                  this.isModified = false;
+                `}"
+              >
                 <summary
                   class="button button--rectangle button--transparent"
                   css="${css`
