@@ -272,27 +272,32 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (
-          request.body.courseConversationMessageType ===
-          "courseConversationMessageTypeAnswer"
-        )
-          application.database.run(
-            sql`
+          request.body.courseConversationMessageVisibility !==
+          "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+        ) {
+          if (
+            request.body.courseConversationMessageType ===
+            "courseConversationMessageTypeAnswer"
+          )
+            application.database.run(
+              sql`
               update "courseConversations"
               set "questionResolved" = ${Number(true)}
               where "id" = ${request.state.courseConversation!.id};
             `,
-          );
-        else if (
-          request.body.courseConversationMessageType ===
-          "courseConversationMessageTypeFollowUpQuestion"
-        )
-          application.database.run(
-            sql`
+            );
+          else if (
+            request.body.courseConversationMessageType ===
+            "courseConversationMessageTypeFollowUpQuestion"
+          )
+            application.database.run(
+              sql`
               update "courseConversations"
               set "questionResolved" = ${Number(false)}
               where "id" = ${request.state.courseConversation!.id};
             `,
-          );
+            );
+        }
         const courseConversationMessage = application.database.get<{
           id: number;
         }>(
