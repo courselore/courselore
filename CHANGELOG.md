@@ -1,6 +1,11 @@
 # Changelog
 
-- Fixed an issue in which if you’re signed in and you clicked on the Courselore logo, then you’d see the home page for a little moment before the correct page loaded.
+## 10.0.3 · 2026-01-15
+
+- Fixed visual glitches related to Live Navigation caching:
+  - If you were just signed in and you clicked on the Courselore logo, then you’d see the home page for a little moment before the correct page loaded.
+  - When navigating between the conversations, the sidebar highlight wouldn’t show up until the page was fetched from the server.
+  - When navigating between the conversations, the scrolling position of the messages in the conversation wouldn’t update until the page was fetched from the server.
 
 ## 10.0.2 · 2026-01-14
 
