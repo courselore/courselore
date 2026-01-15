@@ -5982,9 +5982,21 @@ export default async (application: Application): Promise<void> => {
                                       name="courseConversationMessageType"
                                       value="courseConversationMessageTypeMessage"
                                       required
-                                      $${courseConversationMessageDraft ===
-                                        undefined ||
-                                      courseConversationMessageDraft.courseConversationMessageType ===
+                                      $${(courseConversationMessageDraft ===
+                                        undefined &&
+                                        !(
+                                          request.state.courseConversation
+                                            .courseConversationType ===
+                                            "courseConversationTypeQuestion" &&
+                                          !Boolean(
+                                            request.state.courseConversation
+                                              .questionResolved,
+                                          ) &&
+                                          request.state.courseParticipation
+                                            .courseParticipationRole ===
+                                            "courseParticipationRoleInstructor"
+                                        )) ||
+                                      courseConversationMessageDraft?.courseConversationMessageType ===
                                         "courseConversationMessageTypeMessage"
                                         ? html`checked`
                                         : html``}
@@ -6001,8 +6013,20 @@ export default async (application: Application): Promise<void> => {
                                       name="courseConversationMessageType"
                                       value="courseConversationMessageTypeAnswer"
                                       required
-                                      $${courseConversationMessageDraft?.courseConversationMessageType ===
-                                      "courseConversationMessageTypeAnswer"
+                                      $${(courseConversationMessageDraft ===
+                                        undefined &&
+                                        request.state.courseConversation
+                                          .courseConversationType ===
+                                          "courseConversationTypeQuestion" &&
+                                        !Boolean(
+                                          request.state.courseConversation
+                                            .questionResolved,
+                                        ) &&
+                                        request.state.courseParticipation
+                                          .courseParticipationRole ===
+                                          "courseParticipationRoleInstructor") ||
+                                      courseConversationMessageDraft?.courseConversationMessageType ===
+                                        "courseConversationMessageTypeAnswer"
                                         ? html`checked`
                                         : html``}
                                       hidden
