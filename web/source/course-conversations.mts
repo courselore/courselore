@@ -310,6 +310,7 @@ export default async (application: Application): Promise<void> => {
                     .map(async (courseConversation) => {
                       const firstCourseConversationMessage =
                         application.database.get<{
+                          id: number;
                           publicId: string;
                           createdByCourseParticipation: number | null;
                           createdAt: string;
@@ -322,6 +323,7 @@ export default async (application: Application): Promise<void> => {
                         }>(
                           sql`
                             select
+                              "id",
                               "publicId",
                               "createdByCourseParticipation",
                               "createdAt",
@@ -730,6 +732,45 @@ export default async (application: Application): Promise<void> => {
                                 );
                               })()}
                             </div>
+                            $${application.database.get(
+                              sql`
+                                select true
+                                from "courseConversationMessageLikes"
+                                join "courseParticipations" on
+                                  "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                  "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
+                                where "courseConversationMessageLikes"."courseConversationMessage" = ${firstCourseConversationMessage.id}
+                                limit 1;
+                              `,
+                            ) !== undefined
+                              ? html`
+                                  <div
+                                    key="courseConversation--main--firstCourseConversationMessageLikedByInstructor"
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                    `} ${request.state.courseConversation
+                                      ?.id === courseConversation.id
+                                      ? css`
+                                          color: light-dark(
+                                            var(--color--blue--200),
+                                            var(--color--blue--200)
+                                          );
+                                        `
+                                      : css`
+                                          color: light-dark(
+                                            var(--color--green--500),
+                                            var(--color--green--500)
+                                          );
+                                        `}"
+                                  >
+                                    Liked by instructor
+                                  </div>
+                                `
+                              : html``}
                             <div
                               key="courseConversation--main--firstCourseConversationMessageContent"
                               css="${css`
