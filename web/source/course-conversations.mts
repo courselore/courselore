@@ -3496,6 +3496,7 @@ export default async (application: Application): Promise<void> => {
                                 javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
+                                    this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--questionResolved"]').hidden = true;
                                   };
                                 `}"
                               >
@@ -3507,6 +3508,7 @@ export default async (application: Application): Promise<void> => {
                                 javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
+                                    this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--questionResolved"]').hidden = false;
                                   };
                                 `}"
                               >
@@ -3537,20 +3539,22 @@ export default async (application: Application): Promise<void> => {
                                     })()}
                             </div>
                           `}
-                      $${request.state.courseConversation
-                        .courseConversationType ===
-                      "courseConversationTypeQuestion"
-                        ? mayEditCourseConversation &&
-                          request.state.courseParticipation
-                            .courseParticipationRole ===
-                            "courseParticipationRoleInstructor"
-                          ? html`
+                      $${mayEditCourseConversation
+                        ? html`
+                            <div
+                              key="courseConversation--header--questionResolved"
+                              $${request.state.courseConversation
+                                .courseConversationType !==
+                              "courseConversationTypeQuestion"
+                                ? html`hidden`
+                                : html``}
+                            >
                               <button
                                 type="button"
                                 class="button button--rectangle button--transparent"
                                 javascript="${javascript`
-                                    javascript.popover({ element: this, trigger: "click" });
-                                  `}"
+                                  javascript.popover({ element: this, trigger: "click" });
+                                `}"
                               >
                                 <form>
                                   <span
@@ -3641,8 +3645,12 @@ export default async (application: Application): Promise<void> => {
                                   Resolved
                                 </button>
                               </div>
-                            `
-                          : html`
+                            </div>
+                          `
+                        : request.state.courseConversation
+                              .courseConversationType ===
+                            "courseConversationTypeQuestion"
+                          ? html`
                               <div>
                                 <span
                                   css="${css`
@@ -3683,7 +3691,7 @@ export default async (application: Application): Promise<void> => {
                                       })()}
                               </div>
                             `
-                        : html``}
+                          : html``}
                       $${mayEditCourseConversation
                         ? html`
                             <button
