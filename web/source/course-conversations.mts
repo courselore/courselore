@@ -6529,9 +6529,6 @@ export default async (application: Application): Promise<void> => {
         (request.body.courseConversationType !== "courseConversationTypeNote" &&
           request.body.courseConversationType !==
             "courseConversationTypeQuestion") ||
-        (request.body.questionResolved === "true" &&
-          request.body.courseConversationType !==
-            "courseConversationTypeQuestion") ||
         (request.body.courseConversationVisibility !==
           "courseConversationVisibilityEveryone" &&
           request.body.courseConversationVisibility !==
