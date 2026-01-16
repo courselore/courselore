@@ -1,6 +1,9 @@
 # Changelog
 
+## 10.0.4 · 2026-01-16
+
 - Added “Liked by instructor” to messages in conversation and sidebar.
+- Fixed an issue in which updating the conversation type led to a server error.
 
 ## 10.0.3 · 2026-01-15
 
