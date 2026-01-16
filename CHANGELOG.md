@@ -1,6 +1,6 @@
 # Changelog
 
-- Added “Liked by instructor” to messages and sidebar
+- Added “Liked by instructor” to messages in conversation and sidebar.
 
 ## 10.0.3 · 2026-01-15
 
