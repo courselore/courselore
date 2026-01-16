@@ -1,5 +1,7 @@
 # Changelog
 
+- Added “Liked by instructor” to messages and sidebar
+
 ## 10.0.3 · 2026-01-15
 
 - Fixed visual glitches related to Live Navigation caching:

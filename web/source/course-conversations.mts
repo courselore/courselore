@@ -4868,61 +4868,49 @@ export default async (application: Application): Promise<void> => {
                                           : html``}`,
                                     );
                                     if (
-                                      courseConversationMessage.courseConversationMessageType ===
-                                      "courseConversationMessageTypeMessage"
-                                    )
-                                      "NOOP";
-                                    else if (
-                                      courseConversationMessage.courseConversationMessageType ===
-                                      "courseConversationMessageTypeAnswer"
-                                    )
-                                      courseConversationMessageMainHeaderBylineHTMLs.push(
-                                        html`<span
-                                          css="${css`
-                                            color: light-dark(
-                                              var(--color--green--500),
-                                              var(--color--green--500)
-                                            );
-                                          `}"
-                                          ><span
+                                      request.state.courseConversation!
+                                        .courseConversationType ===
+                                      "courseConversationTypeQuestion"
+                                    ) {
+                                      if (
+                                        courseConversationMessage.courseConversationMessageType ===
+                                        "courseConversationMessageTypeMessage"
+                                      )
+                                        "NOOP";
+                                      else if (
+                                        courseConversationMessage.courseConversationMessageType ===
+                                        "courseConversationMessageTypeAnswer"
+                                      )
+                                        courseConversationMessageMainHeaderBylineHTMLs.push(
+                                          html`<span
                                             css="${css`
                                               font-weight: 700;
+                                              color: light-dark(
+                                                var(--color--green--500),
+                                                var(--color--green--500)
+                                              );
                                             `}"
                                             >Answer</span
-                                          >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                            "courseParticipationRoleStudent" &&
-                                          application.database.get(
-                                            sql`
-                                              select true
-                                              from "courseConversationMessageLikes"
-                                              join "courseParticipations" on
-                                                "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
-                                                "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                              where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id}
-                                              limit 1;
-                                            `,
-                                          ) !== undefined
-                                            ? html` (liked by instructor)`
-                                            : html``}</span
-                                        >`,
-                                      );
-                                    else if (
-                                      courseConversationMessage.courseConversationMessageType ===
-                                      "courseConversationMessageTypeFollowUpQuestion"
-                                    )
-                                      courseConversationMessageMainHeaderBylineHTMLs.push(
-                                        html`<span
-                                          css="${css`
-                                            font-weight: 700;
-                                            color: light-dark(
-                                              var(--color--red--500),
-                                              var(--color--red--500)
-                                            );
-                                          `}"
-                                          >Follow-up question</span
-                                        >`,
-                                      );
-                                    else throw new Error();
+                                          >`,
+                                        );
+                                      else if (
+                                        courseConversationMessage.courseConversationMessageType ===
+                                        "courseConversationMessageTypeFollowUpQuestion"
+                                      )
+                                        courseConversationMessageMainHeaderBylineHTMLs.push(
+                                          html`<span
+                                            css="${css`
+                                              font-weight: 700;
+                                              color: light-dark(
+                                                var(--color--red--500),
+                                                var(--color--red--500)
+                                              );
+                                            `}"
+                                            >Follow-up question</span
+                                          >`,
+                                        );
+                                      else throw new Error();
+                                    }
                                     if (
                                       courseConversationMessage.courseConversationMessageVisibility ===
                                       "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
@@ -4937,6 +4925,31 @@ export default async (application: Application): Promise<void> => {
                                             );
                                           `}"
                                           >Visible by instructors only</span
+                                        >`,
+                                      );
+                                    if (
+                                      application.database.get(
+                                        sql`
+                                          select true
+                                          from "courseConversationMessageLikes"
+                                          join "courseParticipations" on
+                                            "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
+                                          where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id}
+                                          limit 1;
+                                        `,
+                                      ) !== undefined
+                                    )
+                                      courseConversationMessageMainHeaderBylineHTMLs.push(
+                                        html`<span
+                                          css="${css`
+                                            font-weight: 700;
+                                            color: light-dark(
+                                              var(--color--green--500),
+                                              var(--color--green--500)
+                                            );
+                                          `}"
+                                          >Liked by instructor</span
                                         >`,
                                       );
                                     return courseConversationMessageMainHeaderBylineHTMLs.join(
