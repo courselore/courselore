@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.0.5 · 2026-01-19
+
+- Improved the treatment of Course Settings: Tags, Pending invitation emails, and Course participants. Previously if some modification to these settings was made while you had the page open, it could lead to data loss.
+
 ## 10.0.4 · 2026-01-16
 
 - Added “Liked by instructor” to messages in conversation and sidebar.
@@ -84,7 +88,6 @@ ExecStart=/root/courselore/courselore/courselore /root/courselore/configuration.
 1. If you setup the experimental support for SAML, then you must apply some changes to the configuration file.
 
    In particular, the following options are no longer supported:
-
    - `privateKey`
    - `signingCert`
    - `decryptionPvk`
@@ -92,7 +95,6 @@ ExecStart=/root/courselore/courselore/courselore /root/courselore/configuration.
    - `maxAssertionAgeMs`
 
    And the following options are recommended:
-
    - `wantAuthnResponseSigned`
    - `wantAssertionsSigned`
 
@@ -242,7 +244,6 @@ Besides the breaking changes above, this version of Courselore also includes the
 2. We introduced changes to the Courselore configuration file that require your intervention.
 
    You may refer to [`example.mjs`](https://github.com/courselore/courselore/blob/v5.0.0/web/configuration/example.mjs) and adapt your configuration based on it. In particular, the following has changed:
-
    1. The `sendMail` configuration property has been renamed to `email`.
 
    2. The boilerplate around the configuration has been simplified. Instead of using functions and special `import`s, the configuration is just a JavaScript module exporting a configuration object.
@@ -371,7 +372,6 @@ These changes to the configuration file are relatively minor, but were caused by
   This was a really difficult issue to fix, because it only occurred under very specific circumstances, and even though we found a solution, we still don’t know what caused the issue in the first place.
 
   Here’s what we know:
-
   - The issue only occurred in Google Chrome.
 
     At one point we thought it could be related to a slightly outdated version of Google Chrome, because that was the version used by the people who reported the issue. The investigation of this hypothesis was troublesome because [installing specific versions of Google Chrome is made difficult on purpose](https://www.chromium.org/getting-involved/download-chromium/#downloading-old-builds-of-chrome-chromium). The idea is to keep everyone on the latest and most secure version, which is a valid consideration, but does complicate things for developers.
@@ -469,7 +469,6 @@ These changes to the configuration file are relatively minor, but were caused by
   The solution was to restrict access to URLs of this form to staff.
 
   There’s an obscure edge case in which this could reveal to other students the identity of the author of an anonymous message:
-
   - Message 1 (2 views; you and student John Doe).
   - Message 2 (anonymous).
 
