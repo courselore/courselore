@@ -1041,7 +1041,7 @@ export default async (application: Application): Promise<void> => {
                           this.morph = false;
                           this.onsubmit = () => {
                             delete this.morph;
-                            delete this.isModified;
+                            for (const element of javascript.children(this)) delete element.isModified;
                           };
                         `}"
                       >
@@ -1072,7 +1072,23 @@ export default async (application: Application): Promise<void> => {
                                 align-items: center;
                                 gap: var(--size--3);
                               `}"
+                              javascript="${javascript`
+                                if (${courseConversationsTag === undefined}) this.isModified = true;
+                              `}"
                             >
+                              <input
+                                type="hidden"
+                                name="courseConversationsTagsPublicIds[]"
+                                $${courseConversationsTag !== undefined
+                                  ? html`
+                                      value="${courseConversationsTag.publicId}"
+                                    `
+                                  : html`
+                                      javascript="${javascript`
+                                        this.setAttribute("value", utilities.randomString());
+                                      `}"
+                                    `}
+                              />
                               <div
                                 css="${css`
                                   color: light-dark(
@@ -1093,7 +1109,7 @@ export default async (application: Application): Promise<void> => {
                                         const element = this.closest('[key~="courseConversationsTag"]');
                                         const previousElement = element.previousElementSibling;
                                         if (previousElement !== null) {
-                                          this.closest('[type~="form"]').isModified = true;
+                                          this.isModified = true;
                                           previousElement.insertAdjacentElement("beforebegin", element);
                                         }
                                       };
@@ -1111,7 +1127,7 @@ export default async (application: Application): Promise<void> => {
                                         const element = this.closest('[key~="courseConversationsTag"]');
                                         const nextElement = element.nextElementSibling;
                                         if (nextElement !== null) {
-                                          this.closest('[type~="form"]').isModified = true;
+                                          this.isModified = true;
                                           nextElement.insertAdjacentElement("afterend", element);
                                         }
                                       };
@@ -1130,21 +1146,8 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               >
                                 <input
-                                  type="hidden"
-                                  name="tags[]"
-                                  value="${courseConversationsTag?.publicId ??
-                                  ""}"
-                                  $${courseConversationsTag === undefined
-                                    ? html`
-                                        javascript="${javascript`
-                                          this.setAttribute("value", utilities.randomString());
-                                        `}"
-                                      `
-                                    : html``}
-                                />
-                                <input
                                   type="text"
-                                  name="tags[${courseConversationsTag?.publicId ??
+                                  name="courseConversationsTags[${courseConversationsTag?.publicId ??
                                   "{tag}"}].name"
                                   value="${courseConversationsTag?.name ?? ""}"
                                   required
@@ -1156,7 +1159,7 @@ export default async (application: Application): Promise<void> => {
                                   $${courseConversationsTag === undefined
                                     ? html`
                                         javascript="${javascript`
-                                          this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="tags[]"]').getAttribute("value")));
+                                          this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")));
                                         `}"
                                       `
                                     : html``}
@@ -1184,7 +1187,7 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     <input
                                       type="checkbox"
-                                      name="tags[${courseConversationsTag?.publicId ??
+                                      name="courseConversationsTags[${courseConversationsTag?.publicId ??
                                       "{tag}"}].privateToCourseParticipationRoleInstructors"
                                       $${Boolean(
                                         courseConversationsTag?.privateToCourseParticipationRoleInstructors ??
@@ -1196,7 +1199,7 @@ export default async (application: Application): Promise<void> => {
                                       $${courseConversationsTag === undefined
                                         ? html`
                                             javascript="${javascript`
-                                              this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="tags[]"]').getAttribute("value")));
+                                              this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")));
                                             `}"
                                           `
                                         : html``}
@@ -1252,8 +1255,10 @@ export default async (application: Application): Promise<void> => {
                                       <i
                                         class="bi bi-exclamation-triangle-fill"
                                       ></i
-                                      > The tag will be removed from all
-                                      conversations that use it.
+                                      > The tag will be removed from the
+                                      conversations that use it, but the
+                                      conversations themselves will be
+                                      preserved.
                                     </div>
                                     <div>
                                       <button
@@ -1267,7 +1272,20 @@ export default async (application: Application): Promise<void> => {
                                         `}"
                                         javascript="${javascript`
                                           this.onclick = () => {
-                                            this.closest('[type~="form"]').isModified = true;
+                                            if (${courseConversationsTag !== undefined}) {
+                                              this.closest('[type~="form"]').isModified = true;
+                                              this.closest('[type~="form"]')
+                                                .insertAdjacentElement(
+                                                  "beforeend",
+                                                  javascript.stringToElement(html\`
+                                                    <input
+                                                      type="hidden"
+                                                      name="courseConversationsTagsPublicIdsToRemove[]"
+                                                      value="\${this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")}"
+                                                    />
+                                                  \`)
+                                                );
+                                            }
                                             const courseConversationsTags = this.closest('[key~="courseConversationsTags"]');
                                             this.closest('[key~="courseConversationsTag"]').remove();
                                             courseConversationsTags.hidden = courseConversationsTags.children.length === 0;
@@ -1318,7 +1336,6 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--rectangle button--transparent"
                                 javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[type~="form"]').isModified = true;
                                     this.closest('[type~="form"]').querySelector('[key~="courseConversationsTags"]').hidden = false;
                                     javascript.execute(
                                       this.closest('[type~="form"]')
@@ -2199,6 +2216,11 @@ export default async (application: Application): Promise<void> => {
                                             gap: var(--size--1);
                                           `}"
                                         >
+                                          <input
+                                            type="hidden"
+                                            name="coursePendingInvitationEmailsPublicIds[]"
+                                            value="${coursePendingInvitationEmail.publicId}"
+                                          />
                                           <div
                                             css="${css`
                                               font-family:
@@ -2318,6 +2340,17 @@ export default async (application: Application): Promise<void> => {
                                               javascript="${javascript`
                                                 this.onclick = () => {
                                                   this.closest('[type~="form"]').isModified = true;
+                                                  this.closest('[type~="form"]')
+                                                    .insertAdjacentElement(
+                                                      "beforeend",
+                                                      javascript.stringToElement(${html`
+                                                        <input
+                                                          type="hidden"
+                                                          name="coursePendingInvitationEmailsPublicIdsToRemove[]"
+                                                          value="${coursePendingInvitationEmail.publicId}"
+                                                        />
+                                                      `})
+                                                    );
                                                   this.closest('[key~="coursePendingInvitationEmail"]').remove();
                                                 };
                                               `}"
@@ -2535,6 +2568,11 @@ export default async (application: Application): Promise<void> => {
                                   gap: var(--size--3);
                                 `}"
                               >
+                                <input
+                                  type="hidden"
+                                  name="courseParticipationsPublicIds[]"
+                                  value="${courseParticipation.publicId}"
+                                />
                                 <div>
                                   $${application.partials.userAvatar({
                                     user,
@@ -2724,6 +2762,17 @@ export default async (application: Application): Promise<void> => {
                                           javascript="${javascript`
                                             this.onclick = () => {
                                               this.closest('[type~="form"]').isModified = true;
+                                              this.closest('[type~="form"]')
+                                                .insertAdjacentElement(
+                                                  "beforeend",
+                                                  javascript.stringToElement(${html`
+                                                    <input
+                                                      type="hidden"
+                                                      name="courseParticipationsPublicIdsToRemove[]"
+                                                      value="${courseParticipation.publicId}"
+                                                    />
+                                                  `})
+                                                );
                                               this.closest('[key~="courseParticipation"]').remove();
                                             };
                                           `}"
@@ -2976,11 +3025,14 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           courseConversationRequiresTagging: "on";
-          tags: string[];
-          [tagsName: `tags[${string}].name`]: string;
+          courseConversationsTagsPublicIds: string[];
           [
-            tagsPrivateToCourseParticipationRoleInstructors: `tags[${string}].privateToCourseParticipationRoleInstructors`
+            courseConversationsTagsName: `courseConversationsTags[${string}].name`
+          ]: string;
+          [
+            courseConversationsTagsPrivateToCourseParticipationRoleInstructors: `courseConversationsTags[${string}].privateToCourseParticipationRoleInstructors`
           ]: "on";
+          courseConversationsTagsPublicIdsToRemove: string[];
         },
         Application["types"]["states"]["Course"]
       >,
@@ -2994,15 +3046,26 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversationsTags === undefined
       )
         return;
-      request.body.tags ??= [];
+      request.body.courseConversationsTagsPublicIds ??= [];
+      request.body.courseConversationsTagsPublicIdsToRemove ??= [];
       if (
-        !Array.isArray(request.body.tags) ||
-        request.body.tags.some(
-          (tag) =>
-            typeof tag !== "string" ||
-            tag.trim() === "" ||
-            typeof request.body[`tags[${tag}].name`] !== "string" ||
-            request.body[`tags[${tag}].name`]!.trim() === "",
+        !Array.isArray(request.body.courseConversationsTagsPublicIds) ||
+        request.body.courseConversationsTagsPublicIds.some(
+          (courseConversationsTagPublicId) =>
+            typeof courseConversationsTagPublicId !== "string" ||
+            courseConversationsTagPublicId.trim() === "" ||
+            typeof request.body[
+              `courseConversationsTags[${courseConversationsTagPublicId}].name`
+            ] !== "string" ||
+            request.body[
+              `courseConversationsTags[${courseConversationsTagPublicId}].name`
+            ]!.trim() === "",
+        ) ||
+        !Array.isArray(request.body.courseConversationsTagsPublicIdsToRemove) ||
+        request.body.courseConversationsTagsPublicIdsToRemove.some(
+          (courseConversationsTagPublicId) =>
+            typeof courseConversationsTagPublicId !== "string" ||
+            courseConversationsTagPublicId.trim() === "",
         )
       )
         throw "validation";
@@ -3017,7 +3080,7 @@ export default async (application: Application): Promise<void> => {
         for (const [
           order,
           courseConversationsTagPublicId,
-        ] of request.body.tags!.entries()) {
+        ] of request.body.courseConversationsTagsPublicIds!.entries()) {
           const courseConversationsTag =
             request.state.courseConversationsTags!.find(
               (courseConversationsTag) =>
@@ -3038,8 +3101,8 @@ export default async (application: Application): Promise<void> => {
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
                   ${request.state.course!.id},
                   ${order},
-                  ${request.body[`tags[${courseConversationsTagPublicId}].name`]},
-                  ${Number(request.body[`tags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
+                  ${request.body[`courseConversationsTags[${courseConversationsTagPublicId}].name`]},
+                  ${Number(request.body[`courseConversationsTags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
                 );
               `,
             );
@@ -3049,26 +3112,32 @@ export default async (application: Application): Promise<void> => {
                 update "courseConversationsTags"
                 set
                   "order" = ${order},
-                  "name" = ${request.body[`tags[${courseConversationsTagPublicId}].name`]},
-                  "privateToCourseParticipationRoleInstructors" = ${Number(request.body[`tags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
+                  "name" = ${request.body[`courseConversationsTags[${courseConversationsTagPublicId}].name`]},
+                  "privateToCourseParticipationRoleInstructors" = ${Number(request.body[`courseConversationsTags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
                 where "id" = ${courseConversationsTag.id};
               `,
             );
         }
-        for (const courseConversationsTag of request.state
-          .courseConversationsTags!)
-          if (!request.body.tags!.includes(courseConversationsTag.publicId)) {
-            application.database.run(
-              sql`
-                delete from "courseConversationTaggings" where "courseConversationsTag" = ${courseConversationsTag.id};
-              `,
+        for (const courseConversationsTagPublicId of request.body
+          .courseConversationsTagsPublicIdsToRemove!) {
+          const courseConversationsTag =
+            request.state.courseConversationsTags!.find(
+              (courseConversationsTag) =>
+                courseConversationsTagPublicId ===
+                courseConversationsTag.publicId,
             );
-            application.database.run(
-              sql`
-                delete from "courseConversationsTags" where "id" = ${courseConversationsTag.id};
-              `,
-            );
-          }
+          if (courseConversationsTag === undefined) continue;
+          application.database.run(
+            sql`
+              delete from "courseConversationTaggings" where "courseConversationsTag" = ${courseConversationsTag.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseConversationsTags" where "id" = ${courseConversationsTag.id};
+            `,
+          );
+        }
       });
       response.setFlash!(html`
         <div class="flash--green">Conversation tags updated successfully.</div>
@@ -4013,11 +4082,13 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
+          coursePendingInvitationEmailsPublicIds: string[];
           [
             coursePendingInvitationEmailsCourseParticipationRole: `coursePendingInvitationEmails[${string}].courseParticipationRole`
           ]:
             | "courseParticipationRoleInstructor"
             | "courseParticipationRoleStudent";
+          coursePendingInvitationEmailsPublicIdsToRemove: string[];
         },
         Application["types"]["states"]["Course"]
       >,
@@ -4030,52 +4101,78 @@ export default async (application: Application): Promise<void> => {
           "courseParticipationRoleInstructor"
       )
         return;
+      request.body.coursePendingInvitationEmailsPublicIds ??= [];
+      request.body.coursePendingInvitationEmailsPublicIdsToRemove ??= [];
+      if (
+        !Array.isArray(request.body.coursePendingInvitationEmailsPublicIds) ||
+        request.body.coursePendingInvitationEmailsPublicIds.some(
+          (coursePendingInvitationEmailPublicId) =>
+            typeof coursePendingInvitationEmailPublicId !== "string" ||
+            coursePendingInvitationEmailPublicId.trim() === "" ||
+            (request.body[
+              `coursePendingInvitationEmails[${coursePendingInvitationEmailPublicId}].courseParticipationRole`
+            ] !== "courseParticipationRoleInstructor" &&
+              request.body[
+                `coursePendingInvitationEmails[${coursePendingInvitationEmailPublicId}].courseParticipationRole`
+              ] !== "courseParticipationRoleStudent"),
+        ) ||
+        !Array.isArray(
+          request.body.coursePendingInvitationEmailsPublicIdsToRemove,
+        ) ||
+        request.body.coursePendingInvitationEmailsPublicIdsToRemove.some(
+          (coursePendingInvitationEmailPublicId) =>
+            typeof coursePendingInvitationEmailPublicId !== "string" ||
+            coursePendingInvitationEmailPublicId.trim() === "",
+        )
+      )
+        throw "validation";
       application.database.executeTransaction(() => {
-        for (const coursePendingInvitationEmail of application.database.all<{
-          id: number;
-          publicId: string;
-          email: string;
-          courseParticipationRole:
-            | "courseParticipationRoleInstructor"
-            | "courseParticipationRoleStudent";
-        }>(
-          sql`
-            select
-              "id",
-              "publicId",
-              "email",
-              "courseParticipationRole"
-            from "coursePendingInvitationEmails"
-            where
-              "course" = ${request.state.course!.id}
-            order by "id" asc;
-          `,
-        )) {
-          if (
-            request.body[
-              `coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole`
-            ] === "courseParticipationRoleInstructor" ||
-            request.body[
-              `coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole`
-            ] === "courseParticipationRoleStudent"
-          )
-            application.database.run(
-              sql`
-                update "coursePendingInvitationEmails"
-                set "courseParticipationRole" = ${
-                  request.body[
-                    `coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole`
-                  ]
-                }
-                where "id" = ${coursePendingInvitationEmail.id};
-              `,
-            );
-          else
-            application.database.run(
-              sql`
-                delete from "coursePendingInvitationEmails" where "id" = ${coursePendingInvitationEmail.id};
-              `,
-            );
+        for (const coursePendingInvitationEmailPublicId of request.body
+          .coursePendingInvitationEmailsPublicIds!) {
+          const coursePendingInvitationEmail = application.database.get<{
+            id: number;
+            publicId: string;
+          }>(
+            sql`
+              select "id", "publicId"
+              from "coursePendingInvitationEmails"
+              where
+                "course" = ${request.state.course!.id} and
+                "publicId" = ${coursePendingInvitationEmailPublicId};
+            `,
+          );
+          if (coursePendingInvitationEmail === undefined) continue;
+          application.database.run(
+            sql`
+              update "coursePendingInvitationEmails"
+              set "courseParticipationRole" = ${
+                request.body[
+                  `coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole`
+                ]
+              }
+              where "id" = ${coursePendingInvitationEmail.id};
+            `,
+          );
+        }
+        for (const coursePendingInvitationEmailPublicId of request.body
+          .coursePendingInvitationEmailsPublicIdsToRemove!) {
+          const coursePendingInvitationEmail = application.database.get<{
+            id: number;
+          }>(
+            sql`
+              select "id"
+              from "coursePendingInvitationEmails"
+              where
+                "course" = ${request.state.course!.id} and
+                "publicId" = ${coursePendingInvitationEmailPublicId};
+            `,
+          );
+          if (coursePendingInvitationEmail === undefined) continue;
+          application.database.run(
+            sql`
+              delete from "coursePendingInvitationEmails" where "id" = ${coursePendingInvitationEmail.id};
+            `,
+          );
         }
       });
       response.setFlash!(html`
@@ -4098,11 +4195,13 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
+          courseParticipationsPublicIds: string[];
           [
             courseParticipationsCourseParticipationRole: `courseParticipations[${string}].courseParticipationRole`
           ]:
             | "courseParticipationRoleInstructor"
             | "courseParticipationRoleStudent";
+          courseParticipationsPublicIdsToRemove: string[];
         },
         Application["types"]["states"]["Course"]
       >,
@@ -4115,106 +4214,114 @@ export default async (application: Application): Promise<void> => {
           "courseParticipationRoleInstructor"
       )
         return;
+      request.body.courseParticipationsPublicIds ??= [];
+      request.body.courseParticipationsPublicIdsToRemove ??= [];
+      if (
+        !Array.isArray(request.body.courseParticipationsPublicIds) ||
+        request.body.courseParticipationsPublicIds.some(
+          (courseParticipationPublicId) =>
+            typeof courseParticipationPublicId !== "string" ||
+            courseParticipationPublicId.trim() === "" ||
+            (request.body[
+              `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
+            ] !== "courseParticipationRoleInstructor" &&
+              request.body[
+                `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
+              ] !== "courseParticipationRoleStudent"),
+        ) ||
+        !Array.isArray(request.body.courseParticipationsPublicIdsToRemove) ||
+        request.body.courseParticipationsPublicIdsToRemove.some(
+          (courseParticipationPublicId) =>
+            typeof courseParticipationPublicId !== "string" ||
+            courseParticipationPublicId.trim() === "",
+        )
+      )
+        throw "validation";
       application.database.executeTransaction(() => {
-        for (const courseParticipation of application.database.all<{
-          id: number;
-          publicId: string;
-          courseParticipationRole:
-            | "courseParticipationRoleInstructor"
-            | "courseParticipationRoleStudent";
-          decorationColor:
-            | "red"
-            | "orange"
-            | "amber"
-            | "yellow"
-            | "lime"
-            | "green"
-            | "emerald"
-            | "teal"
-            | "cyan"
-            | "violet"
-            | "purple"
-            | "fuchsia"
-            | "pink"
-            | "rose";
-          mostRecentlyVisitedCourseConversation: number | null;
-        }>(
-          sql`
-            select
-              "id",
-              "publicId",
-              "courseParticipationRole",
-              "decorationColor",
-              "mostRecentlyVisitedCourseConversation"
-            from "courseParticipations"
-            where "course" = ${request.state.course!.id}
-            order by "id" asc;
-          `,
-        )) {
-          if (
-            request.body[
-              `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
-            ] === "courseParticipationRoleInstructor" ||
-            request.body[
-              `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
-            ] === "courseParticipationRoleStudent"
-          )
-            application.database.run(
-              sql`
-                update "courseParticipations"
-                set "courseParticipationRole" = ${
-                  request.body[
-                    `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
-                  ]
-                }
-                where "id" = ${courseParticipation.id};
-              `,
-            );
-          else {
-            application.database.run(
-              sql`
-                update "users"
-                set "mostRecentlyVisitedCourseParticipation" = null
-                where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                update "courseConversationMessages"
-                set "createdByCourseParticipation" = null
-                where "createdByCourseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                update "courseConversationMessageViews"
-                set "courseParticipation" = null
-                where "courseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                update "courseConversationMessageLikes"
-                set "courseParticipation" = null
-                where "courseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                delete from "courseParticipations" where "id" = ${courseParticipation.id};
-              `,
-            );
-          }
+        for (const courseParticipationPublicId of request.body
+          .courseParticipationsPublicIds!) {
+          const courseParticipation = application.database.get<{
+            id: number;
+            publicId: string;
+          }>(
+            sql`
+              select "id", "publicId"
+              from "courseParticipations"
+              where
+                "course" = ${request.state.course!.id} and
+                "publicId" = ${courseParticipationPublicId};
+            `,
+          );
+          if (courseParticipation === undefined) continue;
+          application.database.run(
+            sql`
+              update "courseParticipations"
+              set "courseParticipationRole" = ${
+                request.body[
+                  `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
+                ]
+              }
+              where "id" = ${courseParticipation.id};
+            `,
+          );
+        }
+        for (const courseParticipationPublicId of request.body
+          .courseParticipationsPublicIdsToRemove!) {
+          const courseParticipation = application.database.get<{
+            id: number;
+          }>(
+            sql`
+              select "id"
+              from "courseParticipations"
+              where
+                "course" = ${request.state.course!.id} and
+                "publicId" = ${courseParticipationPublicId};
+            `,
+          );
+          if (courseParticipation === undefined) continue;
+          application.database.run(
+            sql`
+              update "users"
+              set "mostRecentlyVisitedCourseParticipation" = null
+              where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessages"
+              set "createdByCourseParticipation" = null
+              where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessageViews"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessageLikes"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseParticipations" where "id" = ${courseParticipation.id};
+            `,
+          );
         }
       });
       response.setFlash!(html`
