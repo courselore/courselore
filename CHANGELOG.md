@@ -1,5 +1,7 @@
 # Changelog
 
+- When changing the visibility of a conversation, pre-select the course participant who started it (https://courselore.org/courses/8537410611/conversations/72)
+
 ## 10.0.6 · 2026-01-20
 
 - Fixed an issue that prevented users from creating courses (https://courselore.org/courses/8537410611/conversations/96).

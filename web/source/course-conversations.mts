@@ -3000,6 +3000,19 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversation === undefined
       )
         return;
+      const firstCourseConversationMessage = application.database.get<{
+        id: number;
+        createdByCourseParticipation: number | null;
+      }>(
+        sql`
+          select "id", "createdByCourseParticipation"
+          from "courseConversationMessages"
+          where "courseConversation" = ${request.state.courseConversation.id}
+          order by "id" asc
+          limit 1;
+        `,
+      );
+      if (firstCourseConversationMessage === undefined) throw new Error();
       response.send(
         await courseConversationsLayout({
           request,
@@ -3078,22 +3091,7 @@ export default async (application: Application): Promise<void> => {
                       .courseParticipationRole ===
                       "courseParticipationRoleInstructor" ||
                       request.state.courseParticipation.id ===
-                        (
-                          application.database.get<{
-                            createdByCourseParticipation: number;
-                          }>(
-                            sql`
-                              select "createdByCourseParticipation"
-                              from "courseConversationMessages"
-                              where "courseConversation" = ${request.state.courseConversation.id}
-                              order by "id" asc
-                              limit 1;
-                            `,
-                          ) ??
-                          (() => {
-                            throw new Error();
-                          })()
-                        ).createdByCourseParticipation);
+                        firstCourseConversationMessage.createdByCourseParticipation);
                   return html`
                     $${request.state.course.courseState ===
                     "courseStateArchived"
@@ -3984,7 +3982,7 @@ export default async (application: Application): Promise<void> => {
                                                 `,
                                               ) !== undefined ||
                                               (courseParticipation.id ===
-                                                "TODO: The author of the first message" &&
+                                                firstCourseConversationMessage.createdByCourseParticipation &&
                                                 (request.state
                                                   .courseConversation!
                                                   .courseConversationVisibility ===
@@ -4586,420 +4584,337 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
               >
-                $${await (async () => {
-                  const firstCourseConversationMessage =
-                    application.database.get<{ id: number }>(
+                $${await Promise.all(
+                  application.database
+                    .all<{
+                      id: number;
+                      publicId: string;
+                      createdByCourseParticipation: number | null;
+                      createdAt: string;
+                      updatedAt: string | null;
+                      courseConversationMessageType:
+                        | "courseConversationMessageTypeMessage"
+                        | "courseConversationMessageTypeAnswer"
+                        | "courseConversationMessageTypeFollowUpQuestion";
+                      courseConversationMessageVisibility:
+                        | "courseConversationMessageVisibilityEveryone"
+                        | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+                      courseConversationMessageAnonymity:
+                        | "courseConversationMessageAnonymityNone"
+                        | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                        | "courseConversationMessageAnonymityEveryone";
+                      content: string;
+                    }>(
                       sql`
-                        select "id"
+                        select
+                          "id",
+                          "publicId",
+                          "createdByCourseParticipation",
+                          "createdAt",
+                          "updatedAt",
+                          "courseConversationMessageType",
+                          "courseConversationMessageVisibility",
+                          "courseConversationMessageAnonymity",
+                          "content"
                         from "courseConversationMessages"
-                        where "courseConversation" = ${request.state.courseConversation!.id} $${
-                          request.state.courseParticipation!
-                            .courseParticipationRole !==
-                          "courseParticipationRoleInstructor"
-                            ? sql`
-                                and
-                                "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                              `
-                            : sql``
-                        }
-                        order by "id" asc
-                        limit 1;
-                      `,
-                    );
-                  if (firstCourseConversationMessage === undefined)
-                    throw new Error();
-                  return await Promise.all(
-                    application.database
-                      .all<{
-                        id: number;
-                        publicId: string;
-                        createdByCourseParticipation: number | null;
-                        createdAt: string;
-                        updatedAt: string | null;
-                        courseConversationMessageType:
-                          | "courseConversationMessageTypeMessage"
-                          | "courseConversationMessageTypeAnswer"
-                          | "courseConversationMessageTypeFollowUpQuestion";
-                        courseConversationMessageVisibility:
-                          | "courseConversationMessageVisibilityEveryone"
-                          | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
-                        courseConversationMessageAnonymity:
-                          | "courseConversationMessageAnonymityNone"
-                          | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-                          | "courseConversationMessageAnonymityEveryone";
-                        content: string;
-                      }>(
-                        sql`
-                          select
-                            "id",
-                            "publicId",
-                            "createdByCourseParticipation",
-                            "createdAt",
-                            "updatedAt",
-                            "courseConversationMessageType",
-                            "courseConversationMessageVisibility",
-                            "courseConversationMessageAnonymity",
-                            "content"
-                          from "courseConversationMessages"
-                          where
-                            "courseConversation" = ${request.state.courseConversation!.id} $${
-                              request.state.courseParticipation!
-                                .courseParticipationRole !==
-                              "courseParticipationRoleInstructor"
-                                ? sql`
-                                    and
-                                    "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                                  `
-                                : sql``
-                            }
-                          order by "id" asc;
-                        `,
-                      )
-                      .map(async (courseConversationMessage) => {
-                        const mayEditCourseConversationMessage =
-                          request.state.course!.courseState ===
-                            "courseStateActive" &&
-                          (request.state.courseParticipation!
-                            .courseParticipationRole ===
-                            "courseParticipationRoleInstructor" ||
-                            request.state.courseParticipation!.id ===
-                              courseConversationMessage.createdByCourseParticipation);
-                        const courseConversationMessageAnonymous =
-                          courseConversationMessage.createdByCourseParticipation !==
-                            request.state.courseParticipation!.id &&
-                          ((courseConversationMessage.courseConversationMessageAnonymity ===
-                            "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                        where
+                          "courseConversation" = ${request.state.courseConversation!.id} $${
                             request.state.courseParticipation!
-                              .courseParticipationRole ===
-                              "courseParticipationRoleStudent") ||
-                            courseConversationMessage.courseConversationMessageAnonymity ===
-                              "courseConversationMessageAnonymityEveryone");
-                        const courseConversationMessageCreatedByCourseParticipation =
-                          typeof courseConversationMessage.createdByCourseParticipation ===
-                            "number" && !courseConversationMessageAnonymous
-                            ? application.database.get<{
-                                user: number;
-                                courseParticipationRole:
-                                  | "courseParticipationRoleInstructor"
-                                  | "courseParticipationRoleStudent";
-                              }>(
-                                sql`
-                                  select
-                                    "user",
-                                    "courseParticipationRole"
-                                  from "courseParticipations"
-                                  where "id" = ${courseConversationMessage.createdByCourseParticipation};
-                                `,
-                              )
-                            : undefined;
-                        const courseConversationMessageCreatedByUser =
-                          typeof courseConversationMessageCreatedByCourseParticipation ===
-                          "object"
-                            ? application.database.get<{
-                                publicId: string;
-                                name: string;
-                                avatarColor:
-                                  | "red"
-                                  | "orange"
-                                  | "amber"
-                                  | "yellow"
-                                  | "lime"
-                                  | "green"
-                                  | "emerald"
-                                  | "teal"
-                                  | "cyan"
-                                  | "sky"
-                                  | "blue"
-                                  | "indigo"
-                                  | "violet"
-                                  | "purple"
-                                  | "fuchsia"
-                                  | "pink"
-                                  | "rose";
-                                avatarImage: string | null;
-                                lastSeenOnlineAt: string;
-                              }>(
-                                sql`
-                                  select
-                                    "publicId",
-                                    "name",
-                                    "avatarColor",
-                                    "avatarImage",
-                                    "lastSeenOnlineAt"
-                                  from "users"
-                                  where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
-                                `,
-                              )
-                            : undefined;
-                        return html`
-                          <div
-                            key="courseConversationMessage /courses/${request
-                              .state.course!.publicId}/conversations/${request
-                              .state.courseConversation!
-                              .publicId}/messages/${courseConversationMessage.publicId}"
-                            css="${css`
-                              padding: var(--size--2);
-                              border-radius: var(--border-radius--1);
-                              margin: var(--size---2);
-                              display: flex;
-                              gap: var(--size--2);
-                            `} ${request.search.message ===
-                            courseConversationMessage.publicId
-                              ? css`
-                                  background-color: light-dark(
-                                    var(--color--slate--50),
-                                    var(--color--slate--950)
-                                  );
+                              .courseParticipationRole !==
+                            "courseParticipationRoleInstructor"
+                              ? sql`
+                                  and
+                                  "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
                                 `
-                              : css``}"
-                            javascript="${javascript`
-                              this.content = ${courseConversationMessage.content};
-                            `}"
-                          >
-                            <div key="courseConversationMessage--sidebar">
+                              : sql``
+                          }
+                        order by "id" asc;
+                      `,
+                    )
+                    .map(async (courseConversationMessage) => {
+                      const mayEditCourseConversationMessage =
+                        request.state.course!.courseState ===
+                          "courseStateActive" &&
+                        (request.state.courseParticipation!
+                          .courseParticipationRole ===
+                          "courseParticipationRoleInstructor" ||
+                          request.state.courseParticipation!.id ===
+                            courseConversationMessage.createdByCourseParticipation);
+                      const courseConversationMessageAnonymous =
+                        courseConversationMessage.createdByCourseParticipation !==
+                          request.state.courseParticipation!.id &&
+                        ((courseConversationMessage.courseConversationMessageAnonymity ===
+                          "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                          request.state.courseParticipation!
+                            .courseParticipationRole ===
+                            "courseParticipationRoleStudent") ||
+                          courseConversationMessage.courseConversationMessageAnonymity ===
+                            "courseConversationMessageAnonymityEveryone");
+                      const courseConversationMessageCreatedByCourseParticipation =
+                        typeof courseConversationMessage.createdByCourseParticipation ===
+                          "number" && !courseConversationMessageAnonymous
+                          ? application.database.get<{
+                              user: number;
+                              courseParticipationRole:
+                                | "courseParticipationRoleInstructor"
+                                | "courseParticipationRoleStudent";
+                            }>(
+                              sql`
+                                select
+                                  "user",
+                                  "courseParticipationRole"
+                                from "courseParticipations"
+                                where "id" = ${courseConversationMessage.createdByCourseParticipation};
+                              `,
+                            )
+                          : undefined;
+                      const courseConversationMessageCreatedByUser =
+                        typeof courseConversationMessageCreatedByCourseParticipation ===
+                        "object"
+                          ? application.database.get<{
+                              publicId: string;
+                              name: string;
+                              avatarColor:
+                                | "red"
+                                | "orange"
+                                | "amber"
+                                | "yellow"
+                                | "lime"
+                                | "green"
+                                | "emerald"
+                                | "teal"
+                                | "cyan"
+                                | "sky"
+                                | "blue"
+                                | "indigo"
+                                | "violet"
+                                | "purple"
+                                | "fuchsia"
+                                | "pink"
+                                | "rose";
+                              avatarImage: string | null;
+                              lastSeenOnlineAt: string;
+                            }>(
+                              sql`
+                                select
+                                  "publicId",
+                                  "name",
+                                  "avatarColor",
+                                  "avatarImage",
+                                  "lastSeenOnlineAt"
+                                from "users"
+                                where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
+                              `,
+                            )
+                          : undefined;
+                      return html`
+                        <div
+                          key="courseConversationMessage /courses/${request
+                            .state.course!.publicId}/conversations/${request
+                            .state.courseConversation!
+                            .publicId}/messages/${courseConversationMessage.publicId}"
+                          css="${css`
+                            padding: var(--size--2);
+                            border-radius: var(--border-radius--1);
+                            margin: var(--size---2);
+                            display: flex;
+                            gap: var(--size--2);
+                          `} ${request.search.message ===
+                          courseConversationMessage.publicId
+                            ? css`
+                                background-color: light-dark(
+                                  var(--color--slate--50),
+                                  var(--color--slate--950)
+                                );
+                              `
+                            : css``}"
+                          javascript="${javascript`
+                            this.content = ${courseConversationMessage.content};
+                          `}"
+                        >
+                          <div key="courseConversationMessage--sidebar">
+                            <div
+                              css="${css`
+                                display: flex;
+                                align-items: center;
+                              `}"
+                            >
+                              $${application.database.get(
+                                sql`
+                                  select true
+                                  from "courseConversationMessageViews"
+                                  where
+                                    "courseConversationMessage" = ${courseConversationMessage.id} and
+                                    "courseParticipation" = ${request.state.courseParticipation!.id};
+                                `,
+                              ) === undefined
+                                ? html`
+                                    <div
+                                      key="courseConversationMessage--sidebar--courseConversationMessageView"
+                                      css="${css`
+                                        font-size: var(--size--1-5);
+                                        color: light-dark(
+                                          var(--color--blue--500),
+                                          var(--color--blue--500)
+                                        );
+                                        position: absolute;
+                                        translate: calc(-100% - var(--size--1));
+                                        transition-property: var(
+                                          --transition-property--opacity
+                                        );
+                                        transition-delay: 2s;
+                                        transition-duration: var(
+                                          --transition-duration--150
+                                        );
+                                        transition-timing-function: var(
+                                          --transition-timing-function--ease-in-out
+                                        );
+                                        &[state~="viewed"] {
+                                          visibility: hidden;
+                                          opacity: var(--opacity--0);
+                                        }
+                                      `}"
+                                      javascript="${javascript`
+                                        if (this.intersectionObserver !== undefined) return;
+                                        this.intersectionObserver = new IntersectionObserver(async (entries) => {
+                                          if (entries[0].isIntersecting === false) return;
+                                          this.intersectionObserver.disconnect();
+                                          javascript.stateAdd(this, "viewed");
+                                          await fetch(${`/courses/${
+                                            request.state.course!.publicId
+                                          }/conversations/${
+                                            request.state.courseConversation!
+                                              .publicId
+                                          }/messages/${courseConversationMessage.publicId}/view`}, {
+                                            method: "POST",
+                                            headers: { "CSRF-Protection": "true" },
+                                          });
+                                        }, { root: this.closest('[key~="main--main"]') });
+                                        this.intersectionObserver.observe(this);
+                                        this.onremove = () => {
+                                          this.intersectionObserver.disconnect();
+                                        };
+                                      `}"
+                                    >
+                                      <i class="bi bi-circle-fill"></i>
+                                    </div>
+                                  `
+                                : html``}
                               <div
-                                css="${css`
-                                  display: flex;
-                                  align-items: center;
-                                `}"
+                                key="courseConversationMessage--sidebar--userAvatar"
                               >
-                                $${application.database.get(
-                                  sql`
-                                    select true
-                                    from "courseConversationMessageViews"
-                                    where
-                                      "courseConversationMessage" = ${courseConversationMessage.id} and
-                                      "courseParticipation" = ${request.state.courseParticipation!.id};
-                                  `,
-                                ) === undefined
-                                  ? html`
-                                      <div
-                                        key="courseConversationMessage--sidebar--courseConversationMessageView"
-                                        css="${css`
-                                          font-size: var(--size--1-5);
-                                          color: light-dark(
-                                            var(--color--blue--500),
-                                            var(--color--blue--500)
-                                          );
-                                          position: absolute;
-                                          translate: calc(
-                                            -100% - var(--size--1)
-                                          );
-                                          transition-property: var(
-                                            --transition-property--opacity
-                                          );
-                                          transition-delay: 2s;
-                                          transition-duration: var(
-                                            --transition-duration--150
-                                          );
-                                          transition-timing-function: var(
-                                            --transition-timing-function--ease-in-out
-                                          );
-                                          &[state~="viewed"] {
-                                            visibility: hidden;
-                                            opacity: var(--opacity--0);
-                                          }
-                                        `}"
-                                        javascript="${javascript`
-                                          if (this.intersectionObserver !== undefined) return;
-                                          this.intersectionObserver = new IntersectionObserver(async (entries) => {
-                                            if (entries[0].isIntersecting === false) return;
-                                            this.intersectionObserver.disconnect();
-                                            javascript.stateAdd(this, "viewed");
-                                            await fetch(${`/courses/${
-                                              request.state.course!.publicId
-                                            }/conversations/${
-                                              request.state.courseConversation!
-                                                .publicId
-                                            }/messages/${courseConversationMessage.publicId}/view`}, {
-                                              method: "POST",
-                                              headers: { "CSRF-Protection": "true" },
-                                            });
-                                          }, { root: this.closest('[key~="main--main"]') });
-                                          this.intersectionObserver.observe(this);
-                                          this.onremove = () => {
-                                            this.intersectionObserver.disconnect();
-                                          };
-                                        `}"
-                                      >
-                                        <i class="bi bi-circle-fill"></i>
-                                      </div>
-                                    `
-                                  : html``}
-                                <div
-                                  key="courseConversationMessage--sidebar--userAvatar"
-                                >
-                                  $${application.partials.userAvatar({
-                                    user: courseConversationMessageAnonymous
-                                      ? "anonymous"
-                                      : (courseConversationMessageCreatedByUser ??
-                                        "courseParticipationDeleted"),
-                                    size: 9,
-                                  })}
-                                </div>
+                                $${application.partials.userAvatar({
+                                  user: courseConversationMessageAnonymous
+                                    ? "anonymous"
+                                    : (courseConversationMessageCreatedByUser ??
+                                      "courseParticipationDeleted"),
+                                  size: 9,
+                                })}
                               </div>
                             </div>
+                          </div>
+                          <div
+                            key="courseConversationMessage--main"
+                            css="${css`
+                              flex: 1;
+                              min-width: var(--size--0);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--1);
+                            `}"
+                          >
                             <div
-                              key="courseConversationMessage--main"
+                              key="courseConversationMessage--main--header"
                               css="${css`
-                                flex: 1;
-                                min-width: var(--size--0);
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
                                 display: flex;
-                                flex-direction: column;
-                                gap: var(--size--1);
+                                gap: var(--size--2);
                               `}"
                             >
                               <div
-                                key="courseConversationMessage--main--header"
+                                key="courseConversationMessage--main--header--byline"
                                 css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
-                                  display: flex;
-                                  gap: var(--size--2);
+                                  flex: 1;
                                 `}"
                               >
-                                <div
-                                  key="courseConversationMessage--main--header--byline"
-                                  css="${css`
-                                    flex: 1;
-                                  `}"
-                                >
-                                  $${(() => {
-                                    let courseConversationMessageMainHeaderBylineHTMLs: HTML[] =
-                                      [];
-                                    courseConversationMessageMainHeaderBylineHTMLs.push(
-                                      html`<span
-                                          css="${css`
-                                            font-weight: 600;
-                                          `}"
-                                          >${courseConversationMessageAnonymous
-                                            ? "Anonymous"
-                                            : (courseConversationMessageCreatedByUser?.name ??
-                                              "Deleted course participant")}</span
-                                        >${!courseConversationMessageAnonymous
-                                          ? `${
-                                              courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                              "courseParticipationRoleInstructor"
-                                                ? " (instructor)"
+                                $${(() => {
+                                  let courseConversationMessageMainHeaderBylineHTMLs: HTML[] =
+                                    [];
+                                  courseConversationMessageMainHeaderBylineHTMLs.push(
+                                    html`<span
+                                        css="${css`
+                                          font-weight: 600;
+                                        `}"
+                                        >${courseConversationMessageAnonymous
+                                          ? "Anonymous"
+                                          : (courseConversationMessageCreatedByUser?.name ??
+                                            "Deleted course participant")}</span
+                                      >${!courseConversationMessageAnonymous
+                                        ? `${
+                                            courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                            "courseParticipationRoleInstructor"
+                                              ? " (instructor)"
+                                              : ""
+                                          }${
+                                            courseConversationMessage.courseConversationMessageAnonymity ===
+                                            "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                                              ? " (anonymous to students)"
+                                              : courseConversationMessage.courseConversationMessageAnonymity ===
+                                                  "courseConversationMessageAnonymityEveryone"
+                                                ? " (anonymous to everyone)"
                                                 : ""
-                                            }${
-                                              courseConversationMessage.courseConversationMessageAnonymity ===
-                                              "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-                                                ? " (anonymous to students)"
-                                                : courseConversationMessage.courseConversationMessageAnonymity ===
-                                                    "courseConversationMessageAnonymityEveryone"
-                                                  ? " (anonymous to everyone)"
-                                                  : ""
-                                            }`
-                                          : ``}`,
-                                    );
-                                    courseConversationMessageMainHeaderBylineHTMLs.push(
-                                      html`<span
-                                          javascript="${javascript`
-                                            javascript.relativizeDateTimeElement(this, ${courseConversationMessage.createdAt}, { capitalize: true });
-                                            javascript.popover({ element: this });
-                                          `}"
-                                        ></span
-                                        ><span
-                                          type="popover"
-                                          javascript="${javascript`
-                                            this.textContent = javascript.localizeDateTime(${courseConversationMessage.createdAt});
-                                          `}"
-                                        ></span
-                                        >$${typeof courseConversationMessage.updatedAt ===
-                                        "string"
-                                          ? html` (updated
-                                              <span
-                                                javascript="${javascript`
-                                                javascript.relativizeDateTimeElement(this, ${courseConversationMessage.updatedAt}, { preposition: true });
-                                                javascript.popover({ element: this });
+                                          }`
+                                        : ``}`,
+                                  );
+                                  courseConversationMessageMainHeaderBylineHTMLs.push(
+                                    html`<span
+                                        javascript="${javascript`
+                                          javascript.relativizeDateTimeElement(this, ${courseConversationMessage.createdAt}, { capitalize: true });
+                                          javascript.popover({ element: this });
+                                        `}"
+                                      ></span
+                                      ><span
+                                        type="popover"
+                                        javascript="${javascript`
+                                          this.textContent = javascript.localizeDateTime(${courseConversationMessage.createdAt});
+                                        `}"
+                                      ></span
+                                      >$${typeof courseConversationMessage.updatedAt ===
+                                      "string"
+                                        ? html` (updated
+                                            <span
+                                              javascript="${javascript`
+                                              javascript.relativizeDateTimeElement(this, ${courseConversationMessage.updatedAt}, { preposition: true });
+                                              javascript.popover({ element: this });
+                                            `}"
+                                            ></span
+                                            ><span
+                                              type="popover"
+                                              javascript="${javascript`
+                                                this.textContent = javascript.localizeDateTime(${courseConversationMessage.updatedAt});
                                               `}"
-                                              ></span
-                                              ><span
-                                                type="popover"
-                                                javascript="${javascript`
-                                                  this.textContent = javascript.localizeDateTime(${courseConversationMessage.updatedAt});
-                                                `}"
-                                              ></span
-                                              >)`
-                                          : html``}`,
-                                    );
+                                            ></span
+                                            >)`
+                                        : html``}`,
+                                  );
+                                  if (
+                                    request.state.courseConversation!
+                                      .courseConversationType ===
+                                    "courseConversationTypeQuestion"
+                                  ) {
                                     if (
-                                      request.state.courseConversation!
-                                        .courseConversationType ===
-                                      "courseConversationTypeQuestion"
-                                    ) {
-                                      if (
-                                        courseConversationMessage.courseConversationMessageType ===
-                                        "courseConversationMessageTypeMessage"
-                                      )
-                                        "NOOP";
-                                      else if (
-                                        courseConversationMessage.courseConversationMessageType ===
-                                        "courseConversationMessageTypeAnswer"
-                                      )
-                                        courseConversationMessageMainHeaderBylineHTMLs.push(
-                                          html`<span
-                                            css="${css`
-                                              font-weight: 700;
-                                              color: light-dark(
-                                                var(--color--green--500),
-                                                var(--color--green--500)
-                                              );
-                                            `}"
-                                            >Answer</span
-                                          >`,
-                                        );
-                                      else if (
-                                        courseConversationMessage.courseConversationMessageType ===
-                                        "courseConversationMessageTypeFollowUpQuestion"
-                                      )
-                                        courseConversationMessageMainHeaderBylineHTMLs.push(
-                                          html`<span
-                                            css="${css`
-                                              font-weight: 700;
-                                              color: light-dark(
-                                                var(--color--red--500),
-                                                var(--color--red--500)
-                                              );
-                                            `}"
-                                            >Follow-up question</span
-                                          >`,
-                                        );
-                                      else throw new Error();
-                                    }
-                                    if (
-                                      courseConversationMessage.courseConversationMessageVisibility ===
-                                      "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                                      courseConversationMessage.courseConversationMessageType ===
+                                      "courseConversationMessageTypeMessage"
                                     )
-                                      courseConversationMessageMainHeaderBylineHTMLs.push(
-                                        html`<span
-                                          css="${css`
-                                            font-weight: 700;
-                                            color: light-dark(
-                                              var(--color--blue--500),
-                                              var(--color--blue--500)
-                                            );
-                                          `}"
-                                          >Visible by instructors only</span
-                                        >`,
-                                      );
-                                    if (
-                                      application.database.get(
-                                        sql`
-                                          select true
-                                          from "courseConversationMessageLikes"
-                                          join "courseParticipations" on
-                                            "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
-                                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                          where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id}
-                                          limit 1;
-                                        `,
-                                      ) !== undefined
+                                      "NOOP";
+                                    else if (
+                                      courseConversationMessage.courseConversationMessageType ===
+                                      "courseConversationMessageTypeAnswer"
                                     )
                                       courseConversationMessageMainHeaderBylineHTMLs.push(
                                         html`<span
@@ -5010,478 +4925,690 @@ export default async (application: Application): Promise<void> => {
                                               var(--color--green--500)
                                             );
                                           `}"
-                                          >Liked by instructor</span
+                                          >Answer</span
                                         >`,
                                       );
-                                    return courseConversationMessageMainHeaderBylineHTMLs.join(
-                                      " · ",
+                                    else if (
+                                      courseConversationMessage.courseConversationMessageType ===
+                                      "courseConversationMessageTypeFollowUpQuestion"
+                                    )
+                                      courseConversationMessageMainHeaderBylineHTMLs.push(
+                                        html`<span
+                                          css="${css`
+                                            font-weight: 700;
+                                            color: light-dark(
+                                              var(--color--red--500),
+                                              var(--color--red--500)
+                                            );
+                                          `}"
+                                          >Follow-up question</span
+                                        >`,
+                                      );
+                                    else throw new Error();
+                                  }
+                                  if (
+                                    courseConversationMessage.courseConversationMessageVisibility ===
+                                    "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                                  )
+                                    courseConversationMessageMainHeaderBylineHTMLs.push(
+                                      html`<span
+                                        css="${css`
+                                          font-weight: 700;
+                                          color: light-dark(
+                                            var(--color--blue--500),
+                                            var(--color--blue--500)
+                                          );
+                                        `}"
+                                        >Visible by instructors only</span
+                                      >`,
                                     );
-                                  })()}
-                                </div>
-                                <div
-                                  key="courseConversationMessage--main--header--menu"
-                                >
-                                  <button
-                                    type="button"
-                                    class="button button--square button--icon button--transparent"
-                                    css="${css`
-                                      margin-right: var(--size---0-5);
-                                    `}"
-                                    javascript="${javascript`
-                                      javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true, placement: "bottom-end" });
-                                    `}"
-                                  >
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                  </button>
-                                  <div
-                                    type="popover"
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <button
-                                      type="button"
-                                      class="button button--rectangle button--transparent button--dropdown-menu"
-                                      javascript="${javascript`
-                                        const popover = javascript.popover({ element: this, trigger: "none" });
-                                        this.onclick = async () => {
-                                          await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
-                                          popover.showPopover();
-                                          await utilities.sleep(1000);
-                                          popover.hidePopover();
-                                        };
-                                      `}"
-                                    >
-                                      Copy permanent link
-                                    </button>
-                                    <div type="popover">Copied</div>
-                                    $${request.state.course!.courseState ===
-                                    "courseStateActive"
-                                      ? html`
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              this.onclick = () => {
-                                                const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--textarea"]');
-                                                element.focus();
-                                                element.click();
-                                                const previousSelectionEnd = element.selectionEnd;
-                                                element.selectionStart = element.selectionEnd;
-                                                document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + ${`> Reply to #${request.state.courseConversation!.publicId}/${courseConversationMessage.publicId}\n>\n> `} + this.closest('[key~="courseConversationMessage"]').content.replaceAll("\\n", "\\n> ") + "\\n\\n");
-                                                element.selectionStart = element.selectionEnd = previousSelectionEnd;
-                                              };
-                                            `}"
-                                          >
-                                            Reply
-                                          </button>
-                                        `
-                                      : html``}
-                                    $${mayEditCourseConversationMessage
-                                      ? html`
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              this.onclick = async () => {
-                                                if (this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').getAttribute("state") === null) {
-                                                  this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "loading");
-                                                  javascript.mount(
-                                                    this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').firstElementChild,
-                                                    await (
-                                                      await fetch(
-                                                        ${`/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}/messages/${courseConversationMessage.publicId}/edit`}
-                                                      )
-                                                    ).text()
-                                                  );
-                                                  this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "edit");
-                                                }
-                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').click();
-                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').focus();
-                                              };
-                                            `}"
-                                          >
-                                            Edit
-                                          </button>
-                                        `
-                                      : html``}
-                                    $${mayEditCourseConversationMessage &&
-                                    request.state.courseParticipation!
-                                      .courseParticipationRole ===
-                                      "courseParticipationRoleInstructor" &&
-                                    courseConversationMessage.id !==
-                                      firstCourseConversationMessage.id
-                                      ? html`
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              javascript.popover({ element: this, trigger: "click" });
-                                            `}"
-                                          >
-                                            Delete
-                                          </button>
-                                          <div
-                                            type="form popover"
-                                            method="DELETE"
-                                            action="/courses/${request.state
-                                              .course!
-                                              .publicId}/conversations/${request
-                                              .state.courseConversation!
-                                              .publicId}/messages/${courseConversationMessage.publicId}"
-                                            css="${css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--size--2);
-                                            `}"
-                                          >
-                                            <div
-                                              css="${css`
-                                                font-size: var(--font-size--3);
-                                                line-height: var(
-                                                  --font-size--3--line-height
-                                                );
-                                                font-weight: 600;
-                                                color: light-dark(
-                                                  var(--color--red--500),
-                                                  var(--color--red--500)
-                                                );
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-exclamation-triangle-fill"
-                                              ></i
-                                              > This action cannot be reverted.
-                                            </div>
-                                            <div>
-                                              <button
-                                                type="submit"
-                                                class="button button--rectangle button--red"
-                                                css="${css`
-                                                  font-size: var(
-                                                    --font-size--3
-                                                  );
-                                                  line-height: var(
-                                                    --font-size--3--line-height
-                                                  );
-                                                `}"
-                                              >
-                                                Delete message
-                                              </button>
-                                            </div>
-                                          </div>
-                                        `
-                                      : html``}
-                                  </div>
-                                </div>
+                                  if (
+                                    application.database.get(
+                                      sql`
+                                        select true
+                                        from "courseConversationMessageLikes"
+                                        join "courseParticipations" on
+                                          "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                          "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
+                                        where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id}
+                                        limit 1;
+                                      `,
+                                    ) !== undefined
+                                  )
+                                    courseConversationMessageMainHeaderBylineHTMLs.push(
+                                      html`<span
+                                        css="${css`
+                                          font-weight: 700;
+                                          color: light-dark(
+                                            var(--color--green--500),
+                                            var(--color--green--500)
+                                          );
+                                        `}"
+                                        >Liked by instructor</span
+                                      >`,
+                                    );
+                                  return courseConversationMessageMainHeaderBylineHTMLs.join(
+                                    " · ",
+                                  );
+                                })()}
                               </div>
                               <div
-                                key="courseConversationMessage--main--content--body"
+                                key="courseConversationMessage--main--header--menu"
                               >
+                                <button
+                                  type="button"
+                                  class="button button--square button--icon button--transparent"
+                                  css="${css`
+                                    margin-right: var(--size---0-5);
+                                  `}"
+                                  javascript="${javascript`
+                                    javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true, placement: "bottom-end" });
+                                  `}"
+                                >
+                                  <i class="bi bi-three-dots-vertical"></i>
+                                </button>
                                 <div
-                                  key="courseConversationMessage--main--content--show"
+                                  type="popover"
                                   css="${css`
                                     display: flex;
                                     flex-direction: column;
-                                    gap: var(--size--1);
-                                    [key~="courseConversationMessage--main--content--body"][state]
-                                      & {
-                                      display: none;
-                                    }
+                                    gap: var(--size--2);
                                   `}"
                                 >
-                                  <div
-                                    key="courseConversationMessage--main--content--show--content"
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
-                                      let popoverElementBoundingClientRect;
-                                      const popover = javascript.popover({
-                                        element: { getBoundingClientRect: () => popoverElementBoundingClientRect },
-                                        target: this.nextElementSibling,
-                                        trigger: "none",
-                                      });
-                                      this.onpointerup = (event) => {
-                                        window.setTimeout(() => {
-                                          const selection = document.getSelection();
-                                          if (selection === null) return;
-                                          let startNode;
-                                          let endNode;
-                                          for (let rangeIndex = 0; rangeIndex < selection.rangeCount; rangeIndex++) {
-                                            const range = selection.getRangeAt(rangeIndex);
-                                            if (range.collapsed) continue;
-                                            if (
-                                              startNode === undefined ||
-                                              range.startContainer.compareDocumentPosition(startNode) & range.startContainer.DOCUMENT_POSITION_FOLLOWING
-                                            )
-                                              startNode = range.startContainer;
-                                            if (
-                                              endNode === undefined ||
-                                              endNode.compareDocumentPosition(range.endContainer) & endNode.DOCUMENT_POSITION_FOLLOWING
-                                            )
-                                              endNode = range.endContainer;
-                                          }
-                                          if (
-                                            startNode === undefined ||
-                                            !this.contains(startNode) ||
-                                            endNode === undefined ||
-                                            !this.contains(endNode)
-                                          ) return;
-                                          const startElement = (startNode.nodeType === startNode.ELEMENT_NODE ? startNode : startNode.parentElement).closest("[data-position]");
-                                          const endElement = (endNode.nodeType === endNode.ELEMENT_NODE ? endNode : endNode.parentElement).closest("[data-position]");
-                                          if (startElement === null || endElement === null) return;
-                                          this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = this.closest('[key~="courseConversationMessage"]').content.slice(
-                                            JSON.parse(startElement.getAttribute("data-position")).start,
-                                            JSON.parse(endElement.getAttribute("data-position")).end,
-                                          );
-                                          popoverElementBoundingClientRect = DOMRect.fromRect({
-                                            x: event.clientX - 10,
-                                            y: event.clientY - 10,
-                                            width: 20,
-                                            height: 20,
-                                          });
-                                          popover.showPopover();
-                                          const abortController = new AbortController();
-                                          for (const eventType of ["pointerdown", "keydown"])
-                                            document.addEventListener(
-                                              eventType,
-                                              () => {
-                                                abortController.abort();
-                                                popover.hidePopover();
-                                              },
-                                              { signal: abortController.signal },
-                                            );
-                                        });
+                                      const popover = javascript.popover({ element: this, trigger: "none" });
+                                      this.onclick = async () => {
+                                        await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
+                                        popover.showPopover();
+                                        await utilities.sleep(1000);
+                                        popover.hidePopover();
                                       };
                                     `}"
                                   >
-                                    $${await application.partials.courseConversationMessageContentProcessor(
-                                      {
-                                        course: request.state.course!,
-                                        courseParticipation:
-                                          request.state.courseParticipation!,
-                                        courseConversation:
-                                          request.state.courseConversation!,
-                                        courseConversationMessage,
-                                      },
-                                    )}
-                                  </div>
-                                  <div
-                                    type="popover"
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <button
-                                      key="quoteReply"
-                                      type="button"
-                                      class="button button--rectangle button--transparent button--dropdown-menu"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          if (typeof this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
-                                            this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--preview--button"]').click();
-                                          const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--textarea"]');
-                                          element.focus();
-                                          element.click();
-                                          const previousSelectionEnd = element.selectionEnd;
-                                          element.selectionStart = element.selectionEnd;
-                                          document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + "> " + this.quote.replaceAll("\\n", "\\n> ") + "\\n\\n");
-                                          element.selectionStart = element.selectionEnd = previousSelectionEnd;
-                                        };
-                                      `}"
-                                    >
-                                      Quote reply
-                                    </button>
-                                  </div>
-                                  $${(() => {
-                                    let courseConversationMessageMainContentShowFooterHTML = html``;
-                                    if (
-                                      request.state.course!.courseState ===
-                                      "courseStateActive"
-                                    )
-                                      courseConversationMessageMainContentShowFooterHTML +=
-                                        application.database.get(
-                                          sql`
-                                            select true
-                                            from "courseConversationMessageLikes"
-                                            where
-                                              "courseConversationMessage" = ${courseConversationMessage.id} and
-                                              "courseParticipation" = ${request.state.courseParticipation!.id};
-                                          `,
-                                        ) === undefined
-                                          ? html`
-                                              <div
-                                                key="courseConversationMessage--main--content--show--footer--like"
-                                                type="form"
-                                                method="POST"
-                                                action="/courses/${request.state
-                                                  .course!
-                                                  .publicId}/conversations/${request
-                                                  .state.courseConversation!
-                                                  .publicId}/messages/${courseConversationMessage.publicId}/like"
-                                              >
-                                                <button
-                                                  type="submit"
-                                                  class="button button--rectangle button--transparent"
-                                                >
-                                                  Like
-                                                </button>
-                                              </div>
-                                            `
-                                          : html`
-                                              <div
-                                                key="courseConversationMessage--main--content--show--footer--like"
-                                                type="form"
-                                                method="DELETE"
-                                                action="/courses/${request.state
-                                                  .course!
-                                                  .publicId}/conversations/${request
-                                                  .state.courseConversation!
-                                                  .publicId}/messages/${courseConversationMessage.publicId}/like"
-                                              >
-                                                <button
-                                                  type="submit"
-                                                  class="button button--rectangle button--transparent"
-                                                  css="${css`
-                                                    color: light-dark(
-                                                      var(--color--blue--500),
-                                                      var(--color--blue--500)
-                                                    );
-                                                  `}"
-                                                >
-                                                  Liked
-                                                </button>
-                                              </div>
-                                            `;
-                                    const courseConversationMessageLikes =
-                                      application.database.all<{
-                                        courseParticipation: number | null;
-                                      }>(
-                                        sql`
-                                          select "courseParticipation"
-                                          from "courseConversationMessageLikes"
-                                          where "courseConversationMessage" = ${courseConversationMessage.id}
-                                          order by "id" asc;
-                                        `,
-                                      );
-                                    if (
-                                      courseConversationMessageLikes.length > 0
-                                    )
-                                      courseConversationMessageMainContentShowFooterHTML += html`
+                                    Copy permanent link
+                                  </button>
+                                  <div type="popover">Copied</div>
+                                  $${request.state.course!.courseState ===
+                                  "courseStateActive"
+                                    ? html`
                                         <button
-                                          key="courseConversationMessage--main--content--show--footer--likes"
                                           type="button"
-                                          class="button button--rectangle button--transparent"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = () => {
+                                              const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--textarea"]');
+                                              element.focus();
+                                              element.click();
+                                              const previousSelectionEnd = element.selectionEnd;
+                                              element.selectionStart = element.selectionEnd;
+                                              document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + ${`> Reply to #${request.state.courseConversation!.publicId}/${courseConversationMessage.publicId}\n>\n> `} + this.closest('[key~="courseConversationMessage"]').content.replaceAll("\\n", "\\n> ") + "\\n\\n");
+                                              element.selectionStart = element.selectionEnd = previousSelectionEnd;
+                                            };
+                                          `}"
+                                        >
+                                          Reply
+                                        </button>
+                                      `
+                                    : html``}
+                                  $${mayEditCourseConversationMessage
+                                    ? html`
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = async () => {
+                                              if (this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').getAttribute("state") === null) {
+                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "loading");
+                                                javascript.mount(
+                                                  this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').firstElementChild,
+                                                  await (
+                                                    await fetch(
+                                                      ${`/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}/messages/${courseConversationMessage.publicId}/edit`}
+                                                    )
+                                                  ).text()
+                                                );
+                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "edit");
+                                              }
+                                              this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').click();
+                                              this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').focus();
+                                            };
+                                          `}"
+                                        >
+                                          Edit
+                                        </button>
+                                      `
+                                    : html``}
+                                  $${mayEditCourseConversationMessage &&
+                                  request.state.courseParticipation!
+                                    .courseParticipationRole ===
+                                    "courseParticipationRoleInstructor" &&
+                                  courseConversationMessage.id !==
+                                    firstCourseConversationMessage.id
+                                    ? html`
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
                                           javascript="${javascript`
                                             javascript.popover({ element: this, trigger: "click" });
                                           `}"
                                         >
-                                          ${String(
-                                            courseConversationMessageLikes.length,
-                                          )}
-                                          like${courseConversationMessageLikes.length !==
-                                          1
-                                            ? "s"
-                                            : ""} <i
-                                            class="bi bi-chevron-down"
-                                          ></i>
+                                          Delete
                                         </button>
                                         <div
-                                          type="popover"
+                                          type="form popover"
+                                          method="DELETE"
+                                          action="/courses/${request.state
+                                            .course!
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation!
+                                            .publicId}/messages/${courseConversationMessage.publicId}"
                                           css="${css`
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--size--2);
                                           `}"
                                         >
-                                          $${courseConversationMessageLikes.map(
-                                            (courseConversationMessageLike) => {
-                                              const courseConversationMessageLikeCourseParticipation =
-                                                typeof courseConversationMessageLike.courseParticipation ===
-                                                "number"
-                                                  ? application.database.get<{
-                                                      user: number;
-                                                      courseParticipationRole:
-                                                        | "courseParticipationRoleInstructor"
-                                                        | "courseParticipationRoleStudent";
-                                                    }>(
-                                                      sql`
-                                                        select
-                                                          "user",
-                                                          "courseParticipationRole"
-                                                        from "courseParticipations"
-                                                        where "id" = ${courseConversationMessageLike.courseParticipation};
-                                                      `,
-                                                    )
-                                                  : undefined;
-                                              const courseConversationMessageLikeUser =
-                                                courseConversationMessageLikeCourseParticipation !==
-                                                undefined
-                                                  ? application.database.get<{
-                                                      publicId: string;
-                                                      name: string;
-                                                      avatarColor:
-                                                        | "red"
-                                                        | "orange"
-                                                        | "amber"
-                                                        | "yellow"
-                                                        | "lime"
-                                                        | "green"
-                                                        | "emerald"
-                                                        | "teal"
-                                                        | "cyan"
-                                                        | "sky"
-                                                        | "blue"
-                                                        | "indigo"
-                                                        | "violet"
-                                                        | "purple"
-                                                        | "fuchsia"
-                                                        | "pink"
-                                                        | "rose";
-                                                      avatarImage:
-                                                        | string
-                                                        | null;
-                                                      lastSeenOnlineAt: string;
-                                                    }>(
-                                                      sql`
-                                                        select
-                                                          "publicId",
-                                                          "name",
-                                                          "avatarColor",
-                                                          "avatarImage",
-                                                          "lastSeenOnlineAt"
-                                                        from "users"
-                                                        where "id" = ${courseConversationMessageLikeCourseParticipation.user};
-                                                      `,
-                                                    )
-                                                  : undefined;
-                                              return html`
+                                          <div
+                                            css="${css`
+                                              font-size: var(--font-size--3);
+                                              line-height: var(
+                                                --font-size--3--line-height
+                                              );
+                                              font-weight: 600;
+                                              color: light-dark(
+                                                var(--color--red--500),
+                                                var(--color--red--500)
+                                              );
+                                            `}"
+                                          >
+                                            <i
+                                              class="bi bi-exclamation-triangle-fill"
+                                            ></i
+                                            > This action cannot be reverted.
+                                          </div>
+                                          <div>
+                                            <button
+                                              type="submit"
+                                              class="button button--rectangle button--red"
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                              `}"
+                                            >
+                                              Delete message
+                                            </button>
+                                          </div>
+                                        </div>
+                                      `
+                                    : html``}
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              key="courseConversationMessage--main--content--body"
+                            >
+                              <div
+                                key="courseConversationMessage--main--content--show"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--1);
+                                  [key~="courseConversationMessage--main--content--body"][state]
+                                    & {
+                                    display: none;
+                                  }
+                                `}"
+                              >
+                                <div
+                                  key="courseConversationMessage--main--content--show--content"
+                                  javascript="${javascript`
+                                    let popoverElementBoundingClientRect;
+                                    const popover = javascript.popover({
+                                      element: { getBoundingClientRect: () => popoverElementBoundingClientRect },
+                                      target: this.nextElementSibling,
+                                      trigger: "none",
+                                    });
+                                    this.onpointerup = (event) => {
+                                      window.setTimeout(() => {
+                                        const selection = document.getSelection();
+                                        if (selection === null) return;
+                                        let startNode;
+                                        let endNode;
+                                        for (let rangeIndex = 0; rangeIndex < selection.rangeCount; rangeIndex++) {
+                                          const range = selection.getRangeAt(rangeIndex);
+                                          if (range.collapsed) continue;
+                                          if (
+                                            startNode === undefined ||
+                                            range.startContainer.compareDocumentPosition(startNode) & range.startContainer.DOCUMENT_POSITION_FOLLOWING
+                                          )
+                                            startNode = range.startContainer;
+                                          if (
+                                            endNode === undefined ||
+                                            endNode.compareDocumentPosition(range.endContainer) & endNode.DOCUMENT_POSITION_FOLLOWING
+                                          )
+                                            endNode = range.endContainer;
+                                        }
+                                        if (
+                                          startNode === undefined ||
+                                          !this.contains(startNode) ||
+                                          endNode === undefined ||
+                                          !this.contains(endNode)
+                                        ) return;
+                                        const startElement = (startNode.nodeType === startNode.ELEMENT_NODE ? startNode : startNode.parentElement).closest("[data-position]");
+                                        const endElement = (endNode.nodeType === endNode.ELEMENT_NODE ? endNode : endNode.parentElement).closest("[data-position]");
+                                        if (startElement === null || endElement === null) return;
+                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = this.closest('[key~="courseConversationMessage"]').content.slice(
+                                          JSON.parse(startElement.getAttribute("data-position")).start,
+                                          JSON.parse(endElement.getAttribute("data-position")).end,
+                                        );
+                                        popoverElementBoundingClientRect = DOMRect.fromRect({
+                                          x: event.clientX - 10,
+                                          y: event.clientY - 10,
+                                          width: 20,
+                                          height: 20,
+                                        });
+                                        popover.showPopover();
+                                        const abortController = new AbortController();
+                                        for (const eventType of ["pointerdown", "keydown"])
+                                          document.addEventListener(
+                                            eventType,
+                                            () => {
+                                              abortController.abort();
+                                              popover.hidePopover();
+                                            },
+                                            { signal: abortController.signal },
+                                          );
+                                      });
+                                    };
+                                  `}"
+                                >
+                                  $${await application.partials.courseConversationMessageContentProcessor(
+                                    {
+                                      course: request.state.course!,
+                                      courseParticipation:
+                                        request.state.courseParticipation!,
+                                      courseConversation:
+                                        request.state.courseConversation!,
+                                      courseConversationMessage,
+                                    },
+                                  )}
+                                </div>
+                                <div
+                                  type="popover"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--2);
+                                  `}"
+                                >
+                                  <button
+                                    key="quoteReply"
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        if (typeof this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
+                                          this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--preview--button"]').click();
+                                        const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--textarea"]');
+                                        element.focus();
+                                        element.click();
+                                        const previousSelectionEnd = element.selectionEnd;
+                                        element.selectionStart = element.selectionEnd;
+                                        document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + "> " + this.quote.replaceAll("\\n", "\\n> ") + "\\n\\n");
+                                        element.selectionStart = element.selectionEnd = previousSelectionEnd;
+                                      };
+                                    `}"
+                                  >
+                                    Quote reply
+                                  </button>
+                                </div>
+                                $${(() => {
+                                  let courseConversationMessageMainContentShowFooterHTML = html``;
+                                  if (
+                                    request.state.course!.courseState ===
+                                    "courseStateActive"
+                                  )
+                                    courseConversationMessageMainContentShowFooterHTML +=
+                                      application.database.get(
+                                        sql`
+                                          select true
+                                          from "courseConversationMessageLikes"
+                                          where
+                                            "courseConversationMessage" = ${courseConversationMessage.id} and
+                                            "courseParticipation" = ${request.state.courseParticipation!.id};
+                                        `,
+                                      ) === undefined
+                                        ? html`
+                                            <div
+                                              key="courseConversationMessage--main--content--show--footer--like"
+                                              type="form"
+                                              method="POST"
+                                              action="/courses/${request.state
+                                                .course!
+                                                .publicId}/conversations/${request
+                                                .state.courseConversation!
+                                                .publicId}/messages/${courseConversationMessage.publicId}/like"
+                                            >
+                                              <button
+                                                type="submit"
+                                                class="button button--rectangle button--transparent"
+                                              >
+                                                Like
+                                              </button>
+                                            </div>
+                                          `
+                                        : html`
+                                            <div
+                                              key="courseConversationMessage--main--content--show--footer--like"
+                                              type="form"
+                                              method="DELETE"
+                                              action="/courses/${request.state
+                                                .course!
+                                                .publicId}/conversations/${request
+                                                .state.courseConversation!
+                                                .publicId}/messages/${courseConversationMessage.publicId}/like"
+                                            >
+                                              <button
+                                                type="submit"
+                                                class="button button--rectangle button--transparent"
+                                                css="${css`
+                                                  color: light-dark(
+                                                    var(--color--blue--500),
+                                                    var(--color--blue--500)
+                                                  );
+                                                `}"
+                                              >
+                                                Liked
+                                              </button>
+                                            </div>
+                                          `;
+                                  const courseConversationMessageLikes =
+                                    application.database.all<{
+                                      courseParticipation: number | null;
+                                    }>(
+                                      sql`
+                                        select "courseParticipation"
+                                        from "courseConversationMessageLikes"
+                                        where "courseConversationMessage" = ${courseConversationMessage.id}
+                                        order by "id" asc;
+                                      `,
+                                    );
+                                  if (courseConversationMessageLikes.length > 0)
+                                    courseConversationMessageMainContentShowFooterHTML += html`
+                                      <button
+                                        key="courseConversationMessage--main--content--show--footer--likes"
+                                        type="button"
+                                        class="button button--rectangle button--transparent"
+                                        javascript="${javascript`
+                                          javascript.popover({ element: this, trigger: "click" });
+                                        `}"
+                                      >
+                                        ${String(
+                                          courseConversationMessageLikes.length,
+                                        )}
+                                        like${courseConversationMessageLikes.length !==
+                                        1
+                                          ? "s"
+                                          : ""} <i
+                                          class="bi bi-chevron-down"
+                                        ></i>
+                                      </button>
+                                      <div
+                                        type="popover"
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--size--2);
+                                        `}"
+                                      >
+                                        $${courseConversationMessageLikes.map(
+                                          (courseConversationMessageLike) => {
+                                            const courseConversationMessageLikeCourseParticipation =
+                                              typeof courseConversationMessageLike.courseParticipation ===
+                                              "number"
+                                                ? application.database.get<{
+                                                    user: number;
+                                                    courseParticipationRole:
+                                                      | "courseParticipationRoleInstructor"
+                                                      | "courseParticipationRoleStudent";
+                                                  }>(
+                                                    sql`
+                                                      select
+                                                        "user",
+                                                        "courseParticipationRole"
+                                                      from "courseParticipations"
+                                                      where "id" = ${courseConversationMessageLike.courseParticipation};
+                                                    `,
+                                                  )
+                                                : undefined;
+                                            const courseConversationMessageLikeUser =
+                                              courseConversationMessageLikeCourseParticipation !==
+                                              undefined
+                                                ? application.database.get<{
+                                                    publicId: string;
+                                                    name: string;
+                                                    avatarColor:
+                                                      | "red"
+                                                      | "orange"
+                                                      | "amber"
+                                                      | "yellow"
+                                                      | "lime"
+                                                      | "green"
+                                                      | "emerald"
+                                                      | "teal"
+                                                      | "cyan"
+                                                      | "sky"
+                                                      | "blue"
+                                                      | "indigo"
+                                                      | "violet"
+                                                      | "purple"
+                                                      | "fuchsia"
+                                                      | "pink"
+                                                      | "rose";
+                                                    avatarImage: string | null;
+                                                    lastSeenOnlineAt: string;
+                                                  }>(
+                                                    sql`
+                                                      select
+                                                        "publicId",
+                                                        "name",
+                                                        "avatarColor",
+                                                        "avatarImage",
+                                                        "lastSeenOnlineAt"
+                                                      from "users"
+                                                      where "id" = ${courseConversationMessageLikeCourseParticipation.user};
+                                                    `,
+                                                  )
+                                                : undefined;
+                                            return html`
+                                              <div
+                                                css="${css`
+                                                  display: flex;
+                                                  gap: var(--size--2);
+                                                `}"
+                                              >
+                                                $${application.partials.userAvatar(
+                                                  {
+                                                    user:
+                                                      courseConversationMessageLikeUser ??
+                                                      "courseParticipationDeleted",
+                                                  },
+                                                )}
                                                 <div
                                                   css="${css`
-                                                    display: flex;
-                                                    gap: var(--size--2);
+                                                    margin-top: var(
+                                                      --size--0-5
+                                                    );
                                                   `}"
                                                 >
-                                                  $${application.partials.userAvatar(
-                                                    {
-                                                      user:
-                                                        courseConversationMessageLikeUser ??
-                                                        "courseParticipationDeleted",
-                                                    },
-                                                  )}
-                                                  <div
-                                                    css="${css`
-                                                      margin-top: var(
-                                                        --size--0-5
-                                                      );
-                                                    `}"
-                                                  >
-                                                    ${courseConversationMessageLikeUser?.name ??
-                                                    "Deleted course participant"}$${courseConversationMessageLikeCourseParticipation?.courseParticipationRole ===
-                                                    "courseParticipationRoleInstructor"
-                                                      ? html`<span
+                                                  ${courseConversationMessageLikeUser?.name ??
+                                                  "Deleted course participant"}$${courseConversationMessageLikeCourseParticipation?.courseParticipationRole ===
+                                                  "courseParticipationRoleInstructor"
+                                                    ? html`<span
+                                                        css="${css`
+                                                          font-size: var(
+                                                            --font-size--3
+                                                          );
+                                                          line-height: var(
+                                                            --font-size--3--line-height
+                                                          );
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--slate--600
+                                                            ),
+                                                            var(
+                                                              --color--slate--400
+                                                            )
+                                                          );
+                                                        `}"
+                                                      >
+                                                        (instructor)</span
+                                                      >`
+                                                    : html``}
+                                                </div>
+                                              </div>
+                                            `;
+                                          },
+                                        )}
+                                      </div>
+                                    `;
+                                  if (
+                                    request.state.courseParticipation!
+                                      .courseParticipationRole ===
+                                    "courseParticipationRoleInstructor"
+                                  ) {
+                                    const courseConversationMessageViews =
+                                      application.database.all<{
+                                        createdAt: string;
+                                        courseParticipation: number | null;
+                                      }>(
+                                        sql`
+                                          select "createdAt", "courseParticipation"
+                                          from "courseConversationMessageViews"
+                                          where "courseConversationMessage" = ${courseConversationMessage.id}
+                                          order by "id" asc;
+                                        `,
+                                      );
+                                    courseConversationMessageMainContentShowFooterHTML +=
+                                      courseConversationMessageViews.length > 0
+                                        ? html`
+                                            <button
+                                              key="courseConversationMessage--main--content--show--footer--views"
+                                              type="button"
+                                              class="button button--rectangle button--transparent"
+                                              javascript="${javascript`
+                                                javascript.popover({ element: this, trigger: "click" });
+                                              `}"
+                                            >
+                                              ${String(
+                                                courseConversationMessageViews.length,
+                                              )}
+                                              view${courseConversationMessageViews.length !==
+                                              1
+                                                ? "s"
+                                                : ""} <i
+                                                class="bi bi-chevron-down"
+                                              ></i>
+                                            </button>
+                                            <div
+                                              type="popover"
+                                              css="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--size--2);
+                                              `}"
+                                            >
+                                              $${courseConversationMessageViews.map(
+                                                (
+                                                  courseConversationMessageView,
+                                                ) => {
+                                                  const courseConversationMessageViewCourseParticipation =
+                                                    typeof courseConversationMessageView.courseParticipation ===
+                                                    "number"
+                                                      ? application.database.get<{
+                                                          user: number;
+                                                          courseParticipationRole:
+                                                            | "courseParticipationRoleInstructor"
+                                                            | "courseParticipationRoleStudent";
+                                                        }>(
+                                                          sql`
+                                                            select
+                                                              "user",
+                                                              "courseParticipationRole"
+                                                            from "courseParticipations"
+                                                            where "id" = ${courseConversationMessageView.courseParticipation};
+                                                          `,
+                                                        )
+                                                      : undefined;
+                                                  const courseConversationMessageViewUser =
+                                                    courseConversationMessageViewCourseParticipation !==
+                                                    undefined
+                                                      ? application.database.get<{
+                                                          publicId: string;
+                                                          name: string;
+                                                          avatarColor:
+                                                            | "red"
+                                                            | "orange"
+                                                            | "amber"
+                                                            | "yellow"
+                                                            | "lime"
+                                                            | "green"
+                                                            | "emerald"
+                                                            | "teal"
+                                                            | "cyan"
+                                                            | "sky"
+                                                            | "blue"
+                                                            | "indigo"
+                                                            | "violet"
+                                                            | "purple"
+                                                            | "fuchsia"
+                                                            | "pink"
+                                                            | "rose";
+                                                          avatarImage:
+                                                            | string
+                                                            | null;
+                                                          lastSeenOnlineAt: string;
+                                                        }>(
+                                                          sql`
+                                                            select
+                                                              "publicId",
+                                                              "name",
+                                                              "avatarColor",
+                                                              "avatarImage",
+                                                              "lastSeenOnlineAt"
+                                                            from "users"
+                                                            where "id" = ${courseConversationMessageViewCourseParticipation.user};
+                                                          `,
+                                                        )
+                                                      : undefined;
+                                                  return html`
+                                                    <div
+                                                      css="${css`
+                                                        display: flex;
+                                                        gap: var(--size--2);
+                                                      `}"
+                                                    >
+                                                      $${application.partials.userAvatar(
+                                                        {
+                                                          user:
+                                                            courseConversationMessageViewUser ??
+                                                            "courseParticipationDeleted",
+                                                        },
+                                                      )}
+                                                      <div
+                                                        css="${css`
+                                                          margin-top: var(
+                                                            --size--0-5
+                                                          );
+                                                        `}"
+                                                      >
+                                                        ${courseConversationMessageViewUser?.name ??
+                                                        "Deleted course participant"}<span
                                                           css="${css`
                                                             font-size: var(
                                                               --font-size--3
@@ -5498,273 +5625,112 @@ export default async (application: Application): Promise<void> => {
                                                               )
                                                             );
                                                           `}"
-                                                        >
-                                                          (instructor)</span
-                                                        >`
-                                                      : html``}
-                                                  </div>
-                                                </div>
-                                              `;
-                                            },
-                                          )}
-                                        </div>
-                                      `;
-                                    if (
-                                      request.state.courseParticipation!
-                                        .courseParticipationRole ===
-                                      "courseParticipationRoleInstructor"
-                                    ) {
-                                      const courseConversationMessageViews =
-                                        application.database.all<{
-                                          createdAt: string;
-                                          courseParticipation: number | null;
-                                        }>(
-                                          sql`
-                                            select "createdAt", "courseParticipation"
-                                            from "courseConversationMessageViews"
-                                            where "courseConversationMessage" = ${courseConversationMessage.id}
-                                            order by "id" asc;
-                                          `,
-                                        );
-                                      courseConversationMessageMainContentShowFooterHTML +=
-                                        courseConversationMessageViews.length >
-                                        0
-                                          ? html`
-                                              <button
-                                                key="courseConversationMessage--main--content--show--footer--views"
-                                                type="button"
-                                                class="button button--rectangle button--transparent"
-                                                javascript="${javascript`
-                                                  javascript.popover({ element: this, trigger: "click" });
-                                                `}"
-                                              >
-                                                ${String(
-                                                  courseConversationMessageViews.length,
-                                                )}
-                                                view${courseConversationMessageViews.length !==
-                                                1
-                                                  ? "s"
-                                                  : ""} <i
-                                                  class="bi bi-chevron-down"
-                                                ></i>
-                                              </button>
-                                              <div
-                                                type="popover"
-                                                css="${css`
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--size--2);
-                                                `}"
-                                              >
-                                                $${courseConversationMessageViews.map(
-                                                  (
-                                                    courseConversationMessageView,
-                                                  ) => {
-                                                    const courseConversationMessageViewCourseParticipation =
-                                                      typeof courseConversationMessageView.courseParticipation ===
-                                                      "number"
-                                                        ? application.database.get<{
-                                                            user: number;
-                                                            courseParticipationRole:
-                                                              | "courseParticipationRoleInstructor"
-                                                              | "courseParticipationRoleStudent";
-                                                          }>(
-                                                            sql`
-                                                              select
-                                                                "user",
-                                                                "courseParticipationRole"
-                                                              from "courseParticipations"
-                                                              where "id" = ${courseConversationMessageView.courseParticipation};
-                                                            `,
-                                                          )
-                                                        : undefined;
-                                                    const courseConversationMessageViewUser =
-                                                      courseConversationMessageViewCourseParticipation !==
-                                                      undefined
-                                                        ? application.database.get<{
-                                                            publicId: string;
-                                                            name: string;
-                                                            avatarColor:
-                                                              | "red"
-                                                              | "orange"
-                                                              | "amber"
-                                                              | "yellow"
-                                                              | "lime"
-                                                              | "green"
-                                                              | "emerald"
-                                                              | "teal"
-                                                              | "cyan"
-                                                              | "sky"
-                                                              | "blue"
-                                                              | "indigo"
-                                                              | "violet"
-                                                              | "purple"
-                                                              | "fuchsia"
-                                                              | "pink"
-                                                              | "rose";
-                                                            avatarImage:
-                                                              | string
-                                                              | null;
-                                                            lastSeenOnlineAt: string;
-                                                          }>(
-                                                            sql`
-                                                              select
-                                                                "publicId",
-                                                                "name",
-                                                                "avatarColor",
-                                                                "avatarImage",
-                                                                "lastSeenOnlineAt"
-                                                              from "users"
-                                                              where "id" = ${courseConversationMessageViewCourseParticipation.user};
-                                                            `,
-                                                          )
-                                                        : undefined;
-                                                    return html`
-                                                      <div
-                                                        css="${css`
-                                                          display: flex;
-                                                          gap: var(--size--2);
-                                                        `}"
-                                                      >
-                                                        $${application.partials.userAvatar(
-                                                          {
-                                                            user:
-                                                              courseConversationMessageViewUser ??
-                                                              "courseParticipationDeleted",
-                                                          },
-                                                        )}
-                                                        <div
-                                                          css="${css`
-                                                            margin-top: var(
-                                                              --size--0-5
-                                                            );
-                                                          `}"
-                                                        >
-                                                          ${courseConversationMessageViewUser?.name ??
-                                                          "Deleted course participant"}<span
-                                                            css="${css`
-                                                              font-size: var(
-                                                                --font-size--3
-                                                              );
-                                                              line-height: var(
-                                                                --font-size--3--line-height
-                                                              );
-                                                              color: light-dark(
-                                                                var(
-                                                                  --color--slate--600
-                                                                ),
-                                                                var(
-                                                                  --color--slate--400
-                                                                )
-                                                              );
+                                                          >${courseConversationMessageViewCourseParticipation?.courseParticipationRole ===
+                                                          "courseParticipationRoleInstructor"
+                                                            ? " (instructor)"
+                                                            : ""} ·
+                                                          <span
+                                                            javascript="${javascript`
+                                                              javascript.relativizeDateTimeElement(this, ${courseConversationMessageView.createdAt}, { capitalize: true });
+                                                              javascript.popover({ element: this });
                                                             `}"
-                                                            >${courseConversationMessageViewCourseParticipation?.courseParticipationRole ===
-                                                            "courseParticipationRoleInstructor"
-                                                              ? " (instructor)"
-                                                              : ""} ·
-                                                            <span
-                                                              javascript="${javascript`
-                                                                javascript.relativizeDateTimeElement(this, ${courseConversationMessageView.createdAt}, { capitalize: true });
-                                                                javascript.popover({ element: this });
-                                                              `}"
-                                                            ></span
-                                                            ><span
-                                                              type="popover"
-                                                              javascript="${javascript`
-                                                                this.textContent = javascript.localizeDateTime(${courseConversationMessageView.createdAt});
-                                                              `}"
-                                                            ></span
-                                                          ></span>
-                                                        </div>
+                                                          ></span
+                                                          ><span
+                                                            type="popover"
+                                                            javascript="${javascript`
+                                                              this.textContent = javascript.localizeDateTime(${courseConversationMessageView.createdAt});
+                                                            `}"
+                                                          ></span
+                                                        ></span>
                                                       </div>
-                                                    `;
-                                                  },
-                                                )}
-                                              </div>
-                                            `
-                                          : html`
-                                              <div
-                                                key="courseConversationMessage--main--content--show--footer--views"
-                                              >
-                                                0 views
-                                              </div>
-                                            `;
-                                    }
-                                    return courseConversationMessageMainContentShowFooterHTML !==
-                                      html``
-                                      ? html`
-                                          <div
-                                            key="courseConversationMessage--main--content--show--footer"
-                                            css="${css`
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
-                                              );
-                                              font-weight: 600;
-                                              color: light-dark(
-                                                var(--color--slate--600),
-                                                var(--color--slate--400)
-                                              );
-                                              display: flex;
-                                              align-items: baseline;
-                                              flex-wrap: wrap;
-                                              column-gap: var(--size--4);
-                                              row-gap: var(--size--2);
-                                            `}"
-                                          >
-                                            $${courseConversationMessageMainContentShowFooterHTML}
-                                          </div>
-                                        `
-                                      : html``;
-                                  })()}
-                                </div>
-                                $${mayEditCourseConversationMessage
-                                  ? html`
-                                      <div
-                                        key="courseConversationMessage--main--content--loading"
-                                        css="${css`
-                                          font-size: var(--size--12);
-                                          color: light-dark(
-                                            var(--color--slate--600),
-                                            var(--color--slate--400)
-                                          );
-                                          height: var(--size--44);
-                                          display: flex;
-                                          justify-content: center;
-                                          align-items: center;
-                                          animation: var(--animation--pulse);
-                                          [key~="courseConversationMessage--main--content--body"]:not(
-                                              [state~="loading"]
-                                            )
-                                            & {
-                                            display: none;
-                                          }
-                                        `}"
-                                      >
-                                        <i class="bi bi-three-dots"></i>
-                                      </div>
-                                      <div
-                                        key="courseConversationMessage--main--content--edit"
-                                        css="${css`
-                                          [key~="courseConversationMessage--main--content--body"]:not(
-                                              [state~="edit"]
-                                            )
-                                            & {
-                                            display: none;
-                                          }
-                                        `}"
-                                      >
-                                        <div></div>
-                                      </div>
-                                    `
-                                  : html``}
+                                                    </div>
+                                                  `;
+                                                },
+                                              )}
+                                            </div>
+                                          `
+                                        : html`
+                                            <div
+                                              key="courseConversationMessage--main--content--show--footer--views"
+                                            >
+                                              0 views
+                                            </div>
+                                          `;
+                                  }
+                                  return courseConversationMessageMainContentShowFooterHTML !==
+                                    html``
+                                    ? html`
+                                        <div
+                                          key="courseConversationMessage--main--content--show--footer"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            font-weight: 600;
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
+                                            display: flex;
+                                            align-items: baseline;
+                                            flex-wrap: wrap;
+                                            column-gap: var(--size--4);
+                                            row-gap: var(--size--2);
+                                          `}"
+                                        >
+                                          $${courseConversationMessageMainContentShowFooterHTML}
+                                        </div>
+                                      `
+                                    : html``;
+                                })()}
                               </div>
+                              $${mayEditCourseConversationMessage
+                                ? html`
+                                    <div
+                                      key="courseConversationMessage--main--content--loading"
+                                      css="${css`
+                                        font-size: var(--size--12);
+                                        color: light-dark(
+                                          var(--color--slate--600),
+                                          var(--color--slate--400)
+                                        );
+                                        height: var(--size--44);
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                        animation: var(--animation--pulse);
+                                        [key~="courseConversationMessage--main--content--body"]:not(
+                                            [state~="loading"]
+                                          )
+                                          & {
+                                          display: none;
+                                        }
+                                      `}"
+                                    >
+                                      <i class="bi bi-three-dots"></i>
+                                    </div>
+                                    <div
+                                      key="courseConversationMessage--main--content--edit"
+                                      css="${css`
+                                        [key~="courseConversationMessage--main--content--body"]:not(
+                                            [state~="edit"]
+                                          )
+                                          & {
+                                          display: none;
+                                        }
+                                      `}"
+                                    >
+                                      <div></div>
+                                    </div>
+                                  `
+                                : html``}
                             </div>
                           </div>
-                        `;
-                      }),
-                  );
-                })()}
+                        </div>
+                      `;
+                    }),
+                )}
                 <div
                   key="courseConversationMessage latencyCompensation"
                   hidden
@@ -6524,7 +6490,7 @@ export default async (application: Application): Promise<void> => {
           request.state.courseParticipation.id ===
             (
               application.database.get<{
-                createdByCourseParticipation: number;
+                createdByCourseParticipation: number | null;
               }>(
                 sql`
                   select "createdByCourseParticipation"
