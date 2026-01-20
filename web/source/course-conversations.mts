@@ -3982,7 +3982,19 @@ export default async (application: Application): Promise<void> => {
                                                     "courseConversation" = ${request.state.courseConversation!.id} and
                                                     "courseParticipation" = ${courseParticipation.id};
                                                 `,
-                                              ) !== undefined
+                                              ) !== undefined ||
+                                              (courseParticipation.id ===
+                                                "TODO: The author of the first message" &&
+                                                (request.state
+                                                  .courseConversation!
+                                                  .courseConversationVisibility ===
+                                                  "courseConversationVisibilityEveryone" ||
+                                                  (request.state
+                                                    .courseConversation!
+                                                    .courseConversationVisibility ===
+                                                    "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                                                    courseParticipation.courseParticipationRole ===
+                                                      "courseParticipationRoleInstructor")))
                                                 ? html`checked`
                                                 : html``}
                                               javascript="${javascript`
