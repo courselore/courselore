@@ -337,7 +337,7 @@ export default async (application: Application): Promise<void> => {
                             from "courseParticipations"
                             where "user" = ${request.state.user.id};
                           `,
-                        )!.count % 17
+                        )!.count % 14
                       ]
                     },
                     ${null}
@@ -3547,7 +3547,7 @@ export default async (application: Application): Promise<void> => {
                       from "courseParticipations"
                       where "user" = ${request.state.user!.id};
                     `,
-                  )!.count % 17
+                  )!.count % 14
                 ]
               },
               ${null}
@@ -4050,7 +4050,7 @@ export default async (application: Application): Promise<void> => {
                       from "courseParticipations"
                       where "user" = ${request.state.user!.id};
                     `,
-                  )!.count % 17
+                  )!.count % 14
                 ]
               },
               ${null}

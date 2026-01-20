@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.0.6 · 2026-01-20
+
+- Fixed an issue that prevented users from creating courses (https://courselore.org/courses/8537410611/conversations/96).
+
 ## 10.0.5 · 2026-01-19
 
 - Improved the treatment of Course Settings: Tags, Pending invitation emails, and Course participants. Previously if some modification to these settings was made while you had the page open, it could lead to data loss.
