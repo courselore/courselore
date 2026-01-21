@@ -888,6 +888,17 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   </div>
                   <hr class="separator" />
+                  $${request.state.user.userRole ===
+                  "userRoleSystemAdministrator"
+                    ? html`
+                        <a
+                          href="/system"
+                          class="button button--rectangle button--transparent button--dropdown-menu"
+                        >
+                          System settings
+                        </a>
+                      `
+                    : html``}
                   <a
                     href="/settings"
                     class="button button--rectangle button--transparent button--dropdown-menu"
