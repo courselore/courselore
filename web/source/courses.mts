@@ -2484,7 +2484,7 @@ export default async (application: Application): Promise<void> => {
                               ${String(courseParticipationsCount)} course
                               participant${courseParticipationsCount === 1
                                 ? ""
-                                : "s"} ·
+                                : "s"} /
                               ${String(courseParticipationsInstructorsCount)}
                               instructor${courseParticipationsInstructorsCount ===
                               1
