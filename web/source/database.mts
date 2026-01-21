@@ -3165,40 +3165,47 @@ export default async (application: Application): Promise<void> => {
                     `,
                   );
                   if (old_messagePoll === undefined) return markdown``;
-                  return database
-                    .all<{ id: number; contentSource: string }>(
-                      sql`
-                        select
-                          "id",
-                          "contentSource"
-                        from "old_messagePollOptions"
-                        where "messagePoll" = ${old_messagePoll.id}
-                        order by "order" asc;
-                      `,
-                    )
-                    .map((old_messagePollOption) => {
-                      const old_messagePollVotesCourseParticipations = database
-                        .all<{ courseParticipant: number }>(
-                          sql`
-                            select "courseParticipant"
-                            from "old_messagePollVotes"
-                            where "messagePollOption" = ${old_messagePollOption.id}
-                            order by "id" asc;
-                          `,
-                        )
-                        .map(
-                          (old_messagePollVote) =>
-                            database.get<{ publicId: string }>(
+                  return markdown`
+                    <poll>
+
+                    ${database
+                      .all<{ id: number; contentSource: string }>(
+                        sql`
+                          select
+                            "id",
+                            "contentSource"
+                          from "old_messagePollOptions"
+                          where "messagePoll" = ${old_messagePoll.id}
+                          order by "order" asc;
+                        `,
+                      )
+                      .map((old_messagePollOption) => {
+                        const old_messagePollVotesCourseParticipations =
+                          database
+                            .all<{ courseParticipant: number }>(
                               sql`
-                                select "publicId"
-                                from "courseParticipations"
-                                where "id" = ${old_messagePollVote.courseParticipant};
+                                select "courseParticipant"
+                                from "old_messagePollVotes"
+                                where "messagePollOption" = ${old_messagePollOption.id}
+                                order by "id" asc;
                               `,
-                            )?.publicId ?? "0",
-                        );
-                      return markdown`- ${0 < old_messagePollVotesCourseParticipations.length ? markdown`<votes>${JSON.stringify(old_messagePollVotesCourseParticipations)}</votes> ` : markdown``}${old_messagePollOption.contentSource}`;
-                    })
-                    .join("\n");
+                            )
+                            .map(
+                              (old_messagePollVote) =>
+                                database.get<{ publicId: string }>(
+                                  sql`
+                                    select "publicId"
+                                    from "courseParticipations"
+                                    where "id" = ${old_messagePollVote.courseParticipant};
+                                  `,
+                                )?.publicId ?? "0",
+                            );
+                        return markdown`- [ ] ${0 < old_messagePollVotesCourseParticipations.length ? markdown`<votes>${JSON.stringify(old_messagePollVotesCourseParticipations)}</votes> ` : markdown``}${old_messagePollOption.contentSource}`;
+                      })
+                      .join("\n")}
+
+                    </poll>
+                  `;
                 },
               )
               .replaceAll("@course-staff", "@instructors")
