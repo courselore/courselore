@@ -762,19 +762,19 @@ export default async (application: Application): Promise<void> => {
                         `;
                       })}
                     <hr class="separator" />
-                    $${request.state.systemOptions !== undefined &&
-                    ((request.state.systemOptions
+                    $${request.state.systemSettings !== undefined &&
+                    ((request.state.systemSettings
                       .userRolesWhoMayCreateCourses === "userRoleUser" &&
                       (request.state.user.userRole === "userRoleUser" ||
                         request.state.user.userRole === "userRoleStaff" ||
                         request.state.user.userRole ===
                           "userRoleSystemAdministrator")) ||
-                      (request.state.systemOptions
+                      (request.state.systemSettings
                         .userRolesWhoMayCreateCourses === "userRoleStaff" &&
                         (request.state.user.userRole === "userRoleStaff" ||
                           request.state.user.userRole ===
                             "userRoleSystemAdministrator")) ||
-                      (request.state.systemOptions
+                      (request.state.systemSettings
                         .userRolesWhoMayCreateCourses ===
                         "userRoleSystemAdministrator" &&
                         request.state.user.userRole ===

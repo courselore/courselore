@@ -15,7 +15,7 @@ export type ApplicationAuthentication = {
   types: {
     states: {
       Authentication: {
-        systemOptions: {
+        systemSettings: {
           id: number;
           privateKey: string;
           certificate: string;
@@ -151,7 +151,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      request.state.systemOptions = application.database.get<{
+      request.state.systemSettings = application.database.get<{
         id: number;
         privateKey: string;
         certificate: string;
@@ -166,11 +166,11 @@ export default async (application: Application): Promise<void> => {
             "privateKey",
             "certificate",
             "userRolesWhoMayCreateCourses"
-          from "systemOptions"
+          from "systemSettings"
           limit 1;
         `,
       );
-      if (request.state.systemOptions === undefined) throw new Error();
+      if (request.state.systemSettings === undefined) throw new Error();
       if (typeof request.cookies.session !== "string") {
         if (
           !(
@@ -3089,7 +3089,7 @@ export default async (application: Application): Promise<void> => {
   const samls =
     typeof application.configuration.saml === "object"
       ? (() => {
-          const systemOptions = application.database.get<{
+          const systemSettings = application.database.get<{
             id: number;
             privateKey: string;
             certificate: string;
@@ -3104,11 +3104,11 @@ export default async (application: Application): Promise<void> => {
                 "privateKey",
                 "certificate",
                 "userRolesWhoMayCreateCourses"
-              from "systemOptions"
+              from "systemSettings"
               limit 1;
             `,
           );
-          if (systemOptions === undefined) throw new Error();
+          if (systemSettings === undefined) throw new Error();
           return Object.fromEntries(
             Object.entries(application.configuration.saml).map(
               ([identifier, configuration]) => [
@@ -3121,8 +3121,8 @@ export default async (application: Application): Promise<void> => {
                     issuer: `https://${application.configuration.hostname}/authentication/saml/${identifier}/metadata`,
                     callbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/assertion-consumer-service`,
                     logoutCallbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/single-logout-service`,
-                    privateKey: systemOptions.privateKey,
-                    publicCert: systemOptions.certificate,
+                    privateKey: systemSettings.privateKey,
+                    publicCert: systemSettings.certificate,
                     signMetadata: true,
                     validateInResponseTo: SAML.ValidateInResponseTo.ifPresent,
                   }),
@@ -3150,7 +3150,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         typeof request.pathname.samlIdentifier !== "string" ||
-        request.state.systemOptions === undefined
+        request.state.systemSettings === undefined
       )
         return;
       const saml = samls?.[request.pathname.samlIdentifier];
@@ -3160,7 +3160,7 @@ export default async (application: Application): Promise<void> => {
         .send(
           saml.saml.generateServiceProviderMetadata(
             saml.configuration.options.decryptionCert ?? null,
-            request.state.systemOptions.certificate,
+            request.state.systemSettings.certificate,
           ),
         );
     },

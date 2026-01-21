@@ -68,7 +68,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
-        request.state.systemOptions === undefined ||
+        request.state.systemSettings === undefined ||
         request.state.user === undefined ||
         request.liveConnection
       )
@@ -136,18 +136,18 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
               >
-                $${(request.state.systemOptions.userRolesWhoMayCreateCourses ===
+                $${(request.state.systemSettings.userRolesWhoMayCreateCourses ===
                   "userRoleUser" &&
                   (request.state.user.userRole === "userRoleUser" ||
                     request.state.user.userRole === "userRoleStaff" ||
                     request.state.user.userRole ===
                       "userRoleSystemAdministrator")) ||
-                (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+                (request.state.systemSettings.userRolesWhoMayCreateCourses ===
                   "userRoleStaff" &&
                   (request.state.user.userRole === "userRoleStaff" ||
                     request.state.user.userRole ===
                       "userRoleSystemAdministrator")) ||
-                (request.state.systemOptions.userRolesWhoMayCreateCourses ===
+                (request.state.systemSettings.userRolesWhoMayCreateCourses ===
                   "userRoleSystemAdministrator" &&
                   request.state.user.userRole === "userRoleSystemAdministrator")
                   ? html`
