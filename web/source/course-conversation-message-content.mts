@@ -911,8 +911,15 @@ export default async (application: Application): Promise<void> => {
             }
           `}"
           javascript="${javascript`
+            const mayAttachFileOrImagesToCourseConversationMessageContent = ${!(
+              Boolean(
+                course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+              ) === false &&
+              courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleStudent"
+            )};
             this.onpaste = async (event) => {
-              if (0 < event.clipboardData.files.length) {
+              if (mayAttachFileOrImagesToCourseConversationMessageContent && 0 < event.clipboardData.files.length) {
                 event.preventDefault();
                 this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.clipboardData.files;
                 this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(new Event("input", { bubbles: true }));
@@ -939,13 +946,7 @@ export default async (application: Application): Promise<void> => {
                 return;
               }
             };
-            if (${!(
-              Boolean(
-                course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
-              ) === false &&
-              courseParticipation.courseParticipationRole ===
-                "courseParticipationRoleStudent"
-            )}) {
+            if (mayAttachFileOrImagesToCourseConversationMessageContent) {
               this.ondragenter = (event) => {
                 if (!event.dataTransfer.types.includes("Files")) return;
                 event.preventDefault();
@@ -1706,7 +1707,7 @@ You may also use the buttons on the message content editor to ${
                         .courseParticipationRole ===
                         "courseParticipationRoleStudent"
                     )
-                      ? "attach files/images/videos, "
+                      ? "attach files/images/videos/audios, "
                       : ""
                   }create polls, \`@mention\` other course participants, \`#refer\` to other conversations and messages, and preview the message before sending it.
 
