@@ -20,6 +20,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        request.state.systemSettings === undefined ||
         request.state.user === undefined ||
         request.state.user.userRole !== "userRoleSystemAdministrator"
       )
@@ -120,40 +121,43 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="radio"
-                          name="darkMode"
-                          value="userDarkModeSystem"
-                          $${request.state.user.darkMode ===
-                          "userDarkModeSystem"
+                          name="userRolesWhoMayCreateCourses"
+                          value="userRoleUser"
+                          $${request.state.systemSettings
+                            .userRolesWhoMayCreateCourses === "userRoleUser"
                             ? html`checked`
                             : html``}
                           class="input--radio"
-                        />  System
+                        />  User
                       </label>
                       <label
                         class="button button--rectangle button--transparent"
                       >
                         <input
                           type="radio"
-                          name="darkMode"
-                          value="userDarkModeLight"
-                          $${request.state.user.darkMode === "userDarkModeLight"
+                          name="userRolesWhoMayCreateCourses"
+                          value="userRoleStaff"
+                          $${request.state.systemSettings
+                            .userRolesWhoMayCreateCourses === "userRoleStaff"
                             ? html`checked`
                             : html``}
                           class="input--radio"
-                        />  Light
+                        />  Staff
                       </label>
                       <label
                         class="button button--rectangle button--transparent"
                       >
                         <input
                           type="radio"
-                          name="darkMode"
-                          value="userDarkModeDark"
-                          $${request.state.user.darkMode === "userDarkModeDark"
+                          name="userRolesWhoMayCreateCourses"
+                          value="userRoleSystemAdministrator"
+                          $${request.state.systemSettings
+                            .userRolesWhoMayCreateCourses ===
+                          "userRoleSystemAdministrator"
                             ? html`checked`
                             : html``}
                           class="input--radio"
-                        />  Dark
+                        />  System administrator
                       </label>
                     </form>
                   </div>
@@ -179,70 +183,48 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  // application.server?.push({
-  //   method: "PATCH",
-  //   pathname: "/settings/general-settings",
-  //   handler: async (
-  //     request: serverTypes.Request<
-  //       {},
-  //       {},
-  //       {},
-  //       {
-  //         name: string;
-  //         avatarImage: serverTypes.RequestBodyFile;
-  //         "avatarImage--remove": "on";
-  //         darkMode:
-  //           | "userDarkModeSystem"
-  //           | "userDarkModeLight"
-  //           | "userDarkModeDark";
-  //       },
-  //       Application["types"]["states"]["Authentication"]
-  //     >,
-  //     response,
-  //   ) => {
-  //     if (request.state.user === undefined) return;
-  //     if (
-  //       typeof request.body.name !== "string" ||
-  //       request.body.name.trim() === "" ||
-  //       (typeof request.body.avatarImage === "object" &&
-  //         request.body.avatarImage.mimeType !== "image/jpeg" &&
-  //         request.body.avatarImage.mimeType !== "image/png") ||
-  //       (request.body.darkMode !== "userDarkModeSystem" &&
-  //         request.body.darkMode !== "userDarkModeLight" &&
-  //         request.body.darkMode !== "userDarkModeDark")
-  //     )
-  //       throw "validation";
-  //     let avatarImage: string | undefined;
-  //     if (typeof request.body.avatarImage === "object") {
-  //       const relativePath = `files/${cryptoRandomString({
-  //         length: 20,
-  //         characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-  //       })}/${path.basename(request.body.avatarImage.path)}`;
-  //       const absolutePath = path.join(
-  //         application.configuration.dataDirectory,
-  //         relativePath,
-  //       );
-  //       await fs.mkdir(path.dirname(absolutePath), { recursive: true });
-  //       await fs.rename(request.body.avatarImage.path, absolutePath);
-  //       await sharp(absolutePath, { autoOrient: true })
-  //         .resize({ width: 256 /* var(--size--64) */, height: 256 })
-  //         .toFile(`${absolutePath}.webp`);
-  //       avatarImage = `/${relativePath}.webp`;
-  //     }
-  //     application.database.run(
-  //       sql`
-  //         update "users"
-  //         set
-  //           "name" = ${request.body.name},
-  //           $${typeof avatarImage === "string" ? sql`"avatarImage" = ${avatarImage},` : request.body["avatarImage--remove"] === "on" ? sql`"avatarImage" = null,` : sql``}
-  //           "darkMode" = ${request.body.darkMode}
-  //         where "id" = ${request.state.user.id};
-  //       `,
-  //     );
-  //     response.setFlash!(html`
-  //       <div class="flash--green">General settings updated successfully.</div>
-  //     `);
-  //     response.redirect!("/settings");
-  //   },
-  // });
+  application.server?.push({
+    method: "PATCH",
+    pathname: "/system-settings/general-settings",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          userRolesWhoMayCreateCourses:
+            | "userRoleUser"
+            | "userRoleStaff"
+            | "userRoleSystemAdministrator";
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.systemSettings === undefined ||
+        request.state.user === undefined ||
+        request.state.user.userRole !== "userRoleSystemAdministrator"
+      )
+        return;
+      if (
+        request.body.userRolesWhoMayCreateCourses !== "userRoleUser" &&
+        request.body.userRolesWhoMayCreateCourses !== "userRoleStaff" &&
+        request.body.userRolesWhoMayCreateCourses !==
+          "userRoleSystemAdministrator"
+      )
+        throw "validation";
+      application.database.run(
+        sql`
+          update "systemSettings"
+          set "userRolesWhoMayCreateCourses" = ${request.body.userRolesWhoMayCreateCourses}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.setFlash!(html`
+        <div class="flash--green">General settings updated successfully.</div>
+      `);
+      response.redirect!("/system-settings");
+    },
+  });
 };
