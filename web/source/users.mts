@@ -136,8 +136,8 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
               >
-                $${(request.state.systemSettings.userRolesWhoMayCreateCourses ===
-                  "userRoleUser" &&
+                $${(request.state.systemSettings
+                  .userRolesWhoMayCreateCourses === "userRoleUser" &&
                   (request.state.user.userRole === "userRoleUser" ||
                     request.state.user.userRole === "userRoleStaff" ||
                     request.state.user.userRole ===
