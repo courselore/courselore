@@ -1,6 +1,7 @@
 # Changelog
 
 - When changing the visibility of a conversation, pre-select the course participant who started it (https://courselore.org/courses/8537410611/conversations/72)
+- Fixed a bug in trying to copy-and-paste a file as a student when student uploads are disallowed.
 
 ## 10.0.6 · 2026-01-20
 
