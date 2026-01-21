@@ -16,6 +16,7 @@ import authentication, {
   ApplicationAuthentication,
 } from "./authentication.mjs";
 import homepage from "./homepage.mjs";
+import systemSettings from "./system-settings.mjs";
 import users, { ApplicationUsers } from "./users.mjs";
 import courses, { ApplicationCourses } from "./courses.mjs";
 import courseConversations, {
@@ -136,6 +137,7 @@ await database(application);
 await layouts(application);
 await authentication(application);
 await homepage(application);
+await systemSettings(application);
 await users(application);
 await courses(application);
 await courseConversations(application);

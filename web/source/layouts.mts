@@ -892,7 +892,7 @@ export default async (application: Application): Promise<void> => {
                   "userRoleSystemAdministrator"
                     ? html`
                         <a
-                          href="/system"
+                          href="/system-settings"
                           class="button button--rectangle button--transparent button--dropdown-menu"
                         >
                           System settings
