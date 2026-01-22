@@ -628,7 +628,12 @@ export default async (application: Application): Promise<void> => {
           )
             courseConversationMessageEmailNotifications.push({
               from: {
-                name: `${course.name} · Courselore`,
+                name: `${
+                  courseConversationMessageAnonymous
+                    ? "Anonymous"
+                    : (courseConversationMessageCreatedByUser?.name ??
+                      "Deleted course participant")
+                } · ${course.name}`,
                 address: application.configuration.email.from,
               },
               to: courseConversationMessageEmailNotificationUser.email,
@@ -636,6 +641,17 @@ export default async (application: Application): Promise<void> => {
               inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
               references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
               html: html`
+                $${await application.partials.courseConversationMessageContentProcessor(
+                  {
+                    course,
+                    courseParticipation:
+                      courseConversationMessageEmailNotificationCourseParticipation,
+                    courseConversation,
+                    courseConversationMessage,
+                    mode: "emailNotification",
+                  },
+                )}
+                <hr />
                 <p>
                   <small>
                     <a
@@ -654,48 +670,6 @@ export default async (application: Application): Promise<void> => {
                     >
                   </small>
                 </p>
-                <p>
-                  <strong>
-                    ${courseConversationMessageAnonymous
-                      ? "Anonymous"
-                      : (courseConversationMessageCreatedByUser?.name ??
-                        "Deleted course participant")}
-                  </strong>
-                  ${!courseConversationMessageAnonymous
-                    ? `
-                        ${
-                          courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                          "courseParticipationRoleInstructor"
-                            ? "(instructor)"
-                            : ""
-                        }
-                        ${
-                          courseConversationMessage.courseConversationMessageAnonymity ===
-                          "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-                            ? "(anonymous to students)"
-                            : courseConversationMessage.courseConversationMessageAnonymity ===
-                                "courseConversationMessageAnonymityEveryone"
-                              ? "(anonymous to everyone)"
-                              : ""
-                        }
-                      `
-                    : ``}
-                  ${courseConversationMessage.courseConversationMessageVisibility ===
-                  "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
-                    ? "(visible by instructors only)"
-                    : ""}
-                </p>
-                <hr />
-                $${await application.partials.courseConversationMessageContentProcessor(
-                  {
-                    course,
-                    courseParticipation:
-                      courseConversationMessageEmailNotificationCourseParticipation,
-                    courseConversation,
-                    courseConversationMessage,
-                    mode: "emailNotification",
-                  },
-                )}
               `,
             });
         }
