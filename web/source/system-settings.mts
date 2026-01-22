@@ -622,4 +622,160 @@ export default async (application: Application): Promise<void> => {
       response.redirect!("/system-settings");
     },
   });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: "/system-settings/users",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          usersPublicIds: string[];
+          [userRole: `users[${string}].userRole`]:
+            | "userRoleUser"
+            | "userRoleStaff"
+            | "userRoleSystemAdministrator";
+          usersPublicIdsToRemove: string[];
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.systemSettings === undefined ||
+        request.state.user === undefined ||
+        request.state.user.userRole !== "userRoleSystemAdministrator"
+      )
+        return;
+      request.body.usersPublicIds ??= [];
+      request.body.usersPublicIdsToRemove ??= [];
+      if (
+        !Array.isArray(request.body.usersPublicIds) ||
+        request.body.usersPublicIds.some(
+          (userPublicId) =>
+            typeof userPublicId !== "string" ||
+            userPublicId.trim() === "" ||
+            (request.body[`users[${userPublicId}].userRole`] !==
+              "userRoleUser" &&
+              request.body[`users[${userPublicId}].userRole`] !==
+                "userRoleStaff" &&
+              request.body[`users[${userPublicId}].userRole`] !==
+                "userRoleSystemAdministrator"),
+        ) ||
+        !Array.isArray(request.body.usersPublicIdsToRemove) ||
+        request.body.usersPublicIdsToRemove.some(
+          (courseParticipationPublicId) =>
+            typeof courseParticipationPublicId !== "string" ||
+            courseParticipationPublicId.trim() === "",
+        )
+      )
+        throw "validation";
+      application.database.executeTransaction(() => {
+        for (const userPublicId of request.body.usersPublicIds!) {
+          const user = application.database.get<{
+            id: number;
+            publicId: string;
+          }>(
+            sql`
+              select "id", "publicId"
+              from "users"
+              where "publicId" = ${userPublicId};
+            `,
+          );
+          if (user === undefined) continue;
+          application.database.run(
+            sql`
+              update "users"
+              set "userRole" = ${
+                request.body[`users[${user.publicId}].userRole`]
+              }
+              where "id" = ${user.id};
+            `,
+          );
+        }
+        for (const userPublicId of request.body.usersPublicIdsToRemove!) {
+          const user = application.database.get<{
+            id: number;
+          }>(
+            sql`
+              select "id"
+              from "users"
+              where "publicId" = ${userPublicId};
+            `,
+          );
+          if (user === undefined) continue;
+          application.database.run(
+            sql`
+              update "users"
+              set "mostRecentlyVisitedCourseParticipation" = null
+              where "id" = ${user.id};
+            `,
+          );
+          for (const courseParticipation of application.database.all<{
+            id: number;
+          }>(
+            sql`
+              select "id"
+              from "courseParticipations"
+              where "user" = ${user.id}
+              order by "id" asc;
+            `,
+          )) {
+            application.database.run(
+              sql`
+                delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseConversationMessages"
+                set "createdByCourseParticipation" = null
+                where "createdByCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseConversationMessageViews"
+                set "courseParticipation" = null
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseConversationMessageLikes"
+                set "courseParticipation" = null
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseParticipations" where "id" = ${courseParticipation.id};
+              `,
+            );
+          }
+          application.database.run(
+            sql`
+              delete from "userSessions" where "user" = ${user.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "users" where "id" = ${user.id};
+            `,
+          );
+        }
+      });
+      response.setFlash!(html`
+        <div class="flash--green">Users updated successfully.</div>
+      `);
+      response.redirect!("/system-settings");
+    },
+  });
 };
