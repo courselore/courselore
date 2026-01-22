@@ -265,7 +265,10 @@ export default async (application: Application): Promise<void> => {
                           "userRole",
                           "lastSeenOnlineAt"
                         from "users"
-                        order by "id" asc;
+                        order by
+                          "userRole" = 'userRoleSystemAdministrator' desc,
+                          "userRole" = 'userRoleStaff' desc,
+                          "name" asc;
                       `,
                     );
                     return html`
@@ -304,7 +307,7 @@ export default async (application: Application): Promise<void> => {
                       $${users.map(
                         (user) => html`
                           <div
-                            key="courseParticipation ${user.publicId}"
+                            key="user ${user.publicId}"
                             css="${css`
                               display: flex;
                               align-items: center;
@@ -313,7 +316,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             <input
                               type="hidden"
-                              name="courseParticipationsPublicIds[]"
+                              name="usersPublicIds[]"
                               value="${user.publicId}"
                             />
                             <div>
@@ -386,11 +389,11 @@ export default async (application: Application): Promise<void> => {
                                       >Role:</span
                                     >  <input
                                       type="radio"
-                                      name="courseParticipations[${user.publicId}].courseParticipationRole"
-                                      value="courseParticipationRoleInstructor"
+                                      name="users[${user.publicId}].userRole"
+                                      value="userRoleSystemAdministrator"
                                       required
-                                      $${user.courseParticipationRole ===
-                                      "courseParticipationRoleInstructor"
+                                      $${user.userRole ===
+                                      "userRoleSystemAdministrator"
                                         ? html`checked`
                                         : html``}
                                       hidden
@@ -400,14 +403,13 @@ export default async (application: Application): Promise<void> => {
                                           display: none;
                                         }
                                       `}"
-                                      >Instructor</span
+                                      >System administrator</span
                                     ><input
                                       type="radio"
-                                      name="courseParticipations[${user.publicId}].courseParticipationRole"
-                                      value="courseParticipationRoleStudent"
+                                      name="users[${user.publicId}].userRole"
+                                      value="userRoleStaff"
                                       required
-                                      $${user.courseParticipationRole ===
-                                      "courseParticipationRoleStudent"
+                                      $${user.userRole === "userRoleStaff"
                                         ? html`checked`
                                         : html``}
                                       hidden
@@ -417,7 +419,23 @@ export default async (application: Application): Promise<void> => {
                                           display: none;
                                         }
                                       `}"
-                                      >Student</span
+                                      >Staff</span
+                                    ><input
+                                      type="radio"
+                                      name="users[${user.publicId}].userRole"
+                                      value="userRoleUser"
+                                      required
+                                      $${user.userRole === "userRoleUser"
+                                        ? html`checked`
+                                        : html``}
+                                      hidden
+                                    /><span
+                                      css="${css`
+                                        :not(:checked) + & {
+                                          display: none;
+                                        }
+                                      `}"
+                                      >User</span
                                     > <i class="bi bi-chevron-down"></i>
                                   </form>
                                 </button>
@@ -434,22 +452,33 @@ export default async (application: Application): Promise<void> => {
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
                                       this.onclick = () => {
-                                        this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${user.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
+                                        this.closest('[key~="user"]').querySelector(${`[name="users[${user.publicId}].userRole"][value="userRoleSystemAdministrator"]`}).click();
                                       };
                                     `}"
                                   >
-                                    Instructor
+                                    System administrator
                                   </button>
                                   <button
                                     type="button"
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
                                       this.onclick = () => {
-                                        this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${user.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                        this.closest('[key~="user"]').querySelector(${`[name="users[${user.publicId}].userRole"][value="userRoleStaff"]`}).click();
                                       };
                                     `}"
                                   >
-                                    Student
+                                    Staff
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key~="user"]').querySelector(${`[name="users[${user.publicId}].userRole"][value="userRoleUser"]`}).click();
+                                      };
+                                    `}"
+                                  >
+                                    User
                                   </button>
                                 </div>
                                 <button
@@ -485,9 +514,8 @@ export default async (application: Application): Promise<void> => {
                                     <i
                                       class="bi bi-exclamation-triangle-fill"
                                     ></i
-                                    > Once you remove this course participant
-                                    from the course, they may only participate
-                                    again with an invitation.
+                                    > This action cannot be undone. The user
+                                    will lose access to all their courses.
                                   </div>
                                   <div>
                                     <button
@@ -508,16 +536,16 @@ export default async (application: Application): Promise<void> => {
                                               javascript.stringToElement(${html`
                                                 <input
                                                   type="hidden"
-                                                  name="courseParticipationsPublicIdsToRemove[]"
+                                                  name="usersPublicIdsToRemove[]"
                                                   value="${user.publicId}"
                                                 />
                                               `})
                                             );
-                                          this.closest('[key~="courseParticipation"]').remove();
+                                          this.closest('[key~="user"]').remove();
                                         };
                                       `}"
                                     >
-                                      Remove course participant
+                                      Remove user
                                     </button>
                                   </div>
                                 </div>
