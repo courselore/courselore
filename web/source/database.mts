@@ -4276,7 +4276,7 @@ export default async (application: Application): Promise<void> => {
     },
 
     sql`
-      alter table "systemSettings" rename to "systemSettings";
+      alter table "systemOptions" rename to "systemSettings";
     `,
   );
 };
