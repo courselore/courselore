@@ -2459,13 +2459,13 @@ export default async (application: Application): Promise<void> => {
                                   "users"."name" asc;
                               `,
                             );
-                          const courseParticipationsInstructors =
+                          const courseParticipationsCourseParticipationRoleInstructors =
                             courseParticipations.filter(
                               (courseParticipation) =>
                                 courseParticipation.courseParticipationRole ===
                                 "courseParticipationRoleInstructor",
                             );
-                          const courseParticipationsStudents =
+                          const courseParticipationsCourseParticipationRoleStudents =
                             courseParticipations.filter(
                               (courseParticipation) =>
                                 courseParticipation.courseParticipationRole ===
@@ -2486,13 +2486,18 @@ export default async (application: Application): Promise<void> => {
                               participant${courseParticipations.length === 1
                                 ? ""
                                 : "s"} /
-                              ${String(courseParticipationsInstructors.length)}
-                              instructor${courseParticipationsInstructors.length ===
+                              ${String(
+                                courseParticipationsCourseParticipationRoleInstructors.length,
+                              )}
+                              instructor${courseParticipationsCourseParticipationRoleInstructors.length ===
                               1
                                 ? ""
                                 : "s"} ·
-                              ${String(courseParticipationsStudents.length)}
-                              student${courseParticipationsStudents.length === 1
+                              ${String(
+                                courseParticipationsCourseParticipationRoleStudents.length,
+                              )}
+                              student${courseParticipationsCourseParticipationRoleStudents.length ===
+                              1
                                 ? ""
                                 : "s"}
                             </div>

@@ -226,41 +226,48 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   $${(() => {
-                    const usersCount = application.database.get<{
-                      count: number;
+                    const users = application.database.all<{
+                      publicId: string;
+                      name: string;
+                      email: string;
+                      avatarColor:
+                        | "red"
+                        | "orange"
+                        | "amber"
+                        | "yellow"
+                        | "lime"
+                        | "green"
+                        | "emerald"
+                        | "teal"
+                        | "cyan"
+                        | "sky"
+                        | "blue"
+                        | "indigo"
+                        | "violet"
+                        | "purple"
+                        | "fuchsia"
+                        | "pink"
+                        | "rose";
+                      avatarImage: string | null;
+                      userRole:
+                        | "userRoleSystemAdministrator"
+                        | "userRoleStaff"
+                        | "userRoleUser";
+                      lastSeenOnlineAt: string;
                     }>(
                       sql`
-                          select count(*) as "count" from "users";
-                        `,
-                    )!.count;
-                    const usersUserCount = application.database.get<{
-                      count: number;
-                    }>(
-                      sql`
-                          select count(*) as "count"
-                          from "users"
-                          where "userRole" = ${"userRoleUser"};
-                        `,
-                    )!.count;
-                    const usersStaffCount = application.database.get<{
-                      count: number;
-                    }>(
-                      sql`
-                          select count(*) as "count"
-                          from "users"
-                          where "userRole" = ${"userRoleStaff"};
-                        `,
-                    )!.count;
-                    const usersSystemAdministratorCount =
-                      application.database.get<{
-                        count: number;
-                      }>(
-                        sql`
-                          select count(*) as "count"
-                          from "users"
-                          where "userRole" = ${"userRoleSystemAdministrator"};
-                        `,
-                      )!.count;
+                        select 
+                          "publicId",
+                          "name",
+                          "email",
+                          "avatarColor",
+                          "avatarImage",
+                          "userRole",
+                          "lastSeenOnlineAt"
+                        from "users"
+                        order by "id" asc;
+                      `,
+                    );
                     return html`
                       <div
                         css="${css`
@@ -272,12 +279,27 @@ export default async (application: Application): Promise<void> => {
                           );
                         `}"
                       >
-                        ${String(usersCount)}
-                        user${usersCount === 1 ? "" : "s"} /
-                        ${String(usersUserCount)} role user ·
-                        ${String(usersStaffCount)} role staff ·
-                        ${String(usersSystemAdministratorCount)} role system
-                        administrator
+                        ${String(users.length)}
+                        user${users.length === 1 ? "" : "s"} /
+                        ${String(
+                          users.filter(
+                            (user) =>
+                              user.userRole === "userRoleSystemAdministrator",
+                          ).length,
+                        )}
+                        role system administrator ·
+                        ${String(
+                          users.filter(
+                            (user) => user.userRole === "userRoleStaff",
+                          ).length,
+                        )}
+                        role staff ·
+                        ${String(
+                          users.filter(
+                            (user) => user.userRole === "userRoleUser",
+                          ).length,
+                        )}
+                        role user
                       </div>
                     `;
                   })()}
