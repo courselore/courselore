@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.0.8 · 2026-01-22
+
+- Fixed malformed cookie issue (https://courselore.org/courses/8537410611/conversations/97)
+
 ## 10.0.7 · 2026-01-22
 
 - Added a system administrator user interface.
