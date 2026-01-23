@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.0.9 · 2026-01-23
+
+- Fixed issue in which file uploads wouldn’t work if the temporary system is in a different partition (https://github.com/courselore/courselore/issues/3)
+
 ## 10.0.8 · 2026-01-22
 
 - Fixed malformed cookie issue (https://courselore.org/courses/8537410611/conversations/97)

@@ -1060,7 +1060,7 @@ ${courseConversationMessageContent}</textarea
           relativePath,
         );
         await fs.mkdir(path.dirname(absolutePath), { recursive: true });
-        await fs.rename(attachment.path, absolutePath);
+        await fs.copyFile(attachment.path, absolutePath);
         try {
           if (
             attachment.mimeType === "image/jpeg" ||

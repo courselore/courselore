@@ -1678,7 +1678,7 @@ export default async (application: Application): Promise<void> => {
           relativePath,
         );
         await fs.mkdir(path.dirname(absolutePath), { recursive: true });
-        await fs.rename(request.body.avatarImage.path, absolutePath);
+        await fs.copyFile(request.body.avatarImage.path, absolutePath);
         await sharp(absolutePath, { autoOrient: true })
           .resize({ width: 256 /* var(--size--64) */, height: 256 })
           .toFile(`${absolutePath}.webp`);
