@@ -571,6 +571,214 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </div>
               </details>
+              <details>
+                <summary
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    font-weight: 500;
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] > summary > & {
+                        rotate: var(--rotate--90);
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
+                  Courses
+                </summary>
+                <div
+                  css="${css`
+                    padding: var(--size--2) var(--size--0);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  $${(() => {
+                    const courses = application.database.all<{
+                      id: number;
+                      publicId: string;
+                      name: string;
+                      information: string | null;
+                      courseState: "courseStateActive" | "courseStateArchived";
+                      courseConversationsNextPublicId: number;
+                    }>(
+                      sql`
+                        select 
+                          "id",
+                          "publicId",
+                          "name",
+                          "information",
+                          "courseState",
+                          "courseConversationsNextPublicId"
+                        from "courses"
+                        order by
+                          "courseState" = 'courseStateActive' desc,
+                          "id" desc;
+                      `,
+                    );
+                    return html`
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          color: light-dark(
+                            var(--color--slate--600),
+                            var(--color--slate--400)
+                          );
+                        `}"
+                      >
+                        ${String(courses.length)}
+                        course${courses.length === 1 ? "" : "s"} /
+                        ${String(
+                          courses.filter(
+                            (course) =>
+                              course.courseState === "courseStateActive",
+                          ).length,
+                        )}
+                        active ·
+                        ${String(
+                          courses.filter(
+                            (course) =>
+                              course.courseState === "courseStateArchived",
+                          ).length,
+                        )}
+                        archived
+                      </div>
+                      $${courses.map(
+                        (course) => html`
+                          <div
+                            key="course ${course.publicId}"
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--1);
+                            `}"
+                          >
+                            <div>
+                              <div>
+                                <span
+                                  css="${css`
+                                    font-weight: 500;
+                                  `}"
+                                  >${course.name}</span
+                                >  $${typeof course.information === "string"
+                                  ? html`
+                                      <span
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          color: light-dark(
+                                            var(--color--slate--600),
+                                            var(--color--slate--400)
+                                          );
+                                        `}"
+                                      >
+                                        ${course.information}
+                                      </span>
+                                    `
+                                  : html``}
+                              </div>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
+                                  display: flex;
+                                  align-items: baseline;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--size--4);
+                                  row-gap: var(--size--2);
+                                `}"
+                              >
+                                <div>
+                                  <span
+                                    css="${css`
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
+                                    `}"
+                                    >Participants:</span
+                                  > $${String(
+                                    application.database.get<{
+                                      count: number;
+                                    }>(
+                                      sql`
+                                        select count(*) as "count"
+                                        from "courseParticipations"
+                                        where "course" = ${course.id};
+                                      `,
+                                    )!.count,
+                                  )}
+                                </div>
+                                <div>
+                                  <span
+                                    css="${css`
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
+                                    `}"
+                                    >Conversations:</span
+                                  > $${String(
+                                    application.database.get<{
+                                      count: number;
+                                    }>(
+                                      sql`
+                                      select count(*) as "count"
+                                      from "courseConversations"
+                                      where "course" = ${course.id};
+                                    `,
+                                    )!.count,
+                                  )}
+                                </div>
+                                $${course.courseState === "courseStateArchived"
+                                  ? html`
+                                      <div
+                                        key="courseConversation--archived"
+                                        css="${css`
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                      >
+                                        Archived
+                                      </div>
+                                    `
+                                  : html``}
+                              </div>
+                            </div>
+                          </div>
+                        `,
+                      )}
+                    `;
+                  })()}
+                </div>
+              </details>
             </div>
           `,
         }),
