@@ -1,5 +1,7 @@
 # Changelog
 
+- Added the list of courses to the system settings.
+
 ## 10.0.9 · 2026-01-23
 
 - Fixed issue in which file uploads wouldn’t work if the temporary system is in a different partition (https://github.com/courselore/courselore/issues/3)
