@@ -755,6 +755,49 @@ export default async (application: Application): Promise<void> => {
                                     )!.count,
                                   )}
                                 </div>
+                                $${(() => {
+                                  const mostRecentCourseConversationMessage =
+                                    application.database.get<{
+                                      createdAt: string;
+                                    }>(
+                                      sql`
+                                        select "courseConversationMessages"."createdAt" as "createdAt"
+                                        from "courseConversationMessages"
+                                        join "courseConversations" on
+                                          "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                                          "courseConversations"."course" = ${course.id}
+                                        order by "courseConversationMessages"."createdAt" desc
+                                        limit 1;
+                                      `,
+                                    );
+                                  return mostRecentCourseConversationMessage !==
+                                    undefined
+                                    ? html`
+                                        <div>
+                                          <span
+                                            css="${css`
+                                              color: light-dark(
+                                                var(--color--slate--500),
+                                                var(--color--slate--500)
+                                              );
+                                            `}"
+                                            >Most recent message:</span
+                                          > <span
+                                            javascript="${javascript`
+                                              javascript.relativizeDateTimeElement(this, ${mostRecentCourseConversationMessage.createdAt}, { capitalize: true });
+                                              javascript.popover({ element: this });
+                                            `}"
+                                          ></span
+                                          ><span
+                                            type="popover"
+                                            javascript="${javascript`
+                                              this.textContent = javascript.localizeDateTime(${mostRecentCourseConversationMessage.createdAt});
+                                            `}"
+                                          ></span>
+                                        </div>
+                                      `
+                                    : html``;
+                                })()}
                                 $${course.courseState === "courseStateArchived"
                                   ? html`
                                       <div
