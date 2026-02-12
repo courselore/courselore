@@ -2,7 +2,7 @@ export default {
   hostname: process.env.HOSTNAME ?? "localhost",
   email: {
     host: "127.0.0.1",
-    port: 8025,
+    port: 9025,
     from: "courselore@courselore.org",
   },
   saml: {
@@ -14,9 +14,9 @@ export default {
         name: profile.attributes.name,
       }),
       options: {
-        idpIssuer: "http://localhost:8001/metadata",
-        entryPoint: "http://localhost:8001/saml/sso",
-        logoutUrl: "http://localhost:8001/saml/slo",
+        idpIssuer: "http://localhost:9001/metadata",
+        entryPoint: "http://localhost:9001/saml/sso",
+        logoutUrl: "http://localhost:9001/saml/slo",
         signatureAlgorithm: "sha256",
         digestAlgorithm: "sha256",
         idpCert:

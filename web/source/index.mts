@@ -199,7 +199,7 @@ if (application.commandLineArguments.values.type === undefined) {
     ],
   });
   if (application.configuration.environment === "development") {
-    utilities.log("MAILDEV", "http://localhost:8000");
+    utilities.log("MAILDEV", "http://localhost:9000");
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
         "npx",
@@ -208,16 +208,16 @@ if (application.commandLineArguments.values.type === undefined) {
           "--ip",
           "127.0.0.1",
           "--web",
-          "8000",
+          "9000",
           "--smtp",
-          "8025",
+          "9025",
           "--mail-directory",
           path.join(application.configuration.dataDirectory, "emails"),
         ],
         { stdio: "ignore" },
       ),
     );
-    utilities.log("SAML-IDP", "http://localhost:8001");
+    utilities.log("SAML-IDP", "http://localhost:9001");
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
         "npx",
@@ -226,7 +226,7 @@ if (application.commandLineArguments.values.type === undefined) {
           "--host",
           "localhost",
           "--port",
-          "8001",
+          "9001",
           "--key",
           path.join(
             import.meta.dirname,
@@ -238,7 +238,7 @@ if (application.commandLineArguments.values.type === undefined) {
             "../configuration/development/saml-idp/certificate.pem",
           ),
           "--issuer",
-          "http://localhost:8001/metadata",
+          "http://localhost:9001/metadata",
           "--acsUrl",
           `https://${application.configuration.hostname}/authentication/saml/courselore-university/assertion-consumer-service`,
           "--sloUrl",
