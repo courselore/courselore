@@ -3095,11 +3095,11 @@ export default async (application: Application): Promise<void> => {
       request: serverTypes.Request<
         {
           iss: string;
+          client_id: string;
+          lti_deployment_id: string;
           target_link_uri: string;
           login_hint: string;
           lti_message_hint: string;
-          client_id: string;
-          lti_deployment_id: string;
         },
         {},
         {},
