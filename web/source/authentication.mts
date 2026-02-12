@@ -3086,6 +3086,30 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {
+          iss: string;
+          target_link_uri: string;
+          login_hint: string;
+          lti_message_hint: string;
+          client_id: string;
+          lti_deployment_id: string;
+        },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {},
+  });
+
   const samls =
     typeof application.configuration.saml === "object"
       ? (() => {

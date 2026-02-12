@@ -5,6 +5,16 @@ export default {
     port: 9025,
     from: "courselore@courselore.org",
   },
+  lti: {
+    "courselore-university": {
+      name: "Courselore University",
+      issuer: "http://localhost:8000",
+      clientID: "aiWmCn3wBNshswh",
+      publicKeysetURL: "http://localhost:8000/mod/lti/certs.php",
+      authenticationRequestURL: "http://localhost:8000/mod/lti/auth.php",
+      accessTokenURL: "http://localhost:8000/mod/lti/token.php",
+    },
+  },
   saml: {
     "courselore-university": {
       name: "Courselore University",
