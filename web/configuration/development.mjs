@@ -8,8 +8,9 @@ export default {
   lti: {
     "courselore-university": {
       name: "Courselore University",
-      issuer: "http://localhost:8000",
+      platformID: "http://localhost:8000",
       clientID: "aiWmCn3wBNshswh",
+      deploymentID: "1",
       publicKeysetURL: "http://localhost:8000/mod/lti/certs.php",
       authenticationRequestURL: "http://localhost:8000/mod/lti/auth.php",
       accessTokenURL: "http://localhost:8000/mod/lti/token.php",
