@@ -11,6 +11,7 @@ import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
 import * as OTPAuth from "otpauth";
 import { Application } from "./index.mjs";
+import { URLSearchParams } from "node:url";
 
 export type ApplicationAuthentication = {
   types: {
@@ -3162,9 +3163,26 @@ export default async (application: Application): Promise<void> => {
         (request.body.lti_deployment_id !== undefined &&
           request.body.lti_deployment_id !== lti.deploymentID) ||
         request.body.target_link_uri !==
-          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/launch`
+          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/launch` ||
+        typeof request.body.login_hint !== "string"
       )
         throw "validation";
+      response.redirect!(
+        `${lti.authenticationRequestURL}?${new URLSearchParams({
+          scope: "openid",
+          response_type: "id_token",
+          client_id: lti.clientID,
+          redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/authorize/callback`,
+          login_hint: request.body.login_hint,
+          state: "TODO: STATE",
+          response_mode: "form_post",
+          nonce: "TODO: NONCE",
+          prompt: "none",
+          ...(typeof request.body.lti_message_hint === "string"
+            ? { lti_message_hint: request.body.lti_message_hint }
+            : {}),
+        }).toString()}`,
+      );
     },
   });
 
