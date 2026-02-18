@@ -44,6 +44,17 @@ export type Application = {
     hostname: string;
     systemAdministratorEmail: string | undefined;
     email: any;
+    lti?: {
+      [identifier: string]: {
+        name: string;
+        platformID: string;
+        clientID: string;
+        deploymentID: string;
+        publicKeysetURL: string;
+        authenticationRequestURL: string;
+        accessTokenURL: string;
+      };
+    };
     saml?: {
       [identifier: string]: {
         name: string;

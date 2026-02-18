@@ -3087,12 +3087,40 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/keyset$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        { ltiIdentifier: string },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (typeof request.pathname.ltiIdentifier !== "string") return;
+      const lti =
+        application.configuration.lti?.[request.pathname.ltiIdentifier];
+      if (lti === undefined) return;
+      response
+        .setHeader("Content-Type", "application/json; charset=utf-8")
+        .send(JSON.stringify({}));
+    },
+  });
+
+  application.server?.push({
     method: "POST",
     pathname: new RegExp(
       "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize$",
     ),
     handler: async (
       request: serverTypes.Request<
+        {},
+        {},
+        {},
         {
           iss: string;
           client_id: string;
@@ -3101,9 +3129,6 @@ export default async (application: Application): Promise<void> => {
           login_hint: string;
           lti_message_hint: string;
         },
-        {},
-        {},
-        {},
         Application["types"]["states"]["Authentication"]
       >,
       response,
