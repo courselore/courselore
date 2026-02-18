@@ -3235,6 +3235,14 @@ export default async (application: Application): Promise<void> => {
           `LtiResourceLinkRequest`
       )
         throw "validation";
+      console.log(
+        await (
+          await fetch(lti.accessTokenURL, {
+            method: "POST",
+            body: new URLSearchParams({}),
+          })
+        ).text(),
+      );
     },
   });
 
