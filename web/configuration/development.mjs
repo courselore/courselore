@@ -8,12 +8,12 @@ export default {
   lti: {
     "courselore-university": {
       name: "Courselore University",
-      platformID: "https://797q4fwh-8000.euw.devtunnels.ms",
+      platformID: "http://localhost:8000",
       clientID: "aiWmCn3wBNshswh",
       deploymentID: "1",
-      publicKeysetURL: "https://797q4fwh-8000.euw.devtunnels.ms/mod/lti/certs.php",
-      authenticationRequestURL: "https://797q4fwh-8000.euw.devtunnels.ms/mod/lti/auth.php",
-      accessTokenURL: "https://797q4fwh-8000.euw.devtunnels.ms/mod/lti/token.php",
+      publicKeysetURL: "http://localhost:8000/mod/lti/certs.php",
+      authenticationRequestURL: "http://localhost:8000/mod/lti/auth.php",
+      accessTokenURL: "http://localhost:8000/mod/lti/token.php",
     },
   },
   saml: {
