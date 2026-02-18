@@ -9,7 +9,7 @@ export default {
     "courselore-university": {
       name: "Courselore University",
       platformID: "http://localhost:8000",
-      clientID: "aiWmCn3wBNshswh",
+      clientID: "wkvNru6zzCgFbkb",
       deploymentID: "1",
       publicKeysetURL: "http://localhost:8000/mod/lti/certs.php",
       authenticationRequestURL: "http://localhost:8000/mod/lti/auth.php",
