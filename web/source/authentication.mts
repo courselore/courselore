@@ -3132,7 +3132,7 @@ export default async (application: Application): Promise<void> => {
     ),
     handler: (
       request: serverTypes.Request<
-        {},
+        { ltiIdentifier: string },
         {},
         {},
         {
@@ -3147,7 +3147,24 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      // TODO
+      if (
+        typeof request.pathname.ltiIdentifier !== "string" ||
+        request.state.systemSettings === undefined
+      )
+        return;
+      const lti =
+        application.configuration.lti?.[request.pathname.ltiIdentifier];
+      if (lti === undefined) return;
+      if (
+        request.body.iss !== lti.platformID ||
+        (request.body.client_id !== undefined &&
+          request.body.client_id !== lti.clientID) ||
+        (request.body.lti_deployment_id !== undefined &&
+          request.body.lti_deployment_id !== lti.deploymentID) ||
+        request.body.target_link_uri !==
+          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/launch`
+      )
+        throw "validation";
     },
   });
 
