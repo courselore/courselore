@@ -1,9 +1,10 @@
 import * as serverTypes from "@radically-straightforward/server";
 import cryptoRandomString from "crypto-random-string";
+import * as jose from "jose";
 import argon2 from "argon2";
 import * as SAML from "@node-saml/node-saml";
 import sql from "@radically-straightforward/sqlite";
-import html, { HTML } from "@radically-straightforward/html";
+import html from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import * as utilities from "@radically-straightforward/utilities";
@@ -3101,13 +3102,26 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (typeof request.pathname.ltiIdentifier !== "string") return;
+      if (
+        typeof request.pathname.ltiIdentifier !== "string" ||
+        request.state.systemSettings === undefined
+      )
+        return;
       const lti =
         application.configuration.lti?.[request.pathname.ltiIdentifier];
       if (lti === undefined) return;
+      const key = await jose.exportJWK(
+        await jose.importX509(
+          request.state.systemSettings.certificate,
+          "RS256",
+        ),
+      );
+      key.kid = await jose.calculateJwkThumbprint(key);
+      key.use = "sig";
+      key.alg = "RS256";
       response
         .setHeader("Content-Type", "application/json; charset=utf-8")
-        .send(JSON.stringify({}));
+        .send(JSON.stringify({ keys: [key] }));
     },
   });
 
@@ -3116,7 +3130,7 @@ export default async (application: Application): Promise<void> => {
     pathname: new RegExp(
       "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize$",
     ),
-    handler: async (
+    handler: (
       request: serverTypes.Request<
         {},
         {},
