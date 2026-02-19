@@ -3169,8 +3169,8 @@ export default async (application: Application): Promise<void> => {
         throw "validation";
       response.redirect!(
         `${lti.authenticationRequestURL}?${new URLSearchParams({
-          scope: "openid",
           response_type: "id_token",
+          scope: "openid",
           client_id: lti.clientID,
           redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/authorize/callback`,
           login_hint: request.body.login_hint,
