@@ -1,6 +1,7 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 import readline from "node:readline/promises";
+import crypto from "node:crypto";
 import sql, { Database } from "@radically-straightforward/sqlite";
 import * as utilities from "@radically-straightforward/utilities";
 import { dedent as markdown } from "@radically-straightforward/utilities";
@@ -4278,5 +4279,22 @@ export default async (application: Application): Promise<void> => {
     sql`
       alter table "systemOptions" rename to "systemSettings";
     `,
+
+    (database) => {
+      const systemSettings = database.get<{ privateKey: string }>(
+        sql`
+          select "privateKey" from "systemSettings";
+        `,
+      );
+      if (systemSettings === undefined) throw new Error();
+      database.run(
+        sql`
+          update "systemSettings"
+          set "privateKey" = ${crypto
+            .createPrivateKey(systemSettings.privateKey)
+            .export({ format: "pem", type: "pkcs8" })};
+        `,
+      );
+    },
   );
 };
