@@ -47,7 +47,6 @@
     "rehype-parse": "^9.0.1",
     "rehype-remark": "^10.0.1",
     "remark-stringify": "^11.0.0",
-    "saml-idp": "^1.2.1",
     "typescript": "^5.9.3"
   },
   "prettier": {}
