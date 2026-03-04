@@ -3246,52 +3246,49 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  const samls =
-    typeof application.configuration.saml === "object"
-      ? (() => {
-          const systemSettings = application.database.get<{
-            id: number;
-            privateKey: string;
-            certificate: string;
-            userRolesWhoMayCreateCourses:
-              | "userRoleUser"
-              | "userRoleStaff"
-              | "userRoleSystemAdministrator";
-          }>(
-            sql`
-              select
-                "id",
-                "privateKey",
-                "certificate",
-                "userRolesWhoMayCreateCourses"
-              from "systemSettings"
-              limit 1;
-            `,
-          );
-          if (systemSettings === undefined) throw new Error();
-          return Object.fromEntries(
-            Object.entries(application.configuration.saml).map(
-              ([identifier, configuration]) => [
-                identifier,
-                {
-                  identifier,
-                  configuration,
-                  saml: new SAML.SAML({
-                    ...configuration.options,
-                    issuer: `https://${application.configuration.hostname}/authentication/saml/${identifier}/metadata`,
-                    callbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/assertion-consumer-service`,
-                    logoutCallbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/single-logout-service`,
-                    privateKey: systemSettings.privateKey,
-                    publicCert: systemSettings.certificate,
-                    signMetadata: true,
-                    validateInResponseTo: SAML.ValidateInResponseTo.ifPresent,
-                  }),
-                },
-              ],
-            ),
-          );
-        })()
-      : undefined;
+  const samls = (() => {
+    const systemSettings = application.database.get<{
+      id: number;
+      privateKey: string;
+      certificate: string;
+      userRolesWhoMayCreateCourses:
+        | "userRoleUser"
+        | "userRoleStaff"
+        | "userRoleSystemAdministrator";
+    }>(
+      sql`
+        select
+          "id",
+          "privateKey",
+          "certificate",
+          "userRolesWhoMayCreateCourses"
+        from "systemSettings"
+        limit 1;
+      `,
+    );
+    if (systemSettings === undefined) throw new Error();
+    return Object.fromEntries(
+      Object.entries(application.configuration.saml ?? {}).map(
+        ([identifier, configuration]) => [
+          identifier,
+          {
+            identifier,
+            configuration,
+            saml: new SAML.SAML({
+              ...configuration.options,
+              issuer: `https://${application.configuration.hostname}/authentication/saml/${identifier}/metadata`,
+              callbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/assertion-consumer-service`,
+              logoutCallbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/single-logout-service`,
+              privateKey: systemSettings.privateKey,
+              publicCert: systemSettings.certificate,
+              signMetadata: true,
+              validateInResponseTo: SAML.ValidateInResponseTo.ifPresent,
+            }),
+          },
+        ],
+      ),
+    );
+  })();
 
   application.server?.push({
     method: "GET",
@@ -3313,7 +3310,7 @@ export default async (application: Application): Promise<void> => {
         request.state.systemSettings === undefined
       )
         return;
-      const saml = samls?.[request.pathname.samlIdentifier];
+      const saml = samls[request.pathname.samlIdentifier];
       if (saml === undefined) return;
       response
         .setHeader("Content-Type", "application/xml; charset=utf-8")
@@ -3346,7 +3343,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user !== undefined
       )
         return;
-      const saml = samls?.[request.pathname.samlIdentifier];
+      const saml = samls[request.pathname.samlIdentifier];
       if (saml === undefined || request.liveConnection) return;
       response.redirect!(
         await saml.saml.getAuthorizeUrlAsync(
@@ -3385,7 +3382,7 @@ export default async (application: Application): Promise<void> => {
         response.redirect!(redirect);
         return;
       }
-      const saml = samls?.[request.pathname.samlIdentifier];
+      const saml = samls[request.pathname.samlIdentifier];
       if (saml === undefined) return;
       let samlResponse: Awaited<
         ReturnType<typeof saml.saml.validatePostResponseAsync>
@@ -3948,7 +3945,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.state.userSession.samlIdentifier === "string" &&
         typeof request.state.userSession.samlProfile === "string"
       ) {
-        const saml = samls?.[request.state.userSession.samlIdentifier];
+        const saml = samls[request.state.userSession.samlIdentifier];
         if (saml === undefined) {
           response.redirect!("/", "live-navigation");
           return;
@@ -3984,7 +3981,7 @@ export default async (application: Application): Promise<void> => {
         response.redirect!("/");
         return;
       }
-      const saml = samls?.[request.pathname.samlIdentifier];
+      const saml = samls[request.pathname.samlIdentifier];
       if (saml === undefined) return;
       let samlRequest: Awaited<
         ReturnType<typeof saml.saml.validatePostRequestAsync>
