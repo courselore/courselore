@@ -30,14 +30,13 @@ export default {
         ],
       }),
       options: {
-        idpIssuer: "saml-mock",
+        idpIssuer: "urn:dev-bh02bolq44z2wn4n.us.auth0.com",
         entryPoint:
-          "https://samlmock.dev/idp?aud=https://localhost/authentication/saml/courselore-university/metadata&acs_url=https://localhost/authentication/saml/courselore-university/assertion-consumer-service",
+          "https://dev-bh02bolq44z2wn4n.us.auth0.com/samlp/WJrFP9UEINSRSMg7Ch5vBqfGpzptzYfs",
         logoutUrl:
-          "https://samlmock.dev/idp_logout?callback_url=https://localhost/authentication/saml/courselore-university/single-logout-service",
+          "https://dev-bh02bolq44z2wn4n.us.auth0.com/samlp/WJrFP9UEINSRSMg7Ch5vBqfGpzptzYfs/logout",
         idpCert:
-          "MIIFDzCCAvegAwIBAgIUSxfAZOb1Hawu31z6ZHSuX5fd8HMwDQYJKoZIhvcNAQELBQAwFzEVMBMGA1UEAwwMdGhhbWVlcmEuY29tMB4XDTI0MDYwODEwNTYxMFoXDTQ0MDYwODEwNTYxMFowFzEVMBMGA1UEAwwMdGhhbWVlcmEuY29tMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAmM2P8rs6Y6qT7cC+PrZebFfBtetot3che0S6h5/iXpf12HrxXLoJViYRyck+A5eszyogPDHi5USx4BnNgz5pNEk36tPwtWX0LtSYw9+jXMPZEflUUjxc2Tx9ykIZohiVThUomvXywXWSnPd257lmcQx6cynaaG4zsGwIFp9NO1NOD9bzLhqTegZJWmX3BlFqntrDMYfzJYwnj2M68mYNZ37Nqtj6DpmTnzo6X0DcM4Qz5A11+hH312oqhrcFfHCbf/nrtzGBjZg7j82IETwgfkZcSFlYsFVXC+6/LxQ5dNDDec3GNlQQGZp2Na6ng1ODAJjs7fEcV/5oI8CRkMaMvM73lxj7Xcf4NArDqjtkU8Cn+w/A4D8hOZeXCjUFtw+OyT9RdwsF4t9lxvvvg9JwNiYHWIr+J4KZaTBgORB9pVOu3PcoHP5UgjYFAUcANru7mDB0t5lVoyovHbQc7t1wPBlwyj0X2ChZKDzA7oIG49ebz/h+fBhV5DG7iOX4J6bGBWWCf20v5Na3FCSDhzOH9jvois6EpoZTWLEWqmqdYbLmoWXeN4aARwvNWdM829WVdJUTeSZEmq6Qrqp6QjM/+JolhbJnKawyQYNA6HZy13UGBa3hzZ80jKSj/PJ3Bj2CWdKZ7hrzvb1tnHoHvGtzw66YTljOw/WQpjHri0OlPMkCAwEAAaNTMFEwHQYDVR0OBBYEFMb9UDHy7LeneeMEtibPZ+XOa6BdMB8GA1UdIwQYMBaAFMb9UDHy7LeneeMEtibPZ+XOa6BdMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIBAD+OaKAoNoLOsWxMOgKV4VWMw/VXiiHnzu5VYVwzxoHd/AO1CTj4KqjJ/PWmv29VGRAADKELKi5ltZFg6jRvCx5YRltbUPXi0URnnlTZhRvNtJxTb6+lX4Y+W2l43ArmzIyr9Q/eahETIwwKCbsdwYOmZdJmvYwErjVWiqhXghB+WiW8FBwJHBn6MCytiNNM69D9q8jq6AnvvcvwiM1rQd/8r+kfAGkMAuWD7UbmSGdb2sD9eQeV/gyFyxu7XZRSSXoz5f4a/9hwi3UYynIj4ymUyQqtZ56sXJ0i+UvQgw8qPtaj47BsK4RdUW01LQQuenFg4T2Ylay+1TB+d6FOLS7jnGaDJ2f10jkD2sSNzYDmblefzGiVdPhmsQz68oDEY8lJJGxbm6/qnL905h5yrtncrXN5GLMZsVZn+v961mR7u/iZZBCVZt6R2srkpF5EMrtbv3RCkr+YjVk8FZJq6vcOmAS/RWamg2Wa/zd34KCF7HGtvE9WO3M4Gg8ZQBsimPLM2rv5C6jTAPvfWiG4dWBj9tTL1wY6+Bv2Qyk5gfwzql1Rc2MF66Ld+nhMC7jMV1GiGhPyyBIjoigoYxQG3IiFXpitsWoJHzJMFelfWBE0WVY20DE8V9fA1/fLvj2jtdSnTbgNE9hDMhBB2/XGGRHJadrPssOSMLzCPQ3FEUT5",
-        wantAuthnResponseSigned: false,
+          "MIIDHTCCAgWgAwIBAgIJM9IrqJ0y3ZIIMA0GCSqGSIb3DQEBCwUAMCwxKjAoBgNVBAMTIWRldi1iaDAyYm9scTQ0ejJ3bjRuLnVzLmF1dGgwLmNvbTAeFw0yNjAzMDQxODAzMTBaFw0zOTExMTExODAzMTBaMCwxKjAoBgNVBAMTIWRldi1iaDAyYm9scTQ0ejJ3bjRuLnVzLmF1dGgwLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMzWWNTwHK/IMFH6vuPtmztq5U2TbjVg9qtO18FdTnxTXT0J8cDVzdiddzXfSpVV3/MaIRgdVwjbVTOFW6+Iki45iaZxJHp5smjtbTYrNYT+7pOQSMRGhdj6eoaZbwEfHgMgS0D/HlDZB/glcDpV7UI9C5XDkYdC8x1zoTZ192OE6rjlNUBxEacDtspGQyZGBpSsRtB+eSyaRz2YTPMbgvEkhw6sON8365BcHUoKOGKeCD3eDnMnE7kkzA39PKMXICsqstgxPOGQzzP536vlL6b1JRZ9BDgVoXbmIdgrdCenp1gUbbhWEPEFj52+5f9XwIVQdcsL7Wb7EStu6Pi40bMCAwEAAaNCMEAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUk7G3KLN5JyUEwndWlee+klQcFIIwDgYDVR0PAQH/BAQDAgKEMA0GCSqGSIb3DQEBCwUAA4IBAQC0N6IQDlmMGkKKvDCgXbwvQ1wQf+JLDNS8AhxjbsdyRT/+1n2ohLFdTfqirOhC8nmi1PnR+URnMRKjnlppR6ih62tOOH+7w8lnQaSy2njgYSn9B7j6J5dR/FVXwN94SpBNCNDJ5Apq+bXarSlKlgOVSFEsiO7vFtOyjU/r2PqAXevrpVpYU+F16bnnx42jXu4oE1rfDFEaqDE43zIY8fWHN0fl12mjGCjSf3tR4RX2AOe9ZeSz9o8rS/PfJQotfX+t6nNr898zcXooBQMwzjdyNKbK3/2UbCIr3EWc656sbmXW9zlaw3lqunER0jKGLQJY/59LRRY4RXJSl6zoNRFU",
       },
     },
   },
