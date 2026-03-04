@@ -3389,7 +3389,10 @@ export default async (application: Application): Promise<void> => {
       >;
       let attributes: { email: string; name: string };
       try {
-        samlResponse = await saml.saml.validatePostResponseAsync(request.body);
+        if (typeof request.body.SAMLResponse !== "string") throw new Error();
+        samlResponse = await saml.saml.validatePostResponseAsync({
+          SAMLResponse: request.body.SAMLResponse,
+        });
         if (
           samlResponse.loggedOut !== false ||
           samlResponse.profile === undefined ||
