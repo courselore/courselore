@@ -3339,12 +3339,13 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        request.liveConnection ||
         typeof request.pathname.samlIdentifier !== "string" ||
         request.state.user !== undefined
       )
         return;
       const saml = samls[request.pathname.samlIdentifier];
-      if (saml === undefined || request.liveConnection) return;
+      if (saml === undefined) return;
       response.redirect!(
         await saml.saml.getAuthorizeUrlAsync(
           request.URL.search.slice(1),
@@ -3365,7 +3366,10 @@ export default async (application: Application): Promise<void> => {
         { samlIdentifier: string },
         {},
         {},
-        { SAMLResponse: string; RelayState: string },
+        {
+          SAMLResponse: string;
+          RelayState: string;
+        },
         Application["types"]["states"]["Authentication"]
       >,
       response,
@@ -3974,18 +3978,22 @@ export default async (application: Application): Promise<void> => {
         { samlIdentifier: string },
         {},
         {},
-        { SAMLRequest: string; RelayState: string },
+        {
+          SAMLRequest: string;
+          SAMLResponse: string;
+          RelayState: string;
+        },
         Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
       if (typeof request.pathname.samlIdentifier !== "string") return;
+      const saml = samls[request.pathname.samlIdentifier];
+      if (saml === undefined) return;
       if (typeof request.body.SAMLRequest !== "string") {
         response.redirect!("/");
         return;
       }
-      const saml = samls[request.pathname.samlIdentifier];
-      if (saml === undefined) return;
       let samlRequest: Awaited<
         ReturnType<typeof saml.saml.validatePostRequestAsync>
       >;
@@ -4020,8 +4028,7 @@ export default async (application: Application): Promise<void> => {
           request.state.userSession.samlProfile,
         );
         if (
-          request.state.userSession.samlIdentifier ===
-            request.pathname.samlIdentifier &&
+          request.state.userSession.samlIdentifier === saml.identifier &&
           samlRequest.loggedOut === true &&
           samlRequest.profile !== undefined &&
           samlRequest.profile !== null &&
