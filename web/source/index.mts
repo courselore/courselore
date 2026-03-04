@@ -228,42 +228,5 @@ if (application.commandLineArguments.values.type === undefined) {
         { stdio: "ignore" },
       ),
     );
-    utilities.log("SAML-IDP", "http://localhost:9001");
-    node.childProcessKeepAlive(() =>
-      childProcess.spawn(
-        "npx",
-        [
-          "saml-idp",
-          "--host",
-          "localhost",
-          "--port",
-          "9001",
-          "--key",
-          path.join(
-            import.meta.dirname,
-            "../configuration/development/saml-idp/private-key.pem",
-          ),
-          "--cert",
-          path.join(
-            import.meta.dirname,
-            "../configuration/development/saml-idp/certificate.pem",
-          ),
-          "--issuer",
-          "http://localhost:9001/metadata",
-          "--acsUrl",
-          `https://${application.configuration.hostname}/authentication/saml/courselore-university/assertion-consumer-service`,
-          "--sloUrl",
-          `https://${application.configuration.hostname}/authentication/saml/courselore-university/single-logout-service`,
-          "--audience",
-          `https://${application.configuration.hostname}/authentication/saml/courselore-university/metadata`,
-          "--configFile",
-          path.join(
-            import.meta.dirname,
-            "../configuration/development/saml-idp/configuration.cjs",
-          ),
-        ],
-        { stdio: "ignore" },
-      ),
-    );
   }
 }
