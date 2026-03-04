@@ -209,24 +209,4 @@ if (application.commandLineArguments.values.type === undefined) {
       `/files/* "${application.configuration.dataDirectory}"`,
     ],
   });
-  if (application.configuration.environment === "development") {
-    utilities.log("MAILDEV", "http://localhost:9000");
-    node.childProcessKeepAlive(() =>
-      childProcess.spawn(
-        "npx",
-        [
-          "maildev",
-          "--ip",
-          "127.0.0.1",
-          "--web",
-          "9000",
-          "--smtp",
-          "9025",
-          "--mail-directory",
-          path.join(application.configuration.dataDirectory, "emails"),
-        ],
-        { stdio: "ignore" },
-      ),
-    );
-  }
 }

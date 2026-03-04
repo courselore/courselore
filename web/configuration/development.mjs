@@ -1,8 +1,11 @@
 export default {
   hostname: process.env.HOSTNAME ?? "localhost",
   email: {
-    host: "127.0.0.1",
-    port: 9025,
+    host: "smtp.ethereal.email",
+    auth: {
+      user: "corine.rosenbaum14@ethereal.email",
+      pass: "ndbDu86SBNVRMYsud2",
+    },
     from: "courselore@courselore.org",
   },
   lti: {
