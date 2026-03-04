@@ -3980,10 +3980,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (typeof request.pathname.samlIdentifier !== "string") return;
-      if (
-        typeof request.body.SAMLRequest !== "string" ||
-        typeof request.body.RelayState !== "string"
-      ) {
+      if (typeof request.body.SAMLRequest !== "string") {
         response.redirect!("/");
         return;
       }
@@ -3997,7 +3994,9 @@ export default async (application: Application): Promise<void> => {
         samlRequest = await saml.saml.validatePostRequestAsync(request.body);
         redirect = await saml.saml.getLogoutResponseUrlAsync(
           samlRequest.profile,
-          request.body.RelayState,
+          typeof request.body.RelayState === "string"
+            ? request.body.RelayState
+            : "",
           {},
           true,
         );
