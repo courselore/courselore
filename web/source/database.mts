@@ -4296,5 +4296,10 @@ export default async (application: Application): Promise<void> => {
         `,
       );
     },
+
+    sql`
+      alter table "userSessions" drop column "samlIdentifier";
+      alter table "userSessions" drop column "samlProfile";
+    `,
   );
 };

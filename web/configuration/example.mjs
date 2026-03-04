@@ -28,7 +28,6 @@ export default {
   //     options: {
   //       idpIssuer: "http://example-identity-provider.edu/metadata",
   //       entryPoint: "http://example-identity-provider.edu/saml/sso",
-  //       logoutUrl: "http://example-identity-provider.edu/saml/slo",
   //       signatureAlgorithm: "sha256",
   //       digestAlgorithm: "sha256",
   //       idpCert: "MIIDszC...93Sa",

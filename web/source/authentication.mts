@@ -32,8 +32,6 @@ export type ApplicationAuthentication = {
           user: number;
           createdAt: string;
           needsTwoFactorAuthentication: number;
-          samlIdentifier: string | null;
-          samlProfile: string | null;
         };
         user: {
           id: number;
@@ -117,9 +115,7 @@ export default async (application: Application): Promise<void> => {
                     "publicId",
                     "user",
                     "createdAt",
-                    "needsTwoFactorAuthentication",
-                    "samlIdentifier",
-                    "samlProfile"
+                    "needsTwoFactorAuthentication"
                   )
                   values (
                     ${cryptoRandomString({
@@ -128,9 +124,7 @@ export default async (application: Application): Promise<void> => {
                     })},
                     ${1},
                     ${new Date().toISOString()},
-                    ${Number(false)},
-                    ${null},
-                    ${null}
+                    ${Number(false)}
                   );
                 `,
               ).lastInsertRowid
@@ -193,8 +187,6 @@ export default async (application: Application): Promise<void> => {
         user: number;
         createdAt: string;
         needsTwoFactorAuthentication: number;
-        samlIdentifier: string | null;
-        samlProfile: string | null;
       }>(
         sql`
           select
@@ -202,9 +194,7 @@ export default async (application: Application): Promise<void> => {
             "publicId",
             "user",
             "createdAt",
-            "needsTwoFactorAuthentication",
-            "samlIdentifier",
-            "samlProfile"
+            "needsTwoFactorAuthentication"
           from "userSessions"
           where "publicId" = ${request.cookies.session};
         `,
@@ -235,8 +225,6 @@ export default async (application: Application): Promise<void> => {
           user: number;
           createdAt: string;
           needsTwoFactorAuthentication: number;
-          samlIdentifier: string | null;
-          samlProfile: string | null;
         }>(
           sql`
             select * from "userSessions" where "id" = ${
@@ -246,9 +234,7 @@ export default async (application: Application): Promise<void> => {
                     "publicId",
                     "user",
                     "createdAt",
-                    "needsTwoFactorAuthentication",
-                    "samlIdentifier",
-                    "samlProfile"
+                    "needsTwoFactorAuthentication"
                   )
                   values (
                     ${cryptoRandomString({
@@ -257,9 +243,7 @@ export default async (application: Application): Promise<void> => {
                     })},
                     ${request.state.userSession.user},
                     ${new Date().toISOString()},
-                    ${request.state.userSession.needsTwoFactorAuthentication},
-                    ${request.state.userSession.samlIdentifier},
-                    ${request.state.userSession.samlProfile}
+                    ${request.state.userSession.needsTwoFactorAuthentication}
                   );
                 `,
               ).lastInsertRowid
@@ -1946,8 +1930,6 @@ export default async (application: Application): Promise<void> => {
         user: number;
         createdAt: string;
         needsTwoFactorAuthentication: number;
-        samlIdentifier: string | null;
-        samlProfile: string | null;
       }>(
         sql`
           select * from "userSessions" where "id" = ${
@@ -1957,9 +1939,7 @@ export default async (application: Application): Promise<void> => {
                   "publicId",
                   "user",
                   "createdAt",
-                  "needsTwoFactorAuthentication",
-                  "samlIdentifier",
-                  "samlProfile"
+                  "needsTwoFactorAuthentication"
                 )
                 values (
                   ${cryptoRandomString({
@@ -1968,9 +1948,7 @@ export default async (application: Application): Promise<void> => {
                   })},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
-                  ${request.state.user.twoFactorAuthenticationEnabled},
-                  ${null},
-                  ${null}
+                  ${request.state.user.twoFactorAuthenticationEnabled}
                 );
               `,
             ).lastInsertRowid
@@ -3278,11 +3256,10 @@ export default async (application: Application): Promise<void> => {
               ...configuration.options,
               issuer: `https://${application.configuration.hostname}/authentication/saml/${identifier}/metadata`,
               callbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/assertion-consumer-service`,
-              logoutCallbackUrl: `https://${application.configuration.hostname}/authentication/saml/${identifier}/single-logout-service`,
               privateKey: systemSettings.privateKey,
               publicCert: systemSettings.certificate,
               signMetadata: true,
-              validateInResponseTo: SAML.ValidateInResponseTo.ifPresent,
+              validateInResponseTo: SAML.ValidateInResponseTo.always,
             }),
           },
         ],
@@ -3664,8 +3641,6 @@ export default async (application: Application): Promise<void> => {
         user: number;
         createdAt: string;
         needsTwoFactorAuthentication: number;
-        samlIdentifier: string | null;
-        samlProfile: string | null;
       }>(
         sql`
           select * from "userSessions" where "id" = ${
@@ -3675,9 +3650,7 @@ export default async (application: Application): Promise<void> => {
                   "publicId",
                   "user",
                   "createdAt",
-                  "needsTwoFactorAuthentication",
-                  "samlIdentifier",
-                  "samlProfile"
+                  "needsTwoFactorAuthentication"
                 )
                 values (
                   ${cryptoRandomString({
@@ -3948,107 +3921,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       response.deleteCookie!("session");
-      if (
-        typeof request.state.userSession.samlIdentifier === "string" &&
-        typeof request.state.userSession.samlProfile === "string"
-      ) {
-        const saml = samls[request.state.userSession.samlIdentifier];
-        if (saml === undefined) {
-          response.redirect!("/", "live-navigation");
-          return;
-        }
-        response.redirect!(
-          await saml.saml.getLogoutUrlAsync(
-            JSON.parse(request.state.userSession.samlProfile),
-            "",
-            {},
-          ),
-        );
-      } else response.redirect!("/", "live-navigation");
-    },
-  });
-
-  application.server?.push({
-    method: "POST",
-    pathname: new RegExp(
-      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/single-logout-service$",
-    ),
-    handler: async (
-      request: serverTypes.Request<
-        { samlIdentifier: string },
-        {},
-        {},
-        {
-          SAMLRequest: string;
-          SAMLResponse: string;
-          RelayState: string;
-        },
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (typeof request.pathname.samlIdentifier !== "string") return;
-      const saml = samls[request.pathname.samlIdentifier];
-      if (saml === undefined) return;
-      if (typeof request.body.SAMLRequest !== "string") {
-        response.redirect!("/");
-        return;
-      }
-      let samlRequest: Awaited<
-        ReturnType<typeof saml.saml.validatePostRequestAsync>
-      >;
-      let redirect: string;
-      try {
-        samlRequest = await saml.saml.validatePostRequestAsync(request.body);
-        redirect = await saml.saml.getLogoutResponseUrlAsync(
-          samlRequest.profile,
-          typeof request.body.RelayState === "string"
-            ? request.body.RelayState
-            : "",
-          {},
-          true,
-        );
-      } catch (error) {
-        request.log("ERROR", String(error));
-        response.setFlash!(html`
-          <div class="flash--red">
-            Something went wrong. Please try signing out again.
-          </div>
-        `);
-        response.redirect!("/");
-        return;
-      }
-      if (
-        request.state.userSession !== undefined &&
-        typeof request.state.userSession.samlIdentifier === "string" &&
-        typeof request.state.userSession.samlProfile === "string" &&
-        request.state.user !== undefined
-      ) {
-        const sessionProfile = JSON.parse(
-          request.state.userSession.samlProfile,
-        );
-        if (
-          request.state.userSession.samlIdentifier === saml.identifier &&
-          samlRequest.loggedOut === true &&
-          samlRequest.profile !== undefined &&
-          samlRequest.profile !== null &&
-          samlRequest.profile.issuer === saml.configuration.options.idpIssuer &&
-          typeof samlRequest.profile.nameID === "string" &&
-          samlRequest.profile.nameID.trim() !== "" &&
-          samlRequest.profile.nameID === sessionProfile.nameID &&
-          typeof samlRequest.profile.sessionIndex === "string" &&
-          samlRequest.profile.sessionIndex.trim() !== "" &&
-          samlRequest.profile.sessionIndex === sessionProfile.sessionIndex
-        ) {
-          application.database.run(
-            sql`
-              delete from "userSessions" where "id" = ${request.state.userSession.id};
-            `,
-          );
-          response.deleteCookie!("session");
-        }
-      }
-      response.redirect!(redirect);
+      response.redirect!("/", "live-navigation");
     },
   });
 };
