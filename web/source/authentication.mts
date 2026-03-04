@@ -3365,12 +3365,14 @@ export default async (application: Application): Promise<void> => {
         { samlIdentifier: string },
         {},
         {},
-        { RelayState: string },
+        { SAMLResponse: string; RelayState: string },
         Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
       if (typeof request.pathname.samlIdentifier !== "string") return;
+      const saml = samls[request.pathname.samlIdentifier];
+      if (saml === undefined) return;
       let redirect =
         typeof request.body.RelayState === "string" &&
         request.body.RelayState.trim() !== ""
@@ -3382,8 +3384,6 @@ export default async (application: Application): Promise<void> => {
         response.redirect!(redirect);
         return;
       }
-      const saml = samls[request.pathname.samlIdentifier];
-      if (saml === undefined) return;
       let samlResponse: Awaited<
         ReturnType<typeof saml.saml.validatePostResponseAsync>
       >;
