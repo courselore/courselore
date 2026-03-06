@@ -22,21 +22,18 @@ export default {
   //     domains: ["example-university.edu", "example-university.com"],
   //     // The `attributes` function receives as argument a `SAML.Profile` (https://github.com/node-saml/node-saml/blob/ff2d6756eff082609b203a115a87a1a21e33cfb8/src/types.ts#L234-L249) and must produce an `email` and `name`.
   //     attributes: (profile) => ({
-  //       email: profile.nameID,
+  //       email: profile.attributes.email,
   //       name: profile.attributes.name,
   //     }),
   //     options: {
   //       idpIssuer: "http://example-identity-provider.edu/metadata",
   //       entryPoint: "http://example-identity-provider.edu/saml/sso",
-  //       signatureAlgorithm: "sha256",
-  //       digestAlgorithm: "sha256",
   //       idpCert: "MIIDszC...93Sa",
   //       // Node SAML configurations: https://github.com/node-saml/node-saml
   //       // May include `decryptionCert`.
   //       // Must not include:
   //       // - `issuer`
   //       // - `callbackUrl`
-  //       // - `logoutCallbackUrl`
   //       // - `privateKey`
   //       // - `publicCert`
   //       // - `signMetadata`
