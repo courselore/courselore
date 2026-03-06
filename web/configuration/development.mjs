@@ -24,13 +24,8 @@ export default {
       name: "Courselore University",
       domains: ["example.com"],
       attributes: (profile) => ({
-        email:
-          profile.attributes[
-            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-          ],
-        name: profile.attributes[
-          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
-        ],
+        email: profile.attributes.email,
+        name: profile.attributes.firstName,
       }),
       options: {
         idpIssuer: "https://saml.example.com/entityid",

@@ -3657,9 +3657,7 @@ export default async (application: Application): Promise<void> => {
                   })},
                   ${request.state.user!.id},
                   ${new Date().toISOString()},
-                  ${Number(false)},
-                  ${saml.identifier},
-                  ${JSON.stringify(samlResponse.profile)}
+                  ${Number(false)}
                 );
               `,
             ).lastInsertRowid
