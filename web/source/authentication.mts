@@ -3354,23 +3354,24 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.pathname.samlIdentifier !== "string") return;
       const saml = samls[request.pathname.samlIdentifier];
       if (saml === undefined) return;
-      let redirect =
-        typeof request.body.RelayState === "string" &&
-        request.body.RelayState.trim() !== ""
-          ? (new URLSearchParams(request.body.RelayState).get("redirect") ??
-            "/")
-          : "/";
-      if (!redirect.startsWith("/")) redirect = "/";
-      if (request.state.user !== undefined) {
-        response.redirect!(redirect);
-        return;
-      }
+      let redirect: string;
       let samlResponse: Awaited<
         ReturnType<typeof saml.saml.validatePostResponseAsync>
       >;
       let attributes: { email: string; name: string };
       try {
-        if (typeof request.body.SAMLResponse !== "string") throw new Error();
+        if (
+          typeof request.body.SAMLResponse !== "string" ||
+          typeof request.body.RelayState !== "string"
+        )
+          throw new Error();
+        redirect =
+          new URLSearchParams(request.body.RelayState).get("redirect") ?? "/";
+        if (!redirect.startsWith("/")) redirect = "/";
+        if (request.state.user !== undefined) {
+          response.redirect!(redirect);
+          return;
+        }
         samlResponse = await saml.saml.validatePostResponseAsync({
           SAMLResponse: request.body.SAMLResponse,
         });
@@ -3378,10 +3379,7 @@ export default async (application: Application): Promise<void> => {
           samlResponse.loggedOut !== false ||
           samlResponse.profile === undefined ||
           samlResponse.profile === null ||
-          samlResponse.profile.issuer !==
-            saml.configuration.options.idpIssuer ||
-          typeof samlResponse.profile.sessionIndex !== "string" ||
-          samlResponse.profile.sessionIndex.trim() === ""
+          samlResponse.profile.issuer !== saml.configuration.options.idpIssuer
         )
           throw new Error();
         attributes = saml.configuration.attributes(samlResponse.profile);

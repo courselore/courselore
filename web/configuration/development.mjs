@@ -22,7 +22,7 @@ export default {
   saml: {
     "courselore-university": {
       name: "Courselore University",
-      domains: ["courselore.org"],
+      domains: ["example.com"],
       attributes: (profile) => ({
         email:
           profile.attributes[
@@ -33,11 +33,10 @@ export default {
         ],
       }),
       options: {
-        idpIssuer: "urn:dev-bh02bolq44z2wn4n.us.auth0.com",
-        entryPoint:
-          "https://dev-bh02bolq44z2wn4n.us.auth0.com/samlp/WJrFP9UEINSRSMg7Ch5vBqfGpzptzYfs",
+        idpIssuer: "https://saml.example.com/entityid",
+        entryPoint: "https://mocksaml.com/api/saml/sso",
         idpCert:
-          "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",
+          "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",
       },
     },
   },
