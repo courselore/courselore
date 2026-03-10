@@ -11,6 +11,7 @@ export default {
   lti: {
     "courselore-university": {
       name: "Courselore University",
+      domains: ["example.com"],
       platformID: "http://localhost:8000",
       clientID: "wkvNru6zzCgFbkb",
       deploymentID: "1",

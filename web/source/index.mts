@@ -47,6 +47,7 @@ export type Application = {
     lti?: {
       [identifier: string]: {
         name: string;
+        domains: string[];
         platformID: string;
         clientID: string;
         deploymentID: string;
