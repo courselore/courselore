@@ -964,7 +964,7 @@ export default async (application: Application): Promise<void> => {
                               ([samlIdentifier, saml]) => html`
                                 <div>
                                   <a
-                                    href="/authentication/saml/${samlIdentifier}/authorize${request
+                                    href="/authentication/saml/${samlIdentifier}/initiate${request
                                       .URL.search}"
                                     class="link"
                                     >${saml.name}</a
@@ -3108,7 +3108,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize$",
+      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/initiate$",
     ),
     handler: (
       request: serverTypes.Request<
@@ -3162,7 +3162,7 @@ export default async (application: Application): Promise<void> => {
           response_type: "id_token",
           scope: "openid",
           client_id: lti.clientID,
-          redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/authorize/callback`,
+          redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`,
           login_hint: request.body.login_hint,
           state: "TODO: STATE",
           response_mode: "form_post",
@@ -3179,7 +3179,7 @@ export default async (application: Application): Promise<void> => {
   // application.server?.push({
   //   method: "POST",
   //   pathname: new RegExp(
-  //     "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize/callback$",
+  //     "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$",
   //   ),
   //   handler: async (
   //     request: serverTypes.Request<
@@ -3315,7 +3315,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/authorize$",
+      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/initiate$",
     ),
     handler: async (
       request: serverTypes.Request<

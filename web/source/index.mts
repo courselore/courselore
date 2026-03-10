@@ -121,7 +121,7 @@ if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
     csrfProtectionExceptionPathname: new RegExp(
-      "(?:^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize$)|(?:^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize/callback$)|(?:^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/assertion-consumer-service$)",
+      "(?:^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/initiate$)|(?:^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$)|(?:^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/assertion-consumer-service$)",
     ),
   });
 application.layouts = {} as Application["layouts"];
