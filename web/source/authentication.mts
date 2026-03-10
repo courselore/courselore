@@ -3066,163 +3066,163 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
-    method: "GET",
-    pathname: new RegExp(
-      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/keyset$",
-    ),
-    handler: async (
-      request: serverTypes.Request<
-        { ltiIdentifier: string },
-        {},
-        {},
-        {},
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (
-        typeof request.pathname.ltiIdentifier !== "string" ||
-        request.state.systemSettings === undefined
-      )
-        return;
-      const lti =
-        application.configuration.lti?.[request.pathname.ltiIdentifier];
-      if (lti === undefined) return;
-      const key = await jose.exportJWK(
-        await jose.importX509(
-          request.state.systemSettings.certificate,
-          "RS256",
-        ),
-      );
-      key.kid = await jose.calculateJwkThumbprint(key);
-      key.use = "sig";
-      key.alg = "RS256";
-      response
-        .setHeader("Content-Type", "application/json; charset=utf-8")
-        .send(JSON.stringify({ keys: [key] }));
-    },
-  });
+  // application.server?.push({
+  //   method: "GET",
+  //   pathname: new RegExp(
+  //     "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/keyset$",
+  //   ),
+  //   handler: async (
+  //     request: serverTypes.Request<
+  //       { ltiIdentifier: string },
+  //       {},
+  //       {},
+  //       {},
+  //       Application["types"]["states"]["Authentication"]
+  //     >,
+  //     response,
+  //   ) => {
+  //     if (
+  //       typeof request.pathname.ltiIdentifier !== "string" ||
+  //       request.state.systemSettings === undefined
+  //     )
+  //       return;
+  //     const lti =
+  //       application.configuration.lti?.[request.pathname.ltiIdentifier];
+  //     if (lti === undefined) return;
+  //     const key = await jose.exportJWK(
+  //       await jose.importX509(
+  //         request.state.systemSettings.certificate,
+  //         "RS256",
+  //       ),
+  //     );
+  //     key.kid = await jose.calculateJwkThumbprint(key);
+  //     key.use = "sig";
+  //     key.alg = "RS256";
+  //     response
+  //       .setHeader("Content-Type", "application/json; charset=utf-8")
+  //       .send(JSON.stringify({ keys: [key] }));
+  //   },
+  // });
 
-  application.server?.push({
-    method: "POST",
-    pathname: new RegExp(
-      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize$",
-    ),
-    handler: (
-      request: serverTypes.Request<
-        { ltiIdentifier: string },
-        {},
-        {},
-        {
-          iss: string;
-          client_id: string;
-          lti_deployment_id: string;
-          target_link_uri: string;
-          login_hint: string;
-          lti_message_hint: string;
-        },
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (
-        typeof request.pathname.ltiIdentifier !== "string" ||
-        request.state.systemSettings === undefined
-      )
-        return;
-      const lti =
-        application.configuration.lti?.[request.pathname.ltiIdentifier];
-      if (lti === undefined) return;
-      if (
-        request.body.iss !== lti.platformID ||
-        (request.body.client_id !== undefined &&
-          request.body.client_id !== lti.clientID) ||
-        (request.body.lti_deployment_id !== undefined &&
-          request.body.lti_deployment_id !== lti.deploymentID) ||
-        request.body.target_link_uri !==
-          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/launch` ||
-        typeof request.body.login_hint !== "string"
-      )
-        throw "validation";
-      response.redirect!(
-        `${lti.authenticationRequestURL}?${new URLSearchParams({
-          response_type: "id_token",
-          scope: "openid",
-          client_id: lti.clientID,
-          redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/authorize/callback`,
-          login_hint: request.body.login_hint,
-          state: "TODO: STATE",
-          response_mode: "form_post",
-          nonce: "TODO: NONCE",
-          prompt: "none",
-          ...(typeof request.body.lti_message_hint === "string"
-            ? { lti_message_hint: request.body.lti_message_hint }
-            : {}),
-        }).toString()}`,
-      );
-    },
-  });
+  // application.server?.push({
+  //   method: "POST",
+  //   pathname: new RegExp(
+  //     "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize$",
+  //   ),
+  //   handler: (
+  //     request: serverTypes.Request<
+  //       { ltiIdentifier: string },
+  //       {},
+  //       {},
+  //       {
+  //         iss: string;
+  //         client_id: string;
+  //         lti_deployment_id: string;
+  //         target_link_uri: string;
+  //         login_hint: string;
+  //         lti_message_hint: string;
+  //       },
+  //       Application["types"]["states"]["Authentication"]
+  //     >,
+  //     response,
+  //   ) => {
+  //     if (
+  //       typeof request.pathname.ltiIdentifier !== "string" ||
+  //       request.state.systemSettings === undefined
+  //     )
+  //       return;
+  //     const lti =
+  //       application.configuration.lti?.[request.pathname.ltiIdentifier];
+  //     if (lti === undefined) return;
+  //     if (
+  //       request.body.iss !== lti.platformID ||
+  //       (request.body.client_id !== undefined &&
+  //         request.body.client_id !== lti.clientID) ||
+  //       (request.body.lti_deployment_id !== undefined &&
+  //         request.body.lti_deployment_id !== lti.deploymentID) ||
+  //       request.body.target_link_uri !==
+  //         `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/launch` ||
+  //       typeof request.body.login_hint !== "string"
+  //     )
+  //       throw "validation";
+  //     response.redirect!(
+  //       `${lti.authenticationRequestURL}?${new URLSearchParams({
+  //         response_type: "id_token",
+  //         scope: "openid",
+  //         client_id: lti.clientID,
+  //         redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/authorize/callback`,
+  //         login_hint: request.body.login_hint,
+  //         state: "TODO: STATE",
+  //         response_mode: "form_post",
+  //         nonce: "TODO: NONCE",
+  //         prompt: "none",
+  //         ...(typeof request.body.lti_message_hint === "string"
+  //           ? { lti_message_hint: request.body.lti_message_hint }
+  //           : {}),
+  //       }).toString()}`,
+  //     );
+  //   },
+  // });
 
-  application.server?.push({
-    method: "POST",
-    pathname: new RegExp(
-      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize/callback$",
-    ),
-    handler: async (
-      request: serverTypes.Request<
-        { ltiIdentifier: string },
-        {},
-        {},
-        {
-          id_token: string;
-          state: string;
-        },
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (
-        typeof request.pathname.ltiIdentifier !== "string" ||
-        request.state.systemSettings === undefined
-      )
-        return;
-      const lti =
-        application.configuration.lti?.[request.pathname.ltiIdentifier];
-      if (lti === undefined) return;
-      if (
-        typeof request.body.id_token !== "string" ||
-        typeof request.body.state !== "string" /* TODO: Validate state */
-      )
-        throw "validation";
-      const idToken = (
-        await jose.jwtVerify(
-          request.body.id_token,
-          jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
-        )
-      ).payload;
-      // TODO: Validate nonce, and other parts of the `id_token` that may need verification
-      if (
-        idToken.iss !== lti.platformID ||
-        idToken.aud !== lti.clientID ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
-          lti.deploymentID ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
-          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/launch` ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
-          `LtiResourceLinkRequest`
-      )
-        throw "validation";
-      console.log(
-        await (
-          await fetch(lti.accessTokenURL, {
-            method: "POST",
-            body: new URLSearchParams({}),
-          })
-        ).text(),
-      );
-    },
-  });
+  // application.server?.push({
+  //   method: "POST",
+  //   pathname: new RegExp(
+  //     "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/authorize/callback$",
+  //   ),
+  //   handler: async (
+  //     request: serverTypes.Request<
+  //       { ltiIdentifier: string },
+  //       {},
+  //       {},
+  //       {
+  //         id_token: string;
+  //         state: string;
+  //       },
+  //       Application["types"]["states"]["Authentication"]
+  //     >,
+  //     response,
+  //   ) => {
+  //     if (
+  //       typeof request.pathname.ltiIdentifier !== "string" ||
+  //       request.state.systemSettings === undefined
+  //     )
+  //       return;
+  //     const lti =
+  //       application.configuration.lti?.[request.pathname.ltiIdentifier];
+  //     if (lti === undefined) return;
+  //     if (
+  //       typeof request.body.id_token !== "string" ||
+  //       typeof request.body.state !== "string" /* TODO: Validate state */
+  //     )
+  //       throw "validation";
+  //     const idToken = (
+  //       await jose.jwtVerify(
+  //         request.body.id_token,
+  //         jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
+  //       )
+  //     ).payload;
+  //     // TODO: Validate nonce, and other parts of the `id_token` that may need verification
+  //     if (
+  //       idToken.iss !== lti.platformID ||
+  //       idToken.aud !== lti.clientID ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
+  //         lti.deploymentID ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
+  //         `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/launch` ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
+  //         `LtiResourceLinkRequest`
+  //     )
+  //       throw "validation";
+  //     console.log(
+  //       await (
+  //         await fetch(lti.accessTokenURL, {
+  //           method: "POST",
+  //           body: new URLSearchParams({}),
+  //         })
+  //       ).text(),
+  //     );
+  //   },
+  // });
 
   const samls = (() => {
     const systemSettings = application.database.get<{
