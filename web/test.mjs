@@ -16,7 +16,7 @@ const response = await fetch(
         .setProtectedHeader({ typ: "JWT", alg: "RS256" })
         .setJti("TODOJTI")
         .setIssuedAt()
-        .setExpirationTime("2h")
+        .setExpirationTime("1 hour")
         .setSubject("courselore")
         .setIssuer("courselore")
         .setAudience("https://saltire.lti.app/platform")
