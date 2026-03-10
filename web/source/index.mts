@@ -51,9 +51,9 @@ export type Application = {
         platformID: string;
         clientID: string;
         deploymentID: string;
-        publicKeysetURL: string;
         authenticationRequestURL: string;
         accessTokenURL: string;
+        publicKeysetURL: string;
       };
     };
     saml?: {

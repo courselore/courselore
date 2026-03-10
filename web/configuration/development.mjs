@@ -11,13 +11,13 @@ export default {
   lti: {
     "courselore-university": {
       name: "Courselore University",
-      domains: ["example.com"],
-      platformID: "http://localhost:8000",
-      clientID: "wkvNru6zzCgFbkb",
-      deploymentID: "1",
-      publicKeysetURL: "http://localhost:8000/mod/lti/certs.php",
-      authenticationRequestURL: "http://localhost:8000/mod/lti/auth.php",
-      accessTokenURL: "http://localhost:8000/mod/lti/token.php",
+      domains: ["uni.ac.uk"],
+      platformID: "https://saltire.lti.app/platform",
+      clientID: "saltire.lti.app",
+      deploymentID: "cLWwj9cbmkSrCNsckEFBmA",
+      authenticationRequestURL: "https://saltire.lti.app/platform/auth",
+      accessTokenURL: "https://saltire.lti.app/platform/token/a7dd58e457ce47339ef86a41f14c1885",
+      publicKeysetURL: "https://saltire.lti.app/platform/jwks/a7dd58e457ce47339ef86a41f14c1885",
     },
   },
   saml: {
