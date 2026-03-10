@@ -3176,65 +3176,65 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  // application.server?.push({
-  //   method: "POST",
-  //   pathname: new RegExp(
-  //     "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$",
-  //   ),
-  //   handler: async (
-  //     request: serverTypes.Request<
-  //       { ltiIdentifier: string },
-  //       {},
-  //       {},
-  //       {
-  //         id_token: string;
-  //         state: string;
-  //       },
-  //       Application["types"]["states"]["Authentication"]
-  //     >,
-  //     response,
-  //   ) => {
-  //     if (
-  //       typeof request.pathname.ltiIdentifier !== "string" ||
-  //       request.state.systemSettings === undefined
-  //     )
-  //       return;
-  //     const lti =
-  //       application.configuration.lti?.[request.pathname.ltiIdentifier];
-  //     if (lti === undefined) return;
-  //     if (
-  //       typeof request.body.id_token !== "string" ||
-  //       typeof request.body.state !== "string" /* TODO: Validate state */
-  //     )
-  //       throw "validation";
-  //     const idToken = (
-  //       await jose.jwtVerify(
-  //         request.body.id_token,
-  //         jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
-  //       )
-  //     ).payload;
-  //     // TODO: Validate nonce, and other parts of the `id_token` that may need verification
-  //     if (
-  //       idToken.iss !== lti.platformID ||
-  //       idToken.aud !== lti.clientID ||
-  //       idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
-  //         lti.deploymentID ||
-  //       idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
-  //         `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
-  //       idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
-  //         `LtiResourceLinkRequest`
-  //     )
-  //       throw "validation";
-  //     console.log(
-  //       await (
-  //         await fetch(lti.accessTokenURL, {
-  //           method: "POST",
-  //           body: new URLSearchParams({}),
-  //         })
-  //       ).text(),
-  //     );
-  //   },
-  // });
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        { ltiIdentifier: string },
+        {},
+        {},
+        {
+          id_token: string;
+          state: string;
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.ltiIdentifier !== "string" ||
+        request.state.systemSettings === undefined
+      )
+        return;
+      const lti =
+        application.configuration.lti?.[request.pathname.ltiIdentifier];
+      if (lti === undefined) return;
+      if (
+        typeof request.body.id_token !== "string" ||
+        typeof request.body.state !== "string" /* TODO: Validate state */
+      )
+        throw "validation";
+      const idToken = (
+        await jose.jwtVerify(
+          request.body.id_token,
+          jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
+        )
+      ).payload;
+      // TODO: Validate nonce, and other parts of the `id_token` that may need verification
+      if (
+        idToken.iss !== lti.platformID ||
+        idToken.aud !== lti.clientID ||
+        idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
+          lti.deploymentID ||
+        idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
+          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
+        idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
+          `LtiResourceLinkRequest`
+      )
+        throw "validation";
+      console.log(
+        await (
+          await fetch(lti.accessTokenURL, {
+            method: "POST",
+            body: new URLSearchParams({}),
+          })
+        ).text(),
+      );
+    },
+  });
 
   const samls = (() => {
     const systemSettings = application.database.get<{
