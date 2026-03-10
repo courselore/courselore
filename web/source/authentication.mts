@@ -3066,6 +3066,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  // TODO
   // application.server?.push({
   //   method: "GET",
   //   pathname: new RegExp(
