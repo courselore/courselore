@@ -3187,8 +3187,7 @@ export default async (application: Application): Promise<void> => {
   //     response,
   //   ) => {
   //     if (
-  //       typeof request.pathname.ltiIdentifier !== "string" ||
-  //       request.state.systemSettings === undefined
+  //       typeof request.pathname.ltiIdentifier !== "string"
   //     )
   //       return;
   //     const lti =
