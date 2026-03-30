@@ -15,9 +15,9 @@ const response = await fetch(
       client_assertion: await new jose.SignJWT()
         .setProtectedHeader({ typ: "JWT", alg: "RS256" })
         .setJti("TODO")
-        .setIssuer("https://localhost/authentication/lti/courselore-university")
-        .setAudience("https://saltire.lti.app/platform")
+        .setIssuer("saltire.lti.app")
         .setSubject("saltire.lti.app")
+        .setAudience("https://saltire.lti.app/platform")
         .setIssuedAt()
         .setExpirationTime("1 hour")
         .sign(
