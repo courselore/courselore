@@ -3113,17 +3113,6 @@ export default async (application: Application): Promise<void> => {
         { ltiIdentifier: string },
         {},
         {},
-        /*
-        TODO
-        {
-          "iss": "https://saltire.lti.app/platform",
-          "client_id": "saltire.lti.app",
-          "lti_deployment_id": "cLWwj9cbmkSrCNsckEFBmA"
-          "target_link_uri": "https://localhost/authentication/lti/courselore-university",
-          "login_hint": "X23489",
-          "lti_message_hint": "My LTI message hint!",
-        }
-        */
         {
           iss: string;
           client_id: string;
