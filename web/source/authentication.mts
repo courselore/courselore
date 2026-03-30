@@ -3104,14 +3104,21 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
-    method: "POST",
+    method: /^GET|POST$/,
     pathname: new RegExp(
       "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/initiate$",
     ),
     handler: (
       request: serverTypes.Request<
         { ltiIdentifier: string },
-        {},
+        {
+          iss: string;
+          client_id: string;
+          lti_deployment_id: string;
+          target_link_uri: string;
+          login_hint: string;
+          lti_message_hint: string;
+        },
         {},
         {
           iss: string;
@@ -3133,15 +3140,35 @@ export default async (application: Application): Promise<void> => {
       const lti =
         application.configuration.lti?.[request.pathname.ltiIdentifier];
       if (lti === undefined) return;
+      let iss: string | undefined;
+      let client_id: string | undefined;
+      let lti_deployment_id: string | undefined;
+      let target_link_uri: string | undefined;
+      let login_hint: string | undefined;
+      let lti_message_hint: string | undefined;
+      if (request.method === "GET") {
+        iss = request.search.iss;
+        client_id = request.search.client_id;
+        lti_deployment_id = request.search.lti_deployment_id;
+        target_link_uri = request.search.target_link_uri;
+        login_hint = request.search.login_hint;
+        lti_message_hint = request.search.lti_message_hint;
+      } else {
+        iss = request.body.iss;
+        client_id = request.body.client_id;
+        lti_deployment_id = request.body.lti_deployment_id;
+        target_link_uri = request.body.target_link_uri;
+        login_hint = request.body.login_hint;
+        lti_message_hint = request.body.lti_message_hint;
+      }
       if (
-        request.body.iss !== lti.platformID ||
-        (request.body.client_id !== undefined &&
-          request.body.client_id !== lti.clientID) ||
-        (request.body.lti_deployment_id !== undefined &&
-          request.body.lti_deployment_id !== lti.deploymentID) ||
-        request.body.target_link_uri !==
+        iss !== lti.platformID ||
+        (client_id !== undefined && client_id !== lti.clientID) ||
+        (lti_deployment_id !== undefined &&
+          lti_deployment_id !== lti.deploymentID) ||
+        target_link_uri !==
           `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
-        typeof request.body.login_hint !== "string"
+        typeof login_hint !== "string"
       )
         throw "validation";
       response.redirect!(
@@ -3150,78 +3177,76 @@ export default async (application: Application): Promise<void> => {
           scope: "openid",
           client_id: lti.clientID,
           redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`,
-          login_hint: request.body.login_hint,
+          login_hint: login_hint,
           state: "TODO: STATE",
           response_mode: "form_post",
           nonce: "TODO: NONCE",
           prompt: "none",
-          ...(typeof request.body.lti_message_hint === "string"
-            ? { lti_message_hint: request.body.lti_message_hint }
-            : {}),
+          ...(typeof lti_message_hint === "string" ? { lti_message_hint } : {}),
         }).toString()}`,
       );
     },
   });
 
-  application.server?.push({
-    method: "POST",
-    pathname: new RegExp(
-      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$",
-    ),
-    handler: async (
-      request: serverTypes.Request<
-        { ltiIdentifier: string },
-        {},
-        {},
-        {
-          id_token: string;
-          state: string;
-        },
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (
-        typeof request.pathname.ltiIdentifier !== "string" ||
-        request.state.systemSettings === undefined
-      )
-        return;
-      const lti =
-        application.configuration.lti?.[request.pathname.ltiIdentifier];
-      if (lti === undefined) return;
-      if (
-        typeof request.body.id_token !== "string" ||
-        typeof request.body.state !== "string" /* TODO: Validate state */
-      )
-        throw "validation";
-      const idToken = (
-        await jose.jwtVerify(
-          request.body.id_token,
-          jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
-        )
-      ).payload;
-      // TODO: Validate nonce, and other parts of the `id_token` that may need verification
-      if (
-        idToken.iss !== lti.platformID ||
-        idToken.aud !== lti.clientID ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
-          lti.deploymentID ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
-          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
-          `LtiResourceLinkRequest`
-      )
-        throw "validation";
-      console.log(
-        await (
-          await fetch(lti.accessTokenURL, {
-            method: "POST",
-            body: new URLSearchParams({}),
-          })
-        ).text(),
-      );
-    },
-  });
+  // application.server?.push({
+  //   method: "POST",
+  //   pathname: new RegExp(
+  //     "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$",
+  //   ),
+  //   handler: async (
+  //     request: serverTypes.Request<
+  //       { ltiIdentifier: string },
+  //       {},
+  //       {},
+  //       {
+  //         id_token: string;
+  //         state: string;
+  //       },
+  //       Application["types"]["states"]["Authentication"]
+  //     >,
+  //     response,
+  //   ) => {
+  //     if (
+  //       typeof request.pathname.ltiIdentifier !== "string" ||
+  //       request.state.systemSettings === undefined
+  //     )
+  //       return;
+  //     const lti =
+  //       application.configuration.lti?.[request.pathname.ltiIdentifier];
+  //     if (lti === undefined) return;
+  //     if (
+  //       typeof request.body.id_token !== "string" ||
+  //       typeof request.body.state !== "string" /* TODO: Validate state */
+  //     )
+  //       throw "validation";
+  //     const idToken = (
+  //       await jose.jwtVerify(
+  //         request.body.id_token,
+  //         jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
+  //       )
+  //     ).payload;
+  //     // TODO: Validate nonce, and other parts of the `id_token` that may need verification
+  //     if (
+  //       idToken.iss !== lti.platformID ||
+  //       idToken.aud !== lti.clientID ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
+  //         lti.deploymentID ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
+  //         `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
+  //         `LtiResourceLinkRequest`
+  //     )
+  //       throw "validation";
+  //     console.log(
+  //       await (
+  //         await fetch(lti.accessTokenURL, {
+  //           method: "POST",
+  //           body: new URLSearchParams({}),
+  //         })
+  //       ).text(),
+  //     );
+  //   },
+  // });
 
   const samls = (() => {
     const systemSettings = application.database.get<{
