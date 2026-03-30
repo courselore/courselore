@@ -3065,44 +3065,43 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  // TODO
-  // application.server?.push({
-  //   method: "GET",
-  //   pathname: new RegExp(
-  //     "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/keyset$",
-  //   ),
-  //   handler: async (
-  //     request: serverTypes.Request<
-  //       { ltiIdentifier: string },
-  //       {},
-  //       {},
-  //       {},
-  //       Application["types"]["states"]["Authentication"]
-  //     >,
-  //     response,
-  //   ) => {
-  //     if (
-  //       typeof request.pathname.ltiIdentifier !== "string" ||
-  //       request.state.systemSettings === undefined
-  //     )
-  //       return;
-  //     const lti =
-  //       application.configuration.lti?.[request.pathname.ltiIdentifier];
-  //     if (lti === undefined) return;
-  //     const key = await jose.exportJWK(
-  //       await jose.importX509(
-  //         request.state.systemSettings.certificate,
-  //         "RS256",
-  //       ),
-  //     );
-  //     key.kid = await jose.calculateJwkThumbprint(key);
-  //     key.use = "sig";
-  //     key.alg = "RS256";
-  //     response
-  //       .setHeader("Content-Type", "application/json; charset=utf-8")
-  //       .send(JSON.stringify({ keys: [key] }));
-  //   },
-  // });
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/keyset$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        { ltiIdentifier: string },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.ltiIdentifier !== "string" ||
+        request.state.systemSettings === undefined
+      )
+        return;
+      const lti =
+        application.configuration.lti?.[request.pathname.ltiIdentifier];
+      if (lti === undefined) return;
+      const key = await jose.exportJWK(
+        await jose.importX509(
+          request.state.systemSettings.certificate,
+          "RS256",
+        ),
+      );
+      key.kid = await jose.calculateJwkThumbprint(key);
+      key.use = "sig";
+      key.alg = "RS256";
+      response
+        .setHeader("Content-Type", "application/json; charset=utf-8")
+        .send(JSON.stringify({ keys: [key] }));
+    },
+  });
 
   application.server?.push({
     method: "POST",
