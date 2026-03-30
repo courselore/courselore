@@ -11,7 +11,6 @@ import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
 import * as OTPAuth from "otpauth";
 import { Application } from "./index.mjs";
-import { URLSearchParams } from "node:url";
 
 export type ApplicationAuthentication = {
   types: {
