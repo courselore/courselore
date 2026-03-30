@@ -3140,35 +3140,17 @@ export default async (application: Application): Promise<void> => {
       const lti =
         application.configuration.lti?.[request.pathname.ltiIdentifier];
       if (lti === undefined) return;
-      let iss: string | undefined;
-      let client_id: string | undefined;
-      let lti_deployment_id: string | undefined;
-      let target_link_uri: string | undefined;
-      let login_hint: string | undefined;
-      let lti_message_hint: string | undefined;
-      if (request.method === "GET") {
-        iss = request.search.iss;
-        client_id = request.search.client_id;
-        lti_deployment_id = request.search.lti_deployment_id;
-        target_link_uri = request.search.target_link_uri;
-        login_hint = request.search.login_hint;
-        lti_message_hint = request.search.lti_message_hint;
-      } else {
-        iss = request.body.iss;
-        client_id = request.body.client_id;
-        lti_deployment_id = request.body.lti_deployment_id;
-        target_link_uri = request.body.target_link_uri;
-        login_hint = request.body.login_hint;
-        lti_message_hint = request.body.lti_message_hint;
-      }
+      const requestBody =
+        request.method === "GET" ? request.search : request.body;
       if (
-        iss !== lti.platformID ||
-        (client_id !== undefined && client_id !== lti.clientID) ||
-        (lti_deployment_id !== undefined &&
-          lti_deployment_id !== lti.deploymentID) ||
-        target_link_uri !==
+        requestBody.iss !== lti.platformID ||
+        (requestBody.client_id !== undefined &&
+          requestBody.client_id !== lti.clientID) ||
+        (requestBody.lti_deployment_id !== undefined &&
+          requestBody.lti_deployment_id !== lti.deploymentID) ||
+        requestBody.target_link_uri !==
           `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
-        typeof login_hint !== "string"
+        typeof requestBody.login_hint !== "string"
       )
         throw "validation";
       response.redirect!(
@@ -3177,12 +3159,14 @@ export default async (application: Application): Promise<void> => {
           scope: "openid",
           client_id: lti.clientID,
           redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`,
-          login_hint: login_hint,
+          login_hint: requestBody.login_hint,
           state: "TODO: STATE",
           response_mode: "form_post",
           nonce: "TODO: NONCE",
           prompt: "none",
-          ...(typeof lti_message_hint === "string" ? { lti_message_hint } : {}),
+          ...(typeof requestBody.lti_message_hint === "string"
+            ? { lti_message_hint: requestBody.lti_message_hint }
+            : {}),
         }).toString()}`,
       );
     },
