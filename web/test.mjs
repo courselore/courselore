@@ -14,14 +14,12 @@ const response = await fetch(
         "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
       client_assertion: await new jose.SignJWT()
         .setProtectedHeader({ typ: "JWT", alg: "RS256" })
-        .setJti("TODOJTI")
-        .setIssuedAt()
-        .setExpirationTime("1 hour")
-        .setSubject(
-          "https://localhost/authentication/lti/courselore-university",
-        )
+        .setJti("TODO")
         .setIssuer("https://localhost/authentication/lti/courselore-university")
         .setAudience("https://saltire.lti.app/platform")
+        .setSubject("saltire.lti.app")
+        .setIssuedAt()
+        .setExpirationTime("1 hour")
         .sign(
           await jose.importPKCS8(
             `-----BEGIN PRIVATE KEY-----
