@@ -3132,11 +3132,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        typeof request.pathname.ltiIdentifier !== "string" ||
-        request.state.systemSettings === undefined
-      )
-        return;
+      if (typeof request.pathname.ltiIdentifier !== "string") return;
       const lti =
         application.configuration.lti?.[request.pathname.ltiIdentifier];
       if (lti === undefined) return;
