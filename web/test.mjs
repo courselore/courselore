@@ -1,6 +1,6 @@
 import * as jose from "jose";
 
-const session = "s0216f7980a7111a54f1152749814c4aa";
+const session = "a7dd58e457ce47339ef86a41f14c1885";
 
 const response = await fetch(
   `https://saltire.lti.app/platform/token/${session}`,
@@ -17,8 +17,10 @@ const response = await fetch(
         .setJti("TODOJTI")
         .setIssuedAt()
         .setExpirationTime("1 hour")
-        .setSubject("courselore")
-        .setIssuer("courselore")
+        .setSubject(
+          "https://localhost/authentication/lti/courselore-university",
+        )
+        .setIssuer("https://localhost/authentication/lti/courselore-university")
         .setAudience("https://saltire.lti.app/platform")
         .sign(
           await jose.importPKCS8(
@@ -72,5 +74,4 @@ U71N9RTMX7dXWj2Ol6m7m1pM8df1G1eFTg2O9NBzca5UlwNBgY6MMsYaQDjDHPzn
 
 console.log(response.status);
 console.log(response.headers);
-const responseBody = await response.text();
-console.log(responseBody);
+console.log(await response.text());
