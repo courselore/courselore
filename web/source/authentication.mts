@@ -3168,6 +3168,18 @@ export default async (application: Application): Promise<void> => {
         typeof requestBody.login_hint !== "string"
       )
         throw "validation";
+      const ltiStateAndNonce = {
+        state: cryptoRandomString({
+          length: 100,
+          type: "numeric",
+        }),
+        nonce: cryptoRandomString({
+          length: 100,
+          type: "numeric",
+        }),
+        createdAt: new Date().toISOString(),
+      };
+      ltiStatesAndNonces.add(ltiStateAndNonce);
       response.redirect!(
         `${lti.authenticationRequestURL}?${new URLSearchParams({
           response_type: "id_token",
@@ -3175,9 +3187,9 @@ export default async (application: Application): Promise<void> => {
           client_id: lti.clientID,
           redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`,
           login_hint: requestBody.login_hint,
-          state: "TODO: STATE",
+          state: ltiStateAndNonce.state,
           response_mode: "form_post",
-          nonce: "TODO: NONCE",
+          nonce: ltiStateAndNonce.nonce,
           prompt: "none",
           ...(typeof requestBody.lti_message_hint === "string"
             ? { lti_message_hint: requestBody.lti_message_hint }
