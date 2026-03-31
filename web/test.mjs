@@ -1,6 +1,6 @@
 import * as jose from "jose";
 
-// const session = "a7dd58e457ce47339ef86a41f14c1885";
+const session = "a7dd58e457ce47339ef86a41f14c1885";
 
 // const response = await fetch(
 //   `https://saltire.lti.app/platform/token/${session}`,
@@ -58,18 +58,18 @@ import * as jose from "jose";
 //   },
 // );
 
-// const accessToken = "69cad842eadf7";
+const accessToken = "69cbe08a60a37";
 
-// const response = await fetch(
-//   `https://saltire.lti.app/platform/membership/context/${session}`,
-//   {
-//     headers: {
-//       Authorization: `Bearer ${accessToken}`,
-//       Accept: "application/vnd.ims.lti-nrps.v2.membershipcontainer+json",
-//     },
-//   },
-// );
+const response = await fetch(
+  `https://saltire.lti.app/platform/membership/context/${session}`,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: "application/vnd.ims.lti-nrps.v2.membershipcontainer+json",
+    },
+  },
+);
 
-// console.log(response.status);
-// console.log(response.headers);
-// console.log(await response.text());
+console.log(response.status);
+console.log(response.headers);
+console.log(await response.text());
