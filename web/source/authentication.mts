@@ -3342,8 +3342,6 @@ export default async (application: Application): Promise<void> => {
         "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "cLWwj9cbmkSrCNsckEFBmA",
         "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "https://localhost/authentication/lti/courselore-university/callback",
         "nonce": "5666589927426892414616737761561065603353553401532051979654487007022763798992182402782882329140219340",
-        "iat": 1774960189,
-        "exp": 1774960249
       }
       */
       if (
