@@ -3068,6 +3068,7 @@ export default async (application: Application): Promise<void> => {
   const ltiStatesAndNonces = new Set<{
     state: string;
     nonce: string;
+    subject: string;
     createdAt: string;
   }>();
 
@@ -3177,6 +3178,7 @@ export default async (application: Application): Promise<void> => {
           length: 100,
           type: "numeric",
         }),
+        subject: requestBody.login_hint,
         createdAt: new Date().toISOString(),
       };
       ltiStatesAndNonces.add(ltiStateAndNonce);
@@ -3226,12 +3228,27 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.state !== "string"
       )
         throw "validation";
+      let ltiStateAndNonce:
+        | Parameters<typeof ltiStatesAndNonces.add>[0]
+        | undefined;
+      for (const searchLtiStateAndNonce of ltiStatesAndNonces)
+        if (searchLtiStateAndNonce.state === request.body.state) {
+          ltiStateAndNonce = searchLtiStateAndNonce;
+          ltiStatesAndNonces.delete(ltiStateAndNonce);
+          break;
+        }
+      if (ltiStateAndNonce === undefined) throw "validation";
       let idToken: jose.JWTPayload;
       try {
         idToken = (
           await jose.jwtVerify(
             request.body.id_token,
             jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
+            {
+              issuer: lti.platformID,
+              audience: lti.clientID,
+              subject: ltiStateAndNonce.subject,
+            },
           )
         ).payload;
       } catch {
@@ -3246,7 +3263,6 @@ export default async (application: Application): Promise<void> => {
           "title": "Phone home",
           "description": "Will ET phone home, or not; click to discover more."
         },
-        "sub": "29123",
         "https://purl.imsglobal.org/spec/lti/claim/roles": [
           "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
         ],
@@ -3334,10 +3350,6 @@ export default async (application: Application): Promise<void> => {
             "https://purl.imsglobal.org/spec/lti-ces/scope/send"
           ]
         },
-        "iss": "https://saltire.lti.app/platform",
-        "aud": [
-          "saltire.lti.app"
-        ],
         "azp": "saltire.lti.app",
         "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "cLWwj9cbmkSrCNsckEFBmA",
         "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "https://localhost/authentication/lti/courselore-university/callback",
