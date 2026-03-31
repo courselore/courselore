@@ -3073,7 +3073,10 @@ export default async (application: Application): Promise<void> => {
 
   node.backgroundJob({ interval: 10 * 60 * 1000, firstRun: "delayed" }, () => {
     for (const ltiStateAndNonce of ltiStatesAndNonces)
-      if (ltiStateAndNonce.createdAt < new Date(Date.now() - 10 * 60 * 1000).toISOString())
+      if (
+        ltiStateAndNonce.createdAt <
+        new Date(Date.now() - 10 * 60 * 1000).toISOString()
+      )
         ltiStatesAndNonces.delete(ltiStateAndNonce);
   });
 
