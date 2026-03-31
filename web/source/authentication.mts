@@ -3065,6 +3065,18 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  const ltiStatesAndNonces = new Set<{
+    state: string;
+    nonce: string;
+    createdAt: string;
+  }>();
+
+  node.backgroundJob({ interval: 10 * 60 * 1000, firstRun: "delayed" }, () => {
+    for (const ltiStateAndNonce of ltiStatesAndNonces)
+      if (ltiStateAndNonce.createdAt < new Date(10 * 60 * 1000).toISOString())
+        ltiStatesAndNonces.delete(ltiStateAndNonce);
+  });
+
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
