@@ -1,6 +1,6 @@
 import * as jose from "jose";
 
-const session = "a7dd58e457ce47339ef86a41f14c1885";
+// const session = "a7dd58e457ce47339ef86a41f14c1885";
 
 // const response = await fetch(
 //   `https://saltire.lti.app/platform/token/${session}`,
@@ -70,6 +70,6 @@ const session = "a7dd58e457ce47339ef86a41f14c1885";
 //   },
 // );
 
-console.log(response.status);
-console.log(response.headers);
-console.log(await response.text());
+// console.log(response.status);
+// console.log(response.headers);
+// console.log(await response.text());
