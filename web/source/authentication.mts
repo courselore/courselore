@@ -3226,13 +3226,17 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.state !== "string"
       )
         throw "validation";
-      const idToken = (
-        await jose.jwtVerify(
-          request.body.id_token,
-          jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
-        )
-      ).payload;
-      // TODO: Validate nonce, and other parts of the `id_token` that may need verification
+      let idToken: jose.JWTPayload;
+      try {
+        idToken = (
+          await jose.jwtVerify(
+            request.body.id_token,
+            jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
+          )
+        ).payload;
+      } catch {
+        throw "validation";
+      }
       if (
         idToken.iss !== lti.platformID ||
         idToken.aud !== lti.clientID ||

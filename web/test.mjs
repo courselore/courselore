@@ -16,8 +16,8 @@ import * as jose from "jose";
 //         .setProtectedHeader({ typ: "JWT", alg: "RS256" })
 //         .setJti("TODO")
 //         .setIssuer("saltire.lti.app")
-//         .setSubject("saltire.lti.app")
 //         .setAudience("https://saltire.lti.app/platform")
+//         .setSubject("saltire.lti.app")
 //         .setIssuedAt()
 //         .setExpirationTime("1 hour")
 //         .sign(
