@@ -1,19 +1,5 @@
 import * as jose from "jose";
 
-console.log(
-  (
-    await jose.jwtVerify(
-      ``,
-      jose.createRemoteJWKSet(
-        new URL(
-          "https://saltire.lti.app/platform/jwks/a7dd58e457ce47339ef86a41f14c1885",
-          // "https://localhost/authentication/lti/courselore-university/keyset",
-        ),
-      ),
-    )
-  ).payload,
-);
-
 // const session = "a7dd58e457ce47339ef86a41f14c1885";
 
 // const response = await fetch(
