@@ -3237,6 +3237,115 @@ export default async (application: Application): Promise<void> => {
       } catch {
         throw "validation";
       }
+      /*
+      {
+        "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
+        "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
+        "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
+          "id": "429785226",
+          "title": "Phone home",
+          "description": "Will ET phone home, or not; click to discover more."
+        },
+        "sub": "29123",
+        "https://purl.imsglobal.org/spec/lti/claim/roles": [
+          "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
+        ],
+        "name": "John Logie Baird",
+        "family_name": "Baird",
+        "given_name": "John",
+        "email": "jbaird@uni.ac.uk",
+        "https://purl.imsglobal.org/spec/lti/claim/lis": {
+          "person_sourcedid": "sis:942a8dd9",
+          "course_offering_sourcedid": "DD-ST101",
+          "course_section_sourcedid": "DD-ST101:C1"
+        },
+        "picture": "https://saltire.lti.app/images/lti.gif",
+        "https://purl.imsglobal.org/spec/lti/claim/context": {
+          "id": "S3294476",
+          "type": [
+            "CourseSection"
+          ],
+          "title": "Telecommunications 101",
+          "label": "ST101"
+        },
+        "https://purl.imsglobal.org/spec/lti/claim/tool_platform": {
+          "product_family_code": "jisc",
+          "version": "X2.0",
+          "guid": "vle.uni.ac.uk",
+          "name": "University of JISC",
+          "description": "A Higher Education establishment in a land far, far away.",
+          "contact_email": "vle@uni.ac.uk",
+          "url": "https://vle.uni.ac.uk/"
+        },
+        "https://purl.imsglobal.org/spec/lti/claim/launch_presentation": {
+          "return_url": "https://saltire.lti.app/platform",
+          "css_url": "https://saltire.lti.app/css/tc.css",
+          "locale": "en-GB",
+          "document_target": "frame"
+        },
+        "https://purl.imsglobal.org/spec/lti/claim/custom": {
+          "oauth2_access_token_url": "https://saltire.lti.app/platform/token/a7dd58e457ce47339ef86a41f14c1885",
+          "tc_profile_url": "https://saltire.lti.app/platform/profile/a7dd58e457ce47339ef86a41f14c1885",
+          "system_setting_url": "https://saltire.lti.app/platform/settings/system/a7dd58e457ce47339ef86a41f14c1885",
+          "context_setting_url": "https://saltire.lti.app/platform/settings/context/a7dd58e457ce47339ef86a41f14c1885",
+          "link_setting_url": "https://saltire.lti.app/platform/settings/link/a7dd58e457ce47339ef86a41f14c1885",
+          "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
+          "link_memberships_url": "https://saltire.lti.app/platform/membership/link/a7dd58e457ce47339ef86a41f14c1885"
+        },
+        "https://purl.imsglobal.org/spec/lti-bo/claim/basicoutcome": {
+          "lis_outcome_service_url": "https://saltire.lti.app/platform/outcomes/a7dd58e457ce47339ef86a41f14c1885",
+          "lis_result_sourcedid": "UzMyOTQ0NzY6Ojo0Mjk3ODUyMjY6OjoyOTEyMw=="
+        },
+        "https://purl.imsglobal.org/spec/lti/claim/ext": {
+          "outcome_data_values_accepted": "url,text",
+          "ims_lis_basic_outcome_url": "https://saltire.lti.app/platform/extoutcomes/a7dd58e457ce47339ef86a41f14c1885",
+          "ims_lis_resultvalue_sourcedids": "decimal,percentage,ratio,passfail,letteraf,letterafplus,freetext",
+          "ims_lis_memberships_url": "https://saltire.lti.app/platform/extmemberships/a7dd58e457ce47339ef86a41f14c1885",
+          "ims_lis_memberships_id": "4jflkkdf9s",
+          "ims_lti_tool_setting_url": "https://saltire.lti.app/platform/extsetting/a7dd58e457ce47339ef86a41f14c1885",
+          "ims_lti_tool_setting_id": "d94gjklf954kj"
+        },
+        "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
+          "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
+          "service_versions": [
+            "1.0",
+            "2.0"
+          ]
+        },
+        "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint": {
+          "lineitems": "https://saltire.lti.app/platform/gradebook/a7dd58e457ce47339ef86a41f14c1885/S3294476/lineitems",
+          "lineitem": "https://saltire.lti.app/platform/gradebook/a7dd58e457ce47339ef86a41f14c1885/S3294476/lineitems/429785226",
+          "scope": [
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
+            "https://purl.imsglobal.org/spec/lti-ags/scope/score"
+          ]
+        },
+        "https://purl.imsglobal.org/spec/lti-ces/claim/caliper-endpoint-service": {
+          "caliper_endpoint_url": "https://lti.tools/caliper/event",
+          "caliper_federated_session_id": "HhTXq8mmZeOepSqV",
+          "caliper_supported_versions": [
+            "http://purl.imsglobal.org/ctx/caliper/v1p1",
+            "http://purl.imsglobal.org/ctx/caliper/v1p1/ToolLaunchProfile-extension",
+            "http://purl.imsglobal.org/ctx/caliper/v1p2"
+          ],
+          "scopes": [
+            "https://purl.imsglobal.org/spec/lti-ces/scope/send"
+          ]
+        },
+        "iss": "https://saltire.lti.app/platform",
+        "aud": [
+          "saltire.lti.app"
+        ],
+        "azp": "saltire.lti.app",
+        "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "cLWwj9cbmkSrCNsckEFBmA",
+        "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "https://localhost/authentication/lti/courselore-university/callback",
+        "nonce": "5666589927426892414616737761561065603353553401532051979654487007022763798992182402782882329140219340",
+        "iat": 1774960189,
+        "exp": 1774960249
+      }
+      */
       if (
         idToken.iss !== lti.platformID ||
         idToken.aud !== lti.clientID ||
