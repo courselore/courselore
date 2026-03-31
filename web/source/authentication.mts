@@ -3287,6 +3287,9 @@ export default async (application: Application): Promise<void> => {
           `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`
       )
         throw "validation";
+      // TODO
+      if (request.state.user === undefined) {
+      }
     },
   });
 
