@@ -3069,24 +3069,7 @@ export default async (application: Application): Promise<void> => {
     state: string;
     nonce: string;
     createdAt: string;
-  }>([
-    // TODO
-    {
-      state: "1",
-      nonce: "1",
-      createdAt: new Date(Date.now() - 60 * 1000).toISOString(),
-    },
-    {
-      state: "2",
-      nonce: "2",
-      createdAt: new Date(Date.now() - 45 * 1000).toISOString(),
-    },
-    {
-      state: "3",
-      nonce: "3",
-      createdAt: new Date(Date.now() - 0 * 1000).toISOString(),
-    },
-  ]);
+  }>();
 
   if (application.commandLineArguments.values.type === "server")
     node.backgroundJob(
@@ -3098,7 +3081,6 @@ export default async (application: Application): Promise<void> => {
             new Date(Date.now() - 10 * 60 * 1000).toISOString()
           )
             ltiStatesAndNonces.delete(ltiStateAndNonce);
-        console.log(ltiStatesAndNonces);
       },
     );
 
