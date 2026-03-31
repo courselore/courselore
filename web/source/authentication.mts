@@ -3065,23 +3065,26 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  const ltiStatesAndNonces = new Set<{
-    state: string;
-    nonce: string;
-    subject: string;
-    createdAt: string;
-  }>();
+  const ltiFlows = new Map<
+    string,
+    {
+      state: string;
+      nonce: string;
+      subject: string;
+      createdAt: string;
+    }
+  >();
 
   if (application.commandLineArguments.values.type === "server")
     node.backgroundJob(
       { interval: 10 * 60 * 1000, firstRun: "delayed" },
       () => {
-        for (const ltiStateAndNonce of ltiStatesAndNonces)
+        for (const ltiFlow of ltiFlows.values())
           if (
-            ltiStateAndNonce.createdAt <
+            ltiFlow.createdAt <
             new Date(Date.now() - 10 * 60 * 1000).toISOString()
           )
-            ltiStatesAndNonces.delete(ltiStateAndNonce);
+            ltiFlows.delete(ltiFlow.state);
       },
     );
 
@@ -3169,7 +3172,7 @@ export default async (application: Application): Promise<void> => {
         typeof requestBody.login_hint !== "string"
       )
         throw "validation";
-      const ltiStateAndNonce = {
+      const ltiFlow = {
         state: cryptoRandomString({
           length: 100,
           type: "numeric",
@@ -3181,7 +3184,7 @@ export default async (application: Application): Promise<void> => {
         subject: requestBody.login_hint,
         createdAt: new Date().toISOString(),
       };
-      ltiStatesAndNonces.add(ltiStateAndNonce);
+      ltiFlows.set(ltiFlow.state, ltiFlow);
       response.redirect!(
         `${lti.authenticationRequestURL}?${new URLSearchParams({
           response_type: "id_token",
@@ -3189,9 +3192,9 @@ export default async (application: Application): Promise<void> => {
           client_id: lti.clientID,
           redirect_uri: `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`,
           login_hint: requestBody.login_hint,
-          state: ltiStateAndNonce.state,
+          state: ltiFlow.state,
           response_mode: "form_post",
-          nonce: ltiStateAndNonce.nonce,
+          nonce: ltiFlow.nonce,
           prompt: "none",
           ...(typeof requestBody.lti_message_hint === "string"
             ? { lti_message_hint: requestBody.lti_message_hint }
@@ -3228,16 +3231,9 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.state !== "string"
       )
         throw "validation";
-      let ltiStateAndNonce:
-        | Parameters<typeof ltiStatesAndNonces.add>[0]
-        | undefined;
-      for (const searchLtiStateAndNonce of ltiStatesAndNonces)
-        if (searchLtiStateAndNonce.state === request.body.state) {
-          ltiStateAndNonce = searchLtiStateAndNonce;
-          ltiStatesAndNonces.delete(ltiStateAndNonce);
-          break;
-        }
-      if (ltiStateAndNonce === undefined) throw "validation";
+      const ltiFlow = ltiFlows.get(request.body.state);
+      if (ltiFlow === undefined) throw "validation";
+      ltiFlows.delete(ltiFlow.state);
       let idToken: jose.JWTPayload;
       try {
         idToken = (
@@ -3247,7 +3243,7 @@ export default async (application: Application): Promise<void> => {
             {
               issuer: lti.platformID,
               audience: lti.clientID,
-              subject: ltiStateAndNonce.subject,
+              subject: ltiFlow.subject,
             },
           )
         ).payload;
@@ -3256,26 +3252,11 @@ export default async (application: Application): Promise<void> => {
       }
       /*
       {
-        "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
-        "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
-        "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
-          "id": "429785226",
-          "title": "Phone home",
-          "description": "Will ET phone home, or not; click to discover more."
-        },
         "https://purl.imsglobal.org/spec/lti/claim/roles": [
           "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
         ],
         "name": "John Logie Baird",
-        "family_name": "Baird",
-        "given_name": "John",
         "email": "jbaird@uni.ac.uk",
-        "https://purl.imsglobal.org/spec/lti/claim/lis": {
-          "person_sourcedid": "sis:942a8dd9",
-          "course_offering_sourcedid": "DD-ST101",
-          "course_section_sourcedid": "DD-ST101:C1"
-        },
-        "picture": "https://saltire.lti.app/images/lti.gif",
         "https://purl.imsglobal.org/spec/lti/claim/context": {
           "id": "S3294476",
           "type": [
@@ -3284,43 +3265,6 @@ export default async (application: Application): Promise<void> => {
           "title": "Telecommunications 101",
           "label": "ST101"
         },
-        "https://purl.imsglobal.org/spec/lti/claim/tool_platform": {
-          "product_family_code": "jisc",
-          "version": "X2.0",
-          "guid": "vle.uni.ac.uk",
-          "name": "University of JISC",
-          "description": "A Higher Education establishment in a land far, far away.",
-          "contact_email": "vle@uni.ac.uk",
-          "url": "https://vle.uni.ac.uk/"
-        },
-        "https://purl.imsglobal.org/spec/lti/claim/launch_presentation": {
-          "return_url": "https://saltire.lti.app/platform",
-          "css_url": "https://saltire.lti.app/css/tc.css",
-          "locale": "en-GB",
-          "document_target": "frame"
-        },
-        "https://purl.imsglobal.org/spec/lti/claim/custom": {
-          "oauth2_access_token_url": "https://saltire.lti.app/platform/token/a7dd58e457ce47339ef86a41f14c1885",
-          "tc_profile_url": "https://saltire.lti.app/platform/profile/a7dd58e457ce47339ef86a41f14c1885",
-          "system_setting_url": "https://saltire.lti.app/platform/settings/system/a7dd58e457ce47339ef86a41f14c1885",
-          "context_setting_url": "https://saltire.lti.app/platform/settings/context/a7dd58e457ce47339ef86a41f14c1885",
-          "link_setting_url": "https://saltire.lti.app/platform/settings/link/a7dd58e457ce47339ef86a41f14c1885",
-          "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
-          "link_memberships_url": "https://saltire.lti.app/platform/membership/link/a7dd58e457ce47339ef86a41f14c1885"
-        },
-        "https://purl.imsglobal.org/spec/lti-bo/claim/basicoutcome": {
-          "lis_outcome_service_url": "https://saltire.lti.app/platform/outcomes/a7dd58e457ce47339ef86a41f14c1885",
-          "lis_result_sourcedid": "UzMyOTQ0NzY6Ojo0Mjk3ODUyMjY6OjoyOTEyMw=="
-        },
-        "https://purl.imsglobal.org/spec/lti/claim/ext": {
-          "outcome_data_values_accepted": "url,text",
-          "ims_lis_basic_outcome_url": "https://saltire.lti.app/platform/extoutcomes/a7dd58e457ce47339ef86a41f14c1885",
-          "ims_lis_resultvalue_sourcedids": "decimal,percentage,ratio,passfail,letteraf,letterafplus,freetext",
-          "ims_lis_memberships_url": "https://saltire.lti.app/platform/extmemberships/a7dd58e457ce47339ef86a41f14c1885",
-          "ims_lis_memberships_id": "4jflkkdf9s",
-          "ims_lti_tool_setting_url": "https://saltire.lti.app/platform/extsetting/a7dd58e457ce47339ef86a41f14c1885",
-          "ims_lti_tool_setting_id": "d94gjklf954kj"
-        },
         "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
           "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
           "service_versions": [
@@ -3328,43 +3272,19 @@ export default async (application: Application): Promise<void> => {
             "2.0"
           ]
         },
-        "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint": {
-          "lineitems": "https://saltire.lti.app/platform/gradebook/a7dd58e457ce47339ef86a41f14c1885/S3294476/lineitems",
-          "lineitem": "https://saltire.lti.app/platform/gradebook/a7dd58e457ce47339ef86a41f14c1885/S3294476/lineitems/429785226",
-          "scope": [
-            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
-            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
-            "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
-            "https://purl.imsglobal.org/spec/lti-ags/scope/score"
-          ]
-        },
-        "https://purl.imsglobal.org/spec/lti-ces/claim/caliper-endpoint-service": {
-          "caliper_endpoint_url": "https://lti.tools/caliper/event",
-          "caliper_federated_session_id": "HhTXq8mmZeOepSqV",
-          "caliper_supported_versions": [
-            "http://purl.imsglobal.org/ctx/caliper/v1p1",
-            "http://purl.imsglobal.org/ctx/caliper/v1p1/ToolLaunchProfile-extension",
-            "http://purl.imsglobal.org/ctx/caliper/v1p2"
-          ],
-          "scopes": [
-            "https://purl.imsglobal.org/spec/lti-ces/scope/send"
-          ]
-        },
-        "azp": "saltire.lti.app",
-        "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "cLWwj9cbmkSrCNsckEFBmA",
-        "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "https://localhost/authentication/lti/courselore-university/callback",
-        "nonce": "5666589927426892414616737761561065603353553401532051979654487007022763798992182402782882329140219340",
       }
       */
       if (
-        idToken.iss !== lti.platformID ||
-        idToken.aud !== lti.clientID ||
+        idToken.nonce !== ltiFlow.nonce ||
+        (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
+        idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
+          "LtiResourceLinkRequest" ||
+        idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
+          "1.3.0" ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
           lti.deploymentID ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
-          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
-          `LtiResourceLinkRequest`
+          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`
       )
         throw "validation";
     },
