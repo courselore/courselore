@@ -3252,8 +3252,6 @@ export default async (application: Application): Promise<void> => {
           "https://purl.imsglobal.org/spec/lti/claim/roles": [
             "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
           ],
-          "name": "John Logie Baird",
-          "email": "jbaird@uni.ac.uk",
           "https://purl.imsglobal.org/spec/lti/claim/context": {
             "id": "S3294476",
             "type": [
