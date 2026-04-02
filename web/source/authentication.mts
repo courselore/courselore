@@ -3226,16 +3226,16 @@ export default async (application: Application): Promise<void> => {
       const lti =
         application.configuration.lti?.[request.pathname.ltiIdentifier];
       if (lti === undefined) return;
-      if (
-        typeof request.body.id_token !== "string" ||
-        typeof request.body.state !== "string"
-      )
-        throw "validation";
-      const ltiFlow = ltiFlows.get(request.body.state);
-      if (ltiFlow === undefined) throw "validation";
-      ltiFlows.delete(ltiFlow.state);
       let idToken: jose.JWTPayload;
       try {
+        if (
+          typeof request.body.id_token !== "string" ||
+          typeof request.body.state !== "string"
+        )
+          throw new Error();
+        const ltiFlow = ltiFlows.get(request.body.state);
+        if (ltiFlow === undefined) throw new Error();
+        ltiFlows.delete(ltiFlow.state);
         idToken = (
           await jose.jwtVerify(
             request.body.id_token,
@@ -3247,54 +3247,368 @@ export default async (application: Application): Promise<void> => {
             },
           )
         ).payload;
-      } catch {
-        throw "validation";
-      }
-      /*
-      {
-        "https://purl.imsglobal.org/spec/lti/claim/roles": [
-          "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
-        ],
-        "name": "John Logie Baird",
-        "email": "jbaird@uni.ac.uk",
-        "https://purl.imsglobal.org/spec/lti/claim/context": {
-          "id": "S3294476",
-          "type": [
-            "CourseSection"
+        /*
+        {
+          "https://purl.imsglobal.org/spec/lti/claim/roles": [
+            "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
           ],
-          "title": "Telecommunications 101",
-          "label": "ST101"
-        },
-        "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
-          "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
-          "service_versions": [
-            "1.0",
-            "2.0"
-          ]
-        },
+          "name": "John Logie Baird",
+          "email": "jbaird@uni.ac.uk",
+          "https://purl.imsglobal.org/spec/lti/claim/context": {
+            "id": "S3294476",
+            "type": [
+              "CourseSection"
+            ],
+            "title": "Telecommunications 101",
+            "label": "ST101"
+          },
+          "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
+            "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
+            "service_versions": [
+              "1.0",
+              "2.0"
+            ]
+          },
+        }
+        */
+        if (
+          idToken.nonce !== ltiFlow.nonce ||
+          (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
+          idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
+            "LtiResourceLinkRequest" ||
+          idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
+            "1.3.0" ||
+          idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
+            lti.deploymentID ||
+          idToken[
+            "https://purl.imsglobal.org/spec/lti/claim/target_link_uri"
+          ] !==
+            `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
+          typeof idToken.email !== "string" ||
+          !idToken.email.match(utilities.emailRegExp) ||
+          !lti.domains.some((domain) =>
+            `.${(idToken.email as string).split("@")[1]}`.endsWith(
+              `.${domain}`,
+            ),
+          ) ||
+          typeof idToken.name !== "string" ||
+          idToken.name.trim() === ""
+        )
+          throw new Error();
+      } catch (error) {
+        request.log("ERROR", String(error));
+        response.setFlash!(html`
+          <div class="flash--red">
+            Something went wrong. Please try signing in again.
+          </div>
+        `);
+        response.redirect!("/");
+        return;
       }
-      */
-      if (
-        idToken.nonce !== ltiFlow.nonce ||
-        (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
-          "LtiResourceLinkRequest" ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
-          "1.3.0" ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
-          lti.deploymentID ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
-          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
-        typeof idToken.email !== "string" ||
-        !idToken.email.match(utilities.emailRegExp) ||
-        !lti.domains.some((domain) =>
-          `.${(idToken.email as string).split("@")[1]}`.endsWith(`.${domain}`),
-        ) ||
-        typeof idToken.name !== "string" ||
-        idToken.name.trim() === ""
-      )
-        throw "validation";
       if (request.state.user === undefined) {
+        application.database.executeTransaction(() => {
+          request.state.user = application.database.get<{
+            id: number;
+            publicId: string;
+            name: string;
+            email: string;
+            emailVerificationEmail: string | null;
+            emailVerificationNonce: string | null;
+            emailVerificationCreatedAt: string | null;
+            password: string | null;
+            passwordResetNonce: string | null;
+            passwordResetCreatedAt: string | null;
+            twoFactorAuthenticationEnabled: number;
+            twoFactorAuthenticationSecret: string | null;
+            twoFactorAuthenticationRecoveryCodes: string | null;
+            avatarColor:
+              | "red"
+              | "orange"
+              | "amber"
+              | "yellow"
+              | "lime"
+              | "green"
+              | "emerald"
+              | "teal"
+              | "cyan"
+              | "sky"
+              | "blue"
+              | "indigo"
+              | "violet"
+              | "purple"
+              | "fuchsia"
+              | "pink"
+              | "rose";
+            avatarImage: string | null;
+            userRole:
+              | "userRoleSystemAdministrator"
+              | "userRoleStaff"
+              | "userRoleUser";
+            lastSeenOnlineAt: string;
+            darkMode:
+              | "userDarkModeSystem"
+              | "userDarkModeLight"
+              | "userDarkModeDark";
+            sidebarWidth: number;
+            emailNotificationsForAllMessages: number;
+            emailNotificationsForMessagesIncludingAMention: number;
+            emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+            emailNotificationsForMessagesInConversationsThatYouStarted: number;
+            userAnonymityPreferred:
+              | "userAnonymityPreferredNone"
+              | "userAnonymityPreferredCourseParticipationRoleStudents"
+              | "userAnonymityPreferredEveryone";
+            mostRecentlyVisitedCourseParticipation: number | null;
+          }>(
+            sql`
+            select
+              "id",
+              "publicId",
+              "name",
+              "email",
+              "emailVerificationEmail",
+              "emailVerificationNonce",
+              "emailVerificationCreatedAt",
+              "password",
+              "passwordResetNonce",
+              "passwordResetCreatedAt",
+              "twoFactorAuthenticationEnabled",
+              "twoFactorAuthenticationSecret",
+              "twoFactorAuthenticationRecoveryCodes",
+              "avatarColor",
+              "avatarImage",
+              "userRole",
+              "lastSeenOnlineAt",
+              "darkMode",
+              "sidebarWidth",
+              "emailNotificationsForAllMessages",
+              "emailNotificationsForMessagesIncludingAMention",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+              "emailNotificationsForMessagesInConversationsThatYouStarted",
+              "userAnonymityPreferred",
+              "mostRecentlyVisitedCourseParticipation"
+            from "users"
+            where "email" = ${userData.email};
+          `,
+          );
+          request.state.user ??= application.database.get<{
+            id: number;
+            publicId: string;
+            name: string;
+            email: string;
+            emailVerificationEmail: string | null;
+            emailVerificationNonce: string | null;
+            emailVerificationCreatedAt: string | null;
+            password: string | null;
+            passwordResetNonce: string | null;
+            passwordResetCreatedAt: string | null;
+            twoFactorAuthenticationEnabled: number;
+            twoFactorAuthenticationSecret: string | null;
+            twoFactorAuthenticationRecoveryCodes: string | null;
+            avatarColor:
+              | "red"
+              | "orange"
+              | "amber"
+              | "yellow"
+              | "lime"
+              | "green"
+              | "emerald"
+              | "teal"
+              | "cyan"
+              | "sky"
+              | "blue"
+              | "indigo"
+              | "violet"
+              | "purple"
+              | "fuchsia"
+              | "pink"
+              | "rose";
+            avatarImage: string | null;
+            userRole:
+              | "userRoleSystemAdministrator"
+              | "userRoleStaff"
+              | "userRoleUser";
+            lastSeenOnlineAt: string;
+            darkMode:
+              | "userDarkModeSystem"
+              | "userDarkModeLight"
+              | "userDarkModeDark";
+            sidebarWidth: number;
+            emailNotificationsForAllMessages: number;
+            emailNotificationsForMessagesIncludingAMention: number;
+            emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+            emailNotificationsForMessagesInConversationsThatYouStarted: number;
+            userAnonymityPreferred:
+              | "userAnonymityPreferredNone"
+              | "userAnonymityPreferredCourseParticipationRoleStudents"
+              | "userAnonymityPreferredEveryone";
+            mostRecentlyVisitedCourseParticipation: number | null;
+          }>(
+            sql`
+            select * from "users" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "users" (
+                    "publicId",
+                    "name",
+                    "email",
+                    "emailVerificationEmail",
+                    "emailVerificationNonce",
+                    "emailVerificationCreatedAt",
+                    "password",
+                    "passwordResetNonce",
+                    "passwordResetCreatedAt",
+                    "twoFactorAuthenticationEnabled",
+                    "twoFactorAuthenticationSecret",
+                    "twoFactorAuthenticationRecoveryCodes",
+                    "avatarColor",
+                    "avatarImage",
+                    "userRole",
+                    "lastSeenOnlineAt",
+                    "darkMode",
+                    "sidebarWidth",
+                    "emailNotificationsForAllMessages",
+                    "emailNotificationsForMessagesIncludingAMention",
+                    "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                    "emailNotificationsForMessagesInConversationsThatYouStarted",
+                    "userAnonymityPreferred",
+                    "mostRecentlyVisitedCourseParticipation"
+                  )
+                  values (
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${userData.name},
+                    ${userData.email},
+                    ${null},
+                    ${null},
+                    ${null},
+                    ${null},
+                    ${null},
+                    ${null},
+                    ${Number(false)},
+                    ${null},
+                    ${null},
+                    ${
+                      [
+                        "red",
+                        "orange",
+                        "amber",
+                        "yellow",
+                        "lime",
+                        "green",
+                        "emerald",
+                        "teal",
+                        "cyan",
+                        "sky",
+                        "blue",
+                        "indigo",
+                        "violet",
+                        "purple",
+                        "fuchsia",
+                        "pink",
+                        "rose",
+                      ][Math.floor(Math.random() * 17)]
+                    },
+                    ${null},
+                    ${
+                      application.database.get<{ count: number }>(
+                        sql`
+                          select count(*) as "count" from "users";
+                        `,
+                      )!.count === 0
+                        ? "userRoleSystemAdministrator"
+                        : "userRoleUser"
+                    },
+                    ${new Date().toISOString()},
+                    ${"userDarkModeSystem"},
+                    ${80 * 4},
+                    ${Number(false)},
+                    ${Number(true)},
+                    ${Number(true)},
+                    ${Number(true)},
+                    ${"userAnonymityPreferredNone"},
+                    ${null}
+                  );
+                `,
+              ).lastInsertRowid
+            };
+          `,
+          )!;
+        });
+        request.state.userSession = application.database.get<{
+          id: number;
+          publicId: string;
+          user: number;
+          createdAt: string;
+          needsTwoFactorAuthentication: number;
+        }>(
+          sql`
+          select * from "userSessions" where "id" = ${
+            application.database.run(
+              sql`
+                insert into "userSessions" (
+                  "publicId",
+                  "user",
+                  "createdAt",
+                  "needsTwoFactorAuthentication"
+                )
+                values (
+                  ${cryptoRandomString({
+                    length: 100,
+                    type: "alphanumeric",
+                  })},
+                  ${request.state.user!.id},
+                  ${new Date().toISOString()},
+                  ${Number(false)}
+                );
+              `,
+            ).lastInsertRowid
+          };
+        `,
+        )!;
+        response.setCookie!("session", request.state.userSession.publicId);
+        application.database.run(
+          sql`
+          insert into "_backgroundJobs" (
+            "type",
+            "startAt",
+            "parameters"
+          )
+          values (
+            'email',
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              from: `"Courselore" <${application.configuration.email.from}>`,
+              to: request.state.user!.email,
+              subject: "Sign in",
+              html: html`
+                <p>
+                  Someone signed in to Courselore with the following email
+                  address:
+                  <code>${request.state.user!.email}</code>
+                </p>
+                <p>
+                  If it was not you, please report the issue to
+                  <a
+                    href="mailto:${application.configuration
+                      .systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}?${new URLSearchParams(
+                      {
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user!.email}`,
+                      },
+                    )
+                      .toString()
+                      .replaceAll("+", "%20")}"
+                    >${application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}</a
+                  >
+                </p>
+              `,
+            })}
+          );
+        `,
+        );
+        response.redirect!(redirect);
       }
     },
   });
