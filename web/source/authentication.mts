@@ -3650,7 +3650,7 @@ export default async (application: Application): Promise<void> => {
                   )
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
-                    ${attributes.name!},
+                    ${attributes.name},
                     ${attributes.email},
                     ${null},
                     ${null},
