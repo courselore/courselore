@@ -3433,7 +3433,7 @@ export default async (application: Application): Promise<void> => {
       let samlResponse: Awaited<
         ReturnType<typeof saml.saml.validatePostResponseAsync>
       >;
-      let attributes: { email: string; name: string };
+      let userData: { email: string; name: string };
       try {
         if (
           typeof request.body.SAMLResponse !== "string" ||
@@ -3457,15 +3457,15 @@ export default async (application: Application): Promise<void> => {
           samlResponse.profile.issuer !== saml.configuration.options.idpIssuer
         )
           throw new Error();
-        attributes = saml.configuration.attributes(samlResponse.profile);
+        userData = saml.configuration.userData(samlResponse.profile);
         if (
-          typeof attributes.email !== "string" ||
-          !attributes.email.match(utilities.emailRegExp) ||
+          typeof userData.email !== "string" ||
+          !userData.email.match(utilities.emailRegExp) ||
           !saml.configuration.domains.some((domain) =>
-            `.${attributes.email.split("@")[1]}`.endsWith(`.${domain}`),
+            `.${userData.email.split("@")[1]}`.endsWith(`.${domain}`),
           ) ||
-          typeof attributes.name !== "string" ||
-          attributes.name.trim() === ""
+          typeof userData.name !== "string" ||
+          userData.name.trim() === ""
         )
           throw new Error();
       } catch (error) {
@@ -3562,7 +3562,7 @@ export default async (application: Application): Promise<void> => {
               "userAnonymityPreferred",
               "mostRecentlyVisitedCourseParticipation"
             from "users"
-            where "email" = ${attributes.email};
+            where "email" = ${userData.email};
           `,
         );
         request.state.user ??= application.database.get<{
@@ -3650,8 +3650,8 @@ export default async (application: Application): Promise<void> => {
                   )
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
-                    ${attributes.name},
-                    ${attributes.email},
+                    ${userData.name},
+                    ${userData.email},
                     ${null},
                     ${null},
                     ${null},

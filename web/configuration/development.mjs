@@ -16,15 +16,17 @@ export default {
       clientID: "saltire.lti.app",
       deploymentID: "cLWwj9cbmkSrCNsckEFBmA",
       authenticationRequestURL: "https://saltire.lti.app/platform/auth",
-      accessTokenURL: "https://saltire.lti.app/platform/token/a7dd58e457ce47339ef86a41f14c1885",
-      publicKeysetURL: "https://saltire.lti.app/platform/jwks/a7dd58e457ce47339ef86a41f14c1885",
+      accessTokenURL:
+        "https://saltire.lti.app/platform/token/a7dd58e457ce47339ef86a41f14c1885",
+      publicKeysetURL:
+        "https://saltire.lti.app/platform/jwks/a7dd58e457ce47339ef86a41f14c1885",
     },
   },
   saml: {
     "courselore-university": {
       name: "Courselore University",
       domains: ["example.com"],
-      attributes: (profile) => ({
+      userData: (profile) => ({
         email: profile.attributes.email,
         name: profile.attributes.firstName,
       }),

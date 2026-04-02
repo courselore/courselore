@@ -1,7 +1,7 @@
 # Changelog
 
 - Added the list of courses to the system settings.
-- Fixed SAML implementation, including removing single logout.
+- **Breaking change:** Fixed SAML implementation, including removing single logout.
 
 ## 10.0.9 · 2026-01-23
 
