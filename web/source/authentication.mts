@@ -3284,10 +3284,16 @@ export default async (application: Application): Promise<void> => {
         idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
           lti.deploymentID ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
-          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`
+          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
+        typeof idToken.email !== "string" ||
+        !idToken.email.match(utilities.emailRegExp) ||
+        !lti.domains.some((domain) =>
+          `.${(idToken.email as string).split("@")[1]}`.endsWith(`.${domain}`),
+        ) ||
+        typeof idToken.name !== "string" ||
+        idToken.name.trim() === ""
       )
         throw "validation";
-      // TODO
       if (request.state.user === undefined) {
       }
     },
