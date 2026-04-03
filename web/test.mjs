@@ -58,7 +58,16 @@ const session = "a7dd58e457ce47339ef86a41f14c1885";
 //   },
 // );
 
-const accessToken = "69cbe08a60a37";
+/*
+{
+  "access_token" : "69cf8dc156761",
+  "token_type" : "bearer",
+  "expires_in" : 3600,
+  "scope" : "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly"
+}
+*/
+
+const accessToken = "69cf8dc156761";
 
 const response = await fetch(
   `https://saltire.lti.app/platform/membership/context/${session}`,
@@ -69,6 +78,272 @@ const response = await fetch(
     },
   },
 );
+
+/*
+{
+  "id" : "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
+  "context" : {
+    "id" : "S3294476",
+    "label" : "ST101",
+    "title" : "Telecommunications 101"
+  },
+  "members" : [
+    {
+      "status" : "Active",
+      "user_id" : "29123",
+      "lis_person_sourcedid" : "sis:942a8dd9",
+      "name" : "John Logie Baird",
+      "family_name" : "Baird",
+      "given_name" : "John",
+      "email" : "jbaird@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "48502",
+      "lis_person_sourcedid" : "sis:4a945be3",
+      "name" : "Sean Connery",
+      "family_name" : "Connery",
+      "given_name" : "Sean",
+      "email" : "sconnery@uni.ac.uk",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "58873",
+      "lis_person_sourcedid" : "sis:9djhdf84",
+      "name" : "Sheena Easton",
+      "family_name" : "Easton",
+      "given_name" : "Sheena",
+      "email" : "seaston@uni.ac.uk",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+        "http://purl.imsglobal.org/vocab/lis/v2/membership/Instructor#TeachingAssistant"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "34885",
+      "lis_person_sourcedid" : "sis:23skjh458sw",
+      "name" : "Andy Murray",
+      "family_name" : "Murray",
+      "given_name" : "Andrew",
+      "email" : "amurray@uni.ac.uk",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+        "http://purl.imsglobal.org/vocab/lis/v2/membership/Instructor#TeachingAssistant"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "S495696",
+      "lis_person_sourcedid" : "sis:596f05a3",
+      "name" : "Robert Stevenson",
+      "family_name" : "Stevenson",
+      "given_name" : "Robert",
+      "email" : "rstevenson@uni.ac.uk",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "S693290",
+      "lis_person_sourcedid" : "sis:445feb40",
+      "name" : "Alexander Graham Bell",
+      "family_name" : "Bell",
+      "given_name" : "Alexander",
+      "email" : "agbell@uni.ac.uk",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "S4029466",
+      "lis_person_sourcedid" : "sis:f59ab344",
+      "name" : "Muriel Spark",
+      "family_name" : "Spark",
+      "given_name" : "Muriel",
+      "email" : "mspark@uni.ac.uk",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "S5938596",
+      "lis_person_sourcedid" : "sis:de49a458",
+      "name" : "Barbara Dickson",
+      "family_name" : "Dickson",
+      "given_name" : "Barbara",
+      "email" : "bdickson@uni.ac.uk",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "S92457221",
+      "lis_person_sourcedid" : "sis:b23dc88",
+      "name" : "Lewis Capaldi",
+      "family_name" : "Capaldi",
+      "given_name" : "Lewis",
+      "email" : "lcapaldi@uni.ac.uk",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "X23489",
+      "lis_person_sourcedid" : "sis:942a8dd9",
+      "name" : "Joanne K Rowling",
+      "family_name" : "Rowling",
+      "given_name" : "Joanne",
+      "email" : "jkrowling@uni.ac.uk",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Mentor"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user001",
+      "lis_person_sourcedid" : "sis:x001",
+      "name" : "Student User1",
+      "family_name" : "User1",
+      "given_name" : "Student",
+      "email" : "user001@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user002",
+      "lis_person_sourcedid" : "sis:x002",
+      "name" : "Student User2",
+      "family_name" : "User2",
+      "given_name" : "Student",
+      "email" : "user002@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user003",
+      "lis_person_sourcedid" : "sis:x003",
+      "name" : "Student User3",
+      "family_name" : "User3",
+      "given_name" : "Student",
+      "email" : "user003@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user004",
+      "lis_person_sourcedid" : "sis:x004",
+      "name" : "Student User4",
+      "family_name" : "User4",
+      "given_name" : "Student",
+      "email" : "user004@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user005",
+      "lis_person_sourcedid" : "sis:x005",
+      "name" : "Student User5",
+      "family_name" : "User5",
+      "given_name" : "Student",
+      "email" : "user005@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user006",
+      "lis_person_sourcedid" : "sis:x006",
+      "name" : "Student User6",
+      "family_name" : "User6",
+      "given_name" : "Student",
+      "email" : "user006@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user007",
+      "lis_person_sourcedid" : "sis:x007",
+      "name" : "Student User7",
+      "family_name" : "User7",
+      "given_name" : "Student",
+      "email" : "user007@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user008",
+      "lis_person_sourcedid" : "sis:x008",
+      "name" : "Student User8",
+      "family_name" : "User8",
+      "given_name" : "Student",
+      "email" : "user008@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user009",
+      "lis_person_sourcedid" : "sis:x009",
+      "name" : "Student User9",
+      "family_name" : "User9",
+      "given_name" : "Student",
+      "email" : "user009@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    },
+    {
+      "status" : "Active",
+      "user_id" : "user010",
+      "lis_person_sourcedid" : "sis:x010",
+      "name" : "Student User10",
+      "family_name" : "User10",
+      "given_name" : "Student",
+      "email" : "user010@uni.ac.uk",
+      "picture" : "https://saltire.lti.app/images/lti.gif",
+      "roles" : [
+        "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"
+      ]
+    }
+  ]
+}
+*/
 
 console.log(response.status);
 console.log(response.headers);
