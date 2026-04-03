@@ -3226,16 +3226,16 @@ export default async (application: Application): Promise<void> => {
       const lti =
         application.configuration.lti?.[request.pathname.ltiIdentifier];
       if (lti === undefined) return;
+      if (
+        typeof request.body.id_token !== "string" ||
+        typeof request.body.state !== "string"
+      )
+        throw "validation";
+      const ltiFlow = ltiFlows.get(request.body.state);
+      if (ltiFlow === undefined) throw "validation";
+      ltiFlows.delete(ltiFlow.state);
       let idToken: jose.JWTPayload;
       try {
-        if (
-          typeof request.body.id_token !== "string" ||
-          typeof request.body.state !== "string"
-        )
-          throw new Error();
-        const ltiFlow = ltiFlows.get(request.body.state);
-        if (ltiFlow === undefined) throw new Error();
-        ltiFlows.delete(ltiFlow.state);
         idToken = (
           await jose.jwtVerify(
             request.body.id_token,
@@ -3247,7 +3247,10 @@ export default async (application: Application): Promise<void> => {
             },
           )
         ).payload;
-        /*
+      } catch {
+        throw "validation";
+      }
+      /*
         {
           "https://purl.imsglobal.org/spec/lti/claim/roles": [
             "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
@@ -3268,41 +3271,27 @@ export default async (application: Application): Promise<void> => {
             ]
           },
         }
-        */
-        if (
-          idToken.nonce !== ltiFlow.nonce ||
-          (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
-          idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
-            "LtiResourceLinkRequest" ||
-          idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
-            "1.3.0" ||
-          idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
-            lti.deploymentID ||
-          idToken[
-            "https://purl.imsglobal.org/spec/lti/claim/target_link_uri"
-          ] !==
-            `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
-          typeof idToken.email !== "string" ||
-          !idToken.email.match(utilities.emailRegExp) ||
-          !lti.domains.some((domain) =>
-            `.${(idToken.email as string).split("@")[1]}`.endsWith(
-              `.${domain}`,
-            ),
-          ) ||
-          typeof idToken.name !== "string" ||
-          idToken.name.trim() === ""
-        )
-          throw new Error();
-      } catch (error) {
-        request.log("ERROR", String(error));
-        response.setFlash!(html`
-          <div class="flash--red">
-            Something went wrong. Please try signing in again.
-          </div>
-        `);
-        response.redirect!("/");
-        return;
-      }
+      */
+      if (
+        idToken.nonce !== ltiFlow.nonce ||
+        (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
+        idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
+          "LtiResourceLinkRequest" ||
+        idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
+          "1.3.0" ||
+        idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
+          lti.deploymentID ||
+        idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
+          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
+        typeof idToken.email !== "string" ||
+        !idToken.email.match(utilities.emailRegExp) ||
+        !lti.domains.some((domain) =>
+          `.${(idToken.email as string).split("@")[1]}`.endsWith(`.${domain}`),
+        ) ||
+        typeof idToken.name !== "string" ||
+        idToken.name.trim() === ""
+      )
+        throw "validation";
       if (request.state.user === undefined) {
         application.database.executeTransaction(() => {
           request.state.user = application.database.get<{
