@@ -4301,5 +4301,14 @@ export default async (application: Application): Promise<void> => {
       alter table "userSessions" drop column "samlIdentifier";
       alter table "userSessions" drop column "samlProfile";
     `,
+
+    sql`
+      alter table "courses" add column "ltiIdentifier" text null;
+      alter table "courses" add column "ltiContextId" text null;
+      alter table "courses" add column "ltiNamesAndRoleProvisioningServicesURL" text null;
+      create unique index "index_courses_ltiIdentifier_ltiContextId" on "courses" ("ltiIdentifier", "ltiContextId");
+
+      alter table "courseParticipations" add column "ltiUserId" text null;
+    `,
   );
 };
