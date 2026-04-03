@@ -3599,6 +3599,43 @@ export default async (application: Application): Promise<void> => {
         );
       }
       // TODO
+      // const course = application.database.get<{
+      //   id: number;
+      //   publicId: string;
+      //   name: string;
+      //   information: string | null;
+      //   invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+      //   invitationLinkCourseParticipationRoleInstructorsToken: string;
+      //   invitationLinkCourseParticipationRoleStudentsEnabled: number;
+      //   invitationLinkCourseParticipationRoleStudentsToken: string;
+      //   courseConversationRequiresTagging: number;
+      //   courseParticipationRoleStudentsAnonymityAllowed:
+      //     | "courseParticipationRoleStudentsAnonymityAllowedNone"
+      //     | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+      //     | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
+      //   courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+      //   courseState: "courseStateActive" | "courseStateArchived";
+      //   courseConversationsNextPublicId: number;
+      // }>(
+      //   sql`
+      //     select
+      //       "id",
+      //       "publicId",
+      //       "name",
+      //       "information",
+      //       "invitationLinkCourseParticipationRoleInstructorsEnabled",
+      //       "invitationLinkCourseParticipationRoleInstructorsToken",
+      //       "invitationLinkCourseParticipationRoleStudentsEnabled",
+      //       "invitationLinkCourseParticipationRoleStudentsToken",
+      //       "courseConversationRequiresTagging",
+      //       "courseParticipationRoleStudentsAnonymityAllowed",
+      //       "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+      //       "courseState",
+      //       "courseConversationsNextPublicId"
+      //     from "courses"
+      //     where "publicId" = ${request.pathname.coursePublicId};
+      //   `,
+      // );
       response.redirect!("/");
     },
   });
