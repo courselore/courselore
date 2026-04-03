@@ -3659,42 +3659,17 @@ export default async (application: Application): Promise<void> => {
           : "courseParticipationRoleStudent";
       if (course !== undefined) {
         application.database.executeTransaction(() => {
-          application.database.get<{
-            id: number;
-            publicId: string;
-            courseParticipationRole:
-              | "courseParticipationRoleInstructor"
-              | "courseParticipationRoleStudent";
-            decorationColor:
-              | "red"
-              | "orange"
-              | "amber"
-              | "yellow"
-              | "lime"
-              | "green"
-              | "emerald"
-              | "teal"
-              | "cyan"
-              | "violet"
-              | "purple"
-              | "fuchsia"
-              | "pink"
-              | "rose";
-            mostRecentlyVisitedCourseConversation: number | null;
-          }>(
-            sql`
-            select
-              "id",
-              "publicId",
-              "courseParticipationRole",
-              "decorationColor",
-              "mostRecentlyVisitedCourseConversation"
-            from "courseParticipations"
-            where
-              "user" = ${request.state.user.id} and
-              "course" = ${request.state.course.id};
-          `,
-          ) ??
+          if (
+            application.database.get(
+              sql`
+                select true
+                from "courseParticipations"
+                where
+                  "user" = ${request.state.user!.id} and
+                  "course" = ${course.id};
+              `,
+            ) === undefined
+          )
             application.database.run(
               sql`
                 insert into "courseParticipations" (
@@ -3707,9 +3682,9 @@ export default async (application: Application): Promise<void> => {
                 )
                 values (
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${request.state.user.id},
-                  ${request.state.course.id},
-                  ${"courseParticipationRoleInstructor"},
+                  ${request.state.user!.id},
+                  ${course.id},
+                  ${courseParticipationRole},
                   ${
                     [
                       "red",
@@ -3731,7 +3706,7 @@ export default async (application: Application): Promise<void> => {
                         sql`
                           select count(*) as "count"
                           from "courseParticipations"
-                          where "user" = ${request.state.user.id};
+                          where "user" = ${request.state.user!.id};
                         `,
                       )!.count % 14
                     ]
