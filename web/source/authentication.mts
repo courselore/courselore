@@ -3600,7 +3600,6 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       }
-      // TODO
       const course = application.database.get<{
         id: number;
         publicId: string;
@@ -3646,6 +3645,105 @@ export default async (application: Application): Promise<void> => {
             };
         `,
       );
+      const courseParticipationRole =
+        Array.isArray(
+          idToken["https://purl.imsglobal.org/spec/lti/claim/roles"],
+        ) &&
+        (idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
+          "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+        ) ||
+          idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
+            "Instructor",
+          ))
+          ? "courseParticipationRoleInstructor"
+          : "courseParticipationRoleStudent";
+      if (course !== undefined) {
+        application.database.executeTransaction(() => {
+          application.database.get<{
+            id: number;
+            publicId: string;
+            courseParticipationRole:
+              | "courseParticipationRoleInstructor"
+              | "courseParticipationRoleStudent";
+            decorationColor:
+              | "red"
+              | "orange"
+              | "amber"
+              | "yellow"
+              | "lime"
+              | "green"
+              | "emerald"
+              | "teal"
+              | "cyan"
+              | "violet"
+              | "purple"
+              | "fuchsia"
+              | "pink"
+              | "rose";
+            mostRecentlyVisitedCourseConversation: number | null;
+          }>(
+            sql`
+            select
+              "id",
+              "publicId",
+              "courseParticipationRole",
+              "decorationColor",
+              "mostRecentlyVisitedCourseConversation"
+            from "courseParticipations"
+            where
+              "user" = ${request.state.user.id} and
+              "course" = ${request.state.course.id};
+          `,
+          ) ??
+            application.database.run(
+              sql`
+                insert into "courseParticipations" (
+                  "publicId",
+                  "user",
+                  "course",
+                  "courseParticipationRole",
+                  "decorationColor",
+                  "mostRecentlyVisitedCourseConversation"
+                )
+                values (
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${request.state.user.id},
+                  ${request.state.course.id},
+                  ${"courseParticipationRoleInstructor"},
+                  ${
+                    [
+                      "red",
+                      "orange",
+                      "amber",
+                      "yellow",
+                      "lime",
+                      "green",
+                      "emerald",
+                      "teal",
+                      "cyan",
+                      "violet",
+                      "purple",
+                      "fuchsia",
+                      "pink",
+                      "rose",
+                    ][
+                      application.database.get<{ count: number }>(
+                        sql`
+                          select count(*) as "count"
+                          from "courseParticipations"
+                          where "user" = ${request.state.user.id};
+                        `,
+                      )!.count % 14
+                    ]
+                  },
+                  ${null}
+                );
+              `,
+            );
+        });
+        response.redirect!(`/courses/${course.publicId}`);
+        return;
+      }
       response.redirect!("/");
     },
   });
