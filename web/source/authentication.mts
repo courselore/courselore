@@ -3597,9 +3597,9 @@ export default async (application: Application): Promise<void> => {
             );
           `,
         );
-        // TODO
-        response.redirect!("/");
       }
+      // TODO
+      response.redirect!("/");
     },
   });
 
