@@ -3257,7 +3257,6 @@ export default async (application: Application): Promise<void> => {
             "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
           ],
           "https://purl.imsglobal.org/spec/lti/claim/context": {
-            "id": "S3294476",
             "type": [
               "CourseSection"
             ],
@@ -3290,7 +3289,10 @@ export default async (application: Application): Promise<void> => {
           `.${(idToken.email as string).split("@")[1]}`.endsWith(`.${domain}`),
         ) ||
         typeof idToken.name !== "string" ||
-        idToken.name.trim() === ""
+        idToken.name.trim() === "" ||
+        typeof (
+          idToken["https://purl.imsglobal.org/spec/lti/claim/context"] as any
+        )?.id !== "string"
       )
         throw "validation";
       if (request.state.user === undefined) {
@@ -3599,43 +3601,51 @@ export default async (application: Application): Promise<void> => {
         );
       }
       // TODO
-      // const course = application.database.get<{
-      //   id: number;
-      //   publicId: string;
-      //   name: string;
-      //   information: string | null;
-      //   invitationLinkCourseParticipationRoleInstructorsEnabled: number;
-      //   invitationLinkCourseParticipationRoleInstructorsToken: string;
-      //   invitationLinkCourseParticipationRoleStudentsEnabled: number;
-      //   invitationLinkCourseParticipationRoleStudentsToken: string;
-      //   courseConversationRequiresTagging: number;
-      //   courseParticipationRoleStudentsAnonymityAllowed:
-      //     | "courseParticipationRoleStudentsAnonymityAllowedNone"
-      //     | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-      //     | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-      //   courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
-      //   courseState: "courseStateActive" | "courseStateArchived";
-      //   courseConversationsNextPublicId: number;
-      // }>(
-      //   sql`
-      //     select
-      //       "id",
-      //       "publicId",
-      //       "name",
-      //       "information",
-      //       "invitationLinkCourseParticipationRoleInstructorsEnabled",
-      //       "invitationLinkCourseParticipationRoleInstructorsToken",
-      //       "invitationLinkCourseParticipationRoleStudentsEnabled",
-      //       "invitationLinkCourseParticipationRoleStudentsToken",
-      //       "courseConversationRequiresTagging",
-      //       "courseParticipationRoleStudentsAnonymityAllowed",
-      //       "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
-      //       "courseState",
-      //       "courseConversationsNextPublicId"
-      //     from "courses"
-      //     where "publicId" = ${request.pathname.coursePublicId};
-      //   `,
-      // );
+      const course = application.database.get<{
+        id: number;
+        publicId: string;
+        name: string;
+        information: string | null;
+        invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+        invitationLinkCourseParticipationRoleInstructorsToken: string;
+        invitationLinkCourseParticipationRoleStudentsEnabled: number;
+        invitationLinkCourseParticipationRoleStudentsToken: string;
+        courseConversationRequiresTagging: number;
+        courseParticipationRoleStudentsAnonymityAllowed:
+          | "courseParticipationRoleStudentsAnonymityAllowedNone"
+          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+          | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
+        courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+        courseState: "courseStateActive" | "courseStateArchived";
+        courseConversationsNextPublicId: number;
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "name",
+            "information",
+            "invitationLinkCourseParticipationRoleInstructorsEnabled",
+            "invitationLinkCourseParticipationRoleInstructorsToken",
+            "invitationLinkCourseParticipationRoleStudentsEnabled",
+            "invitationLinkCourseParticipationRoleStudentsToken",
+            "courseConversationRequiresTagging",
+            "courseParticipationRoleStudentsAnonymityAllowed",
+            "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+            "courseState",
+            "courseConversationsNextPublicId"
+          from "courses"
+          where
+            "ltiIdentifier" = ${request.pathname.ltiIdentifier} and
+            "ltiContextId" = ${
+              (
+                idToken[
+                  "https://purl.imsglobal.org/spec/lti/claim/context"
+                ] as any
+              )?.id
+            };
+        `,
+      );
       response.redirect!("/");
     },
   });
