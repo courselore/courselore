@@ -2499,9 +2499,24 @@ export default async (application: Application): Promise<void> => {
                               student${courseParticipationsCourseParticipationRoleStudents.length ===
                               1
                                 ? ""
-                                : "s"}
-                            </div>
-                            $${courseParticipations.map(
+                                : "s"} /
+                              ${String(courseParticipations.filter(
+                                (courseParticipation) => {
+                                  const user = application.database.get<{ lastSeenOnlineAt: string }>(
+                                    sql`
+                                      select
+                                        "lastSeenOnlineAt"
+                                      from "users"
+                                      where "id" = ${courseParticipation.user};
+                                    `,
+                                  );
+                                  return (user) ?
+                                    user.lastSeenOnlineAt >= new Date(Date.now() - 6 * 60 * 1000).toISOString()
+                                    : false
+                                }
+                              ).length)} online
+                          </div>
+                          $${courseParticipations.map(
                               (courseParticipation) => {
                                 const user = application.database.get<{
                                   publicId: string;
