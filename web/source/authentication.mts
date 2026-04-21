@@ -2393,9 +2393,9 @@ export default async (application: Application): Promise<void> => {
             await Promise.all(
               JSON.parse(
                 request.state.user.twoFactorAuthenticationRecoveryCodes,
-              ).map((twoFactorAuthenticationCode: string) =>
+              ).map((twoFactorAuthenticationRecoveryCode: string) =>
                 argon2.verify(
-                  twoFactorAuthenticationCode,
+                  twoFactorAuthenticationRecoveryCode,
                   request.body.twoFactorAuthenticationRecoveryCode!,
                   application.privateConfiguration.argon2,
                 ),
