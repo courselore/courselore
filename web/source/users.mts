@@ -1761,10 +1761,14 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       request.state.user.emailVerificationEmail = request.body.email;
-      request.state.user.emailVerificationNonce = cryptoRandomString({
+      const emailVerificationNoncePlaintext = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
+      request.state.user.emailVerificationNonce = await argon2.hash(
+        emailVerificationNoncePlaintext,
+        application.privateConfiguration.argon2,
+      );
       request.state.user.emailVerificationCreatedAt = new Date().toISOString();
       application.database.run(
         sql`
@@ -1849,12 +1853,11 @@ export default async (application: Application): Promise<void> => {
                   If it was you, please confirm your email:
                   <a
                     href="https://${application.configuration
-                      .hostname}/authentication/email-verification/${request
-                      .state.user.emailVerificationNonce}${request.URL.search}"
+                      .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
+                      .URL.search}"
                     >https://${application.configuration
-                      .hostname}/authentication/email-verification/${request
-                      .state.user.emailVerificationNonce}${request.URL
-                      .search}</a
+                      .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
+                      .URL.search}</a
                   >
                 </p>
                 <p>
