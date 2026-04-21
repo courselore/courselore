@@ -1747,6 +1747,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         typeof request.pathname.emailVerificationNonce !== "string" ||
+        request.state.userSession === undefined ||
         request.state.user === undefined ||
         typeof request.state.user.emailVerificationEmail !== "string" ||
         typeof request.state.user.emailVerificationNonce !== "string" ||
@@ -1791,6 +1792,14 @@ export default async (application: Application): Promise<void> => {
             "emailVerificationNonce" = ${request.state.user.emailVerificationNonce},
             "emailVerificationCreatedAt" = ${request.state.user.emailVerificationCreatedAt}
           where "id" = ${request.state.user.id};
+        `,
+      );
+      application.database.run(
+        sql`
+          delete from "userSessions"
+          where
+            "id" != ${request.state.userSession.id} and
+            "user" = ${request.state.user.id};
         `,
       );
       response.setFlash!(html`
