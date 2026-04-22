@@ -3250,6 +3250,7 @@ export default async (application: Application): Promise<void> => {
   //           request.body.id_token,
   //           jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
   //           {
+  //             algorithms: ["RS256"],
   //             issuer: lti.platformID,
   //             audience: lti.clientID,
   //             subject: ltiFlow.subject,
