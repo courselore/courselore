@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import * as serverTypes from "@radically-straightforward/server";
 import cryptoRandomString from "crypto-random-string";
 import * as jose from "jose";
@@ -3086,17 +3085,13 @@ export default async (application: Application): Promise<void> => {
   >();
 
   if (application.commandLineArguments.values.type === "server")
-    node.backgroundJob(
-      { interval: 10 * 60 * 1000, firstRun: "delayed" },
-      () => {
-        for (const ltiFlow of ltiFlows.values())
-          if (
-            ltiFlow.createdAt <
-            new Date(Date.now() - 10 * 60 * 1000).toISOString()
-          )
-            ltiFlows.delete(ltiFlow.state);
-      },
-    );
+    node.backgroundJob({ interval: 5 * 60 * 1000, firstRun: "delayed" }, () => {
+      for (const ltiFlow of ltiFlows.values())
+        if (
+          ltiFlow.createdAt < new Date(Date.now() - 5 * 60 * 1000).toISOString()
+        )
+          ltiFlows.delete(ltiFlow.state);
+    });
 
   application.server?.push({
     method: "GET",
@@ -3165,7 +3160,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (typeof request.pathname.ltiIdentifier !== "string") return;
+      if (
+        request.liveConnection ||
+        typeof request.pathname.ltiIdentifier !== "string"
+      )
+        return;
       const lti =
         application.configuration.lti?.[request.pathname.ltiIdentifier];
       if (lti === undefined) return;
