@@ -19,7 +19,7 @@ const session = "a7dd58e457ce47339ef86a41f14c1885";
 //         .setAudience("https://saltire.lti.app/platform")
 //         .setSubject("saltire.lti.app")
 //         .setIssuedAt()
-//         .setExpirationTime("1 hour")
+//         .setExpirationTime("5 minutes")
 //         .sign(
 //           await jose.importPKCS8(
 //             `-----BEGIN PRIVATE KEY-----
