@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import * as serverTypes from "@radically-straightforward/server";
 import cryptoRandomString from "crypto-random-string";
 import * as jose from "jose";
@@ -3080,6 +3081,7 @@ export default async (application: Application): Promise<void> => {
       state: string;
       nonce: string;
       subject: string;
+      codeVerifier: string;
       createdAt: string;
     }
   >();
@@ -3191,6 +3193,7 @@ export default async (application: Application): Promise<void> => {
           type: "numeric",
         }),
         subject: requestBody.login_hint,
+        codeVerifier: cryptoRandomString({ length: 128, type: "alphanumeric" }),
         createdAt: new Date().toISOString(),
       };
       ltiFlows.set(ltiFlow.state, ltiFlow);
@@ -3208,6 +3211,12 @@ export default async (application: Application): Promise<void> => {
           ...(typeof requestBody.lti_message_hint === "string"
             ? { lti_message_hint: requestBody.lti_message_hint }
             : {}),
+          code_challenge: crypto.hash(
+            "sha256",
+            ltiFlow.codeVerifier,
+            "base64url",
+          ),
+          code_challenge_method: "S256",
         }).toString()}`,
       );
     },
