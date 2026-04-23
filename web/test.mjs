@@ -13,7 +13,7 @@ const session = "a7dd58e457ce47339ef86a41f14c1885";
 //       client_assertion_type:
 //         "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
 //       client_assertion: await new jose.SignJWT()
-//         .setProtectedHeader({ typ: "JWT", alg: "RS256" })
+//         .setProtectedHeader({ typ: "JWT", alg: "RS256" /* TODO: kid */ })
 //         .setJti("TODO")
 //         .setIssuer("saltire.lti.app")
 //         .setAudience("https://saltire.lti.app/platform")
