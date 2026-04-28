@@ -3374,13 +3374,6 @@ export default async (application: Application): Promise<void> => {
       /*
         TODO
         {
-          "https://purl.imsglobal.org/spec/lti/claim/context": {
-            "type": [
-              "CourseSection"
-            ],
-            "title": "Telecommunications 101",
-            "label": "ST101"
-          },
           "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
             "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
             "service_versions": [
