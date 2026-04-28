@@ -47,16 +47,16 @@ export type ApplicationCourseConversationMessageContent = {
       courseParticipation: {
         id: number;
         courseParticipationRole:
-        | "courseParticipationRoleInstructor"
-        | "courseParticipationRoleStudent";
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
       };
       courseConversation?: {
         id: number;
         publicId: string;
         courseConversationVisibility:
-        | "courseConversationVisibilityEveryone"
-        | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-        | "courseConversationVisibilityCourseConversationParticipations";
+          | "courseConversationVisibilityEveryone"
+          | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+          | "courseConversationVisibilityCourseConversationParticipations";
       };
       courseConversationMessage?: {
         publicId: string;
@@ -82,8 +82,8 @@ export type ApplicationCourseConversationMessageContent = {
           id: number;
           publicId: string;
           courseParticipationRole:
-          | "courseParticipationRoleInstructor"
-          | "courseParticipationRoleStudent";
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
         };
         courseConversation?: {
           publicId: string;
@@ -96,11 +96,11 @@ export type ApplicationCourseConversationMessageContent = {
         };
         courseConversationMessageContent?: string;
         mode?:
-        | "normal"
-        | "preview"
-        | "textContent"
-        | "programmaticEditingOfCourseConversationMessageContent"
-        | "emailNotification";
+          | "normal"
+          | "preview"
+          | "textContent"
+          | "programmaticEditingOfCourseConversationMessageContent"
+          | "emailNotification";
       }): Promise<HTML>;
       ({
         course,
@@ -119,8 +119,8 @@ export type ApplicationCourseConversationMessageContent = {
           id: number;
           publicId: string;
           courseParticipationRole:
-          | "courseParticipationRoleInstructor"
-          | "courseParticipationRoleStudent";
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
         };
         courseConversation?: {
           publicId: string;
@@ -239,13 +239,13 @@ export default async (application: Application): Promise<void> => {
           </button>
           <div type="popover">Link</div>
           $${!(
-      Boolean(
-        course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
-      ) === false &&
-      courseParticipation.courseParticipationRole ===
-      "courseParticipationRoleStudent"
-    )
-      ? html`
+            Boolean(
+              course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+            ) === false &&
+            courseParticipation.courseParticipationRole ===
+              "courseParticipationRoleStudent"
+          )
+            ? html`
                 <div
                   type="form"
                   method="POST"
@@ -304,7 +304,7 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </div>
               `
-      : html``}
+            : html``}
           <button
             type="button"
             class="button button--square button--icon button--transparent"
@@ -482,14 +482,14 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               $${application.database
-      .all<{
-        publicId: string;
-        user: number;
-        courseParticipationRole:
-        | "courseParticipationRoleInstructor"
-        | "courseParticipationRoleStudent";
-      }>(
-        sql`
+                .all<{
+                  publicId: string;
+                  user: number;
+                  courseParticipationRole:
+                    | "courseParticipationRoleInstructor"
+                    | "courseParticipationRoleStudent";
+                }>(
+                  sql`
                     select
                       "courseParticipations"."publicId" as "publicId",
                       "courseParticipations"."user" as "user",
@@ -498,14 +498,15 @@ export default async (application: Application): Promise<void> => {
                     join "users" on "courseParticipations"."user" = "users"."id"
                     where
                       "courseParticipations"."course" = ${course.id} and
-                      "courseParticipations"."id" != ${courseParticipation.id} $${courseConversation === undefined
-            ? sql``
-            : courseConversation.courseConversationVisibility ===
-              "courseConversationVisibilityEveryone"
-              ? sql``
-              : courseConversation.courseConversationVisibility ===
-                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                ? sql`
+                      "courseParticipations"."id" != ${courseParticipation.id} $${
+                        courseConversation === undefined
+                          ? sql``
+                          : courseConversation.courseConversationVisibility ===
+                              "courseConversationVisibilityEveryone"
+                            ? sql``
+                            : courseConversation.courseConversationVisibility ===
+                                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                              ? sql`
                                   and (
                                     "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' or (
                                       select true
@@ -516,9 +517,9 @@ export default async (application: Application): Promise<void> => {
                                     )
                                   )
                                 `
-                : courseConversation.courseConversationVisibility ===
-                  "courseConversationVisibilityCourseConversationParticipations"
-                  ? sql`
+                              : courseConversation.courseConversationVisibility ===
+                                  "courseConversationVisibilityCourseConversationParticipations"
+                                ? sql`
                                     and (
                                       select true
                                       from "courseConversationParticipations"
@@ -527,41 +528,41 @@ export default async (application: Application): Promise<void> => {
                                         "courseParticipations"."id" = "courseConversationParticipations"."courseParticipation"
                                     )
                                   `
-                  : (() => {
-                    throw new Error();
-                  })()
-          }
+                                : (() => {
+                                    throw new Error();
+                                  })()
+                      }
                     order by
                       "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
                       "users"."name" asc;
                   `,
-      )
-      .map((courseParticipation) => {
-        const courseParticipationUser = application.database.get<{
-          publicId: string;
-          name: string;
-          avatarColor:
-          | "red"
-          | "orange"
-          | "amber"
-          | "yellow"
-          | "lime"
-          | "green"
-          | "emerald"
-          | "teal"
-          | "cyan"
-          | "sky"
-          | "blue"
-          | "indigo"
-          | "violet"
-          | "purple"
-          | "fuchsia"
-          | "pink"
-          | "rose";
-          avatarImage: string | null;
-          lastSeenOnlineAt: string;
-        }>(
-          sql`
+                )
+                .map((courseParticipation) => {
+                  const courseParticipationUser = application.database.get<{
+                    publicId: string;
+                    name: string;
+                    avatarColor:
+                      | "red"
+                      | "orange"
+                      | "amber"
+                      | "yellow"
+                      | "lime"
+                      | "green"
+                      | "emerald"
+                      | "teal"
+                      | "cyan"
+                      | "sky"
+                      | "blue"
+                      | "indigo"
+                      | "violet"
+                      | "purple"
+                      | "fuchsia"
+                      | "pink"
+                      | "rose";
+                    avatarImage: string | null;
+                    lastSeenOnlineAt: string;
+                  }>(
+                    sql`
                       select
                         "publicId",
                         "name",
@@ -571,9 +572,9 @@ export default async (application: Application): Promise<void> => {
                       from "users"
                       where "id" = ${courseParticipation.user};
                     `,
-        );
-        if (courseParticipationUser === undefined) throw new Error();
-        return html`
+                  );
+                  if (courseParticipationUser === undefined) throw new Error();
+                  return html`
                     <button
                       type="button"
                       class="button button--rectangle button--transparent button--dropdown-menu"
@@ -592,8 +593,8 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       $${application.partials.userAvatar({
-          user: courseParticipationUser,
-        })}
+                        user: courseParticipationUser,
+                      })}
                       <div
                         css="${css`
                           margin-top: var(--size--0-5);
@@ -606,8 +607,8 @@ export default async (application: Application): Promise<void> => {
                           `}"
                           >${courseParticipationUser.name}</span
                         >$${courseParticipation.courseParticipationRole ===
-            "courseParticipationRoleInstructor"
-            ? html`<span
+                        "courseParticipationRoleInstructor"
+                          ? html`<span
                               css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
@@ -619,11 +620,11 @@ export default async (application: Application): Promise<void> => {
                             >
                               (instructor)</span
                             >`
-            : html``}
+                          : html``}
                       </div>
                     </button>
                   `;
-      })}
+                })}
             </div>
           </div>
           <button
@@ -688,11 +689,11 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               $${application.database
-      .all<{
-        publicId: string;
-        title: string;
-      }>(
-        sql`
+                .all<{
+                  publicId: string;
+                  title: string;
+                }>(
+                  sql`
                     select
                       "publicId",
                       "title"
@@ -700,14 +701,15 @@ export default async (application: Application): Promise<void> => {
                     where
                       "course" = ${course.id} and (
                         "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                        $${courseParticipation.courseParticipationRole ===
-            "courseParticipationRoleInstructor"
-            ? sql`
+                        $${
+                          courseParticipation.courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                            ? sql`
                                 or
                                 "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
                               `
-            : sql``
-          }
+                            : sql``
+                        }
                         or (
                           select true
                           from "courseConversationParticipations"
@@ -718,9 +720,9 @@ export default async (application: Application): Promise<void> => {
                       )
                     order by "id" desc;
                   `,
-      )
-      .map(
-        (courseConversation) => html`
+                )
+                .map(
+                  (courseConversation) => html`
                     <button
                       type="button"
                       class="button button--rectangle button--transparent button--dropdown-menu"
@@ -755,7 +757,7 @@ export default async (application: Application): Promise<void> => {
                       >
                     </button>
                   `,
-      )}
+                )}
             </div>
           </div>
         </div>
@@ -910,12 +912,12 @@ export default async (application: Application): Promise<void> => {
           `}"
           javascript="${javascript`
             const mayAttachFileOrImagesToCourseConversationMessageContent = ${!(
-        Boolean(
-          course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
-        ) === false &&
-        courseParticipation.courseParticipationRole ===
-        "courseParticipationRoleStudent"
-      )};
+              Boolean(
+                course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+              ) === false &&
+              courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleStudent"
+            )};
             this.onpaste = async (event) => {
               if (mayAttachFileOrImagesToCourseConversationMessageContent && 0 < event.clipboardData.files.length) {
                 event.preventDefault();
@@ -1036,7 +1038,7 @@ ${courseConversationMessageContent}</textarea
             .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
         ) === false &&
           request.state.courseParticipation.courseParticipationRole ===
-          "courseParticipationRoleStudent")
+            "courseParticipationRoleStudent")
       )
         return;
       request.body.attachments ??= [];
@@ -1236,10 +1238,10 @@ ${courseConversationMessageContent}</textarea
                 Help · Message formatting
               </div>
               $${await application.partials.courseConversationMessageContentProcessor(
-            {
-              course: request.state.course,
-              courseParticipation: request.state.courseParticipation,
-              courseConversationMessageContent: markdown`
+                {
+                  course: request.state.course,
+                  courseParticipation: request.state.courseParticipation,
+                  courseConversationMessageContent: markdown`
 <table>
 <thead>
 <tr>
@@ -1685,38 +1687,39 @@ const hello = "world";
 </tbody>
 </table>
                   `,
-              mode: "preview",
-            },
-          )}
+                  mode: "preview",
+                },
+              )}
               $${await application.partials.courseConversationMessageContentProcessor(
-            {
-              course: request.state.course,
-              courseParticipation: request.state.courseParticipation,
-              courseConversationMessageContent: markdown`
+                {
+                  course: request.state.course,
+                  courseParticipation: request.state.courseParticipation,
+                  courseConversationMessageContent: markdown`
 ---
 
-You may also use the buttons on the message content editor to ${!(
-                  Boolean(
-                    request.state.course
-                      .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
-                  ) === false &&
-                  request.state.courseParticipation
-                    .courseParticipationRole ===
-                  "courseParticipationRoleStudent"
-                )
-                  ? "attach files/images/videos/audios, "
-                  : ""
-                }create polls, \`@mention\` other course participants, \`#refer\` to other conversations and messages, and preview the message before sending it.
+You may also use the buttons on the message content editor to ${
+                    !(
+                      Boolean(
+                        request.state.course
+                          .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+                      ) === false &&
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                        "courseParticipationRoleStudent"
+                    )
+                      ? "attach files/images/videos/audios, "
+                      : ""
+                  }create polls, \`@mention\` other course participants, \`#refer\` to other conversations and messages, and preview the message before sending it.
 
 **Try it**
                   `,
-              mode: "preview",
-            },
-          )}
+                  mode: "preview",
+                },
+              )}
               $${application.partials.courseConversationMessageContentEditor({
-            course: request.state.course,
-            courseParticipation: request.state.courseParticipation,
-          })}
+                course: request.state.course,
+                courseParticipation: request.state.courseParticipation,
+              })}
             </div>
           `,
         }),
@@ -1730,25 +1733,25 @@ You may also use the buttons on the message content editor to ${!(
     courseConversation,
     courseConversationMessage,
     courseConversationMessageContent = courseConversationMessage?.content ??
-    (() => {
-      throw new Error();
-    })(),
+      (() => {
+        throw new Error();
+      })(),
     mode = "normal",
   }) => {
     return await (mode === "normal"
       ? application.database.cacheAsync(
-        JSON.stringify({
-          version: application.version,
-          coursePublicId: course.publicId,
-          courseParticipationPublicId: courseParticipation?.publicId,
-          courseConversationPublicId: courseConversation?.publicId,
-          courseConversationMessagePublicId:
-            courseConversationMessage?.publicId,
-          courseConversationMessageUpdatedAt:
-            courseConversationMessage?.updatedAt,
-        }),
-        courseConversationMessageContentProcessor,
-      )
+          JSON.stringify({
+            version: application.version,
+            coursePublicId: course.publicId,
+            courseParticipationPublicId: courseParticipation?.publicId,
+            courseConversationPublicId: courseConversation?.publicId,
+            courseConversationMessagePublicId:
+              courseConversationMessage?.publicId,
+            courseConversationMessageUpdatedAt:
+              courseConversationMessage?.updatedAt,
+          }),
+          courseConversationMessageContentProcessor,
+        )
       : courseConversationMessageContentProcessor());
     async function courseConversationMessageContentProcessor() {
       const mentions = new Set<string>();
@@ -1766,7 +1769,7 @@ You may also use the buttons on the message content editor to ${!(
                 if (
                   ((mode === "normal" && topLevel) ||
                     mode ===
-                    "programmaticEditingOfCourseConversationMessageContent") &&
+                      "programmaticEditingOfCourseConversationMessageContent") &&
                   typeof node.position?.start?.offset === "number" &&
                   typeof node.position?.end?.offset === "number"
                 )
@@ -1793,7 +1796,7 @@ You may also use the buttons on the message content editor to ${!(
               <body>
                 <div
                   key="courseConversationMessageContent ${courseConversationMessage?.publicId ??
-            ""}"
+                  ""}"
                   css="${css`
                     h1,
                     h2,
@@ -2234,9 +2237,9 @@ You may also use the buttons on the message content editor to ${!(
           element.outerHTML = html`<a
             href="https://${application.configuration
               .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                .publicId}?${new URLSearchParams({
-                  message: courseConversationMessage!.publicId,
-                }).toString()}"
+              .publicId}?${new URLSearchParams({
+              message: courseConversationMessage!.publicId,
+            }).toString()}"
             >[Video]</a
           >`;
         else if (element.parentElement.matches("a")) {
@@ -2255,9 +2258,9 @@ You may also use the buttons on the message content editor to ${!(
           element.outerHTML = html`<a
             href="https://${application.configuration
               .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                .publicId}?${new URLSearchParams({
-                  message: courseConversationMessage!.publicId,
-                }).toString()}"
+              .publicId}?${new URLSearchParams({
+              message: courseConversationMessage!.publicId,
+            }).toString()}"
             >[Audio]</a
           >`;
         else {
@@ -2275,8 +2278,8 @@ You may also use the buttons on the message content editor to ${!(
             <div>
               <a
                 href="https://${application.configuration
-              .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                .publicId}?${new URLSearchParams({
+                  .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                  .publicId}?${new URLSearchParams({
                   message: courseConversationMessage!.publicId,
                 }).toString()}"
                 >[Poll]</a
@@ -2332,7 +2335,7 @@ You may also use the buttons on the message content editor to ${!(
             (courseParticipation.courseParticipationRole ===
               "courseParticipationRoleInstructor" ||
               courseParticipation.id ===
-              courseConversationMessage?.createdByCourseParticipation)) ||
+                courseConversationMessage?.createdByCourseParticipation)) ||
             element.querySelector("input:checked") !== null ||
             course.courseState === "courseStateArchived")
         )
@@ -2342,10 +2345,10 @@ You may also use the buttons on the message content editor to ${!(
               html`
                 <details
                   css="${pollOption.votes.length === 0
-                  ? css`
+                    ? css`
                         margin: var(--size--0);
                       `
-                  : css`
+                    : css`
                         margin: var(--size--1) var(--size--0) var(--size--0)
                           var(--size--0);
                       `}"
@@ -2358,13 +2361,13 @@ You may also use the buttons on the message content editor to ${!(
                     `}"
                   >
                     $${0 < pollOption.votes.length
-                  ? html`
+                      ? html`
                           <div
                             style="width: ${String(
-                    Math.round(
-                      (pollOption.votes.length / votesCount) * 100,
-                    ),
-                  )}%;"
+                              Math.round(
+                                (pollOption.votes.length / votesCount) * 100,
+                              ),
+                            )}%;"
                             css="${css`
                               background-color: light-dark(
                                 var(--color--blue--500),
@@ -2377,7 +2380,7 @@ You may also use the buttons on the message content editor to ${!(
                             `}"
                           ></div>
                         `
-                  : html``}
+                      : html``}
                     ${String(pollOption.votes.length)}
                     vote${pollOption.votes.length !== 1 ? "s" : ""}
                   </summary>
@@ -2389,15 +2392,15 @@ You may also use the buttons on the message content editor to ${!(
                     `}"
                   >
                     $${pollOption.votes.map(
-                    (voteCourseParticipationPublicId: string) => {
-                      const courseConversationMessageContentPollOptionVoteCourseParticipation =
-                        application.database.get<{
-                          user: number;
-                          courseParticipationRole:
-                          | "courseParticipationRoleInstructor"
-                          | "courseParticipationRoleStudent";
-                        }>(
-                          sql`
+                      (voteCourseParticipationPublicId: string) => {
+                        const courseConversationMessageContentPollOptionVoteCourseParticipation =
+                          application.database.get<{
+                            user: number;
+                            courseParticipationRole:
+                              | "courseParticipationRoleInstructor"
+                              | "courseParticipationRoleStudent";
+                          }>(
+                            sql`
                               select
                                 "user",
                                 "courseParticipationRole"
@@ -2406,35 +2409,35 @@ You may also use the buttons on the message content editor to ${!(
                                 "publicId" = ${voteCourseParticipationPublicId} and
                                 "course" = ${course.id};
                             `,
-                        );
-                      const courseConversationMessageContentPollOptionVoteUser =
-                        courseConversationMessageContentPollOptionVoteCourseParticipation !==
+                          );
+                        const courseConversationMessageContentPollOptionVoteUser =
+                          courseConversationMessageContentPollOptionVoteCourseParticipation !==
                           undefined
-                          ? application.database.get<{
-                            publicId: string;
-                            name: string;
-                            avatarColor:
-                            | "red"
-                            | "orange"
-                            | "amber"
-                            | "yellow"
-                            | "lime"
-                            | "green"
-                            | "emerald"
-                            | "teal"
-                            | "cyan"
-                            | "sky"
-                            | "blue"
-                            | "indigo"
-                            | "violet"
-                            | "purple"
-                            | "fuchsia"
-                            | "pink"
-                            | "rose";
-                            avatarImage: string | null;
-                            lastSeenOnlineAt: string;
-                          }>(
-                            sql`
+                            ? application.database.get<{
+                                publicId: string;
+                                name: string;
+                                avatarColor:
+                                  | "red"
+                                  | "orange"
+                                  | "amber"
+                                  | "yellow"
+                                  | "lime"
+                                  | "green"
+                                  | "emerald"
+                                  | "teal"
+                                  | "cyan"
+                                  | "sky"
+                                  | "blue"
+                                  | "indigo"
+                                  | "violet"
+                                  | "purple"
+                                  | "fuchsia"
+                                  | "pink"
+                                  | "rose";
+                                avatarImage: string | null;
+                                lastSeenOnlineAt: string;
+                              }>(
+                                sql`
                                   select
                                     "publicId",
                                     "name",
@@ -2444,9 +2447,9 @@ You may also use the buttons on the message content editor to ${!(
                                   from "users"
                                   where "id" = ${courseConversationMessageContentPollOptionVoteCourseParticipation.user};
                                 `,
-                          )
-                          : undefined;
-                      return html`
+                              )
+                            : undefined;
+                        return html`
                           <div
                             css="${css`
                               display: flex;
@@ -2454,19 +2457,19 @@ You may also use the buttons on the message content editor to ${!(
                             `}"
                           >
                             $${application.partials.userAvatar({
-                        user:
-                          courseConversationMessageContentPollOptionVoteUser ??
-                          "courseParticipationDeleted",
-                      })}
+                              user:
+                                courseConversationMessageContentPollOptionVoteUser ??
+                                "courseParticipationDeleted",
+                            })}
                             <div
                               css="${css`
                                 margin-top: var(--size--0-5);
                               `}"
                             >
                               ${courseConversationMessageContentPollOptionVoteUser?.name ??
-                        "Deleted course participant"}$${courseConversationMessageContentPollOptionVoteCourseParticipation?.courseParticipationRole ===
-                          "courseParticipationRoleInstructor"
-                          ? html`<span
+                              "Deleted course participant"}$${courseConversationMessageContentPollOptionVoteCourseParticipation?.courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
+                                ? html`<span
                                     css="${css`
                                       font-size: var(--font-size--3);
                                       line-height: var(
@@ -2480,12 +2483,12 @@ You may also use the buttons on the message content editor to ${!(
                                   >
                                     (instructor)</span
                                   >`
-                          : html``}
+                                : html``}
                             </div>
                           </div>
                         `;
-                    },
-                  )}
+                      },
+                    )}
                   </div>
                 </details>
               `,
@@ -2511,8 +2514,8 @@ You may also use the buttons on the message content editor to ${!(
                   class="button button--rectangle button--transparent"
                 >
                   ${element.querySelector("input:checked") === null
-                ? "Vote"
-                : "Update vote"}
+                    ? "Vote"
+                    : "Update vote"}
                 </button>
               </div>
             `,
@@ -2523,8 +2526,8 @@ You may also use the buttons on the message content editor to ${!(
             method="PATCH"
             action="/courses/${course.publicId}${courseConversation !==
             undefined
-            ? `/conversations/${courseConversation.publicId}`
-            : ""}${courseConversationMessage !== undefined
+              ? `/conversations/${courseConversation.publicId}`
+              : ""}${courseConversationMessage !== undefined
               ? `/messages/${courseConversationMessage.publicId}`
               : ""}/polls/${String(elementIndex)}"
           >
@@ -2612,8 +2615,8 @@ You may also use the buttons on the message content editor to ${!(
               <div>
                 <a
                   href="https://${application.configuration
-                .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                  .publicId}${new URLSearchParams({
+                    .hostname}/courses/${course.publicId}/conversations/${courseConversation!
+                    .publicId}${new URLSearchParams({
                     message: courseConversationMessage!.publicId,
                   }).toString()}"
                   >[Mathematics]</a
@@ -2624,9 +2627,9 @@ You may also use the buttons on the message content editor to ${!(
             element.outerHTML = html`<a
               href="https://${application.configuration
                 .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                  .publicId}${new URLSearchParams({
-                    message: courseConversationMessage!.publicId,
-                  }).toString()}"
+                .publicId}${new URLSearchParams({
+                message: courseConversationMessage!.publicId,
+              }).toString()}"
               >[mathematics]</a
             >`;
           continue;
@@ -2677,9 +2680,9 @@ You may also use the buttons on the message content editor to ${!(
               ...(mode === "emailNotification"
                 ? { theme: "light-plus" }
                 : {
-                  themes: { light: "light-plus", dark: "dark-plus" },
-                  defaultColor: false,
-                }),
+                    themes: { light: "light-plus", dark: "dark-plus" },
+                    defaultColor: false,
+                  }),
             }),
           );
           if (
@@ -2769,8 +2772,8 @@ You may also use the buttons on the message content editor to ${!(
                     id: number;
                     user: number;
                     courseParticipationRole:
-                    | "courseParticipationRoleInstructor"
-                    | "courseParticipationRoleStudent";
+                      | "courseParticipationRoleInstructor"
+                      | "courseParticipationRoleStudent";
                   }>(
                     sql`
                       select
@@ -2797,11 +2800,11 @@ You may also use the buttons on the message content editor to ${!(
                   mentions.add(courseParticipationPublicId);
                   return html`<strong
                     $${courseParticipation !== undefined &&
-                      courseParticipation.id === mentionCourseParticipation.id
+                    courseParticipation.id === mentionCourseParticipation.id
                       ? html`class="highlight"`
                       : html``}
                     >@${mentionUser.name}${mentionCourseParticipation.courseParticipationRole ===
-                      "courseParticipationRoleInstructor"
+                    "courseParticipationRoleInstructor"
                       ? " (instructor)"
                       : ""}</strong
                   >`;
@@ -2832,17 +2835,19 @@ You may also use the buttons on the message content editor to ${!(
                         "publicId" = ${courseConversationPublicId} and
                         "course" = ${course.id} and (
                           "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                          $${courseParticipation !== undefined &&
-                        courseParticipation.courseParticipationRole ===
-                        "courseParticipationRoleInstructor"
-                        ? sql`
+                          $${
+                            courseParticipation !== undefined &&
+                            courseParticipation.courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
+                              ? sql`
                                   or
                                   "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
                                 `
-                        : sql``
-                      }
-                          $${courseParticipation !== undefined
-                        ? sql`
+                              : sql``
+                          }
+                          $${
+                            courseParticipation !== undefined
+                              ? sql`
                                   or (
                                     select true
                                     from "courseConversationParticipations"
@@ -2851,8 +2856,8 @@ You may also use the buttons on the message content editor to ${!(
                                       "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                                   )
                                 `
-                        : sql``
-                      }
+                              : sql``
+                          }
                           
                         );
                     `,
@@ -2873,15 +2878,16 @@ You may also use the buttons on the message content editor to ${!(
                         from "courseConversationMessages"
                         where
                           "publicId" = ${courseConversationMessagePublicId} and
-                          "courseConversation" = ${mentionCourseConversation.id} $${courseParticipation === undefined ||
-                          courseParticipation.courseParticipationRole ===
-                          "courseParticipationRoleStudent"
-                          ? sql`
+                          "courseConversation" = ${mentionCourseConversation.id} $${
+                            courseParticipation === undefined ||
+                            courseParticipation.courseParticipationRole ===
+                              "courseParticipationRoleStudent"
+                              ? sql`
                                   and
                                   "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone'
                                 `
-                          : sql``
-                        };
+                              : sql``
+                          };
                       `,
                     );
                   if (mentionCourseConversationMessage === undefined)
@@ -2889,8 +2895,8 @@ You may also use the buttons on the message content editor to ${!(
                   return html`
                     <a
                       href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?${new URLSearchParams(
-                    { message: mentionCourseConversationMessage.publicId },
-                  ).toString()}"
+                        { message: mentionCourseConversationMessage.publicId },
+                      ).toString()}"
                       class="link"
                       >${match}</a
                     >
@@ -2931,17 +2937,19 @@ You may also use the buttons on the message content editor to ${!(
               "publicId" = ${match.groups.courseConversationPublicId} and
               "course" = ${course.id} and (
                 "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                $${courseParticipation !== undefined &&
-              courseParticipation.courseParticipationRole ===
-              "courseParticipationRoleInstructor"
-              ? sql`
+                $${
+                  courseParticipation !== undefined &&
+                  courseParticipation.courseParticipationRole ===
+                    "courseParticipationRoleInstructor"
+                    ? sql`
                         or
                         "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
                       `
-              : sql``
-            }
-                $${courseParticipation !== undefined
-              ? sql`
+                    : sql``
+                }
+                $${
+                  courseParticipation !== undefined
+                    ? sql`
                         or (
                           select true
                           from "courseConversationParticipations"
@@ -2950,8 +2958,8 @@ You may also use the buttons on the message content editor to ${!(
                             "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                         )
                       `
-              : sql``
-            }
+                    : sql``
+                }
               );
           `,
         );
@@ -2968,15 +2976,16 @@ You may also use the buttons on the message content editor to ${!(
             from "courseConversationMessages"
             where
               "publicId" = ${match.groups.courseConversationMessagePublicId} and
-              "courseConversation" = ${mentionCourseConversation.id} $${courseParticipation === undefined ||
-              courseParticipation.courseParticipationRole ===
-              "courseParticipationRoleStudent"
-              ? sql`
+              "courseConversation" = ${mentionCourseConversation.id} $${
+                courseParticipation === undefined ||
+                courseParticipation.courseParticipationRole ===
+                  "courseParticipationRoleStudent"
+                  ? sql`
                       and
                       "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone'
                     `
-              : sql``
-            };
+                  : sql``
+              };
           `,
         );
         if (mentionCourseConversationMessage === undefined) continue;
@@ -3029,7 +3038,7 @@ You may also use the buttons on the message content editor to ${!(
     ) => {
       if (
         typeof request.pathname.courseConversationMessageContentPollIndex !==
-        "string" ||
+          "string" ||
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
@@ -3056,15 +3065,15 @@ You may also use the buttons on the message content editor to ${!(
             <html>
               <body>
                 $${await application.partials.courseConversationMessageContentProcessor(
-            {
-              course: request.state.course,
-              courseParticipation: request.state.courseParticipation,
-              courseConversation: request.state.courseConversation,
-              courseConversationMessage:
-                request.state.courseConversationMessage,
-              mode: "programmaticEditingOfCourseConversationMessageContent",
-            },
-          )}
+                  {
+                    course: request.state.course,
+                    courseParticipation: request.state.courseParticipation,
+                    courseConversation: request.state.courseConversation,
+                    courseConversationMessage:
+                      request.state.courseConversationMessage,
+                    mode: "programmaticEditingOfCourseConversationMessageContent",
+                  },
+                )}
               </body>
             </html>
           `,
@@ -3078,9 +3087,9 @@ You may also use the buttons on the message content editor to ${!(
         ...(
           document
             .querySelectorAll('[type~="poll"]')
-          [
-            Number(request.pathname.courseConversationMessageContentPollIndex)
-          ]?.querySelectorAll(":scope > ul > li") ?? []
+            [
+              Number(request.pathname.courseConversationMessageContentPollIndex)
+            ]?.querySelectorAll(":scope > ul > li") ?? []
         ).entries(),
       ].reverse()) {
         const votesElement =
@@ -3101,21 +3110,21 @@ You may also use the buttons on the message content editor to ${!(
           votesElement !== null
             ? JSON.parse(votesElement.getAttribute("data-position"))
             : (() => {
-              const position = JSON.parse(
-                courseConversationMessageContentPollOption.getAttribute(
-                  "data-position",
-                ),
-              );
-              const votesStart =
-                position.start +
-                (request.state.courseConversationMessage.content
-                  .slice(position.start)
-                  .match(/^-\s+\[[\sx]+\]\s+/)?.[0]?.length ??
-                  (() => {
-                    throw new Error();
-                  })());
-              return { start: votesStart, end: votesStart };
-            })();
+                const position = JSON.parse(
+                  courseConversationMessageContentPollOption.getAttribute(
+                    "data-position",
+                  ),
+                );
+                const votesStart =
+                  position.start +
+                  (request.state.courseConversationMessage.content
+                    .slice(position.start)
+                    .match(/^-\s+\[[\sx]+\]\s+/)?.[0]?.length ??
+                    (() => {
+                      throw new Error();
+                    })());
+                return { start: votesStart, end: votesStart };
+              })();
         request.state.courseConversationMessage.content =
           request.state.courseConversationMessage.content.slice(
             0,
@@ -3131,22 +3140,22 @@ You may also use the buttons on the message content editor to ${!(
             "updatedAt" = ${new Date().toISOString()},
             "content" = ${request.state.courseConversationMessage.content},
             "contentSearch" = ${utilities
-            .tokenize(
-              await application.partials.courseConversationMessageContentProcessor(
+              .tokenize(
+                await application.partials.courseConversationMessageContentProcessor(
+                  {
+                    course: request.state.course,
+                    courseConversationMessageContent:
+                      request.state.courseConversationMessage.content,
+                    mode: "textContent",
+                  },
+                ),
                 {
-                  course: request.state.course,
-                  courseConversationMessageContent:
-                    request.state.courseConversationMessage.content,
-                  mode: "textContent",
+                  stopWords: application.privateConfiguration.stopWords,
+                  stem: (token) => natural.PorterStemmer.stem(token),
                 },
-              ),
-              {
-                stopWords: application.privateConfiguration.stopWords,
-                stem: (token) => natural.PorterStemmer.stem(token),
-              },
-            )
-            .map((tokenWithPosition) => tokenWithPosition.token)
-            .join(" ")}
+              )
+              .map((tokenWithPosition) => tokenWithPosition.token)
+              .join(" ")}
           where "id" = ${request.state.courseConversationMessage.id};
         `,
       );
