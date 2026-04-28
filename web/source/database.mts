@@ -4309,6 +4309,7 @@ export default async (application: Application): Promise<void> => {
       create unique index "index_courses_ltiIdentifier_ltiContextId" on "courses" ("ltiIdentifier", "ltiContextId");
 
       alter table "courseParticipations" add column "ltiUserId" text null;
+      create unique index "index_courseParticipations_course_ltiUserId" on "courseParticipations" ("course", "ltiUserId");
     `,
   );
 };

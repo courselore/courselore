@@ -12,8 +12,8 @@ const session = "a7dd58e457ce47339ef86a41f14c1885";
 //         "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
 //       client_assertion_type:
 //         "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-//       client_assertion: await new jose.SignJWT()
-//         .setProtectedHeader({ typ: "JWT", alg: "RS256" })
+//       client_assertion: await new jose.SignJWT({"https://purl.imsglobal.org/spec/lti/claim/deployment_id": "cLWwj9cbmkSrCNsckEFBmA"})
+//         .setProtectedHeader({ typ: "JWT", alg: "RS256" /* TODO: kid */ })
 //         .setJti("TODO")
 //         .setIssuer("saltire.lti.app")
 //         .setAudience("https://saltire.lti.app/platform")
@@ -69,6 +69,7 @@ const session = "a7dd58e457ce47339ef86a41f14c1885";
 
 const accessToken = "69cf8dc156761";
 
+// TODO: Manage pagination: https://www.imsglobal.org/spec/lti-nrps/v2p0#limit-query-parameter
 const response = await fetch(
   `https://saltire.lti.app/platform/membership/context/${session}`,
   {
