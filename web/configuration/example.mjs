@@ -20,8 +20,8 @@ export default {
   //     name: "Example University",
   //     // The domains over which the Identity Provider has authority. It includes subdomains, for example, `computer-science.example-university.edu`.
   //     domains: ["example-university.edu", "example-university.com"],
-  //     // The `attributes` function receives as argument a `SAML.Profile` (https://github.com/node-saml/node-saml/blob/ff2d6756eff082609b203a115a87a1a21e33cfb8/src/types.ts#L234-L249) and must produce an `email` and `name`.
-  //     attributes: (profile) => ({
+  //     // The `userData` function receives as argument a `SAML.Profile` (https://github.com/node-saml/node-saml/blob/ff2d6756eff082609b203a115a87a1a21e33cfb8/src/types.ts#L234-L249) and must produce an `email` and `name`.
+  //     userData: (profile) => ({
   //       email: profile.attributes.email,
   //       name: profile.attributes.name,
   //     }),
