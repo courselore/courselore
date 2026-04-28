@@ -1,6 +1,9 @@
 # Changelog
 
+## 10.1.0 · 2026-04-28
+
 - Added the list of courses to the system settings.
+- Added online counter to course settings and system settings.
 - **Breaking change:** Fixed SAML implementation, including removing single logout.
 
 ## 10.0.9 · 2026-01-23
