@@ -305,8 +305,11 @@ export default async (application: Application): Promise<void> => {
                         role user /
                         ${String(
                           users.filter(
-                            (user) => user.lastSeenOnlineAt >= new Date(Date.now() - 6 * 60 * 1000).toISOString()
-                          ).length
+                            (user) =>
+                              new Date(
+                                Date.now() - 6 * 60 * 1000,
+                              ).toISOString() <= user.lastSeenOnlineAt,
+                          ).length,
                         )}
                         online
                       </div>
