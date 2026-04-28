@@ -1,6 +1,7 @@
 import util from "node:util";
 import path from "node:path";
 import os from "node:os";
+import url from "node:url";
 import fs from "node:fs/promises";
 import childProcess from "node:child_process";
 import server from "@radically-straightforward/server";
@@ -98,7 +99,7 @@ application.commandLineArguments = util.parseArgs({
   allowPositionals: true,
 }) as Application["commandLineArguments"];
 application.configuration = (
-  await import(path.resolve(application.commandLineArguments.positionals[0]))
+  await import(url.pathToFileURL(path.resolve(application.commandLineArguments.positionals[0])).href)
 ).default;
 application.configuration.dataDirectory ??= path.resolve("./data/");
 await fs.mkdir(application.configuration.dataDirectory, { recursive: true });
@@ -132,7 +133,7 @@ utilities.log(
   application.version,
   "START",
   application.commandLineArguments.values.type ??
-    `https://${application.configuration.hostname}`,
+  `https://${application.configuration.hostname}`,
   application.commandLineArguments.values.port ?? "",
 );
 process.once("beforeExit", () => {
@@ -140,7 +141,7 @@ process.once("beforeExit", () => {
     "COURSELORE",
     "STOP",
     application.commandLineArguments.values.type ??
-      `https://${application.configuration.hostname}`,
+    `https://${application.configuration.hostname}`,
     application.commandLineArguments.values.port ?? "",
   );
 });

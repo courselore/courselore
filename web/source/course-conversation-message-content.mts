@@ -2920,7 +2920,6 @@ You may also use the buttons on the message content editor to ${
         if (element.getAttribute("href") !== element.textContent) continue;
         const match = element.getAttribute("href").match(
           new RegExp(
-            // @ts-expect-error
             `^https://${RegExp.escape(application.configuration.hostname)}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
           ),
         );
