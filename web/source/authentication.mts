@@ -3403,7 +3403,24 @@ export default async (application: Application): Promise<void> => {
         idToken.name.trim() === "" ||
         typeof (
           idToken["https://purl.imsglobal.org/spec/lti/claim/context"] as any
-        )?.id !== "string"
+        )?.id !== "string" ||
+        typeof (
+          idToken[
+            "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+          ] as any
+        )?.["context_memberships_url"] !== "string" ||
+        !Array.isArray(
+          (
+            idToken[
+              "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+            ] as any
+          )?.["service_versions"],
+        ) ||
+        !(
+          idToken[
+            "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+          ] as any
+        )?.["service_versions"].includes("2.0")
       )
         throw "validation";
       if (request.state.user === undefined) {
