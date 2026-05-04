@@ -3735,7 +3735,7 @@ export default async (application: Application): Promise<void> => {
                     ]
                   },
                   ${null},
-                  ${TODO}
+                  ${ltiFlow.subject}
                 );
               `,
             );
