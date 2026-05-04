@@ -15,7 +15,7 @@
     "github-slugger": "^2.0.0",
     "jose": "^6.2.3",
     "linkedom": "^0.18.12",
-    "mathjax": "^4.1.1",
+    "mathjax": "^4.1.2",
     "natural": "^8.1.1",
     "node-forge": "^1.4.0",
     "nodemailer": "^8.0.7",
