@@ -3213,645 +3213,522 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  /*
-  TODO
-  {
-    "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiResourceLinkRequest",
-    "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
-    "https://purl.imsglobal.org/spec/lti/claim/resource_link": {
-      "id": "429785226",
-      "title": "Phone home",
-      "description": "Will ET phone home, or not; click to discover more."
-    },
-    "sub": "29123",
-    "https://purl.imsglobal.org/spec/lti/claim/roles": [
-      "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
-    ],
-    "name": "John Logie Baird",
-    "family_name": "Baird",
-    "given_name": "John",
-    "email": "jbaird@uni.ac.uk",
-    "https://purl.imsglobal.org/spec/lti/claim/lis": {
-      "person_sourcedid": "sis:942a8dd9",
-      "course_offering_sourcedid": "DD-ST101",
-      "course_section_sourcedid": "DD-ST101:C1"
-    },
-    "picture": "https://saltire.lti.app/images/lti.gif",
-    "https://purl.imsglobal.org/spec/lti/claim/context": {
-      "id": "S3294476",
-      "type": [
-        "CourseSection"
-      ],
-      "title": "Telecommunications 101",
-      "label": "ST101"
-    },
-    "https://purl.imsglobal.org/spec/lti/claim/tool_platform": {
-      "product_family_code": "jisc",
-      "version": "X2.0",
-      "guid": "vle.uni.ac.uk",
-      "name": "University of JISC",
-      "description": "A Higher Education establishment in a land far, far away.",
-      "contact_email": "vle@uni.ac.uk",
-      "url": "https://vle.uni.ac.uk/"
-    },
-    "https://purl.imsglobal.org/spec/lti/claim/launch_presentation": {
-      "return_url": "https://saltire.lti.app/platform",
-      "css_url": "https://saltire.lti.app/css/tc.css",
-      "locale": "en-GB",
-      "document_target": "frame"
-    },
-    "https://purl.imsglobal.org/spec/lti/claim/custom": {
-      "oauth2_access_token_url": "https://saltire.lti.app/platform/token/a7dd58e457ce47339ef86a41f14c1885",
-      "tc_profile_url": "https://saltire.lti.app/platform/profile/a7dd58e457ce47339ef86a41f14c1885",
-      "system_setting_url": "https://saltire.lti.app/platform/settings/system/a7dd58e457ce47339ef86a41f14c1885",
-      "context_setting_url": "https://saltire.lti.app/platform/settings/context/a7dd58e457ce47339ef86a41f14c1885",
-      "link_setting_url": "https://saltire.lti.app/platform/settings/link/a7dd58e457ce47339ef86a41f14c1885",
-      "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
-      "link_memberships_url": "https://saltire.lti.app/platform/membership/link/a7dd58e457ce47339ef86a41f14c1885"
-    },
-    "https://purl.imsglobal.org/spec/lti-bo/claim/basicoutcome": {
-      "lis_outcome_service_url": "https://saltire.lti.app/platform/outcomes/a7dd58e457ce47339ef86a41f14c1885",
-      "lis_result_sourcedid": "UzMyOTQ0NzY6Ojo0Mjk3ODUyMjY6OjoyOTEyMw=="
-    },
-    "https://purl.imsglobal.org/spec/lti/claim/ext": {
-      "outcome_data_values_accepted": "url,text",
-      "ims_lis_basic_outcome_url": "https://saltire.lti.app/platform/extoutcomes/a7dd58e457ce47339ef86a41f14c1885",
-      "ims_lis_resultvalue_sourcedids": "decimal,percentage,ratio,passfail,letteraf,letterafplus,freetext",
-      "ims_lis_memberships_url": "https://saltire.lti.app/platform/extmemberships/a7dd58e457ce47339ef86a41f14c1885",
-      "ims_lis_memberships_id": "4jflkkdf9s",
-      "ims_lti_tool_setting_url": "https://saltire.lti.app/platform/extsetting/a7dd58e457ce47339ef86a41f14c1885",
-      "ims_lti_tool_setting_id": "d94gjklf954kj"
-    },
-    "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
-      "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
-      "service_versions": [
-        "1.0",
-        "2.0"
-      ]
-    },
-    "https://purl.imsglobal.org/spec/lti-ags/claim/endpoint": {
-      "lineitems": "https://saltire.lti.app/platform/gradebook/a7dd58e457ce47339ef86a41f14c1885/S3294476/lineitems",
-      "lineitem": "https://saltire.lti.app/platform/gradebook/a7dd58e457ce47339ef86a41f14c1885/S3294476/lineitems/429785226",
-      "scope": [
-        "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
-        "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly",
-        "https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly",
-        "https://purl.imsglobal.org/spec/lti-ags/scope/score"
-      ]
-    },
-    "https://purl.imsglobal.org/spec/lti-ces/claim/caliper-endpoint-service": {
-      "caliper_endpoint_url": "https://lti.tools/caliper/event",
-      "caliper_federated_session_id": "KNlNRM0aQVhvgQPM",
-      "caliper_supported_versions": [
-        "http://purl.imsglobal.org/ctx/caliper/v1p1",
-        "http://purl.imsglobal.org/ctx/caliper/v1p1/ToolLaunchProfile-extension",
-        "http://purl.imsglobal.org/ctx/caliper/v1p2"
-      ],
-      "scopes": [
-        "https://purl.imsglobal.org/spec/lti-ces/scope/send"
-      ]
-    },
-    "iss": "https://saltire.lti.app/platform",
-    "aud": [
-      "saltire.lti.app"
-    ],
-    "azp": "saltire.lti.app",
-    "https://purl.imsglobal.org/spec/lti/claim/deployment_id": "cLWwj9cbmkSrCNsckEFBmA",
-    "https://purl.imsglobal.org/spec/lti/claim/target_link_uri": "https://localhost/authentication/lti/courselore-university/callback",
-    "nonce": "2746856646660081778135525764007839457812301629961659103396828202339628848210253708288617428785124430",
-    "iat": 1777392147,
-    "exp": 1777392207
-  }
-  */
-
-  application.server?.push({
-    method: "POST",
-    pathname: new RegExp(
-      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$",
-    ),
-    handler: async (
-      request: serverTypes.Request<
-        { ltiIdentifier: string },
-        {},
-        {},
-        {
-          id_token: string;
-          state: string;
-        },
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (typeof request.pathname.ltiIdentifier !== "string") return;
-      const lti =
-        application.configuration.lti?.[request.pathname.ltiIdentifier];
-      if (lti === undefined) return;
-      if (
-        typeof request.body.id_token !== "string" ||
-        typeof request.body.state !== "string"
-      )
-        throw "validation";
-      const ltiFlow = ltiFlows.get(request.body.state);
-      if (ltiFlow === undefined) throw "validation";
-      ltiFlows.delete(ltiFlow.state);
-      let idToken: jose.JWTPayload;
-      try {
-        idToken = (
-          await jose.jwtVerify(
-            request.body.id_token,
-            jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
-            {
-              algorithms: ["RS256"],
-              issuer: lti.platformID,
-              audience: lti.clientID,
-              subject: ltiFlow.subject,
-            },
-          )
-        ).payload;
-      } catch {
-        throw "validation";
-      }
-      /*
-        TODO
-        {
-          "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice": {
-            "context_memberships_url": "https://saltire.lti.app/platform/membership/context/a7dd58e457ce47339ef86a41f14c1885",
-            "service_versions": [
-              "1.0",
-              "2.0"
-            ]
-          },
-        }
-      */
-      if (
-        idToken.nonce !== ltiFlow.nonce ||
-        (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
-          "LtiResourceLinkRequest" ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
-          "1.3.0" ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
-          lti.deploymentID ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
-          `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
-        typeof idToken.email !== "string" ||
-        !idToken.email.match(utilities.emailRegExp) ||
-        !lti.domains.some((domain) =>
-          `.${(idToken.email as string).split("@")[1]}`.endsWith(`.${domain}`),
-        ) ||
-        typeof idToken.name !== "string" ||
-        idToken.name.trim() === "" ||
-        typeof (
-          idToken["https://purl.imsglobal.org/spec/lti/claim/context"] as any
-        )?.id !== "string" ||
-        typeof (
-          idToken[
-            "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
-          ] as any
-        )?.["context_memberships_url"] !== "string" ||
-        !Array.isArray(
-          (
-            idToken[
-              "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
-            ] as any
-          )?.["service_versions"],
-        ) ||
-        !(
-          idToken[
-            "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
-          ] as any
-        )?.["service_versions"].includes("2.0")
-      )
-        throw "validation";
-      if (request.state.user === undefined) {
-        application.database.executeTransaction(() => {
-          request.state.user =
-            application.database.get<{
-              id: number;
-              publicId: string;
-              name: string;
-              email: string;
-              emailVerificationEmail: string | null;
-              emailVerificationNonce: string | null;
-              emailVerificationCreatedAt: string | null;
-              password: string | null;
-              passwordResetNonce: string | null;
-              passwordResetCreatedAt: string | null;
-              twoFactorAuthenticationEnabled: number;
-              twoFactorAuthenticationSecret: string | null;
-              twoFactorAuthenticationRecoveryCodes: string | null;
-              avatarColor:
-                | "red"
-                | "orange"
-                | "amber"
-                | "yellow"
-                | "lime"
-                | "green"
-                | "emerald"
-                | "teal"
-                | "cyan"
-                | "sky"
-                | "blue"
-                | "indigo"
-                | "violet"
-                | "purple"
-                | "fuchsia"
-                | "pink"
-                | "rose";
-              avatarImage: string | null;
-              userRole:
-                | "userRoleSystemAdministrator"
-                | "userRoleStaff"
-                | "userRoleUser";
-              lastSeenOnlineAt: string;
-              darkMode:
-                | "userDarkModeSystem"
-                | "userDarkModeLight"
-                | "userDarkModeDark";
-              sidebarWidth: number;
-              emailNotificationsForAllMessages: number;
-              emailNotificationsForMessagesIncludingAMention: number;
-              emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-              emailNotificationsForMessagesInConversationsThatYouStarted: number;
-              userAnonymityPreferred:
-                | "userAnonymityPreferredNone"
-                | "userAnonymityPreferredCourseParticipationRoleStudents"
-                | "userAnonymityPreferredEveryone";
-              mostRecentlyVisitedCourseParticipation: number | null;
-            }>(
-              sql`
-                select
-                  "id",
-                  "publicId",
-                  "name",
-                  "email",
-                  "emailVerificationEmail",
-                  "emailVerificationNonce",
-                  "emailVerificationCreatedAt",
-                  "password",
-                  "passwordResetNonce",
-                  "passwordResetCreatedAt",
-                  "twoFactorAuthenticationEnabled",
-                  "twoFactorAuthenticationSecret",
-                  "twoFactorAuthenticationRecoveryCodes",
-                  "avatarColor",
-                  "avatarImage",
-                  "userRole",
-                  "lastSeenOnlineAt",
-                  "darkMode",
-                  "sidebarWidth",
-                  "emailNotificationsForAllMessages",
-                  "emailNotificationsForMessagesIncludingAMention",
-                  "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                  "emailNotificationsForMessagesInConversationsThatYouStarted",
-                  "userAnonymityPreferred",
-                  "mostRecentlyVisitedCourseParticipation"
-                from "users"
-                where "email" = ${idToken.email as string};
-              `,
-            ) ??
-            application.database.get<{
-              id: number;
-              publicId: string;
-              name: string;
-              email: string;
-              emailVerificationEmail: string | null;
-              emailVerificationNonce: string | null;
-              emailVerificationCreatedAt: string | null;
-              password: string | null;
-              passwordResetNonce: string | null;
-              passwordResetCreatedAt: string | null;
-              twoFactorAuthenticationEnabled: number;
-              twoFactorAuthenticationSecret: string | null;
-              twoFactorAuthenticationRecoveryCodes: string | null;
-              avatarColor:
-                | "red"
-                | "orange"
-                | "amber"
-                | "yellow"
-                | "lime"
-                | "green"
-                | "emerald"
-                | "teal"
-                | "cyan"
-                | "sky"
-                | "blue"
-                | "indigo"
-                | "violet"
-                | "purple"
-                | "fuchsia"
-                | "pink"
-                | "rose";
-              avatarImage: string | null;
-              userRole:
-                | "userRoleSystemAdministrator"
-                | "userRoleStaff"
-                | "userRoleUser";
-              lastSeenOnlineAt: string;
-              darkMode:
-                | "userDarkModeSystem"
-                | "userDarkModeLight"
-                | "userDarkModeDark";
-              sidebarWidth: number;
-              emailNotificationsForAllMessages: number;
-              emailNotificationsForMessagesIncludingAMention: number;
-              emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-              emailNotificationsForMessagesInConversationsThatYouStarted: number;
-              userAnonymityPreferred:
-                | "userAnonymityPreferredNone"
-                | "userAnonymityPreferredCourseParticipationRoleStudents"
-                | "userAnonymityPreferredEveryone";
-              mostRecentlyVisitedCourseParticipation: number | null;
-            }>(
-              sql`
-                select * from "users" where "id" = ${
-                  application.database.run(
-                    sql`
-                      insert into "users" (
-                        "publicId",
-                        "name",
-                        "email",
-                        "emailVerificationEmail",
-                        "emailVerificationNonce",
-                        "emailVerificationCreatedAt",
-                        "password",
-                        "passwordResetNonce",
-                        "passwordResetCreatedAt",
-                        "twoFactorAuthenticationEnabled",
-                        "twoFactorAuthenticationSecret",
-                        "twoFactorAuthenticationRecoveryCodes",
-                        "avatarColor",
-                        "avatarImage",
-                        "userRole",
-                        "lastSeenOnlineAt",
-                        "darkMode",
-                        "sidebarWidth",
-                        "emailNotificationsForAllMessages",
-                        "emailNotificationsForMessagesIncludingAMention",
-                        "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                        "emailNotificationsForMessagesInConversationsThatYouStarted",
-                        "userAnonymityPreferred",
-                        "mostRecentlyVisitedCourseParticipation"
-                      )
-                      values (
-                        ${cryptoRandomString({ length: 20, type: "numeric" })},
-                        ${idToken.name as string},
-                        ${idToken.email as string},
-                        ${null},
-                        ${null},
-                        ${null},
-                        ${null},
-                        ${null},
-                        ${null},
-                        ${Number(false)},
-                        ${null},
-                        ${null},
-                        ${
-                          [
-                            "red",
-                            "orange",
-                            "amber",
-                            "yellow",
-                            "lime",
-                            "green",
-                            "emerald",
-                            "teal",
-                            "cyan",
-                            "sky",
-                            "blue",
-                            "indigo",
-                            "violet",
-                            "purple",
-                            "fuchsia",
-                            "pink",
-                            "rose",
-                          ][Math.floor(Math.random() * 17)]
-                        },
-                        ${null},
-                        ${
-                          application.database.get<{ count: number }>(
-                            sql`
-                              select count(*) as "count" from "users";
-                            `,
-                          )!.count === 0
-                            ? "userRoleSystemAdministrator"
-                            : "userRoleUser"
-                        },
-                        ${new Date().toISOString()},
-                        ${"userDarkModeSystem"},
-                        ${80 * 4},
-                        ${Number(false)},
-                        ${Number(true)},
-                        ${Number(true)},
-                        ${Number(true)},
-                        ${"userAnonymityPreferredNone"},
-                        ${null}
-                      );
-                    `,
-                  ).lastInsertRowid
-                };
-              `,
-            )!;
-        });
-        request.state.userSession = application.database.get<{
-          id: number;
-          publicId: string;
-          user: number;
-          createdAt: string;
-          needsTwoFactorAuthentication: number;
-        }>(
-          sql`
-            select * from "userSessions" where "id" = ${
-              application.database.run(
-                sql`
-                  insert into "userSessions" (
-                    "publicId",
-                    "user",
-                    "createdAt",
-                    "needsTwoFactorAuthentication"
-                  )
-                  values (
-                    ${cryptoRandomString({
-                      length: 100,
-                      type: "alphanumeric",
-                    })},
-                    ${request.state.user!.id},
-                    ${new Date().toISOString()},
-                    ${Number(false)}
-                  );
-                `,
-              ).lastInsertRowid
-            };
-          `,
-        )!;
-        response.setCookie!("session", request.state.userSession.publicId);
-        application.database.run(
-          sql`
-            insert into "_backgroundJobs" (
-              "type",
-              "startAt",
-              "parameters"
-            )
-            values (
-              'email',
-              ${new Date().toISOString()},
-              ${JSON.stringify({
-                from: `"Courselore" <${application.configuration.email.from}>`,
-                to: request.state.user!.email,
-                subject: "Sign in",
-                html: html`
-                  <p>
-                    Someone signed in to Courselore with the following email
-                    address:
-                    <code>${request.state.user!.email}</code>
-                  </p>
-                  <p>
-                    If it was not you, please report the issue to
-                    <a
-                      href="mailto:${application.configuration
-                        .systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}?${new URLSearchParams(
-                        {
-                          subject: "Potential impersonation",
-                          body: `Email: ${request.state.user!.email}`,
-                        },
-                      )
-                        .toString()
-                        .replaceAll("+", "%20")}"
-                      >${application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}</a
-                    >
-                  </p>
-                `,
-              })}
-            );
-          `,
-        );
-      }
-      const course = application.database.get<{
-        id: number;
-        publicId: string;
-        name: string;
-        information: string | null;
-        invitationLinkCourseParticipationRoleInstructorsEnabled: number;
-        invitationLinkCourseParticipationRoleInstructorsToken: string;
-        invitationLinkCourseParticipationRoleStudentsEnabled: number;
-        invitationLinkCourseParticipationRoleStudentsToken: string;
-        courseConversationRequiresTagging: number;
-        courseParticipationRoleStudentsAnonymityAllowed:
-          | "courseParticipationRoleStudentsAnonymityAllowedNone"
-          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-          | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-        courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
-        courseState: "courseStateActive" | "courseStateArchived";
-        courseConversationsNextPublicId: number;
-      }>(
-        sql`
-          select
-            "id",
-            "publicId",
-            "name",
-            "information",
-            "invitationLinkCourseParticipationRoleInstructorsEnabled",
-            "invitationLinkCourseParticipationRoleInstructorsToken",
-            "invitationLinkCourseParticipationRoleStudentsEnabled",
-            "invitationLinkCourseParticipationRoleStudentsToken",
-            "courseConversationRequiresTagging",
-            "courseParticipationRoleStudentsAnonymityAllowed",
-            "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
-            "courseState",
-            "courseConversationsNextPublicId"
-          from "courses"
-          where
-            "ltiIdentifier" = ${request.pathname.ltiIdentifier} and
-            "ltiContextId" = ${
-              (
-                idToken[
-                  "https://purl.imsglobal.org/spec/lti/claim/context"
-                ] as any
-              )?.id
-            };
-        `,
-      );
-      const courseParticipationRole =
-        Array.isArray(
-          idToken["https://purl.imsglobal.org/spec/lti/claim/roles"],
-        ) &&
-        (idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
-          "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
-        ) ||
-          idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
-            "Instructor",
-          ))
-          ? "courseParticipationRoleInstructor"
-          : "courseParticipationRoleStudent";
-      if (course !== undefined) {
-        application.database.executeTransaction(() => {
-          if (
-            application.database.get(
-              sql`
-                select true
-                from "courseParticipations"
-                where
-                  "user" = ${request.state.user!.id} and
-                  "course" = ${course.id};
-              `,
-            ) === undefined
-          )
-            application.database.run(
-              sql`
-                insert into "courseParticipations" (
-                  "publicId",
-                  "user",
-                  "course",
-                  "courseParticipationRole",
-                  "decorationColor",
-                  "mostRecentlyVisitedCourseConversation",
-                  "ltiUserId"
-                )
-                values (
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${request.state.user!.id},
-                  ${course.id},
-                  ${courseParticipationRole},
-                  ${
-                    [
-                      "red",
-                      "orange",
-                      "amber",
-                      "yellow",
-                      "lime",
-                      "green",
-                      "emerald",
-                      "teal",
-                      "cyan",
-                      "violet",
-                      "purple",
-                      "fuchsia",
-                      "pink",
-                      "rose",
-                    ][
-                      application.database.get<{ count: number }>(
-                        sql`
-                          select count(*) as "count"
-                          from "courseParticipations"
-                          where "user" = ${request.state.user!.id};
-                        `,
-                      )!.count % 14
-                    ]
-                  },
-                  ${null},
-                  ${TODO}
-                );
-              `,
-            );
-        });
-        response.redirect!(`/courses/${course.publicId}`);
-        return;
-      }
-      response.redirect!("/");
-    },
-  });
+  // application.server?.push({
+  //   method: "POST",
+  //   pathname: new RegExp(
+  //     "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$",
+  //   ),
+  //   handler: async (
+  //     request: serverTypes.Request<
+  //       { ltiIdentifier: string },
+  //       {},
+  //       {},
+  //       {
+  //         id_token: string;
+  //         state: string;
+  //       },
+  //       Application["types"]["states"]["Authentication"]
+  //     >,
+  //     response,
+  //   ) => {
+  //     if (typeof request.pathname.ltiIdentifier !== "string") return;
+  //     const lti =
+  //       application.configuration.lti?.[request.pathname.ltiIdentifier];
+  //     if (lti === undefined) return;
+  //     if (
+  //       typeof request.body.id_token !== "string" ||
+  //       typeof request.body.state !== "string"
+  //     )
+  //       throw "validation";
+  //     const ltiFlow = ltiFlows.get(request.body.state);
+  //     if (ltiFlow === undefined) throw "validation";
+  //     ltiFlows.delete(ltiFlow.state);
+  //     let idToken: jose.JWTPayload;
+  //     try {
+  //       idToken = (
+  //         await jose.jwtVerify(
+  //           request.body.id_token,
+  //           jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
+  //           {
+  //             algorithms: ["RS256"],
+  //             issuer: lti.platformID,
+  //             audience: lti.clientID,
+  //             subject: ltiFlow.subject,
+  //           },
+  //         )
+  //       ).payload;
+  //     } catch {
+  //       throw "validation";
+  //     }
+  //     if (
+  //       idToken.nonce !== ltiFlow.nonce ||
+  //       (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
+  //         "LtiResourceLinkRequest" ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
+  //         "1.3.0" ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
+  //         lti.deploymentID ||
+  //       idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
+  //         `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
+  //       typeof idToken.email !== "string" ||
+  //       !idToken.email.match(utilities.emailRegExp) ||
+  //       !lti.domains.some((domain) =>
+  //         `.${(idToken.email as string).split("@")[1]}`.endsWith(`.${domain}`),
+  //       ) ||
+  //       typeof idToken.name !== "string" ||
+  //       idToken.name.trim() === "" ||
+  //       typeof (
+  //         idToken["https://purl.imsglobal.org/spec/lti/claim/context"] as any
+  //       )?.id !== "string" ||
+  //       typeof (
+  //         idToken[
+  //           "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+  //         ] as any
+  //       )?.["context_memberships_url"] !== "string" ||
+  //       !Array.isArray(
+  //         (
+  //           idToken[
+  //             "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+  //           ] as any
+  //         )?.["service_versions"],
+  //       ) ||
+  //       !(
+  //         idToken[
+  //           "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+  //         ] as any
+  //       )?.["service_versions"].includes("2.0")
+  //     )
+  //       throw "validation";
+  //     if (request.state.user === undefined) {
+  //       application.database.executeTransaction(() => {
+  //         request.state.user =
+  //           application.database.get<{
+  //             id: number;
+  //             publicId: string;
+  //             name: string;
+  //             email: string;
+  //             emailVerificationEmail: string | null;
+  //             emailVerificationNonce: string | null;
+  //             emailVerificationCreatedAt: string | null;
+  //             password: string | null;
+  //             passwordResetNonce: string | null;
+  //             passwordResetCreatedAt: string | null;
+  //             twoFactorAuthenticationEnabled: number;
+  //             twoFactorAuthenticationSecret: string | null;
+  //             twoFactorAuthenticationRecoveryCodes: string | null;
+  //             avatarColor:
+  //               | "red"
+  //               | "orange"
+  //               | "amber"
+  //               | "yellow"
+  //               | "lime"
+  //               | "green"
+  //               | "emerald"
+  //               | "teal"
+  //               | "cyan"
+  //               | "sky"
+  //               | "blue"
+  //               | "indigo"
+  //               | "violet"
+  //               | "purple"
+  //               | "fuchsia"
+  //               | "pink"
+  //               | "rose";
+  //             avatarImage: string | null;
+  //             userRole:
+  //               | "userRoleSystemAdministrator"
+  //               | "userRoleStaff"
+  //               | "userRoleUser";
+  //             lastSeenOnlineAt: string;
+  //             darkMode:
+  //               | "userDarkModeSystem"
+  //               | "userDarkModeLight"
+  //               | "userDarkModeDark";
+  //             sidebarWidth: number;
+  //             emailNotificationsForAllMessages: number;
+  //             emailNotificationsForMessagesIncludingAMention: number;
+  //             emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+  //             emailNotificationsForMessagesInConversationsThatYouStarted: number;
+  //             userAnonymityPreferred:
+  //               | "userAnonymityPreferredNone"
+  //               | "userAnonymityPreferredCourseParticipationRoleStudents"
+  //               | "userAnonymityPreferredEveryone";
+  //             mostRecentlyVisitedCourseParticipation: number | null;
+  //           }>(
+  //             sql`
+  //               select
+  //                 "id",
+  //                 "publicId",
+  //                 "name",
+  //                 "email",
+  //                 "emailVerificationEmail",
+  //                 "emailVerificationNonce",
+  //                 "emailVerificationCreatedAt",
+  //                 "password",
+  //                 "passwordResetNonce",
+  //                 "passwordResetCreatedAt",
+  //                 "twoFactorAuthenticationEnabled",
+  //                 "twoFactorAuthenticationSecret",
+  //                 "twoFactorAuthenticationRecoveryCodes",
+  //                 "avatarColor",
+  //                 "avatarImage",
+  //                 "userRole",
+  //                 "lastSeenOnlineAt",
+  //                 "darkMode",
+  //                 "sidebarWidth",
+  //                 "emailNotificationsForAllMessages",
+  //                 "emailNotificationsForMessagesIncludingAMention",
+  //                 "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+  //                 "emailNotificationsForMessagesInConversationsThatYouStarted",
+  //                 "userAnonymityPreferred",
+  //                 "mostRecentlyVisitedCourseParticipation"
+  //               from "users"
+  //               where "email" = ${idToken.email as string};
+  //             `,
+  //           ) ??
+  //           application.database.get<{
+  //             id: number;
+  //             publicId: string;
+  //             name: string;
+  //             email: string;
+  //             emailVerificationEmail: string | null;
+  //             emailVerificationNonce: string | null;
+  //             emailVerificationCreatedAt: string | null;
+  //             password: string | null;
+  //             passwordResetNonce: string | null;
+  //             passwordResetCreatedAt: string | null;
+  //             twoFactorAuthenticationEnabled: number;
+  //             twoFactorAuthenticationSecret: string | null;
+  //             twoFactorAuthenticationRecoveryCodes: string | null;
+  //             avatarColor:
+  //               | "red"
+  //               | "orange"
+  //               | "amber"
+  //               | "yellow"
+  //               | "lime"
+  //               | "green"
+  //               | "emerald"
+  //               | "teal"
+  //               | "cyan"
+  //               | "sky"
+  //               | "blue"
+  //               | "indigo"
+  //               | "violet"
+  //               | "purple"
+  //               | "fuchsia"
+  //               | "pink"
+  //               | "rose";
+  //             avatarImage: string | null;
+  //             userRole:
+  //               | "userRoleSystemAdministrator"
+  //               | "userRoleStaff"
+  //               | "userRoleUser";
+  //             lastSeenOnlineAt: string;
+  //             darkMode:
+  //               | "userDarkModeSystem"
+  //               | "userDarkModeLight"
+  //               | "userDarkModeDark";
+  //             sidebarWidth: number;
+  //             emailNotificationsForAllMessages: number;
+  //             emailNotificationsForMessagesIncludingAMention: number;
+  //             emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+  //             emailNotificationsForMessagesInConversationsThatYouStarted: number;
+  //             userAnonymityPreferred:
+  //               | "userAnonymityPreferredNone"
+  //               | "userAnonymityPreferredCourseParticipationRoleStudents"
+  //               | "userAnonymityPreferredEveryone";
+  //             mostRecentlyVisitedCourseParticipation: number | null;
+  //           }>(
+  //             sql`
+  //               select * from "users" where "id" = ${
+  //                 application.database.run(
+  //                   sql`
+  //                     insert into "users" (
+  //                       "publicId",
+  //                       "name",
+  //                       "email",
+  //                       "emailVerificationEmail",
+  //                       "emailVerificationNonce",
+  //                       "emailVerificationCreatedAt",
+  //                       "password",
+  //                       "passwordResetNonce",
+  //                       "passwordResetCreatedAt",
+  //                       "twoFactorAuthenticationEnabled",
+  //                       "twoFactorAuthenticationSecret",
+  //                       "twoFactorAuthenticationRecoveryCodes",
+  //                       "avatarColor",
+  //                       "avatarImage",
+  //                       "userRole",
+  //                       "lastSeenOnlineAt",
+  //                       "darkMode",
+  //                       "sidebarWidth",
+  //                       "emailNotificationsForAllMessages",
+  //                       "emailNotificationsForMessagesIncludingAMention",
+  //                       "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+  //                       "emailNotificationsForMessagesInConversationsThatYouStarted",
+  //                       "userAnonymityPreferred",
+  //                       "mostRecentlyVisitedCourseParticipation"
+  //                     )
+  //                     values (
+  //                       ${cryptoRandomString({ length: 20, type: "numeric" })},
+  //                       ${idToken.name as string},
+  //                       ${idToken.email as string},
+  //                       ${null},
+  //                       ${null},
+  //                       ${null},
+  //                       ${null},
+  //                       ${null},
+  //                       ${null},
+  //                       ${Number(false)},
+  //                       ${null},
+  //                       ${null},
+  //                       ${
+  //                         [
+  //                           "red",
+  //                           "orange",
+  //                           "amber",
+  //                           "yellow",
+  //                           "lime",
+  //                           "green",
+  //                           "emerald",
+  //                           "teal",
+  //                           "cyan",
+  //                           "sky",
+  //                           "blue",
+  //                           "indigo",
+  //                           "violet",
+  //                           "purple",
+  //                           "fuchsia",
+  //                           "pink",
+  //                           "rose",
+  //                         ][Math.floor(Math.random() * 17)]
+  //                       },
+  //                       ${null},
+  //                       ${
+  //                         application.database.get<{ count: number }>(
+  //                           sql`
+  //                             select count(*) as "count" from "users";
+  //                           `,
+  //                         )!.count === 0
+  //                           ? "userRoleSystemAdministrator"
+  //                           : "userRoleUser"
+  //                       },
+  //                       ${new Date().toISOString()},
+  //                       ${"userDarkModeSystem"},
+  //                       ${80 * 4},
+  //                       ${Number(false)},
+  //                       ${Number(true)},
+  //                       ${Number(true)},
+  //                       ${Number(true)},
+  //                       ${"userAnonymityPreferredNone"},
+  //                       ${null}
+  //                     );
+  //                   `,
+  //                 ).lastInsertRowid
+  //               };
+  //             `,
+  //           )!;
+  //       });
+  //       request.state.userSession = application.database.get<{
+  //         id: number;
+  //         publicId: string;
+  //         user: number;
+  //         createdAt: string;
+  //         needsTwoFactorAuthentication: number;
+  //       }>(
+  //         sql`
+  //           select * from "userSessions" where "id" = ${
+  //             application.database.run(
+  //               sql`
+  //                 insert into "userSessions" (
+  //                   "publicId",
+  //                   "user",
+  //                   "createdAt",
+  //                   "needsTwoFactorAuthentication"
+  //                 )
+  //                 values (
+  //                   ${cryptoRandomString({
+  //                     length: 100,
+  //                     type: "alphanumeric",
+  //                   })},
+  //                   ${request.state.user!.id},
+  //                   ${new Date().toISOString()},
+  //                   ${Number(false)}
+  //                 );
+  //               `,
+  //             ).lastInsertRowid
+  //           };
+  //         `,
+  //       )!;
+  //       response.setCookie!("session", request.state.userSession.publicId);
+  //       application.database.run(
+  //         sql`
+  //           insert into "_backgroundJobs" (
+  //             "type",
+  //             "startAt",
+  //             "parameters"
+  //           )
+  //           values (
+  //             'email',
+  //             ${new Date().toISOString()},
+  //             ${JSON.stringify({
+  //               from: `"Courselore" <${application.configuration.email.from}>`,
+  //               to: request.state.user!.email,
+  //               subject: "Sign in",
+  //               html: html`
+  //                 <p>
+  //                   Someone signed in to Courselore with the following email
+  //                   address:
+  //                   <code>${request.state.user!.email}</code>
+  //                 </p>
+  //                 <p>
+  //                   If it was not you, please report the issue to
+  //                   <a
+  //                     href="mailto:${application.configuration
+  //                       .systemAdministratorEmail ??
+  //                     "system-administrator@courselore.org"}?${new URLSearchParams(
+  //                       {
+  //                         subject: "Potential impersonation",
+  //                         body: `Email: ${request.state.user!.email}`,
+  //                       },
+  //                     )
+  //                       .toString()
+  //                       .replaceAll("+", "%20")}"
+  //                     >${application.configuration.systemAdministratorEmail ??
+  //                     "system-administrator@courselore.org"}</a
+  //                   >
+  //                 </p>
+  //               `,
+  //             })}
+  //           );
+  //         `,
+  //       );
+  //     }
+  //     const course = application.database.get<{
+  //       id: number;
+  //       publicId: string;
+  //       name: string;
+  //       information: string | null;
+  //       invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+  //       invitationLinkCourseParticipationRoleInstructorsToken: string;
+  //       invitationLinkCourseParticipationRoleStudentsEnabled: number;
+  //       invitationLinkCourseParticipationRoleStudentsToken: string;
+  //       courseConversationRequiresTagging: number;
+  //       courseParticipationRoleStudentsAnonymityAllowed:
+  //         | "courseParticipationRoleStudentsAnonymityAllowedNone"
+  //         | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+  //         | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
+  //       courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+  //       courseState: "courseStateActive" | "courseStateArchived";
+  //       courseConversationsNextPublicId: number;
+  //     }>(
+  //       sql`
+  //         select
+  //           "id",
+  //           "publicId",
+  //           "name",
+  //           "information",
+  //           "invitationLinkCourseParticipationRoleInstructorsEnabled",
+  //           "invitationLinkCourseParticipationRoleInstructorsToken",
+  //           "invitationLinkCourseParticipationRoleStudentsEnabled",
+  //           "invitationLinkCourseParticipationRoleStudentsToken",
+  //           "courseConversationRequiresTagging",
+  //           "courseParticipationRoleStudentsAnonymityAllowed",
+  //           "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+  //           "courseState",
+  //           "courseConversationsNextPublicId"
+  //         from "courses"
+  //         where
+  //           "ltiIdentifier" = ${request.pathname.ltiIdentifier} and
+  //           "ltiContextId" = ${
+  //             (
+  //               idToken[
+  //                 "https://purl.imsglobal.org/spec/lti/claim/context"
+  //               ] as any
+  //             )?.id
+  //           };
+  //       `,
+  //     );
+  //     const courseParticipationRole =
+  //       Array.isArray(
+  //         idToken["https://purl.imsglobal.org/spec/lti/claim/roles"],
+  //       ) &&
+  //       (idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
+  //         "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+  //       ) ||
+  //         idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
+  //           "Instructor",
+  //         ))
+  //         ? "courseParticipationRoleInstructor"
+  //         : "courseParticipationRoleStudent";
+  //     if (course !== undefined) {
+  //       application.database.executeTransaction(() => {
+  //         if (
+  //           application.database.get(
+  //             sql`
+  //               select true
+  //               from "courseParticipations"
+  //               where
+  //                 "user" = ${request.state.user!.id} and
+  //                 "course" = ${course.id};
+  //             `,
+  //           ) === undefined
+  //         )
+  //           application.database.run(
+  //             sql`
+  //               insert into "courseParticipations" (
+  //                 "publicId",
+  //                 "user",
+  //                 "course",
+  //                 "courseParticipationRole",
+  //                 "decorationColor",
+  //                 "mostRecentlyVisitedCourseConversation",
+  //                 "ltiUserId"
+  //               )
+  //               values (
+  //                 ${cryptoRandomString({ length: 20, type: "numeric" })},
+  //                 ${request.state.user!.id},
+  //                 ${course.id},
+  //                 ${courseParticipationRole},
+  //                 ${
+  //                   [
+  //                     "red",
+  //                     "orange",
+  //                     "amber",
+  //                     "yellow",
+  //                     "lime",
+  //                     "green",
+  //                     "emerald",
+  //                     "teal",
+  //                     "cyan",
+  //                     "violet",
+  //                     "purple",
+  //                     "fuchsia",
+  //                     "pink",
+  //                     "rose",
+  //                   ][
+  //                     application.database.get<{ count: number }>(
+  //                       sql`
+  //                         select count(*) as "count"
+  //                         from "courseParticipations"
+  //                         where "user" = ${request.state.user!.id};
+  //                       `,
+  //                     )!.count % 14
+  //                   ]
+  //                 },
+  //                 ${null},
+  //                 ${TODO}
+  //               );
+  //             `,
+  //           );
+  //       });
+  //       response.redirect!(`/courses/${course.publicId}`);
+  //       return;
+  //     }
+  //     response.redirect!("/");
+  //   },
+  // });
 
   const samls = (() => {
     const systemSettings = application.database.get<{
