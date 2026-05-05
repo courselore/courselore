@@ -3679,71 +3679,70 @@ export default async (application: Application): Promise<void> => {
             };
         `,
       );
-      if (course !== undefined) {
-        application.database.executeTransaction(() => {
-          if (
-            application.database.get(
-              sql`
-                select true
-                from "courseParticipations"
-                where
-                  "user" = ${request.state.user!.id} and
-                  "course" = ${course.id};
-              `,
-            ) === undefined
-          )
-            application.database.run(
-              sql`
-                insert into "courseParticipations" (
-                  "publicId",
-                  "user",
-                  "course",
-                  "courseParticipationRole",
-                  "decorationColor",
-                  "mostRecentlyVisitedCourseConversation",
-                  "ltiUserId"
-                )
-                values (
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${request.state.user!.id},
-                  ${course.id},
-                  ${courseParticipationRole},
-                  ${
-                    [
-                      "red",
-                      "orange",
-                      "amber",
-                      "yellow",
-                      "lime",
-                      "green",
-                      "emerald",
-                      "teal",
-                      "cyan",
-                      "violet",
-                      "purple",
-                      "fuchsia",
-                      "pink",
-                      "rose",
-                    ][
-                      application.database.get<{ count: number }>(
-                        sql`
-                          select count(*) as "count"
-                          from "courseParticipations"
-                          where "user" = ${request.state.user!.id};
-                        `,
-                      )!.count % 14
-                    ]
-                  },
-                  ${null},
-                  ${ltiFlow.subject}
-                );
-              `,
-            );
-        });
-        response.redirect!(`/courses/${course.publicId}`);
+      if (course === undefined) {
         return;
       }
-      response.redirect!("/");
+      application.database.executeTransaction(() => {
+        if (
+          application.database.get(
+            sql`
+              select true
+              from "courseParticipations"
+              where
+                "user" = ${request.state.user!.id} and
+                "course" = ${course.id};
+            `,
+          ) === undefined
+        )
+          application.database.run(
+            sql`
+              insert into "courseParticipations" (
+                "publicId",
+                "user",
+                "course",
+                "courseParticipationRole",
+                "decorationColor",
+                "mostRecentlyVisitedCourseConversation",
+                "ltiUserId"
+              )
+              values (
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${request.state.user!.id},
+                ${course.id},
+                ${courseParticipationRole},
+                ${
+                  [
+                    "red",
+                    "orange",
+                    "amber",
+                    "yellow",
+                    "lime",
+                    "green",
+                    "emerald",
+                    "teal",
+                    "cyan",
+                    "violet",
+                    "purple",
+                    "fuchsia",
+                    "pink",
+                    "rose",
+                  ][
+                    application.database.get<{ count: number }>(
+                      sql`
+                        select count(*) as "count"
+                        from "courseParticipations"
+                        where "user" = ${request.state.user!.id};
+                      `,
+                    )!.count % 14
+                  ]
+                },
+                ${null},
+                ${ltiFlow.subject}
+              );
+            `,
+          );
+      });
+      response.redirect!(`/courses/${course.publicId}`);
     },
   });
 
