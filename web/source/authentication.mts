@@ -3670,7 +3670,7 @@ export default async (application: Application): Promise<void> => {
               response,
               head: html`
                 <title>
-                  Connect a Learning Management System (LMS) course a with
+                  Connect a Learning Management System (LMS) course with a
                   Courselore course · Courselore
                 </title>
               `,
@@ -3689,7 +3689,7 @@ export default async (application: Application): Promise<void> => {
                       font-weight: 800;
                     `}"
                   >
-                    Connect a Learning Management System (LMS) course a with
+                    Connect a Learning Management System (LMS) course with a
                     Courselore course
                   </div>
                   $${(() => {
@@ -3718,63 +3718,59 @@ export default async (application: Application): Promise<void> => {
                     );
                     return html`
                       $${0 < courses.length
-                        ? html`
-                            <div>
-                              $${courses.map(
-                                (course) => html`
+                        ? courses.map(
+                            (course) => html`
+                              <div
+                                key="course-selector ${course.publicId}"
+                                type="form"
+                                method="PATCH"
+                                action="/courses/${course.publicId}/settings/TODO"
+                              >
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--transparent"
+                                >
                                   <div
-                                    key="course-selector ${course.publicId}"
-                                    type="form"
-                                    method="PATCH"
-                                    action="/courses/${course.publicId}/settings/TODO"
+                                    css="${css`
+                                      font-weight: 500;
+                                    `}"
                                   >
-                                    <button
-                                      type="submit"
-                                      class="button button--rectangle button--transparent"
-                                    >
-                                      <div
-                                        css="${css`
-                                          font-weight: 500;
-                                        `}"
-                                      >
-                                        ${course.name}
-                                      </div>
-                                      $${typeof course.information === "string"
-                                        ? html`
-                                            <div
-                                              css="${css`
-                                                font-size: var(--font-size--3);
-                                                line-height: var(
-                                                  --font-size--3--line-height
-                                                );
-                                                [key~="course-selector"]:not(
-                                                    .button--blue
-                                                  )
-                                                  & {
-                                                  color: light-dark(
-                                                    var(--color--slate--600),
-                                                    var(--color--slate--400)
-                                                  );
-                                                }
-                                                [key~="course-selector"].button--blue
-                                                  & {
-                                                  color: light-dark(
-                                                    var(--color--blue--200),
-                                                    var(--color--blue--200)
-                                                  );
-                                                }
-                                              `}"
-                                            >
-                                              ${course.information}
-                                            </div>
-                                          `
-                                        : html``}
-                                    </button>
+                                    ${course.name}
                                   </div>
-                                `,
-                              )}
-                            </div>
-                          `
+                                  $${typeof course.information === "string"
+                                    ? html`
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            [key~="course-selector"]:not(
+                                                .button--blue
+                                              )
+                                              & {
+                                              color: light-dark(
+                                                var(--color--slate--600),
+                                                var(--color--slate--400)
+                                              );
+                                            }
+                                            [key~="course-selector"].button--blue
+                                              & {
+                                              color: light-dark(
+                                                var(--color--blue--200),
+                                                var(--color--blue--200)
+                                              );
+                                            }
+                                          `}"
+                                        >
+                                          ${course.information}
+                                        </div>
+                                      `
+                                    : html``}
+                                </button>
+                              </div>
+                            `,
+                          )
                         : html`
                             <div>
                               You need to create the course in Courselore before
