@@ -3622,6 +3622,18 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       }
+      const courseParticipationRole =
+        Array.isArray(
+          idToken["https://purl.imsglobal.org/spec/lti/claim/roles"],
+        ) &&
+        (idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
+          "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+        ) ||
+          idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
+            "Instructor",
+          ))
+          ? "courseParticipationRoleInstructor"
+          : "courseParticipationRoleStudent";
       const course = application.database.get<{
         id: number;
         publicId: string;
@@ -3667,18 +3679,6 @@ export default async (application: Application): Promise<void> => {
             };
         `,
       );
-      const courseParticipationRole =
-        Array.isArray(
-          idToken["https://purl.imsglobal.org/spec/lti/claim/roles"],
-        ) &&
-        (idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
-          "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
-        ) ||
-          idToken["https://purl.imsglobal.org/spec/lti/claim/roles"].includes(
-            "Instructor",
-          ))
-          ? "courseParticipationRoleInstructor"
-          : "courseParticipationRoleStudent";
       if (course !== undefined) {
         application.database.executeTransaction(() => {
           if (
