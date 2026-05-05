@@ -3710,17 +3710,57 @@ export default async (application: Application): Promise<void> => {
                     Courselore course
                   </div>
                   <div>
+                    $${(() => {
+                      const courses = application.database.all<{
+                        id: number;
+                        publicId: string;
+                        name: string;
+                        information: string | null;
+                      }>(
+                        sql`
+                            select
+                              "courses"."id" as "id",
+                              "courses"."publicId" as "publicId",
+                              "courses"."name" as "name",
+                              "courses"."information" as "information"
+                            from "courses"
+                            join "courseParticipations" on
+                              "courses"."id" = "courseParticipations"."course" and
+                              "courseParticipations"."user" = ${request.state.user!.id} and
+                              "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
+                            where
+                              "courses"."courseState" = 'courseStateActive' and
+                              "courses"."ltiIdentifier" is null
+                            order by "courseParticipations"."id" desc;
+                          `,
+                      );
+                      const mayCreateCourse =
+                        request.state.systemSettings !== undefined &&
+                        ((request.state.systemSettings
+                          .userRolesWhoMayCreateCourses === "userRoleUser" &&
+                          (request.state.user!.userRole === "userRoleUser" ||
+                            request.state.user!.userRole === "userRoleStaff" ||
+                            request.state.user!.userRole ===
+                              "userRoleSystemAdministrator")) ||
+                          (request.state.systemSettings
+                            .userRolesWhoMayCreateCourses === "userRoleStaff" &&
+                            (request.state.user!.userRole === "userRoleStaff" ||
+                              request.state.user!.userRole ===
+                                "userRoleSystemAdministrator")) ||
+                          (request.state.systemSettings
+                            .userRolesWhoMayCreateCourses ===
+                            "userRoleSystemAdministrator" &&
+                            request.state.user!.userRole ===
+                              "userRoleSystemAdministrator"));
+                      return html``;
+                    })()}
                     $${application.database
                       .all<{ course: number }>(
                         sql`
                           select "courseParticipations"."course" as "course"
                           from "courseParticipations"
                           join "courses" on
-                            "courseParticipations"."course" = "courses"."id" and
-                            "courseParticipations"."user" = ${request.state.user!.id} and
-                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' and
-                            "courses"."courseState" = 'courseStateActive'
-                          order by "courseParticipations"."id" desc;
+                            ;
                         `,
                       )
                       .map((courseParticipation) => {
