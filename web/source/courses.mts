@@ -4349,6 +4349,69 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          ltiIdentifier: string;
+          ltiContextId: string;
+          ltiNamesAndRoleProvisioningServicesURL: string;
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      if (
+        typeof request.body.ltiIdentifier !== "string" ||
+        application.configuration.lti?.[request.body.ltiIdentifier] ===
+          undefined ||
+        typeof request.body.ltiContextId !== "string" ||
+        request.body.ltiContextId.trim() === "" ||
+        typeof request.body.ltiNamesAndRoleProvisioningServicesURL !==
+          "string" ||
+        (() => {
+          try {
+            new URL(request.body.ltiNamesAndRoleProvisioningServicesURL);
+            return false;
+          } catch {
+            return true;
+          }
+        })()
+      )
+        throw "validation";
+      application.database.run(
+        sql`
+          update "courses"
+          set
+            "ltiIdentifier" = ${request.body.ltiIdentifier},
+            "ltiContextId" = ${request.body.ltiContextId},
+            "ltiNamesAndRoleProvisioningServicesURL" = ${request.body.ltiNamesAndRoleProvisioningServicesURL}
+          where "id" = ${request.state.course.id};
+        `,
+      );
+      response.setFlash!(html`
+        <div class="flash--green">
+          Learning Management System (LMS) course connected successfully.
+        </div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.server?.push({
     method: "DELETE",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/participation$",
