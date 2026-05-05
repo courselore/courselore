@@ -3724,8 +3724,31 @@ export default async (application: Application): Promise<void> => {
                                 key="course-selector ${course.publicId}"
                                 type="form"
                                 method="PATCH"
-                                action="/courses/${course.publicId}/settings/TODO"
+                                action="/courses/${course.publicId}/settings/participations/lti"
                               >
+                                <input
+                                  type="hidden"
+                                  name="ltiIdentifier"
+                                  value="${request.pathname.ltiIdentifier!}"
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ltiContextId"
+                                  value="${(
+                                    idToken[
+                                      "https://purl.imsglobal.org/spec/lti/claim/context"
+                                    ] as any
+                                  )?.id}"
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ltiNamesAndRoleProvisioningServicesURL"
+                                  value="${(
+                                    idToken[
+                                      "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+                                    ] as any
+                                  )?.["context_memberships_url"]}"
+                                />
                                 <button
                                   type="submit"
                                   class="button button--rectangle button--transparent"
