@@ -30,6 +30,9 @@ export type ApplicationCourses = {
           courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
           courseState: "courseStateActive" | "courseStateArchived";
           courseConversationsNextPublicId: number;
+          ltiIdentifier: string | null;
+          ltiContextId: string | null;
+          ltiNamesAndRoleProvisioningServicesURL: string | null;
         };
         courseParticipation: {
           id: number;
@@ -236,6 +239,9 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
+        ltiIdentifier: string | null;
+        ltiContextId: string | null;
+        ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
             select * from "courses" where "id" = ${
@@ -253,7 +259,10 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleStudentsAnonymityAllowed",
                   "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
                   "courseState",
-                  "courseConversationsNextPublicId"
+                  "courseConversationsNextPublicId",
+                  "ltiIdentifier",
+                  "ltiContextId",
+                  "ltiNamesAndRoleProvisioningServicesURL"
                 )
                 values (
                   ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -267,7 +276,10 @@ export default async (application: Application): Promise<void> => {
                   ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
                   ${Number(true)},
                   ${"courseStateActive"},
-                  ${1}
+                  ${1},
+                  ${null},
+                  ${null},
+                  ${null}
                 );
               `,
               ).lastInsertRowid
@@ -381,6 +393,9 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
+        ltiIdentifier: string | null;
+        ltiContextId: string | null;
+        ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
           select
@@ -396,7 +411,10 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsAnonymityAllowed",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
-            "courseConversationsNextPublicId"
+            "courseConversationsNextPublicId",
+            "ltiIdentifier",
+            "ltiContextId",
+            "ltiNamesAndRoleProvisioningServicesURL"
           from "courses"
           where "publicId" = ${request.pathname.coursePublicId};
         `,
@@ -2424,6 +2442,41 @@ export default async (application: Application): Promise<void> => {
                           gap: var(--size--4);
                         `}"
                       >
+                        $${application.configuration.lti !== undefined
+                          ? html`
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
+                              >
+                                $${typeof request.state.course.ltiIdentifier ===
+                                "string"
+                                  ? html``
+                                  : html`
+                                      <div>
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--blue"
+                                          javascript="${javascript`
+                                            javascript.popover({ element: this, trigger: "click" });
+                                          `}"
+                                        >
+                                          Connect with a Learning Management
+                                          System (LMS) course
+                                        </button>
+                                        <div type="popover">
+                                          To connect a Courselore course with a
+                                          Learning Management System (LMS)
+                                          course, create a resource link to
+                                          Courselore (for example, in Moodle,
+                                          that is called an “activity”) .
+                                        </div>
+                                      </div>
+                                    `}
+                              </div>
+                            `
+                          : html``}
                         <div
                           type="form"
                           method="PATCH"
@@ -3326,6 +3379,9 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
+        ltiIdentifier: string | null;
+        ltiContextId: string | null;
+        ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
           select
@@ -3341,7 +3397,10 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsAnonymityAllowed",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
-            "courseConversationsNextPublicId"
+            "courseConversationsNextPublicId",
+            "ltiIdentifier",
+            "ltiContextId",
+            "ltiNamesAndRoleProvisioningServicesURL"
           from "courses"
           where
             "publicId" = ${request.pathname.coursePublicId} and (
@@ -3831,6 +3890,9 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
+        ltiIdentifier: string | null;
+        ltiContextId: string | null;
+        ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
           select
@@ -3846,7 +3908,10 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsAnonymityAllowed",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
-            "courseConversationsNextPublicId"
+            "courseConversationsNextPublicId",
+            "ltiIdentifier",
+            "ltiContextId",
+            "ltiNamesAndRoleProvisioningServicesURL"
           from "courses"
           where "publicId" = ${request.pathname.coursePublicId};
         `,
