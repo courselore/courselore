@@ -3716,24 +3716,6 @@ export default async (application: Application): Promise<void> => {
                         order by "courseParticipations"."id" desc;
                       `,
                     );
-                    const mayCreateCourse =
-                      request.state.systemSettings !== undefined &&
-                      ((request.state.systemSettings
-                        .userRolesWhoMayCreateCourses === "userRoleUser" &&
-                        (request.state.user!.userRole === "userRoleUser" ||
-                          request.state.user!.userRole === "userRoleStaff" ||
-                          request.state.user!.userRole ===
-                            "userRoleSystemAdministrator")) ||
-                        (request.state.systemSettings
-                          .userRolesWhoMayCreateCourses === "userRoleStaff" &&
-                          (request.state.user!.userRole === "userRoleStaff" ||
-                            request.state.user!.userRole ===
-                              "userRoleSystemAdministrator")) ||
-                        (request.state.systemSettings
-                          .userRolesWhoMayCreateCourses ===
-                          "userRoleSystemAdministrator" &&
-                          request.state.user!.userRole ===
-                            "userRoleSystemAdministrator"));
                     return html`
                       $${0 < courses.length
                         ? html`
@@ -3793,53 +3775,13 @@ export default async (application: Application): Promise<void> => {
                               )}
                             </div>
                           `
-                        : html``}
-                      $${mayCreateCourse
-                        ? html`
+                        : html`
                             <div>
-                              <a
-                                href="/courses/new?${new URLSearchParams({
-                                  ltiIdentifier: request.pathname.ltiIdentifier,
-                                  ltiContextId: (
-                                    idToken[
-                                      "https://purl.imsglobal.org/spec/lti/claim/context"
-                                    ] as any
-                                  )?.id,
-                                  ltiNamesAndRoleProvisioningServicesURL: (
-                                    idToken[
-                                      "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
-                                    ] as any
-                                  )?.["context_memberships_url"],
-                                  ...(typeof (
-                                    idToken[
-                                      "https://purl.imsglobal.org/spec/lti/claim/context"
-                                    ] as any
-                                  )?.title === "string"
-                                    ? {
-                                        name: (
-                                          idToken[
-                                            "https://purl.imsglobal.org/spec/lti/claim/context"
-                                          ] as any
-                                        )?.title,
-                                      }
-                                    : {}),
-                                }).toString()}"
-                                class="link"
-                                >Create a new course</a
-                              >
+                              You need to create the course in Courselore before
+                              you can connect a Learning Management System (LMS)
+                              course a with it.
                             </div>
-                          `
-                        : html``}
-                      $${courses.length === 0 && !mayCreateCourse
-                        ? html`
-                            <div>
-                              You need to contact a system administrator to
-                              create a Courselore course for you before you can
-                              connect a Learning Management System (LMS) course
-                              a with Courselore course.
-                            </div>
-                          `
-                        : html``}
+                          `}
                     `;
                   })()}
                 </div>
