@@ -3685,7 +3685,12 @@ export default async (application: Application): Promise<void> => {
             application.layouts.main({
               request,
               response,
-              head: html`<title>TODO · Courselore</title>`,
+              head: html`
+                <title>
+                  Connect a Learning Management System (LMS) course a with
+                  Courselore course · Courselore
+                </title>
+              `,
               body: html`
                 <div
                   css="${css`
@@ -3701,9 +3706,196 @@ export default async (application: Application): Promise<void> => {
                       font-weight: 800;
                     `}"
                   >
-                    TODO
+                    Connect a Learning Management System (LMS) course a with
+                    Courselore course
                   </div>
-                  <div>TODO</div>
+                  <div>
+                    $${application.database
+                      .all<{ course: number }>(
+                        sql`
+                          select "courseParticipations"."course" as "course"
+                          from "courseParticipations"
+                          join "courses" on
+                            "courseParticipations"."course" = "courses"."id" and
+                            "courseParticipations"."user" = ${request.state.user!.id} and
+                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' and
+                            "courses"."courseState" = 'courseStateActive'
+                          order by "courseParticipations"."id" desc;
+                        `,
+                      )
+                      .map((courseParticipation) => {
+                        const course = application.database.get<{
+                          id: number;
+                          publicId: string;
+                          name: string;
+                          information: string | null;
+                          courseState:
+                            | "courseStateActive"
+                            | "courseStateArchived";
+                        }>(
+                          sql`
+                            select
+                              "id",
+                              "publicId",
+                              "name",
+                              "information",
+                              "courseState"
+                            from "courses"
+                            where "id" = ${courseParticipation.course};
+                          `,
+                        );
+                        if (course === undefined) throw new Error();
+                        return html`
+                          <a
+                            key="course-selector ${course.publicId}"
+                            href="/courses/${course.publicId}"
+                            class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                              new RegExp(`^/courses/${course.publicId}(?:$|/)`),
+                            )
+                              ? "button--blue"
+                              : ""} button--dropdown-menu"
+                            css="${css`
+                              display: flex;
+                              gap: var(--size--2);
+                            `}"
+                            javascript="${javascript`
+                              this.onclick = () => {
+                                document.querySelector("body").click();
+                              };
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                flex: 1;
+                              `}"
+                            >
+                              <div
+                                css="${css`
+                                  font-weight: 500;
+                                `}"
+                              >
+                                ${course.name}
+                              </div>
+                              $${(() => {
+                                const courseInformationHTML = [
+                                  course.courseState === "courseStateArchived"
+                                    ? html`<span
+                                        css="${css`
+                                          font-weight: 700;
+                                          [key~="course-selector"]:not(
+                                              .button--blue
+                                            )
+                                            & {
+                                            color: light-dark(
+                                              var(--color--red--500),
+                                              var(--color--red--500)
+                                            );
+                                          }
+                                        `}"
+                                        >Archived</span
+                                      >`
+                                    : html``,
+                                  html`${course.information ?? ""}`,
+                                ]
+                                  .filter(
+                                    (courseInformationPart) =>
+                                      courseInformationPart !== "",
+                                  )
+                                  .join(" · ");
+                                return courseInformationHTML !== html``
+                                  ? html`
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          [key~="course-selector"]:not(
+                                              .button--blue
+                                            )
+                                            & {
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
+                                          }
+                                          [key~="course-selector"].button--blue
+                                            & {
+                                            color: light-dark(
+                                              var(--color--blue--200),
+                                              var(--color--blue--200)
+                                            );
+                                          }
+                                        `}"
+                                      >
+                                        $${courseInformationHTML}
+                                      </div>
+                                    `
+                                  : html``;
+                              })()}
+                            </div>
+                            <div
+                              css="${css`
+                                font-size: var(--size--1-5);
+                                line-height: var(--font-size--3-5--line-height);
+                                color: light-dark(
+                                  var(--color--blue--500),
+                                  var(--color--blue--500)
+                                );
+                              `} ${request.state.course!.id === course.id ||
+                              application.database.get(
+                                sql`
+                                  select true
+                                  from "courseConversationMessages"
+                                  join "courseConversations" on
+                                    "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                                    "courseConversations"."course" = ${course.id}
+                                    and (
+                                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                                      $${
+                                        courseParticipation.courseParticipationRole ===
+                                        "courseParticipationRoleInstructor"
+                                          ? sql`
+                                              or
+                                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                            `
+                                          : sql``
+                                      }
+                                      or (
+                                        select true
+                                        from "courseConversationParticipations"
+                                        where
+                                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                          "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                                      )
+                                    )
+                                  left join "courseConversationMessageViews" on
+                                    "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                                    "courseConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
+                                  where
+                                    $${
+                                      courseParticipation.courseParticipationRole !==
+                                      "courseParticipationRoleInstructor"
+                                        ? sql`
+                                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors' and
+                                          `
+                                        : sql``
+                                    }
+                                    "courseConversationMessageViews"."id" is null
+                                  limit 1;
+                                `,
+                              ) === undefined
+                                ? css`
+                                    visibility: hidden;
+                                  `
+                                : css``}"
+                            >
+                              <i class="bi bi-circle-fill"></i>
+                            </div>
+                          </a>
+                        `;
+                      })}
+                  </div>
                 </div>
               `,
             }),
