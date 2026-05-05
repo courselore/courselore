@@ -3680,6 +3680,68 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (course === undefined) {
+        if (courseParticipationRole === "courseParticipationRoleInstructor")
+          response.send(
+            application.layouts.main({
+              request,
+              response,
+              head: html`<title>TODO · Courselore</title>`,
+              body: html`
+                <div
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--2);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--4);
+                      line-height: var(--font-size--4--line-height);
+                      font-weight: 800;
+                    `}"
+                  >
+                    TODO
+                  </div>
+                  <div>TODO</div>
+                </div>
+              `,
+            }),
+          );
+        else if (courseParticipationRole === "courseParticipationRoleStudent")
+          response.send(
+            application.layouts.main({
+              request,
+              response,
+              head: html`<title>
+                Course configuration error · Courselore
+              </title>`,
+              body: html`
+                <div
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--2);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--4);
+                      line-height: var(--font-size--4--line-height);
+                      font-weight: 800;
+                    `}"
+                  >
+                    Course configuration error
+                  </div>
+                  <div>
+                    This is an issue with setting up the integration between
+                    your Learning Management System (LMS) and Courselore. Please
+                    contact your course instructors.
+                  </div>
+                </div>
+              `,
+            }),
+          );
         return;
       }
       application.database.executeTransaction(() => {
