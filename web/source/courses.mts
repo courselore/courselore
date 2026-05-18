@@ -4715,7 +4715,94 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      // TODO
+      for (const ltiCourseMember of ltiCourseMembers)
+        application.database.executeTransaction(() => {
+          if (
+            application.database.get(
+              sql`
+                select true
+                from "users"
+                where "email" = ${ltiCourseMember.email};
+              `,
+            ) === undefined
+          )
+            application.database.run(
+              sql`
+                insert into "users" (
+                  "publicId",
+                  "name",
+                  "email",
+                  "emailVerificationEmail",
+                  "emailVerificationNonce",
+                  "emailVerificationCreatedAt",
+                  "password",
+                  "passwordResetNonce",
+                  "passwordResetCreatedAt",
+                  "twoFactorAuthenticationEnabled",
+                  "twoFactorAuthenticationSecret",
+                  "twoFactorAuthenticationRecoveryCodes",
+                  "avatarColor",
+                  "avatarImage",
+                  "userRole",
+                  "lastSeenOnlineAt",
+                  "darkMode",
+                  "sidebarWidth",
+                  "emailNotificationsForAllMessages",
+                  "emailNotificationsForMessagesIncludingAMention",
+                  "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                  "emailNotificationsForMessagesInConversationsThatYouStarted",
+                  "userAnonymityPreferred",
+                  "mostRecentlyVisitedCourseParticipation"
+                )
+                values (
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${ltiCourseMember.name},
+                  ${ltiCourseMember.email},
+                  ${null},
+                  ${null},
+                  ${null},
+                  ${null},
+                  ${null},
+                  ${null},
+                  ${Number(false)},
+                  ${null},
+                  ${null},
+                  ${
+                    [
+                      "red",
+                      "orange",
+                      "amber",
+                      "yellow",
+                      "lime",
+                      "green",
+                      "emerald",
+                      "teal",
+                      "cyan",
+                      "sky",
+                      "blue",
+                      "indigo",
+                      "violet",
+                      "purple",
+                      "fuchsia",
+                      "pink",
+                      "rose",
+                    ][Math.floor(Math.random() * 17)]
+                  },
+                  ${null},
+                  ${"userRoleUser"},
+                  ${new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString()},
+                  ${"userDarkModeSystem"},
+                  ${80 * 4},
+                  ${Number(false)},
+                  ${Number(true)},
+                  ${Number(true)},
+                  ${Number(true)},
+                  ${"userAnonymityPreferredNone"},
+                  ${null}
+                );
+              `,
+            );
+        });
       response.setFlash!(html`
         <div class="flash--green">
           Course participants from Learning Management System (LMS) synced
