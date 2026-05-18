@@ -4594,7 +4594,7 @@ export default async (application: Application): Promise<void> => {
       const lti =
         application.configuration.lti?.[request.state.course.ltiIdentifier];
       if (lti === undefined) return;
-      const accessToken = await fetch(lti.accessTokenURL, {
+      const accessToken = (await (await fetch(lti.accessTokenURL, {
         method: "POST",
         body: new URLSearchParams({
           grant_type: "client_credentials",
@@ -4636,18 +4636,7 @@ export default async (application: Application): Promise<void> => {
               ),
             ),
         }),
-      });
-
-      // /*
-      // {
-      //   "access_token" : "69cf8dc156761",
-      //   "token_type" : "bearer",
-      //   "expires_in" : 3600,
-      //   "scope" : "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly"
-      // }
-      // */
-
-      // const accessToken = "69cf8dc156761";
+      })).json()).access_token;
 
       // // TODO: Manage pagination: https://www.imsglobal.org/spec/lti-nrps/v2p0#limit-query-parameter
       // const response = await fetch(
