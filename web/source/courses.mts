@@ -2523,8 +2523,9 @@ export default async (application: Application): Promise<void> => {
                                           ></i
                                           > Once you disconnect the Courselore
                                           course from the LMS course, students
-                                          following the resource link will see
-                                          an error message.
+                                          following the resource link from the
+                                          LMS to Courselore will see an error
+                                          message.
                                         </div>
                                         <div>
                                           <button
