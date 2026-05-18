@@ -4583,8 +4583,6 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.course === undefined ||
         request.state.course.ltiIdentifier === null ||
-        application.configuration.lti?.[request.state.course.ltiIdentifier] ===
-          undefined ||
         request.state.course.ltiContextId === null ||
         request.state.course.ltiNamesAndRoleProvisioningServicesURL === null ||
         request.state.courseParticipation === undefined ||
@@ -4592,6 +4590,9 @@ export default async (application: Application): Promise<void> => {
           "courseParticipationRoleInstructor"
       )
         return;
+      const lti =
+        application.configuration.lti?.[request.state.course.ltiIdentifier];
+      if (lti === undefined) return;
       // const response = await fetch(
       //   `https://saltire.lti.app/platform/token/${session}`,
       //   {
