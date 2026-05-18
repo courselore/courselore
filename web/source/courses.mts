@@ -2470,9 +2470,10 @@ export default async (application: Application): Promise<void> => {
                                         </button>
                                         <div type="popover">
                                           To connect a Courselore course with a
-                                          LMS course, create a resource link to
-                                          Courselore (for example, in Moodle,
-                                          that is called an “activity”).
+                                          LMS course, create a resource link
+                                          from the LMS to Courselore (for
+                                          example, in Moodle, that is called an
+                                          “activity”).
                                         </div>
                                       </div>
                                     `
