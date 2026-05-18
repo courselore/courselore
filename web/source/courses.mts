@@ -2455,9 +2455,28 @@ export default async (application: Application): Promise<void> => {
                                   row-gap: var(--size--2);
                                 `}"
                               >
-                                $${typeof request.state.course.ltiIdentifier ===
-                                "string"
+                                $${request.state.course.ltiIdentifier === null
                                   ? html`
+                                      <div>
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--blue"
+                                          javascript="${javascript`
+                                            javascript.popover({ element: this, trigger: "click" });
+                                          `}"
+                                        >
+                                          Connect with a Learning Management
+                                          System (LMS) course
+                                        </button>
+                                        <div type="popover">
+                                          To connect a Courselore course with a
+                                          LMS course, create a resource link to
+                                          Courselore (for example, in Moodle,
+                                          that is called an “activity”).
+                                        </div>
+                                      </div>
+                                    `
+                                  : html`
                                       <button
                                         type="button"
                                         class="button button--rectangle button--blue"
@@ -2519,26 +2538,6 @@ export default async (application: Application): Promise<void> => {
                                           >
                                             Disconnect from LMS
                                           </button>
-                                        </div>
-                                      </div>
-                                    `
-                                  : html`
-                                      <div>
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--blue"
-                                          javascript="${javascript`
-                                            javascript.popover({ element: this, trigger: "click" });
-                                          `}"
-                                        >
-                                          Connect with a Learning Management
-                                          System (LMS) course
-                                        </button>
-                                        <div type="popover">
-                                          To connect a Courselore course with a
-                                          LMS course, create a resource link to
-                                          Courselore (for example, in Moodle,
-                                          that is called an “activity”) .
                                         </div>
                                       </div>
                                     `}
