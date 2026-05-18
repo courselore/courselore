@@ -4565,6 +4565,41 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.course.ltiIdentifier === null ||
+        request.state.course.ltiContextId === null ||
+        request.state.course.ltiNamesAndRoleProvisioningServicesURL === null ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      response.setFlash!(html`
+        <div class="flash--green">
+          Course participants from Learning Management System (LMS) synced
+          successfully.
+        </div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.server?.push({
     method: "DELETE",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti$",
