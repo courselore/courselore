@@ -4313,6 +4313,7 @@ export default async (application: Application): Promise<void> => {
     `,
 
     sql`
+      drop index "index_courseParticipations_course_ltiUserId";
       alter table "courseParticipations" drop column "ltiUserId";
     `,
   );
