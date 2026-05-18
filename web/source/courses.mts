@@ -4594,6 +4594,13 @@ export default async (application: Application): Promise<void> => {
       const lti =
         application.configuration.lti?.[request.state.course.ltiIdentifier];
       if (lti === undefined) return;
+      let ltiCourseMembers: {
+        email: string;
+        name: string;
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
+      }[] = [];
       try {
         const accessToken = (
           await (
@@ -4658,6 +4665,42 @@ export default async (application: Application): Promise<void> => {
             ltiNamesAndRoleProvisioningServicesResponse.headers
               .get("Link")
               ?.match(/<(?<url>[^>]+)>;\s*rel="next"/)?.groups?.url;
+          for (const ltiCourseMember of (
+            await ltiNamesAndRoleProvisioningServicesResponse.json()
+          ).members)
+            if (
+              typeof ltiCourseMember.status === "string" &&
+              ltiCourseMember.status.toLowerCase() === "active" &&
+              typeof ltiCourseMember.email === "string" &&
+              ltiCourseMember.email.match(utilities.emailRegExp) &&
+              lti.domains.some((domain) =>
+                `.${(ltiCourseMember.email as string).split("@")[1]}`.endsWith(
+                  `.${domain}`,
+                ),
+              ) &&
+              typeof ltiCourseMember.name === "string" &&
+              ltiCourseMember.name.trim() !== ""
+            )
+              ltiCourseMembers.push({
+                email: ltiCourseMember.email,
+                name: ltiCourseMember.name,
+                courseParticipationRole:
+                  Array.isArray(
+                    ltiCourseMember[
+                      "https://purl.imsglobal.org/spec/lti/claim/roles"
+                    ],
+                  ) &&
+                  (ltiCourseMember[
+                    "https://purl.imsglobal.org/spec/lti/claim/roles"
+                  ].includes(
+                    "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+                  ) ||
+                    ltiCourseMember[
+                      "https://purl.imsglobal.org/spec/lti/claim/roles"
+                    ].includes("Instructor"))
+                    ? "courseParticipationRoleInstructor"
+                    : "courseParticipationRoleStudent",
+              });
         }
       } catch (error) {
         request.log("ERROR", String(error));
