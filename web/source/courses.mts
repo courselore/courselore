@@ -4715,8 +4715,8 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      for (const ltiCourseMember of ltiCourseMembers)
-        application.database.executeTransaction(() => {
+      application.database.executeTransaction(() => {
+        for (const ltiCourseMember of ltiCourseMembers) {
           if (
             application.database.get(
               sql`
@@ -4802,7 +4802,8 @@ export default async (application: Application): Promise<void> => {
                 );
               `,
             );
-        });
+        }
+      });
       response.setFlash!(html`
         <div class="flash--green">
           Course participants from Learning Management System (LMS) synced
