@@ -4594,49 +4594,67 @@ export default async (application: Application): Promise<void> => {
       const lti =
         application.configuration.lti?.[request.state.course.ltiIdentifier];
       if (lti === undefined) return;
-      const accessToken = (await (await fetch(lti.accessTokenURL, {
-        method: "POST",
-        body: new URLSearchParams({
-          grant_type: "client_credentials",
-          scope:
-            "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
-          client_assertion_type:
-            "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-          client_assertion: await new jose.SignJWT({
-            "https://purl.imsglobal.org/spec/lti/claim/deployment_id":
-              lti.deploymentID,
-          })
-            .setProtectedHeader({
-              typ: "JWT",
-              alg: "RS256",
-              kid: await jose.calculateJwkThumbprint(
-                await jose.exportJWK(
-                  await jose.importX509(
-                    request.state.systemSettings.certificate,
-                    "RS256",
+      try {
+        const accessToken = (
+          await (
+            await fetch(lti.accessTokenURL, {
+              method: "POST",
+              body: new URLSearchParams({
+                grant_type: "client_credentials",
+                scope:
+                  "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
+                client_assertion_type:
+                  "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                client_assertion: await new jose.SignJWT({
+                  "https://purl.imsglobal.org/spec/lti/claim/deployment_id":
+                    lti.deploymentID,
+                })
+                  .setProtectedHeader({
+                    typ: "JWT",
+                    alg: "RS256",
+                    kid: await jose.calculateJwkThumbprint(
+                      await jose.exportJWK(
+                        await jose.importX509(
+                          request.state.systemSettings.certificate,
+                          "RS256",
+                        ),
+                      ),
+                    ),
+                  })
+                  .setJti(
+                    cryptoRandomString({
+                      length: 50,
+                      type: "alphanumeric",
+                    }),
+                  )
+                  .setIssuer(lti.clientID)
+                  .setAudience(lti.platformID)
+                  .setSubject(lti.clientID)
+                  .setIssuedAt()
+                  .setExpirationTime("5 minutes")
+                  .sign(
+                    await jose.importPKCS8(
+                      request.state.systemSettings.privateKey,
+                      "RS256",
+                    ),
                   ),
-                ),
-              ),
-            })
-            .setJti(
-              cryptoRandomString({
-                length: 50,
-                type: "alphanumeric",
               }),
-            )
-            .setIssuer(lti.clientID)
-            .setAudience(lti.platformID)
-            .setSubject(lti.clientID)
-            .setIssuedAt()
-            .setExpirationTime("5 minutes")
-            .sign(
-              await jose.importPKCS8(
-                request.state.systemSettings.privateKey,
-                "RS256",
-              ),
-            ),
-        }),
-      })).json()).access_token;
+            })
+          ).json()
+        ).access_token;
+      } catch (error) {
+        request.log("ERROR", String(error));
+        response.setFlash!(html`
+          <div class="flash--red">
+            Failed to sync Course participants from Learning Management System
+            (LMS).
+          </div>
+        `);
+        response.redirect!(
+          `/courses/${request.state.course.publicId}/settings`,
+        );
+        return;
+      }
 
       // // TODO: Manage pagination: https://www.imsglobal.org/spec/lti-nrps/v2p0#limit-query-parameter
       // const response = await fetch(
