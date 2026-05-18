@@ -4583,6 +4583,8 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.course === undefined ||
         request.state.course.ltiIdentifier === null ||
+        application.configuration.lti?.[request.state.course.ltiIdentifier] ===
+          undefined ||
         request.state.course.ltiContextId === null ||
         request.state.course.ltiNamesAndRoleProvisioningServicesURL === null ||
         request.state.courseParticipation === undefined ||
