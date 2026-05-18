@@ -3768,22 +3768,10 @@ export default async (application: Application): Promise<void> => {
                                             line-height: var(
                                               --font-size--3--line-height
                                             );
-                                            [key~="course-selector"]:not(
-                                                .button--blue
-                                              )
-                                              & {
-                                              color: light-dark(
-                                                var(--color--slate--600),
-                                                var(--color--slate--400)
-                                              );
-                                            }
-                                            [key~="course-selector"].button--blue
-                                              & {
-                                              color: light-dark(
-                                                var(--color--blue--200),
-                                                var(--color--blue--200)
-                                              );
-                                            }
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
                                           `}"
                                         >
                                           ${course.information}
@@ -3812,9 +3800,9 @@ export default async (application: Application): Promise<void> => {
             application.layouts.main({
               request,
               response,
-              head: html`<title>
-                Course configuration error · Courselore
-              </title>`,
+              head: html`
+                <title>Course configuration error · Courselore</title>
+              `,
               body: html`
                 <div
                   css="${css`
