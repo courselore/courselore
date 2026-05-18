@@ -2485,7 +2485,7 @@ export default async (application: Application): Promise<void> => {
                                           .publicId}/settings/participations/lti/sync"
                                       >
                                         <button
-                                          type="button"
+                                          type="submit"
                                           class="button button--rectangle button--blue"
                                         >
                                           Sync with Learning Management System
