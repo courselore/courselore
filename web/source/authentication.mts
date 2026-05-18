@@ -3851,8 +3851,7 @@ export default async (application: Application): Promise<void> => {
                 "course",
                 "courseParticipationRole",
                 "decorationColor",
-                "mostRecentlyVisitedCourseConversation",
-                "ltiUserId"
+                "mostRecentlyVisitedCourseConversation"
               )
               values (
                 ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -3885,8 +3884,7 @@ export default async (application: Application): Promise<void> => {
                     )!.count % 14
                   ]
                 },
-                ${null},
-                ${ltiFlow.subject}
+                ${null}
               );
             `,
           );

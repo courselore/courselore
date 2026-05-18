@@ -4311,5 +4311,9 @@ export default async (application: Application): Promise<void> => {
       alter table "courseParticipations" add column "ltiUserId" text null;
       create unique index "index_courseParticipations_course_ltiUserId" on "courseParticipations" ("course", "ltiUserId");
     `,
+
+    sql`
+      alter table "courseParticipations" drop column "ltiUserId";
+    `,
   );
 };
