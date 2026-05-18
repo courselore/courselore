@@ -4642,6 +4642,23 @@ export default async (application: Application): Promise<void> => {
             })
           ).json()
         ).access_token;
+        let ltiNamesAndRoleProvisioningServicesURL: string | undefined =
+          request.state.course.ltiNamesAndRoleProvisioningServicesURL;
+        while (typeof ltiNamesAndRoleProvisioningServicesURL === "string") {
+          const ltiNamesAndRoleProvisioningServicesResponse: Awaited<
+            ReturnType<typeof fetch>
+          > = await fetch(ltiNamesAndRoleProvisioningServicesURL, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              Accept:
+                "application/vnd.ims.lti-nrps.v2.membershipcontainer+json",
+            },
+          });
+          ltiNamesAndRoleProvisioningServicesURL =
+            ltiNamesAndRoleProvisioningServicesResponse.headers
+              .get("Link")
+              ?.match(/<(?<url>[^>]+)>;\s*rel="next"/)?.groups?.url;
+        }
       } catch (error) {
         request.log("ERROR", String(error));
         response.setFlash!(html`
@@ -4655,17 +4672,6 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-
-      // // TODO: Manage pagination: https://www.imsglobal.org/spec/lti-nrps/v2p0#limit-query-parameter
-      // const response = await fetch(
-      //   `https://saltire.lti.app/platform/membership/context/${session}`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //       Accept: "application/vnd.ims.lti-nrps.v2.membershipcontainer+json",
-      //     },
-      //   },
-      // );
 
       // /*
       // {
