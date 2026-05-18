@@ -4717,56 +4717,124 @@ export default async (application: Application): Promise<void> => {
       }
       application.database.executeTransaction(() => {
         for (const ltiCourseMember of ltiCourseMembers) {
+          const user =
+            application.database.get<{ id: number }>(
+              sql`
+                select "id"
+                from "users"
+                where "email" = ${ltiCourseMember.email};
+              `,
+            ) ??
+            application.database.get<{ id: number }>(
+              sql`
+                select *
+                from "users"
+                where "id" = ${
+                  application.database.run(
+                    sql`
+                      insert into "users" (
+                        "publicId",
+                        "name",
+                        "email",
+                        "emailVerificationEmail",
+                        "emailVerificationNonce",
+                        "emailVerificationCreatedAt",
+                        "password",
+                        "passwordResetNonce",
+                        "passwordResetCreatedAt",
+                        "twoFactorAuthenticationEnabled",
+                        "twoFactorAuthenticationSecret",
+                        "twoFactorAuthenticationRecoveryCodes",
+                        "avatarColor",
+                        "avatarImage",
+                        "userRole",
+                        "lastSeenOnlineAt",
+                        "darkMode",
+                        "sidebarWidth",
+                        "emailNotificationsForAllMessages",
+                        "emailNotificationsForMessagesIncludingAMention",
+                        "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                        "emailNotificationsForMessagesInConversationsThatYouStarted",
+                        "userAnonymityPreferred",
+                        "mostRecentlyVisitedCourseParticipation"
+                      )
+                      values (
+                        ${cryptoRandomString({ length: 20, type: "numeric" })},
+                        ${ltiCourseMember.name},
+                        ${ltiCourseMember.email},
+                        ${null},
+                        ${null},
+                        ${null},
+                        ${null},
+                        ${null},
+                        ${null},
+                        ${Number(false)},
+                        ${null},
+                        ${null},
+                        ${
+                          [
+                            "red",
+                            "orange",
+                            "amber",
+                            "yellow",
+                            "lime",
+                            "green",
+                            "emerald",
+                            "teal",
+                            "cyan",
+                            "sky",
+                            "blue",
+                            "indigo",
+                            "violet",
+                            "purple",
+                            "fuchsia",
+                            "pink",
+                            "rose",
+                          ][Math.floor(Math.random() * 17)]
+                        },
+                        ${null},
+                        ${"userRoleUser"},
+                        ${new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString()},
+                        ${"userDarkModeSystem"},
+                        ${80 * 4},
+                        ${Number(false)},
+                        ${Number(true)},
+                        ${Number(true)},
+                        ${Number(true)},
+                        ${"userAnonymityPreferredNone"},
+                        ${null}
+                      );
+                    `,
+                  ).lastInsertRowid
+                };
+              `,
+            )!;
           if (
             application.database.get(
               sql`
                 select true
-                from "users"
-                where "email" = ${ltiCourseMember.email};
+                from "courseParticipants"
+                where
+                  "user" = ${user.id} and
+                  "course" = ${request.state.course!.id};
               `,
             ) === undefined
           )
             application.database.run(
               sql`
-                insert into "users" (
+                insert into "courseParticipations" (
                   "publicId",
-                  "name",
-                  "email",
-                  "emailVerificationEmail",
-                  "emailVerificationNonce",
-                  "emailVerificationCreatedAt",
-                  "password",
-                  "passwordResetNonce",
-                  "passwordResetCreatedAt",
-                  "twoFactorAuthenticationEnabled",
-                  "twoFactorAuthenticationSecret",
-                  "twoFactorAuthenticationRecoveryCodes",
-                  "avatarColor",
-                  "avatarImage",
-                  "userRole",
-                  "lastSeenOnlineAt",
-                  "darkMode",
-                  "sidebarWidth",
-                  "emailNotificationsForAllMessages",
-                  "emailNotificationsForMessagesIncludingAMention",
-                  "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                  "emailNotificationsForMessagesInConversationsThatYouStarted",
-                  "userAnonymityPreferred",
-                  "mostRecentlyVisitedCourseParticipation"
+                  "user",
+                  "course",
+                  "courseParticipationRole",
+                  "decorationColor",
+                  "mostRecentlyVisitedCourseConversation"
                 )
                 values (
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${ltiCourseMember.name},
-                  ${ltiCourseMember.email},
-                  ${null},
-                  ${null},
-                  ${null},
-                  ${null},
-                  ${null},
-                  ${null},
-                  ${Number(false)},
-                  ${null},
-                  ${null},
+                  ${user.id},
+                  ${request.state.course!.id},
+                  ${ltiCourseMember.courseParticipationRole},
                   ${
                     [
                       "red",
@@ -4778,26 +4846,21 @@ export default async (application: Application): Promise<void> => {
                       "emerald",
                       "teal",
                       "cyan",
-                      "sky",
-                      "blue",
-                      "indigo",
                       "violet",
                       "purple",
                       "fuchsia",
                       "pink",
                       "rose",
-                    ][Math.floor(Math.random() * 17)]
+                    ][
+                      application.database.get<{ count: number }>(
+                        sql`
+                          select count(*) as "count"
+                          from "courseParticipations"
+                          where "user" = ${user.id};
+                        `,
+                      )!.count % 14
+                    ]
                   },
-                  ${null},
-                  ${"userRoleUser"},
-                  ${new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString()},
-                  ${"userDarkModeSystem"},
-                  ${80 * 4},
-                  ${Number(false)},
-                  ${Number(true)},
-                  ${Number(true)},
-                  ${Number(true)},
-                  ${"userAnonymityPreferredNone"},
                   ${null}
                 );
               `,
