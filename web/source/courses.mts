@@ -2478,13 +2478,20 @@ export default async (application: Application): Promise<void> => {
                                       </div>
                                     `
                                   : html`
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--blue"
+                                      <div
+                                        type="form"
+                                        method="POST"
+                                        action="/courses/${request.state.course
+                                          .publicId}/settings/participations/lti/sync"
                                       >
-                                        Sync with Learning Management System
-                                        (LMS)
-                                      </button>
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--blue"
+                                        >
+                                          Sync with Learning Management System
+                                          (LMS)
+                                        </button>
+                                      </div>
                                       <button
                                         type="button"
                                         class="button button--rectangle button--red"
