@@ -4320,5 +4320,9 @@ export default async (application: Application): Promise<void> => {
     sql`
       alter table "courseParticipations" add column "ltiState" text null;
     `,
+
+    sql`
+      alter table "users" alter column "lastSeenOnlineAt" drop not null;
+    `,
   );
 };
