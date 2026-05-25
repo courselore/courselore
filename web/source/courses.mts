@@ -5257,11 +5257,8 @@ export default async (application: Application): Promise<void> => {
         {
           courseParticipationsPublicIds: string[];
           [
-            courseParticipationsCourseParticipationRole: `courseParticipations[${string}].courseParticipationRole`
-          ]:
-            | "courseParticipationRoleInstructor"
-            | "courseParticipationRoleStudent";
-          courseParticipationsPublicIdsToRemove: string[];
+            courseParticipationsAction: `courseParticipations[${string}].action`
+          ]: "keep" | "remove";
         },
         Application["types"]["states"]["Course"]
       >,
@@ -5275,7 +5272,6 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       request.body.courseParticipationsPublicIds ??= [];
-      request.body.courseParticipationsPublicIdsToRemove ??= [];
       if (
         !Array.isArray(request.body.courseParticipationsPublicIds) ||
         request.body.courseParticipationsPublicIds.some(
@@ -5283,17 +5279,11 @@ export default async (application: Application): Promise<void> => {
             typeof courseParticipationPublicId !== "string" ||
             courseParticipationPublicId.trim() === "" ||
             (request.body[
-              `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
-            ] !== "courseParticipationRoleInstructor" &&
+              `courseParticipations[${courseParticipationPublicId}].action`
+            ] !== "keep" &&
               request.body[
-                `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
-              ] !== "courseParticipationRoleStudent"),
-        ) ||
-        !Array.isArray(request.body.courseParticipationsPublicIdsToRemove) ||
-        request.body.courseParticipationsPublicIdsToRemove.some(
-          (courseParticipationPublicId) =>
-            typeof courseParticipationPublicId !== "string" ||
-            courseParticipationPublicId.trim() === "",
+                `courseParticipations[${courseParticipationPublicId}].action`
+              ] !== "remove"),
         )
       )
         throw "validation";
@@ -5313,80 +5303,72 @@ export default async (application: Application): Promise<void> => {
             `,
           );
           if (courseParticipation === undefined) continue;
-          application.database.run(
-            sql`
-              update "courseParticipations"
-              set "courseParticipationRole" = ${
-                request.body[
-                  `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
-                ]
-              }
-              where "id" = ${courseParticipation.id};
-            `,
-          );
-        }
-        for (const courseParticipationPublicId of request.body
-          .courseParticipationsPublicIdsToRemove!) {
-          const courseParticipation = application.database.get<{
-            id: number;
-          }>(
-            sql`
-              select "id"
-              from "courseParticipations"
-              where
-                "course" = ${request.state.course!.id} and
-                "publicId" = ${courseParticipationPublicId};
-            `,
-          );
-          if (courseParticipation === undefined) continue;
-          application.database.run(
-            sql`
-              update "users"
-              set "mostRecentlyVisitedCourseParticipation" = null
-              where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseConversationMessages"
-              set "createdByCourseParticipation" = null
-              where "createdByCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseConversationMessageViews"
-              set "courseParticipation" = null
-              where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseConversationMessageLikes"
-              set "courseParticipation" = null
-              where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseParticipations" where "id" = ${courseParticipation.id};
-            `,
-          );
+          if (
+            request.body[
+              `courseParticipations[${courseParticipation.publicId}].action`
+            ] === "keep"
+          )
+            application.database.run(
+              sql`
+                update "courseParticipations"
+                set "ltiState" = 'ltiStateMissingInLMSAndExplicitlyKept'
+                where "id" = ${courseParticipation.id};
+              `,
+            );
+          else if (
+            request.body[
+              `courseParticipations[${courseParticipation.publicId}].action`
+            ] === "remove"
+          ) {
+            application.database.run(
+              sql`
+                update "users"
+                set "mostRecentlyVisitedCourseParticipation" = null
+                where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseConversationMessages"
+                set "createdByCourseParticipation" = null
+                where "createdByCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseConversationMessageViews"
+                set "courseParticipation" = null
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseConversationMessageLikes"
+                set "courseParticipation" = null
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseParticipations" where "id" = ${courseParticipation.id};
+              `,
+            );
+          }
         }
       });
       response.setFlash!(html`
         <div class="flash--green">
-          Course participants updated successfully.
+          Course participants missing in LMS updated successfully.
         </div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
