@@ -4629,10 +4629,7 @@ export default async (application: Application): Promise<void> => {
                     ),
                   })
                   .setJti(
-                    cryptoRandomString({
-                      length: 50,
-                      type: "alphanumeric",
-                    }),
+                    cryptoRandomString({ length: 50, type: "alphanumeric" }),
                   )
                   .setIssuer(lti.clientID)
                   .setAudience(lti.platformID)
