@@ -2627,6 +2627,12 @@ export default async (application: Application): Promise<void> => {
                                             flex-direction: column;
                                             gap: var(--size--4);
                                           `}"
+                                          javascript="${javascript`
+                                            this.onsubmit = () => {
+                                              delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                              delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                            };
+                                          `}"
                                         >
                                           $${courseParticipations.map(
                                             (courseParticipation) => {
@@ -5235,6 +5241,163 @@ export default async (application: Application): Promise<void> => {
         </div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync/absent$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseParticipationsPublicIds: string[];
+          [
+            courseParticipationsCourseParticipationRole: `courseParticipations[${string}].courseParticipationRole`
+          ]:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+          courseParticipationsPublicIdsToRemove: string[];
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      request.body.courseParticipationsPublicIds ??= [];
+      request.body.courseParticipationsPublicIdsToRemove ??= [];
+      if (
+        !Array.isArray(request.body.courseParticipationsPublicIds) ||
+        request.body.courseParticipationsPublicIds.some(
+          (courseParticipationPublicId) =>
+            typeof courseParticipationPublicId !== "string" ||
+            courseParticipationPublicId.trim() === "" ||
+            (request.body[
+              `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
+            ] !== "courseParticipationRoleInstructor" &&
+              request.body[
+                `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
+              ] !== "courseParticipationRoleStudent"),
+        ) ||
+        !Array.isArray(request.body.courseParticipationsPublicIdsToRemove) ||
+        request.body.courseParticipationsPublicIdsToRemove.some(
+          (courseParticipationPublicId) =>
+            typeof courseParticipationPublicId !== "string" ||
+            courseParticipationPublicId.trim() === "",
+        )
+      )
+        throw "validation";
+      application.database.executeTransaction(() => {
+        for (const courseParticipationPublicId of request.body
+          .courseParticipationsPublicIds!) {
+          const courseParticipation = application.database.get<{
+            id: number;
+            publicId: string;
+          }>(
+            sql`
+              select "id", "publicId"
+              from "courseParticipations"
+              where
+                "course" = ${request.state.course!.id} and
+                "publicId" = ${courseParticipationPublicId};
+            `,
+          );
+          if (courseParticipation === undefined) continue;
+          application.database.run(
+            sql`
+              update "courseParticipations"
+              set "courseParticipationRole" = ${
+                request.body[
+                  `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
+                ]
+              }
+              where "id" = ${courseParticipation.id};
+            `,
+          );
+        }
+        for (const courseParticipationPublicId of request.body
+          .courseParticipationsPublicIdsToRemove!) {
+          const courseParticipation = application.database.get<{
+            id: number;
+          }>(
+            sql`
+              select "id"
+              from "courseParticipations"
+              where
+                "course" = ${request.state.course!.id} and
+                "publicId" = ${courseParticipationPublicId};
+            `,
+          );
+          if (courseParticipation === undefined) continue;
+          application.database.run(
+            sql`
+              update "users"
+              set "mostRecentlyVisitedCourseParticipation" = null
+              where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessages"
+              set "createdByCourseParticipation" = null
+              where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessageViews"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessageLikes"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseParticipations" where "id" = ${courseParticipation.id};
+            `,
+          );
+        }
+      });
+      response.setFlash!(html`
+        <div class="flash--green">
+          Course participants updated successfully.
+        </div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+      for (const port of application.privateConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
+          }),
+        });
     },
   });
 
