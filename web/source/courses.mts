@@ -2813,12 +2813,64 @@ export default async (application: Application): Promise<void> => {
                                             `}"
                                           >
                                             <button
-                                              type="submit"
+                                              type="button"
                                               class="button button--rectangle button--blue"
+                                              javascript="${javascript`
+                                                javascript.popover({ element: this, trigger: "click" });
+                                              `}"
                                             >
                                               Update course participants absent
                                               in LMS
                                             </button>
+                                            <div
+                                              type="popover"
+                                              css="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--size--2);
+                                              `}"
+                                            >
+                                              <div
+                                                css="${css`
+                                                  font-size: var(
+                                                    --font-size--3
+                                                  );
+                                                  line-height: var(
+                                                    --font-size--3--line-height
+                                                  );
+                                                  font-weight: 600;
+                                                  color: light-dark(
+                                                    var(--color--red--500),
+                                                    var(--color--red--500)
+                                                  );
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-exclamation-triangle-fill"
+                                                ></i
+                                                > The participants that you
+                                                remove from the course may only
+                                                participate again with an
+                                                invitation.
+                                              </div>
+                                              <div>
+                                                <button
+                                                  type="button"
+                                                  class="button button--rectangle button--red"
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--3
+                                                    );
+                                                    line-height: var(
+                                                      --font-size--3--line-height
+                                                    );
+                                                  `}"
+                                                >
+                                                  Update course participants
+                                                  absent in LMS
+                                                </button>
+                                              </div>
+                                            </div>
                                           </div>
                                         </div>
                                         <hr class="separator" />
