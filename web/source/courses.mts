@@ -2444,121 +2444,132 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         $${application.configuration.lti !== undefined
-                          ? html`
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  display: flex;
-                                  align-items: baseline;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--size--4);
-                                  row-gap: var(--size--2);
-                                `}"
-                              >
-                                $${request.state.course.ltiIdentifier === null
-                                  ? html`
-                                      <div>
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--blue"
-                                          javascript="${javascript`
-                                            javascript.popover({ element: this, trigger: "click" });
-                                          `}"
-                                        >
-                                          Connect with a Learning Management
-                                          System (LMS) course
-                                        </button>
-                                        <div type="popover">
-                                          To connect a Courselore course with a
-                                          LMS course, create a resource link
-                                          from the LMS to Courselore (for
-                                          example, in Moodle, that is called an
-                                          “activity”).
-                                        </div>
-                                      </div>
-                                    `
-                                  : html`
-                                      <div
-                                        type="form"
-                                        method="POST"
-                                        action="/courses/${request.state.course
-                                          .publicId}/settings/participations/lti/sync"
-                                        javascript="${javascript`
-                                          this.onsubmit = () => {
-                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
-                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
-                                          };
-                                        `}"
-                                      >
-                                        <button
-                                          type="submit"
-                                          class="button button--rectangle button--blue"
-                                        >
-                                          Sync with Learning Management System
-                                          (LMS)
-                                        </button>
-                                      </div>
+                          ? request.state.course.ltiIdentifier === null
+                            ? html`
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    display: flex;
+                                    align-items: baseline;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--size--4);
+                                    row-gap: var(--size--2);
+                                  `}"
+                                >
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--blue"
+                                      javascript="${javascript`
+                                        javascript.popover({ element: this, trigger: "click" });
+                                      `}"
+                                    >
+                                      Connect with a Learning Management System
+                                      (LMS) course
+                                    </button>
+                                    <div type="popover">
+                                      To connect a Courselore course with a LMS
+                                      course, create a resource link from the
+                                      LMS to Courselore (for example, in Moodle,
+                                      that is called an “activity”).
+                                    </div>
+                                  </div>
+                                </div>
+                              `
+                            : html`
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    display: flex;
+                                    align-items: baseline;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--size--4);
+                                    row-gap: var(--size--2);
+                                  `}"
+                                >
+                                  <div
+                                    type="form"
+                                    method="POST"
+                                    action="/courses/${request.state.course
+                                      .publicId}/settings/participations/lti/sync"
+                                    javascript="${javascript`
+                                      this.onsubmit = () => {
+                                        delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                        delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                      };
+                                    `}"
+                                  >
+                                    <button
+                                      type="submit"
+                                      class="button button--rectangle button--blue"
+                                    >
+                                      Sync with Learning Management System (LMS)
+                                    </button>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--red"
+                                    javascript="${javascript`
+                                      javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                                    `}"
+                                  >
+                                    Disconnect from LMS
+                                  </button>
+                                  <div
+                                    type="form popover"
+                                    method="DELETE"
+                                    action="/courses/${request.state.course
+                                      .publicId}/settings/participations/lti"
+                                    css="${css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--size--2);
+                                    `}"
+                                  >
+                                    <div
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        font-weight: 600;
+                                        color: light-dark(
+                                          var(--color--red--500),
+                                          var(--color--red--500)
+                                        );
+                                      `}"
+                                    >
+                                      <i
+                                        class="bi bi-exclamation-triangle-fill"
+                                      ></i
+                                      > Once you disconnect the Courselore
+                                      course from the LMS course, students
+                                      following the resource link from the LMS
+                                      to Courselore will see an error message.
+                                    </div>
+                                    <div>
                                       <button
-                                        type="button"
+                                        type="submit"
                                         class="button button--rectangle button--red"
-                                        javascript="${javascript`
-                                          javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
                                         `}"
                                       >
                                         Disconnect from LMS
                                       </button>
-                                      <div
-                                        type="form popover"
-                                        method="DELETE"
-                                        action="/courses/${request.state.course
-                                          .publicId}/settings/participations/lti"
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--size--2);
-                                        `}"
-                                      >
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            font-weight: 600;
-                                            color: light-dark(
-                                              var(--color--red--500),
-                                              var(--color--red--500)
-                                            );
-                                          `}"
-                                        >
-                                          <i
-                                            class="bi bi-exclamation-triangle-fill"
-                                          ></i
-                                          > Once you disconnect the Courselore
-                                          course from the LMS course, students
-                                          following the resource link from the
-                                          LMS to Courselore will see an error
-                                          message.
-                                        </div>
-                                        <div>
-                                          <button
-                                            type="submit"
-                                            class="button button--rectangle button--red"
-                                            css="${css`
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
-                                              );
-                                            `}"
-                                          >
-                                            Disconnect from LMS
-                                          </button>
-                                        </div>
-                                      </div>
-                                    `}
-                              </div>
-                            `
+                                    </div>
+                                  </div>
+                                </div>
+                              `
                           : html``}
                         <div
                           key="courseParticipations--update"
