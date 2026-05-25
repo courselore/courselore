@@ -2756,179 +2756,48 @@ export default async (application: Application): Promise<void> => {
                                                         row-gap: var(--size--2);
                                                       `}"
                                                     >
-                                                      <button
-                                                        type="button"
+                                                      <label
                                                         class="button button--rectangle button--transparent"
-                                                        javascript="${javascript`
-                                                          javascript.popover({ element: this, trigger: "click" });
-                                                        `}"
-                                                      >
-                                                        <form>
-                                                          <span
-                                                            css="${css`
-                                                              color: light-dark(
-                                                                var(
-                                                                  --color--slate--500
-                                                                ),
-                                                                var(
-                                                                  --color--slate--500
-                                                                )
-                                                              );
-                                                            `}"
-                                                            >Role:</span
-                                                          >  <input
-                                                            type="radio"
-                                                            name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
-                                                            value="courseParticipationRoleInstructor"
-                                                            required
-                                                            $${courseParticipation.courseParticipationRole ===
-                                                            "courseParticipationRoleInstructor"
-                                                              ? html`checked`
-                                                              : html``}
-                                                            hidden
-                                                          /><span
-                                                            css="${css`
-                                                              :not(:checked)
-                                                                + & {
-                                                                display: none;
-                                                              }
-                                                            `}"
-                                                            >Instructor</span
-                                                          ><input
-                                                            type="radio"
-                                                            name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
-                                                            value="courseParticipationRoleStudent"
-                                                            required
-                                                            $${courseParticipation.courseParticipationRole ===
-                                                            "courseParticipationRoleStudent"
-                                                              ? html`checked`
-                                                              : html``}
-                                                            hidden
-                                                          /><span
-                                                            css="${css`
-                                                              :not(:checked)
-                                                                + & {
-                                                                display: none;
-                                                              }
-                                                            `}"
-                                                            >Student</span
-                                                          > <i
-                                                            class="bi bi-chevron-down"
-                                                          ></i>
-                                                        </form>
-                                                      </button>
-                                                      <div
-                                                        type="popover"
                                                         css="${css`
-                                                          display: flex;
-                                                          flex-direction: column;
-                                                          gap: var(--size--2);
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--green--500
+                                                            ),
+                                                            var(
+                                                              --color--green--500
+                                                            )
+                                                          );
                                                         `}"
                                                       >
-                                                        <button
-                                                          type="button"
-                                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                                          javascript="${javascript`
-                                                            this.onclick = () => {
-                                                              this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
-                                                            };
-                                                          `}"
-                                                        >
-                                                          Instructor
-                                                        </button>
-                                                        <button
-                                                          type="button"
-                                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                                          javascript="${javascript`
-                                                            this.onclick = () => {
-                                                              this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
-                                                            };
-                                                          `}"
-                                                        >
-                                                          Student
-                                                        </button>
-                                                      </div>
-                                                      <button
-                                                        type="button"
+                                                        <input
+                                                          type="radio"
+                                                          name="courseParticipations[${courseParticipation.publicId}].action"
+                                                          value="keep"
+                                                          required
+                                                          class="input--radio"
+                                                        />  Keep
+                                                      </label>
+                                                      <label
                                                         class="button button--rectangle button--transparent"
-                                                        javascript="${javascript`
-                                                          javascript.popover({ element: this, trigger: "click" });
-                                                        `}"
-                                                      >
-                                                        Remove
-                                                      </button>
-                                                      <div
-                                                        type="popover"
                                                         css="${css`
-                                                          display: flex;
-                                                          flex-direction: column;
-                                                          gap: var(--size--2);
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--red--500
+                                                            ),
+                                                            var(
+                                                              --color--red--500
+                                                            )
+                                                          );
                                                         `}"
                                                       >
-                                                        <div
-                                                          css="${css`
-                                                            font-size: var(
-                                                              --font-size--3
-                                                            );
-                                                            line-height: var(
-                                                              --font-size--3--line-height
-                                                            );
-                                                            font-weight: 600;
-                                                            color: light-dark(
-                                                              var(
-                                                                --color--red--500
-                                                              ),
-                                                              var(
-                                                                --color--red--500
-                                                              )
-                                                            );
-                                                          `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-exclamation-triangle-fill"
-                                                          ></i
-                                                          > Once you remove this
-                                                          course participant
-                                                          from the course, they
-                                                          may only participate
-                                                          again with an
-                                                          invitation.
-                                                        </div>
-                                                        <div>
-                                                          <button
-                                                            type="button"
-                                                            class="button button--rectangle button--red"
-                                                            css="${css`
-                                                              font-size: var(
-                                                                --font-size--3
-                                                              );
-                                                              line-height: var(
-                                                                --font-size--3--line-height
-                                                              );
-                                                            `}"
-                                                            javascript="${javascript`
-                                                                this.onclick = () => {
-                                                                this.closest('[type~="form"]').isModified = true;
-                                                                this.closest('[type~="form"]')
-                                                                  .insertAdjacentElement(
-                                                                    "beforeend",
-                                                                    javascript.stringToElement(${html`
-                                                                      <input
-                                                                        type="hidden"
-                                                                        name="courseParticipationsPublicIdsToRemove[]"
-                                                                        value="${courseParticipation.publicId}"
-                                                                      />
-                                                                    `})
-                                                                  );
-                                                                this.closest('[key~="courseParticipation"]').remove();
-                                                              };
-                                                            `}"
-                                                          >
-                                                            Remove course
-                                                            participant
-                                                          </button>
-                                                        </div>
-                                                      </div>
+                                                        <input
+                                                          type="radio"
+                                                          name="courseParticipations[${courseParticipation.publicId}].action"
+                                                          value="remove"
+                                                          required
+                                                          class="input--radio"
+                                                        />  Remove
+                                                      </label>
                                                     </div>
                                                   </div>
                                                 </div>
@@ -5273,7 +5142,7 @@ export default async (application: Application): Promise<void> => {
           user: number;
           ltiState:
             | "ltiStateAbsentInLMS"
-            | "ltiStateAbsentInLMSAndIgnored"
+            | "ltiStateAbsentInLMSAndExplicitlyKept"
             | null;
         }>(
           sql`
