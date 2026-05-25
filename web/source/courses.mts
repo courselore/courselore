@@ -2855,7 +2855,7 @@ export default async (application: Application): Promise<void> => {
                                               </div>
                                               <div>
                                                 <button
-                                                  type="button"
+                                                  type="submit"
                                                   class="button button--rectangle button--red"
                                                   css="${css`
                                                     font-size: var(
