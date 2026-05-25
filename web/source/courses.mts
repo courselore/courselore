@@ -2402,7 +2402,7 @@ export default async (application: Application): Promise<void> => {
                         })()}
                       </div>
                     </details>
-                    <details>
+                    <details key="courseParticipations">
                       <summary
                         class="button button--rectangle button--transparent"
                         css="${css`
@@ -2484,6 +2484,12 @@ export default async (application: Application): Promise<void> => {
                                         method="POST"
                                         action="/courses/${request.state.course
                                           .publicId}/settings/participations/lti/sync"
+                                        javascript="${javascript`
+                                          this.onsubmit = () => {
+                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                          };
+                                        `}"
                                       >
                                         <button
                                           type="submit"
@@ -2555,6 +2561,7 @@ export default async (application: Application): Promise<void> => {
                             `
                           : html``}
                         <div
+                          key="courseParticipations--update"
                           type="form"
                           method="PATCH"
                           action="/courses/${request.state.course
