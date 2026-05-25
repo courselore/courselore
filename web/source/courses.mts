@@ -2762,6 +2762,24 @@ export default async (application: Application): Promise<void> => {
                                                         row-gap: var(--size--2);
                                                       `}"
                                                     >
+                                                      <span>
+                                                        <span
+                                                          css="${css`
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--slate--500
+                                                              ),
+                                                              var(
+                                                                --color--slate--500
+                                                              )
+                                                            );
+                                                          `}"
+                                                          >Role:</span
+                                                        >  $${courseParticipation.courseParticipationRole ===
+                                                        "courseParticipationRoleInstructor"
+                                                          ? html`Instructor`
+                                                          : html`Student`}
+                                                      </span>
                                                       <label
                                                         class="button button--rectangle button--transparent"
                                                         css="${css`
