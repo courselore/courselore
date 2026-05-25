@@ -4870,6 +4870,44 @@ export default async (application: Application): Promise<void> => {
               `,
             );
         }
+        for (const courseParticipation of application.database.all<{
+          id: number;
+          user: number;
+          ltiState:
+            | "ltiStateAbsentInLMS"
+            | "ltiStateAbsentInLMSAndIgnored"
+            | null;
+        }>(
+          sql`
+            select "id", "user", "ltiState"
+            from "courseParticipations"
+            where "course" = ${request.state.course!.id};
+          `,
+        )) {
+          const user = application.database.get<{ id: number; email: string }>(
+            sql`
+              select "id", "email"
+              from "users"
+              where "id" = ${courseParticipation.user};
+            `,
+          );
+          if (user === undefined) throw new Error();
+          application.database.run(
+            sql`
+              update "courseParticipations"
+              set "ltiState" = ${
+                ltiCourseMembers.find(
+                  (ltiCourseMember) => ltiCourseMember.email === user.email,
+                ) !== undefined
+                  ? null
+                  : courseParticipation.ltiState === null
+                    ? "ltiStateAbsentInLMS"
+                    : courseParticipation.ltiState
+              }
+              where "id" = ${courseParticipation.id};
+            `,
+          );
+        }
       });
       response.setFlash!(html`
         <div class="flash--green">
