@@ -4813,7 +4813,7 @@ export default async (application: Application): Promise<void> => {
             application.database.get(
               sql`
                 select true
-                from "courseParticipants"
+                from "courseParticipations"
                 where
                   "user" = ${user.id} and
                   "course" = ${request.state.course!.id};
