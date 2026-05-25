@@ -4316,5 +4316,9 @@ export default async (application: Application): Promise<void> => {
       drop index "index_courseParticipations_course_ltiUserId";
       alter table "courseParticipations" drop column "ltiUserId";
     `,
+
+    sql`
+      alter table "courseParticipations" add column "ltiState" text null;
+    `,
   );
 };
