@@ -69,7 +69,7 @@ export type ApplicationAuthentication = {
             | "userRoleSystemAdministrator"
             | "userRoleStaff"
             | "userRoleUser";
-          lastSeenOnlineAt: string;
+          lastSeenOnlineAt: string | null;
           darkMode:
             | "userDarkModeSystem"
             | "userDarkModeLight"
@@ -288,7 +288,7 @@ export default async (application: Application): Promise<void> => {
           | "userRoleSystemAdministrator"
           | "userRoleStaff"
           | "userRoleUser";
-        lastSeenOnlineAt: string;
+        lastSeenOnlineAt: string | null;
         darkMode:
           | "userDarkModeSystem"
           | "userDarkModeLight"
@@ -1124,7 +1124,7 @@ export default async (application: Application): Promise<void> => {
             | "userRoleSystemAdministrator"
             | "userRoleStaff"
             | "userRoleUser";
-          lastSeenOnlineAt: string;
+          lastSeenOnlineAt: string | null;
           darkMode:
             | "userDarkModeSystem"
             | "userDarkModeLight"
@@ -1872,7 +1872,7 @@ export default async (application: Application): Promise<void> => {
           | "userRoleSystemAdministrator"
           | "userRoleStaff"
           | "userRoleUser";
-        lastSeenOnlineAt: string;
+        lastSeenOnlineAt: string | null;
         darkMode:
           | "userDarkModeSystem"
           | "userDarkModeLight"
@@ -2538,7 +2538,7 @@ export default async (application: Application): Promise<void> => {
           | "userRoleSystemAdministrator"
           | "userRoleStaff"
           | "userRoleUser";
-        lastSeenOnlineAt: string;
+        lastSeenOnlineAt: string | null;
         darkMode:
           | "userDarkModeSystem"
           | "userDarkModeLight"
@@ -2938,7 +2938,7 @@ export default async (application: Application): Promise<void> => {
           | "userRoleSystemAdministrator"
           | "userRoleStaff"
           | "userRoleUser";
-        lastSeenOnlineAt: string;
+        lastSeenOnlineAt: string | null;
         darkMode:
           | "userDarkModeSystem"
           | "userDarkModeLight"
@@ -3340,7 +3340,7 @@ export default async (application: Application): Promise<void> => {
                 | "userRoleSystemAdministrator"
                 | "userRoleStaff"
                 | "userRoleUser";
-              lastSeenOnlineAt: string;
+              lastSeenOnlineAt: string | null;
               darkMode:
                 | "userDarkModeSystem"
                 | "userDarkModeLight"
@@ -3424,7 +3424,7 @@ export default async (application: Application): Promise<void> => {
                 | "userRoleSystemAdministrator"
                 | "userRoleStaff"
                 | "userRoleUser";
-              lastSeenOnlineAt: string;
+              lastSeenOnlineAt: string | null;
               darkMode:
                 | "userDarkModeSystem"
                 | "userDarkModeLight"
@@ -4113,7 +4113,7 @@ export default async (application: Application): Promise<void> => {
               | "userRoleSystemAdministrator"
               | "userRoleStaff"
               | "userRoleUser";
-            lastSeenOnlineAt: string;
+            lastSeenOnlineAt: string | null;
             darkMode:
               | "userDarkModeSystem"
               | "userDarkModeLight"
@@ -4197,7 +4197,7 @@ export default async (application: Application): Promise<void> => {
               | "userRoleSystemAdministrator"
               | "userRoleStaff"
               | "userRoleUser";
-            lastSeenOnlineAt: string;
+            lastSeenOnlineAt: string | null;
             darkMode:
               | "userDarkModeSystem"
               | "userDarkModeLight"

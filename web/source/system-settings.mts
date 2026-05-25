@@ -253,7 +253,7 @@ export default async (application: Application): Promise<void> => {
                         | "userRoleSystemAdministrator"
                         | "userRoleStaff"
                         | "userRoleUser";
-                      lastSeenOnlineAt: string;
+                      lastSeenOnlineAt: string | null;
                     }>(
                       sql`
                         select 
@@ -306,6 +306,7 @@ export default async (application: Application): Promise<void> => {
                         ${String(
                           users.filter(
                             (user) =>
+                              user.lastSeenOnlineAt !== null &&
                               new Date(
                                 Date.now() - 6 * 60 * 1000,
                               ).toISOString() <= user.lastSeenOnlineAt,

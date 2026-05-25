@@ -391,7 +391,7 @@ export default async (application: Application): Promise<void> => {
                                 | "pink"
                                 | "rose";
                               avatarImage: string | null;
-                              lastSeenOnlineAt: string;
+                              lastSeenOnlineAt: string | null;
                             }>(
                               sql`
                                 select
@@ -2032,7 +2032,7 @@ export default async (application: Application): Promise<void> => {
                                       | "pink"
                                       | "rose";
                                     avatarImage: string | null;
-                                    lastSeenOnlineAt: string;
+                                    lastSeenOnlineAt: string | null;
                                   }>(
                                     sql`
                                       select
@@ -3936,7 +3936,7 @@ export default async (application: Application): Promise<void> => {
                                             | "pink"
                                             | "rose";
                                           avatarImage: string | null;
-                                          lastSeenOnlineAt: string;
+                                          lastSeenOnlineAt: string | null;
                                         }>(
                                           sql`
                                             select
@@ -4233,7 +4233,7 @@ export default async (application: Application): Promise<void> => {
                                             | "pink"
                                             | "rose";
                                           avatarImage: string | null;
-                                          lastSeenOnlineAt: string;
+                                          lastSeenOnlineAt: string | null;
                                         }>(
                                           sql`
                                             select
@@ -4693,7 +4693,7 @@ export default async (application: Application): Promise<void> => {
                                 | "pink"
                                 | "rose";
                               avatarImage: string | null;
-                              lastSeenOnlineAt: string;
+                              lastSeenOnlineAt: string | null;
                             }>(
                               sql`
                                 select
@@ -5411,7 +5411,7 @@ export default async (application: Application): Promise<void> => {
                                                       | "pink"
                                                       | "rose";
                                                     avatarImage: string | null;
-                                                    lastSeenOnlineAt: string;
+                                                    lastSeenOnlineAt: string | null;
                                                   }>(
                                                     sql`
                                                       select
@@ -5572,7 +5572,7 @@ export default async (application: Application): Promise<void> => {
                                                           avatarImage:
                                                             | string
                                                             | null;
-                                                          lastSeenOnlineAt: string;
+                                                          lastSeenOnlineAt: string | null;
                                                         }>(
                                                           sql`
                                                             select

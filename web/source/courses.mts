@@ -2660,7 +2660,9 @@ export default async (application: Application): Promise<void> => {
                                                     | "pink"
                                                     | "rose";
                                                   avatarImage: string | null;
-                                                  lastSeenOnlineAt: string;
+                                                  lastSeenOnlineAt:
+                                                    | string
+                                                    | null;
                                                 }>(
                                                   sql`
                                                     select
@@ -2989,23 +2991,19 @@ export default async (application: Application): Promise<void> => {
                                   : "s"} /
                                 ${String(
                                   courseParticipations.filter(
-                                    (courseParticipation) => {
-                                      const user = application.database.get<{
-                                        lastSeenOnlineAt: string;
-                                      }>(
+                                    (courseParticipation) =>
+                                      application.database.get(
                                         sql`
-                                          select "lastSeenOnlineAt"
+                                          select true
                                           from "users"
-                                          where "id" = ${courseParticipation.user};
+                                          where
+                                            "id" = ${courseParticipation.user} and
+                                            "lastSeenOnlineAt" is not null and
+                                            ${new Date(
+                                              Date.now() - 6 * 60 * 1000,
+                                            ).toISOString()} <= "lastSeenOnlineAt";
                                         `,
-                                      );
-                                      return (
-                                        user !== undefined &&
-                                        new Date(
-                                          Date.now() - 6 * 60 * 1000,
-                                        ).toISOString() <= user.lastSeenOnlineAt
-                                      );
-                                    },
+                                      ) !== undefined,
                                   ).length,
                                 )}
                                 online
@@ -3035,7 +3033,7 @@ export default async (application: Application): Promise<void> => {
                                       | "pink"
                                       | "rose";
                                     avatarImage: string | null;
-                                    lastSeenOnlineAt: string;
+                                    lastSeenOnlineAt: string | null;
                                   }>(
                                     sql`
                                       select
@@ -5141,7 +5139,7 @@ export default async (application: Application): Promise<void> => {
                         },
                         ${null},
                         ${"userRoleUser"},
-                        ${new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString()},
+                        ${null},
                         ${"userDarkModeSystem"},
                         ${80 * 4},
                         ${Number(false)},

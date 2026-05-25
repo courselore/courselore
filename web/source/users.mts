@@ -43,7 +43,7 @@ export type ApplicationUsers = {
               | "pink"
               | "rose";
             avatarImage: string | null;
-            lastSeenOnlineAt: string;
+            lastSeenOnlineAt: string | null;
           }
         | "courseParticipationDeleted"
         | "anonymous";
@@ -2822,8 +2822,9 @@ export default async (application: Application): Promise<void> => {
                 transition-timing-function: var(
                   --transition-timing-function--ease-in-out
                 );
-              `} ${user.lastSeenOnlineAt <
-              new Date(Date.now() - 6 * 60 * 1000).toISOString()
+              `} ${user.lastSeenOnlineAt === null ||
+              user.lastSeenOnlineAt <
+                new Date(Date.now() - 6 * 60 * 1000).toISOString()
                 ? css`
                     opacity: var(--opacity--0);
                   `

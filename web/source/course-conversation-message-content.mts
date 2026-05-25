@@ -560,7 +560,7 @@ export default async (application: Application): Promise<void> => {
                       | "pink"
                       | "rose";
                     avatarImage: string | null;
-                    lastSeenOnlineAt: string;
+                    lastSeenOnlineAt: string | null;
                   }>(
                     sql`
                       select
@@ -2435,7 +2435,7 @@ You may also use the buttons on the message content editor to ${
                                   | "pink"
                                   | "rose";
                                 avatarImage: string | null;
-                                lastSeenOnlineAt: string;
+                                lastSeenOnlineAt: string | null;
                               }>(
                                 sql`
                                   select
