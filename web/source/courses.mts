@@ -2589,7 +2589,7 @@ export default async (application: Application): Promise<void> => {
                                         join "users" on "courseParticipations"."user" = "users"."id"
                                         where
                                           "courseParticipations"."course" = ${request.state.course.id} and
-                                          "courseParticipations"."ltiState" = 'ltiStateAbsentInLMS'
+                                          "courseParticipations"."ltiState" = 'ltiStateMissingInLMS'
                                         order by
                                           "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
                                           "users"."name" asc;
@@ -2614,14 +2614,14 @@ export default async (application: Application): Promise<void> => {
                                             class="bi bi-exclamation-triangle-fill"
                                           ></i
                                           > The following course participants
-                                          are absent in the LMS
+                                          are missing in the LMS
                                         </div>
                                         <div
                                           type="form"
                                           method="PATCH"
                                           action="/courses/${request.state
                                             .course
-                                            .publicId}/settings/participations/lti/sync/absent"
+                                            .publicId}/settings/participations/lti/sync/missing"
                                           css="${css`
                                             display: flex;
                                             flex-direction: column;
@@ -2825,7 +2825,7 @@ export default async (application: Application): Promise<void> => {
                                                 javascript.popover({ element: this, trigger: "click" });
                                               `}"
                                             >
-                                              Update course participants absent
+                                              Update course participants missing
                                               in LMS
                                             </button>
                                             <div
@@ -2873,7 +2873,7 @@ export default async (application: Application): Promise<void> => {
                                                   `}"
                                                 >
                                                   Update course participants
-                                                  absent in LMS
+                                                  missing in LMS
                                                 </button>
                                               </div>
                                             </div>
@@ -5199,8 +5199,8 @@ export default async (application: Application): Promise<void> => {
           id: number;
           user: number;
           ltiState:
-            | "ltiStateAbsentInLMS"
-            | "ltiStateAbsentInLMSAndExplicitlyKept"
+            | "ltiStateMissingInLMS"
+            | "ltiStateMissingInLMSAndExplicitlyKept"
             | null;
         }>(
           sql`
@@ -5226,7 +5226,7 @@ export default async (application: Application): Promise<void> => {
                 ) !== undefined
                   ? null
                   : courseParticipation.ltiState === null
-                    ? "ltiStateAbsentInLMS"
+                    ? "ltiStateMissingInLMS"
                     : courseParticipation.ltiState
               }
               where "id" = ${courseParticipation.id};
@@ -5247,7 +5247,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "PATCH",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync/absent$",
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync/missing$",
     ),
     handler: (
       request: serverTypes.Request<
