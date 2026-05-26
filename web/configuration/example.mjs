@@ -25,7 +25,7 @@ export default {
       domains: ["example-university.edu", "example-university.com"],
       // # Moodle
       //
-      // As system administrator, go to **Site administration > Plugins > Activity modules > Manage tools > configure a tool manually**:
+      // As a system administrator, go to **Site administration > Plugins > Activity modules > Manage tools > configure a tool manually**:
       //
       // - Tool settings
       //   - Tool name: Courselore
