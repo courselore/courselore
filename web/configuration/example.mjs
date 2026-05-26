@@ -23,13 +23,35 @@ export default {
       name: "Example University",
       // The domains over which the LMS has authority. It includes subdomains, for example, `computer-science.example-university.edu`.
       domains: ["example-university.edu", "example-university.com"],
+      // # Moodle
+      //
+      // As system administrator, go to **Site administration > Plugins > Activity modules > Manage tools > configure a tool manually**:
+      //
+      // - Tool settings
+      //   - Tool name: Courselore
+      //   - Tool url: https://example.com/authentication/lti/example-university/callback
+      //   - LTI version: LTI 1.3
+      //   - Public keyset: https://example.com/authentication/lti/example-university/keyset
+      //   - Initiate login URL: https://example.com/authentication/lti/example-university/initiate
+      //   - Redirection URI(s): https://example.com/authentication/lti/example-university/callback
+      //   - Tool configuration usage: Show in activity chooser and as preconfigured tool
+      //   - Default launcher container: New window
+      // - Services
+      //   - IMS LTI Names and Role Provisioning: Use this service to retrieve members' information as per privacy settings
+      // - Privacy
+      //   - Share launcher's name with tool: Always
+      //   - Share launcher's email with tool: Always
+      //   - Accept grades from the tool: Never
+      //   - Force SSL: Checked
+      //
+      // The data that you must fill below is available at: **Site administration > Plugins > Activity modules > Manage tools > Courselore > 🔍**
       platformID: "https://example-lms.edu",
       clientID: "example-client-id",
       deploymentID: "example-deployment-id",
+      publicKeysetURL: "https://example-lms.edu/public-keyset",
       authenticationRequestURL:
         "https://example-lms.edu/authentication-request",
       accessTokenURL: "https://example-lms.edu/access-token",
-      publicKeysetURL: "https://example-lms.edu/public-keyset",
     },
   },
 
