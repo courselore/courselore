@@ -13,6 +13,26 @@ export default {
     from: "courselore@example.com",
   },
 
+  // [Optional] LTI configuration
+  lti: {
+    // The following URLs become available:
+    // - https://example.com/authentication/lti/example-university/keyset
+    // - https://example.com/authentication/lti/example-university/initiate
+    // - https://example.com/authentication/lti/example-university/callback
+    "example-university": {
+      name: "Example University",
+      // The domains over which the LMS has authority. It includes subdomains, for example, `computer-science.example-university.edu`.
+      domains: ["example-university.edu", "example-university.com"],
+      platformID: "https://example-lms.edu",
+      clientID: "example-client-id",
+      deploymentID: "example-deployment-id",
+      authenticationRequestURL:
+        "https://example-lms.edu/authentication-request",
+      accessTokenURL: "https://example-lms.edu/access-token",
+      publicKeysetURL: "https://example-lms.edu/public-keyset",
+    },
+  },
+
   // [Optional] SAML configuration
   // saml: {
   //   // The metadata for the SAML Service Provider is available at: https://example.com/authentication/saml/example-university/metadata
@@ -26,8 +46,8 @@ export default {
   //       name: profile.attributes.name,
   //     }),
   //     options: {
-  //       idpIssuer: "http://example-identity-provider.edu/metadata",
-  //       entryPoint: "http://example-identity-provider.edu/saml/sso",
+  //       idpIssuer: "https://example-identity-provider.edu/metadata",
+  //       entryPoint: "https://example-identity-provider.edu/saml/sso",
   //       idpCert: "MIIDszC...93Sa",
   //       // Node SAML configurations: https://github.com/node-saml/node-saml
   //       // May include `decryptionCert`.
