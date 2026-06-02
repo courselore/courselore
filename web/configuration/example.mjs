@@ -45,6 +45,23 @@ export default {
   //     //   - Force SSL: Checked
   //     //
   //     // The data that you must fill below is available at: **Site administration > Plugins > Activity modules > Manage tools > Courselore > 🔍**
+  //     //
+  //     // # Canvas
+  //     //
+  //     // As a system administrator, go to **Admin > [Your account] > Apps > Manage > Install a New App**:
+  //     //
+  //     // - Select LTI Version: 1.3
+  //     // - Install Method: Manual
+  //     // - App Name: Courselore
+  //     // - Redirect URIs: https://example.com/authentication/lti/example-university/callback
+  //     // - Default Target Link URI: https://example.com/authentication/lti/example-university/callback
+  //     // - OpenID Connect Initiation URL: https://example.com/authentication/lti/example-university/initiate
+  //     // - JWK Method: Public JWK URL
+  //     // - JWK URL: https://example.com/authentication/lti/example-university/keyset
+  //     // - Domain: example.com
+  //     // - User Data Shared With This App: All user data
+  //     // - Placements: Course Navigation
+  //     //
   //     platformID: "https://example-lms.edu",
   //     clientID: "example-client-id",
   //     deploymentID: "example-deployment-id",
