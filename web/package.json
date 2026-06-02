@@ -18,7 +18,7 @@
     "mathjax": "^4.1.2",
     "natural": "^8.1.1",
     "node-forge": "^1.4.0",
-    "nodemailer": "^8.0.8",
+    "nodemailer": "^8.0.10",
     "otpauth": "^9.5.1",
     "qrcode": "^1.5.4",
     "rehype-raw": "^7.0.0",
