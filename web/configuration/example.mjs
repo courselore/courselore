@@ -59,8 +59,46 @@ export default {
   //     // - JWK Method: Public JWK URL
   //     // - JWK URL: https://example.com/authentication/lti/example-university/keyset
   //     // - Domain: example.com
+  //     // - Permissions:
+  //     //   - Can retrieve user data associated with the context the tool is installed in
   //     // - User Data Shared With This App: All user data
-  //     // - Placements: Course Navigation
+  //     // - Placements:
+  //     //   - Link Selection
+  //     // ```json
+  //     // {
+  //     //   "title": "Courselore",
+  //     //   "description": "",
+  //     //   "custom_fields": {},
+  //     //   "target_link_uri": "https://3qlc5swn-443.euw.devtunnels.ms/authentication/lti/courselore-university/callback",
+  //     //   "oidc_initiation_url": "https://3qlc5swn-443.euw.devtunnels.ms/authentication/lti/courselore-university/initiate",
+  //     //   "oidc_initiation_urls": {},
+  //     //   "public_jwk": null,
+  //     //   "public_jwk_url": "https://3qlc5swn-443.euw.devtunnels.ms/authentication/lti/courselore-university/keyset",
+  //     //   "scopes": [
+  //     //     "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly"
+  //     //   ],
+  //     //   "extensions": [
+  //     //     {
+  //     //       "tool_id": null,
+  //     //       "domain": "3qlc5swn-443.euw.devtunnels.ms",
+  //     //       "privacy_level": "public",
+  //     //       "platform": "canvas.instructure.com",
+  //     //       "settings": {
+  //     //         "placements": [
+  //     //           {
+  //     //             "message_type": "LtiResourceLinkRequest",
+  //     //             "windowTarget": "_blank",
+  //     //             "default": "enabled",
+  //     //             "placement": "course_navigation"
+  //     //           }
+  //     //         ],
+  //     //         "target_link_uri": "https://3qlc5swn-443.euw.devtunnels.ms/authentication/lti/courselore-university/callback",
+  //     //         "message_settings": []
+  //     //       }
+  //     //     }
+  //     //   ]
+  //     // }
+  //     // ```
   //     //
   //     platformID: "https://example-lms.edu",
   //     clientID: "example-client-id",
