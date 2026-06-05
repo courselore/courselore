@@ -14,7 +14,6 @@ export default {
       domains: ["uni.ac.uk"],
       platformID: "https://saltire.lti.app/platform",
       clientID: "saltire.lti.app",
-      deploymentID: "cLWwj9cbmkSrCNsckEFBmA",
       publicKeysetURL:
         "https://saltire.lti.app/platform/jwks/a7dd58e457ce47339ef86a41f14c1885",
       authenticationRequestURL: "https://saltire.lti.app/platform/auth",

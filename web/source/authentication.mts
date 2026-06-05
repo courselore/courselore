@@ -3174,8 +3174,6 @@ export default async (application: Application): Promise<void> => {
         requestBody.iss !== lti.platformID ||
         (requestBody.client_id !== undefined &&
           requestBody.client_id !== lti.clientID) ||
-        (requestBody.lti_deployment_id !== undefined &&
-          requestBody.lti_deployment_id !== lti.deploymentID) ||
         requestBody.target_link_uri !==
           `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
         typeof requestBody.login_hint !== "string"
@@ -3267,8 +3265,6 @@ export default async (application: Application): Promise<void> => {
           "LtiResourceLinkRequest" ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
           "1.3.0" ||
-        idToken["https://purl.imsglobal.org/spec/lti/claim/deployment_id"] !==
-          lti.deploymentID ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
           `https://${application.configuration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
         typeof idToken.email !== "string" ||
