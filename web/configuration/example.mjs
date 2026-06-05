@@ -100,6 +100,23 @@ export default {
   //     // }
   //     // ```
   //     //
+  //     // ```json
+  //     // lti: {
+  //     //   "courselore-university": {
+  //     //     name: "Courselore University",
+  //     //     domains: ["development.courselore.org"],
+  //     //     platformID: "https://development.courselore.org/login/oauth2/token",
+  //     //     clientID: "10000000000005",
+  //     //     deploymentID: "10:f97330a96452fc363a34e0ef6d8d0d3e9e1007d2",
+  //     //     publicKeysetURL:
+  //     //       "https://development.courselore.org/api/lti/security/jwks",
+  //     //     authenticationRequestURL:
+  //     //       "https://development.courselore.org/api/lti/authorize_redirect",
+  //     //     accessTokenURL: "https://development.courselore.org/login/oauth2/token",
+  //     //   },
+  //     // },
+  //     // ```
+  //     //
   //     platformID: "https://example-lms.edu",
   //     clientID: "example-client-id",
   //     deploymentID: "example-deployment-id",

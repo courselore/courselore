@@ -3253,7 +3253,7 @@ export default async (application: Application): Promise<void> => {
               algorithms: ["RS256"],
               issuer: lti.platformID,
               audience: lti.clientID,
-              subject: ltiFlow.subject,
+              // TODO: subject: ltiFlow.subject,
             },
           )
         ).payload;
