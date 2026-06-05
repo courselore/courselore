@@ -3079,7 +3079,6 @@ export default async (application: Application): Promise<void> => {
     {
       state: string;
       nonce: string;
-      subject: string;
       createdAt: string;
     }
   >();
@@ -3188,7 +3187,6 @@ export default async (application: Application): Promise<void> => {
           length: 100,
           type: "numeric",
         }),
-        subject: requestBody.login_hint,
         createdAt: new Date().toISOString(),
       };
       ltiFlows.set(ltiFlow.state, ltiFlow);
@@ -3251,7 +3249,6 @@ export default async (application: Application): Promise<void> => {
               algorithms: ["RS256"],
               issuer: lti.platformID,
               audience: lti.clientID,
-              // TODO: subject: ltiFlow.subject,
             },
           )
         ).payload;
