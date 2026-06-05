@@ -4960,10 +4960,7 @@ export default async (application: Application): Promise<void> => {
                   "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
                 client_assertion_type:
                   "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-                client_assertion: await new jose.SignJWT({
-                  "https://purl.imsglobal.org/spec/lti/claim/deployment_id":
-                    lti.deploymentID,
-                })
+                client_assertion: await new jose.SignJWT()
                   .setProtectedHeader({
                     typ: "JWT",
                     alg: "RS256",
