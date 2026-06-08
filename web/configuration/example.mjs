@@ -48,7 +48,7 @@ export default {
   //     //
   //     // The data that you must fill below is available at: **Site administration > Plugins > Activity modules > External tool > Manage tools > Courselore > 🔍**
   //     //
-  //     // As an instructor, go to a course, enable **Edit mode**, click on the **+** to add content, choose **Activity or resource**, and choose **Courselore**. Create the Activity, and click on it to open Courselore. Select the Courselore course to connect with the Moodle course. Click on **Course settings > Course participants > Sync with Learning Management System (LMS)**.
+  //     // As an instructor, create a course in both Moodle and Courselore. In Moodle, go to the course, enable **Edit mode**, click on the **+** to add content, choose **Activity or resource**, and choose **Courselore**. Create the Activity, and click on it to open Courselore. Select the Courselore course to connect with the Moodle course. Click on **Course settings > Course participants > Sync with Learning Management System (LMS)**.
   //     //
   //     // **Canvas**
   //     //
