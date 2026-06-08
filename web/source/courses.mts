@@ -2443,310 +2443,249 @@ export default async (application: Application): Promise<void> => {
                           gap: var(--size--4);
                         `}"
                       >
-                        $${application.configuration.lti !== undefined
-                          ? request.state.course.ltiIdentifier === null
-                            ? html`
+                        $${request.state.course.ltiIdentifier !== null
+                          ? html`
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  display: flex;
+                                  align-items: baseline;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--size--4);
+                                  row-gap: var(--size--2);
+                                `}"
+                              >
                                 <div
-                                  css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    display: flex;
-                                    align-items: baseline;
-                                    flex-wrap: wrap;
-                                    column-gap: var(--size--4);
-                                    row-gap: var(--size--2);
+                                  type="form"
+                                  method="POST"
+                                  action="/courses/${request.state.course
+                                    .publicId}/settings/participations/lti/sync"
+                                  javascript="${javascript`
+                                    this.onsubmit = () => {
+                                      delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                      delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                    };
                                   `}"
                                 >
+                                  <button
+                                    type="submit"
+                                    class="button button--rectangle button--blue"
+                                  >
+                                    Sync with Learning Management System (LMS)
+                                  </button>
+                                </div>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--red"
+                                  javascript="${javascript`
+                                    javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                                  `}"
+                                >
+                                  Disconnect from LMS
+                                </button>
+                                <div
+                                  type="form popover"
+                                  method="DELETE"
+                                  action="/courses/${request.state.course
+                                    .publicId}/settings/participations/lti"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--2);
+                                  `}"
+                                >
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                      color: light-dark(
+                                        var(--color--red--500),
+                                        var(--color--red--500)
+                                      );
+                                    `}"
+                                  >
+                                    <i
+                                      class="bi bi-exclamation-triangle-fill"
+                                    ></i
+                                    > Once you disconnect the Courselore course
+                                    from the LMS course, students following the
+                                    resource link from the LMS to Courselore
+                                    will see an error message.
+                                  </div>
                                   <div>
                                     <button
-                                      type="button"
-                                      class="button button--rectangle button--blue"
-                                      javascript="${javascript`
-                                        javascript.popover({ element: this, trigger: "click" });
-                                      `}"
-                                    >
-                                      Connect with a Learning Management System
-                                      (LMS) course
-                                    </button>
-                                    <div type="popover">
-                                      To connect a Courselore course with a LMS
-                                      course, create a resource link from the
-                                      LMS to Courselore (for example, in Moodle,
-                                      that is called an “activity”).
-                                    </div>
-                                  </div>
-                                </div>
-                              `
-                            : html`
-                                <div
-                                  css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    display: flex;
-                                    align-items: baseline;
-                                    flex-wrap: wrap;
-                                    column-gap: var(--size--4);
-                                    row-gap: var(--size--2);
-                                  `}"
-                                >
-                                  <div
-                                    type="form"
-                                    method="POST"
-                                    action="/courses/${request.state.course
-                                      .publicId}/settings/participations/lti/sync"
-                                    javascript="${javascript`
-                                      this.onsubmit = () => {
-                                        delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
-                                        delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
-                                      };
-                                    `}"
-                                  >
-                                    <button
                                       type="submit"
-                                      class="button button--rectangle button--blue"
-                                    >
-                                      Sync with Learning Management System (LMS)
-                                    </button>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--red"
-                                    javascript="${javascript`
-                                      javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
-                                    `}"
-                                  >
-                                    Disconnect from LMS
-                                  </button>
-                                  <div
-                                    type="form popover"
-                                    method="DELETE"
-                                    action="/courses/${request.state.course
-                                      .publicId}/settings/participations/lti"
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <div
+                                      class="button button--rectangle button--red"
                                       css="${css`
                                         font-size: var(--font-size--3);
                                         line-height: var(
                                           --font-size--3--line-height
                                         );
-                                        font-weight: 600;
-                                        color: light-dark(
-                                          var(--color--red--500),
-                                          var(--color--red--500)
-                                        );
                                       `}"
                                     >
-                                      <i
-                                        class="bi bi-exclamation-triangle-fill"
-                                      ></i
-                                      > Once you disconnect the Courselore
-                                      course from the LMS course, students
-                                      following the resource link from the LMS
-                                      to Courselore will see an error message.
-                                    </div>
-                                    <div>
-                                      <button
-                                        type="submit"
-                                        class="button button--rectangle button--red"
+                                      Disconnect from LMS
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                              $${(() => {
+                                const courseParticipations =
+                                  application.database.all<{
+                                    id: number;
+                                    publicId: string;
+                                    user: number;
+                                    courseParticipationRole:
+                                      | "courseParticipationRoleInstructor"
+                                      | "courseParticipationRoleStudent";
+                                  }>(
+                                    sql`
+                                      select
+                                        "courseParticipations"."id" as "id",
+                                        "courseParticipations"."publicId" as "publicId",
+                                        "courseParticipations"."user" as "user",
+                                        "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                      from "courseParticipations"
+                                      join "users" on "courseParticipations"."user" = "users"."id"
+                                      where
+                                        "courseParticipations"."course" = ${request.state.course.id} and
+                                        "courseParticipations"."ltiState" = 'ltiStateMissingInLMS'
+                                      order by
+                                        "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                        "users"."name" asc;
+                                    `,
+                                  );
+                                return 0 < courseParticipations.length
+                                  ? html`
+                                      <div
                                         css="${css`
                                           font-size: var(--font-size--3);
                                           line-height: var(
                                             --font-size--3--line-height
                                           );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
                                         `}"
                                       >
-                                        Disconnect from LMS
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                                $${(() => {
-                                  const courseParticipations =
-                                    application.database.all<{
-                                      id: number;
-                                      publicId: string;
-                                      user: number;
-                                      courseParticipationRole:
-                                        | "courseParticipationRoleInstructor"
-                                        | "courseParticipationRoleStudent";
-                                    }>(
-                                      sql`
-                                        select
-                                          "courseParticipations"."id" as "id",
-                                          "courseParticipations"."publicId" as "publicId",
-                                          "courseParticipations"."user" as "user",
-                                          "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                        from "courseParticipations"
-                                        join "users" on "courseParticipations"."user" = "users"."id"
-                                        where
-                                          "courseParticipations"."course" = ${request.state.course.id} and
-                                          "courseParticipations"."ltiState" = 'ltiStateMissingInLMS'
-                                        order by
-                                          "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                          "users"."name" asc;
-                                      `,
-                                    );
-                                  return 0 < courseParticipations.length
-                                    ? html`
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            font-weight: 600;
-                                            color: light-dark(
-                                              var(--color--red--500),
-                                              var(--color--red--500)
-                                            );
-                                          `}"
-                                        >
-                                          <i
-                                            class="bi bi-exclamation-triangle-fill"
-                                          ></i
-                                          > The following course participants
-                                          are missing in the LMS
-                                        </div>
-                                        <div
-                                          type="form"
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/settings/participations/lti/sync/missing"
-                                          css="${css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--size--4);
-                                          `}"
-                                          javascript="${javascript`
-                                            this.onsubmit = () => {
-                                              delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
-                                              delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
-                                            };
-                                          `}"
-                                        >
-                                          $${courseParticipations.map(
-                                            (courseParticipation) => {
-                                              const user =
-                                                application.database.get<{
-                                                  publicId: string;
-                                                  name: string;
-                                                  email: string;
-                                                  avatarColor:
-                                                    | "red"
-                                                    | "orange"
-                                                    | "amber"
-                                                    | "yellow"
-                                                    | "lime"
-                                                    | "green"
-                                                    | "emerald"
-                                                    | "teal"
-                                                    | "cyan"
-                                                    | "sky"
-                                                    | "blue"
-                                                    | "indigo"
-                                                    | "violet"
-                                                    | "purple"
-                                                    | "fuchsia"
-                                                    | "pink"
-                                                    | "rose";
-                                                  avatarImage: string | null;
-                                                  lastSeenOnlineAt:
-                                                    | string
-                                                    | null;
-                                                }>(
-                                                  sql`
-                                                    select
-                                                      "publicId",
-                                                      "name",
-                                                      "email",
-                                                      "avatarColor",
-                                                      "avatarImage",
-                                                      "lastSeenOnlineAt"
-                                                    from "users"
-                                                    where "id" = ${courseParticipation.user};
-                                                  `,
-                                                );
-                                              if (user === undefined)
-                                                throw new Error();
-                                              return html`
+                                        <i
+                                          class="bi bi-exclamation-triangle-fill"
+                                        ></i
+                                        > The following course participants are
+                                        missing in the LMS
+                                      </div>
+                                      <div
+                                        type="form"
+                                        method="PATCH"
+                                        action="/courses/${request.state.course
+                                          .publicId}/settings/participations/lti/sync/missing"
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--size--4);
+                                        `}"
+                                        javascript="${javascript`
+                                          this.onsubmit = () => {
+                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                          };
+                                        `}"
+                                      >
+                                        $${courseParticipations.map(
+                                          (courseParticipation) => {
+                                            const user =
+                                              application.database.get<{
+                                                publicId: string;
+                                                name: string;
+                                                email: string;
+                                                avatarColor:
+                                                  | "red"
+                                                  | "orange"
+                                                  | "amber"
+                                                  | "yellow"
+                                                  | "lime"
+                                                  | "green"
+                                                  | "emerald"
+                                                  | "teal"
+                                                  | "cyan"
+                                                  | "sky"
+                                                  | "blue"
+                                                  | "indigo"
+                                                  | "violet"
+                                                  | "purple"
+                                                  | "fuchsia"
+                                                  | "pink"
+                                                  | "rose";
+                                                avatarImage: string | null;
+                                                lastSeenOnlineAt: string | null;
+                                              }>(
+                                                sql`
+                                                  select
+                                                    "publicId",
+                                                    "name",
+                                                    "email",
+                                                    "avatarColor",
+                                                    "avatarImage",
+                                                    "lastSeenOnlineAt"
+                                                  from "users"
+                                                  where "id" = ${courseParticipation.user};
+                                                `,
+                                              );
+                                            if (user === undefined)
+                                              throw new Error();
+                                            return html`
+                                              <div
+                                                key="courseParticipation ${courseParticipation.publicId}"
+                                                css="${css`
+                                                  display: flex;
+                                                  align-items: center;
+                                                  gap: var(--size--3);
+                                                `}"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="courseParticipationsPublicIds[]"
+                                                  value="${courseParticipation.publicId}"
+                                                />
+                                                <div>
+                                                  $${application.partials.userAvatar(
+                                                    {
+                                                      user,
+                                                      size: 9,
+                                                    },
+                                                  )}
+                                                </div>
                                                 <div
-                                                  key="courseParticipation ${courseParticipation.publicId}"
                                                   css="${css`
                                                     display: flex;
-                                                    align-items: center;
-                                                    gap: var(--size--3);
+                                                    flex-direction: column;
+                                                    gap: var(--size--1);
                                                   `}"
                                                 >
-                                                  <input
-                                                    type="hidden"
-                                                    name="courseParticipationsPublicIds[]"
-                                                    value="${courseParticipation.publicId}"
-                                                  />
                                                   <div>
-                                                    $${application.partials.userAvatar(
-                                                      {
-                                                        user,
-                                                        size: 9,
-                                                      },
-                                                    )}
-                                                  </div>
-                                                  <div
-                                                    css="${css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--size--1);
-                                                    `}"
-                                                  >
-                                                    <div>
-                                                      <span
-                                                        css="${css`
-                                                          font-weight: 500;
-                                                        `}"
-                                                        >${user.name}</span
-                                                      >  <span
-                                                        css="${css`
-                                                          font-family:
-                                                            "Roboto Mono Variable",
-                                                            var(
-                                                              --font-family--monospace
-                                                            );
-                                                          font-size: var(
-                                                            --font-size--3
-                                                          );
-                                                          line-height: var(
-                                                            --font-size--3--line-height
-                                                          );
-                                                          color: light-dark(
-                                                            var(
-                                                              --color--slate--600
-                                                            ),
-                                                            var(
-                                                              --color--slate--400
-                                                            )
-                                                          );
-                                                        `}"
-                                                        >${`<${user.email}>`}</span
-                                                      >
-                                                    </div>
-                                                    <div
+                                                    <span
                                                       css="${css`
+                                                        font-weight: 500;
+                                                      `}"
+                                                      >${user.name}</span
+                                                    >  <span
+                                                      css="${css`
+                                                        font-family:
+                                                          "Roboto Mono Variable",
+                                                          var(
+                                                            --font-family--monospace
+                                                          );
                                                         font-size: var(
                                                           --font-size--3
                                                         );
                                                         line-height: var(
                                                           --font-size--3--line-height
                                                         );
-                                                        font-weight: 600;
                                                         color: light-dark(
                                                           var(
                                                             --color--slate--600
@@ -2755,108 +2694,149 @@ export default async (application: Application): Promise<void> => {
                                                             --color--slate--400
                                                           )
                                                         );
-                                                        display: flex;
-                                                        align-items: baseline;
-                                                        flex-wrap: wrap;
-                                                        column-gap: var(
-                                                          --size--4
+                                                      `}"
+                                                      >${`<${user.email}>`}</span
+                                                    >
+                                                  </div>
+                                                  <div
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--3
+                                                      );
+                                                      line-height: var(
+                                                        --font-size--3--line-height
+                                                      );
+                                                      font-weight: 600;
+                                                      color: light-dark(
+                                                        var(
+                                                          --color--slate--600
+                                                        ),
+                                                        var(--color--slate--400)
+                                                      );
+                                                      display: flex;
+                                                      align-items: baseline;
+                                                      flex-wrap: wrap;
+                                                      column-gap: var(
+                                                        --size--4
+                                                      );
+                                                      row-gap: var(--size--2);
+                                                    `}"
+                                                  >
+                                                    <span>
+                                                      <span
+                                                        css="${css`
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--slate--500
+                                                            ),
+                                                            var(
+                                                              --color--slate--500
+                                                            )
+                                                          );
+                                                        `}"
+                                                        >Role:</span
+                                                      >  $${courseParticipation.courseParticipationRole ===
+                                                      "courseParticipationRoleInstructor"
+                                                        ? html`Instructor`
+                                                        : html`Student`}
+                                                    </span>
+                                                    <label
+                                                      class="button button--rectangle button--transparent"
+                                                      css="${css`
+                                                        color: light-dark(
+                                                          var(
+                                                            --color--green--500
+                                                          ),
+                                                          var(
+                                                            --color--green--500
+                                                          )
                                                         );
-                                                        row-gap: var(--size--2);
                                                       `}"
                                                     >
-                                                      <span>
-                                                        <span
-                                                          css="${css`
-                                                            color: light-dark(
-                                                              var(
-                                                                --color--slate--500
-                                                              ),
-                                                              var(
-                                                                --color--slate--500
-                                                              )
-                                                            );
-                                                          `}"
-                                                          >Role:</span
-                                                        >  $${courseParticipation.courseParticipationRole ===
-                                                        "courseParticipationRoleInstructor"
-                                                          ? html`Instructor`
-                                                          : html`Student`}
-                                                      </span>
-                                                      <label
-                                                        class="button button--rectangle button--transparent"
-                                                        css="${css`
-                                                          color: light-dark(
-                                                            var(
-                                                              --color--green--500
-                                                            ),
-                                                            var(
-                                                              --color--green--500
-                                                            )
-                                                          );
-                                                        `}"
-                                                      >
-                                                        <input
-                                                          type="radio"
-                                                          name="courseParticipations[${courseParticipation.publicId}].action"
-                                                          value="keep"
-                                                          required
-                                                          class="input--radio"
-                                                        />  Keep
-                                                      </label>
-                                                      <label
-                                                        class="button button--rectangle button--transparent"
-                                                        css="${css`
-                                                          color: light-dark(
-                                                            var(
-                                                              --color--red--500
-                                                            ),
-                                                            var(
-                                                              --color--red--500
-                                                            )
-                                                          );
-                                                        `}"
-                                                      >
-                                                        <input
-                                                          type="radio"
-                                                          name="courseParticipations[${courseParticipation.publicId}].action"
-                                                          value="remove"
-                                                          required
-                                                          class="input--radio"
-                                                        />  Remove
-                                                      </label>
-                                                    </div>
+                                                      <input
+                                                        type="radio"
+                                                        name="courseParticipations[${courseParticipation.publicId}].action"
+                                                        value="keep"
+                                                        required
+                                                        class="input--radio"
+                                                      />  Keep
+                                                    </label>
+                                                    <label
+                                                      class="button button--rectangle button--transparent"
+                                                      css="${css`
+                                                        color: light-dark(
+                                                          var(
+                                                            --color--red--500
+                                                          ),
+                                                          var(--color--red--500)
+                                                        );
+                                                      `}"
+                                                    >
+                                                      <input
+                                                        type="radio"
+                                                        name="courseParticipations[${courseParticipation.publicId}].action"
+                                                        value="remove"
+                                                        required
+                                                        class="input--radio"
+                                                      />  Remove
+                                                    </label>
                                                   </div>
                                                 </div>
-                                              `;
-                                            },
-                                          )}
-                                          <div
-                                            css="${css`
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
-                                              );
+                                              </div>
+                                            `;
+                                          },
+                                        )}
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
+                                        >
+                                          <button
+                                            type="button"
+                                            class="button button--rectangle button--blue"
+                                            javascript="${javascript`
+                                              javascript.popover({ element: this, trigger: "click" });
                                             `}"
                                           >
-                                            <button
-                                              type="button"
-                                              class="button button--rectangle button--blue"
-                                              javascript="${javascript`
-                                                javascript.popover({ element: this, trigger: "click" });
-                                              `}"
-                                            >
-                                              Update course participants missing
-                                              in LMS
-                                            </button>
+                                            Update course participants missing
+                                            in LMS
+                                          </button>
+                                          <div
+                                            type="popover"
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--size--2);
+                                            `}"
+                                          >
                                             <div
-                                              type="popover"
                                               css="${css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--size--2);
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                                font-weight: 600;
+                                                color: light-dark(
+                                                  var(--color--red--500),
+                                                  var(--color--red--500)
+                                                );
                                               `}"
                                             >
-                                              <div
+                                              <i
+                                                class="bi bi-exclamation-triangle-fill"
+                                              ></i
+                                              > The participants that you remove
+                                              from the course may only
+                                              participate again with an
+                                              invitation.
+                                            </div>
+                                            <div>
+                                              <button
+                                                type="submit"
+                                                class="button button--rectangle button--red"
                                                 css="${css`
                                                   font-size: var(
                                                     --font-size--3
@@ -2864,46 +2844,20 @@ export default async (application: Application): Promise<void> => {
                                                   line-height: var(
                                                     --font-size--3--line-height
                                                   );
-                                                  font-weight: 600;
-                                                  color: light-dark(
-                                                    var(--color--red--500),
-                                                    var(--color--red--500)
-                                                  );
                                                 `}"
                                               >
-                                                <i
-                                                  class="bi bi-exclamation-triangle-fill"
-                                                ></i
-                                                > The participants that you
-                                                remove from the course may only
-                                                participate again with an
-                                                invitation.
-                                              </div>
-                                              <div>
-                                                <button
-                                                  type="submit"
-                                                  class="button button--rectangle button--red"
-                                                  css="${css`
-                                                    font-size: var(
-                                                      --font-size--3
-                                                    );
-                                                    line-height: var(
-                                                      --font-size--3--line-height
-                                                    );
-                                                  `}"
-                                                >
-                                                  Update course participants
-                                                  missing in LMS
-                                                </button>
-                                              </div>
+                                                Update course participants
+                                                missing in LMS
+                                              </button>
                                             </div>
                                           </div>
                                         </div>
-                                        <hr class="separator" />
-                                      `
-                                    : html``;
-                                })()}
-                              `
+                                      </div>
+                                      <hr class="separator" />
+                                    `
+                                  : html``;
+                              })()}
+                            `
                           : html``}
                         <div
                           key="courseParticipations--update"
