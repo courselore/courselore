@@ -23,9 +23,11 @@ export default {
   //     name: "Example University",
   //     // The domains over which the LMS has authority. It includes subdomains, for example, `computer-science.example-university.edu`.
   //     domains: ["example-university.edu", "example-university.com"],
-  //     // # Moodle
+  //     // The following are instructions on how to set up LTI with different LMSs:
   //     //
-  //     // As a system administrator, go to **Site administration > Plugins > Activity modules > Manage tools > configure a tool manually**:
+  //     // **Moodle**
+  //     //
+  //     // As a system administrator, go to **Site administration > Plugins > Activity modules > External tool > Manage tools > configure a tool manually**:
   //     //
   //     // - Tool settings
   //     //   - Tool name: Courselore
@@ -44,9 +46,11 @@ export default {
   //     //   - Accept grades from the tool: Never
   //     //   - Force SSL: Checked
   //     //
-  //     // The data that you must fill below is available at: **Site administration > Plugins > Activity modules > Manage tools > Courselore > 🔍**
+  //     // The data that you must fill below is available at: **Site administration > Plugins > Activity modules > External tool > Manage tools > Courselore > 🔍**
   //     //
-  //     // # Canvas
+  //     // As an instructor, go to a course, enable **Edit mode**, click on the **+** to add content, choose **Activity or resource**, and choose **Courselore**. Create the Activity, and click on it to open Courselore. Select the Courselore course to connect with the Moodle course. Click on **Course settings > Course participants > Sync with Learning Management System (LMS)**.
+  //     //
+  //     // **Canvas**
   //     //
   //     // As a system administrator, go to **Admin > [Your account] > Apps > Manage > Install a New App**:
   //     //
@@ -123,6 +127,7 @@ export default {
   //       "https://example-lms.edu/authentication-request",
   //     accessTokenURL: "https://example-lms.edu/access-token",
   //   },
+  //   // Another LTI configuration...
   // },
 
   // [Optional] SAML configuration
@@ -152,7 +157,7 @@ export default {
   //       // - `validateInResponseTo`
   //     },
   //   },
-  //   // Another SAML Identity Provider…
+  //   // Another SAML configuration...
   // },
 
   // [Optional] The directory in which Courselore stores the database and files.
