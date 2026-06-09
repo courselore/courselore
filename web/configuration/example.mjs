@@ -27,7 +27,7 @@ export default {
   //     //
   //     // **Moodle**
   //     //
-  //     // As a system administrator, go to **Site administration > Plugins > Activity modules > External tool > Manage tools > configure a tool manually**:
+  //     // As a system administrator, go to **Site administration > Plugins > Activity modules > External tool > Manage tools > configure a tool manually** (fields that aren’t listed should be left at their defaults):
   //     //
   //     // - Tool settings
   //     //   - Tool name: Courselore
@@ -48,43 +48,38 @@ export default {
   //     //
   //     // The data that you must fill below is available at: **Site administration > Plugins > Activity modules > External tool > Manage tools > Courselore > 🔍**
   //     //
-  //     // As an instructor, create a course in both Moodle and Courselore. In Moodle, go to the course, enable **Edit mode**, click on the **+** to add content, choose **Activity or resource**, and choose **Courselore**. Create the Activity, and click on it to open Courselore. Select the Courselore course to connect with the Moodle course. Click on **Course settings > Course participants > Sync with Learning Management System (LMS)**.
+  //     // As an instructor, create a course in both Moodle and Courselore.
+  //     //
+  //     // In Moodle, go to the course, enable **Edit mode**, click on the **+** to add content, choose **Activity or resource**, and choose **Courselore**.
+  //     //
+  //     // Create the Activity, and click on it to open Courselore. Select the Courselore course to connect with the Moodle course.
+  //     //
+  //     // Click on **Course settings > Course participants > Sync with Learning Management System (LMS)**.
   //     //
   //     // **Canvas**
   //     //
   //     // As a system administrator, go to **Admin > [Your account] > Apps > Manage > Install a New App**:
   //     //
-  //     // - Select LTI Version: 1.3
-  //     // - Install Method: Manual
-  //     // - App Name: Courselore
-  //     // - Redirect URIs: https://example.com/authentication/lti/example-university/callback
-  //     // - Default Target Link URI: https://example.com/authentication/lti/example-university/callback
-  //     // - OpenID Connect Initiation URL: https://example.com/authentication/lti/example-university/initiate
-  //     // - JWK Method: Public JWK URL
-  //     // - JWK URL: https://example.com/authentication/lti/example-university/keyset
-  //     // - Domain: example.com
-  //     // - Permissions:
-  //     //   - Can retrieve user data associated with the context the tool is installed in
-  //     // - User Data Shared With This App: All user data
-  //     // - Placements:
-  //     //   - Link Selection
+  //     // - Install Method: JSON
+  //     // - JSON Code (change the URLs in the snippet below):
+  //     //
   //     // ```json
   //     // {
   //     //   "title": "Courselore",
   //     //   "description": "",
   //     //   "custom_fields": {},
-  //     //   "target_link_uri": "https://3qlc5swn-443.euw.devtunnels.ms/authentication/lti/courselore-university/callback",
-  //     //   "oidc_initiation_url": "https://3qlc5swn-443.euw.devtunnels.ms/authentication/lti/courselore-university/initiate",
+  //     //   "target_link_uri": "https://example.com/authentication/lti/example-university/callback",
+  //     //   "oidc_initiation_url": "https://example.com/authentication/lti/example-university/initiate",
   //     //   "oidc_initiation_urls": {},
   //     //   "public_jwk": null,
-  //     //   "public_jwk_url": "https://3qlc5swn-443.euw.devtunnels.ms/authentication/lti/courselore-university/keyset",
+  //     //   "public_jwk_url": "https://example.com/authentication/lti/example-university/keyset",
   //     //   "scopes": [
   //     //     "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly"
   //     //   ],
   //     //   "extensions": [
   //     //     {
   //     //       "tool_id": null,
-  //     //       "domain": "3qlc5swn-443.euw.devtunnels.ms",
+  //     //       "domain": "example.com",
   //     //       "privacy_level": "public",
   //     //       "platform": "canvas.instructure.com",
   //     //       "settings": {
@@ -96,7 +91,7 @@ export default {
   //     //             "placement": "course_navigation"
   //     //           }
   //     //         ],
-  //     //         "target_link_uri": "https://3qlc5swn-443.euw.devtunnels.ms/authentication/lti/courselore-university/callback",
+  //     //         "target_link_uri": "https://example.com/authentication/lti/example-university/callback",
   //     //         "message_settings": []
   //     //       }
   //     //     }
@@ -104,22 +99,29 @@ export default {
   //     // }
   //     // ```
   //     //
-  //     // ```json
-  //     // lti: {
-  //     //   "courselore-university": {
-  //     //     name: "Courselore University",
-  //     //     domains: ["development.courselore.org"],
-  //     //     platformID: "https://development.courselore.org/login/oauth2/token",
-  //     //     clientID: "10000000000005",
-  //     //     publicKeysetURL:
-  //     //       "https://development.courselore.org/api/lti/security/jwks",
-  //     //     authenticationRequestURL:
-  //     //       "https://development.courselore.org/api/lti/authorize_redirect",
-  //     //     accessTokenURL: "https://development.courselore.org/login/oauth2/token",
-  //     //   },
-  //     // },
-  //     // ```
+  //     // Click on **Next** several times and **Install App** at the end.
   //     //
+  //     // Click on **Copy Client ID**. This needs to be provided to instructors.
+  //     //
+  //     // The data that you must fill below looks like the following (change the domain in the URLs and the Client ID which was provided by Canvas):
+  //     //
+  //     // ```json
+  //     // platformID: "https://example-canvas.com/login/oauth2/token",
+  //     // clientID: "10000000000005",
+  //     // publicKeysetURL: "https://example-canvas.com/api/lti/security/jwks",
+  //     // authenticationRequestURL: "https://example-canvas.com/api/lti/authorize_redirect",
+  //     // accessTokenURL: "https://example-canvas.com/login/oauth2/token",
+  //     // ```
+  //     // As an instructor, create a course in both Canvas and Courselore.
+  //     //
+  //     // In Canvas, go to the course, **Settings > Apps > + App**:
+  //     //
+  //     // - Configuration Type: By Client ID
+  //     // - Client ID: The Client ID that was provided by the system administrator.
+  //     //
+  //     // Refresh the page and click on Courselore on the course sidebar to open Courselore. Select the Courselore course to connect with the Canvas course.
+  //     //
+  //     // Click on **Course settings > Course participants > Sync with Learning Management System (LMS)**.
   //     platformID: "https://example-lms.edu",
   //     clientID: "example-client-id",
   //     publicKeysetURL: "https://example-lms.edu/public-keyset",
