@@ -1,5 +1,7 @@
 # Changelog
 
+- Added support for connecting Courselore to LMSs (for example, Moodle and Canvas) via LTI. With this connection, instructors may sync the course participants.
+
 ## 10.1.0 · 2026-04-28
 
 - Added the list of courses to the system settings.
