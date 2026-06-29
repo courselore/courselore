@@ -209,7 +209,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${javascript`
                   this.isModified = false;
                   const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom-start" });
-                  this.oninput = this.onfocusin = utilities.foregroundJob(async () => {
+                  this.oninput = this.onfocusin = utilities.throttle(async () => {
                     if (this.querySelector('[name="search"]').value.trim() === "") {
                       popover.hidePopover();
                       return;
@@ -1078,7 +1078,7 @@ export default async (application: Application): Promise<void> => {
                   this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
                   updateSidebarWidth();
                 };
-                const updateSidebarWidth = utilities.foregroundJob(async () => {
+                const updateSidebarWidth = utilities.throttle(async () => {
                   await fetch("/settings/sidebar-width", {
                     method: "PATCH",
                     headers: { "CSRF-Protection": "true" },
@@ -1949,7 +1949,7 @@ export default async (application: Application): Promise<void> => {
                             class="input--text"
                             javascript="${javascript`
                               this.isModified = false;
-                              this.onkeyup = utilities.foregroundJob(() => {
+                              this.onkeyup = utilities.throttle(() => {
                                 const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
                                 for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
                                   const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
@@ -3848,7 +3848,7 @@ export default async (application: Application): Promise<void> => {
                                   class="input--text"
                                   javascript="${javascript`
                                     this.isModified = false;
-                                    this.onkeyup = utilities.foregroundJob(() => {
+                                    this.onkeyup = utilities.throttle(() => {
                                       const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
                                       for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
                                         const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
@@ -5853,7 +5853,7 @@ export default async (application: Application): Promise<void> => {
                         `}"
                         javascript="${javascript`
                           this.isModified = false;
-                          this.oninput = utilities.foregroundJob(async () => {
+                          this.oninput = utilities.throttle(async () => {
                             await fetch(${`/courses/${
                               request.state.course.publicId
                             }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {

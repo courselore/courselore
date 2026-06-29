@@ -260,7 +260,7 @@ export default async (application: Application): Promise<void> => {
                       target: this.querySelector("label").nextElementSibling.nextElementSibling,
                       trigger: "none",
                     });
-                    this.oninput = utilities.foregroundJob(async () => {
+                    this.oninput = utilities.throttle(async () => {
                       popover.showPopover();
                       const responseText = await (
                         await fetch(
@@ -458,7 +458,7 @@ export default async (application: Application): Promise<void> => {
               class="input--text"
               javascript="${javascript`
                 this.isModified = false;
-                this.onkeyup = utilities.foregroundJob(() => {
+                this.onkeyup = utilities.throttle(() => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
                   for (const element of this.closest('[key~="courseConversationMessageContentEditor--mention"]').querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipations"]').children) {
                     const nameElement = element.querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipation--name"]');
@@ -665,7 +665,7 @@ export default async (application: Application): Promise<void> => {
               class="input--text"
               javascript="${javascript`
                 this.isModified = false;
-                this.onkeyup = utilities.foregroundJob(() => {
+                this.onkeyup = utilities.throttle(() => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
                   for (const element of this.closest('[key~="courseConversationMessageContentEditor--reference"]').querySelector('[key~="courseConversationMessageContentEditor--reference--courseConversations"]').children) {
                     const titleElement = element.querySelector('[key~="courseConversationMessageContentEditor--reference--courseConversation--title"]');
