@@ -416,7 +416,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  if (application.commandLineArguments.values.type === "backgroundJob")
+  if (application.commandLineArguments.values.type === "backgroundJobWorker")
     node.setInterval({ duration: 60 * 60 * 1000 }, () => {
       application.database.run(
         sql`

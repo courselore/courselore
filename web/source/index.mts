@@ -36,7 +36,7 @@ export type Application = {
   version: string;
   commandLineArguments: {
     values: {
-      type: undefined | "server" | "backgroundJob";
+      type: undefined | "server" | "backgroundJobWorker";
       port: undefined | string;
     };
     positionals: string[];
@@ -193,7 +193,7 @@ if (application.commandLineArguments.values.type === undefined) {
           process.argv[1],
           ...application.commandLineArguments.positionals,
           "--type",
-          "backgroundJob",
+          "backgroundJobWorker",
           "--port",
           String(port),
         ],
