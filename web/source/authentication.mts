@@ -417,7 +417,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   if (application.commandLineArguments.values.type === "backgroundJob")
-    node.backgroundJob({ interval: 60 * 60 * 1000 }, () => {
+    node.setInterval({ duration: 60 * 60 * 1000 }, () => {
       application.database.run(
         sql`
           delete from "userSessions" where "createdAt" < ${new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString()};
@@ -3084,7 +3084,7 @@ export default async (application: Application): Promise<void> => {
   >();
 
   if (application.commandLineArguments.values.type === "server")
-    node.backgroundJob({ interval: 5 * 60 * 1000, firstRun: "delayed" }, () => {
+    node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
       for (const ltiFlow of ltiFlows.values())
         if (
           ltiFlow.createdAt < new Date(Date.now() - 5 * 60 * 1000).toISOString()
