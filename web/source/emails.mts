@@ -3,7 +3,7 @@ import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "backgroundJob")
-    application.database.backgroundJob<any>(
+    application.database.backgroundJobWorker<any>(
       { type: "email" },
       async (parameters) => {
         await nodemailer

@@ -384,7 +384,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   if (application.commandLineArguments.values.type === "backgroundJob")
-    application.database.backgroundJob<{
+    application.database.backgroundJobWorker<{
       courseConversationMessageId: number;
       announcement?: boolean;
     }>(
