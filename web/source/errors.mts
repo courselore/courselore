@@ -34,16 +34,19 @@ export default async (application: Application): Promise<void> => {
                 <a
                   target="_blank"
                   class="link"
-                  href="mailto:${application.configuration
-                    .systemAdministratorEmail ??
-                  "system-administrator@courselore.org"}?${new URLSearchParams({
+                  href="mailto:${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }?${new URLSearchParams({
                     subject: "Page not found",
                     body: `Page: ${request.URL.href}\n\nPlease describe the circumstances under which you reached the page and why you believe that there should be something there:`,
                   })
                     .toString()
                     .replaceAll("+", "%20")}"
-                  >${application.configuration.systemAdministratorEmail ??
-                  "system-administrator@courselore.org"}</a
+                  >${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }</a
                 >
               </div>
             </div>
@@ -84,16 +87,19 @@ export default async (application: Application): Promise<void> => {
                 <a
                   target="_blank"
                   class="link"
-                  href="mailto:${application.configuration
-                    .systemAdministratorEmail ??
-                  "system-administrator@courselore.org"}?${new URLSearchParams({
+                  href="mailto:${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }?${new URLSearchParams({
                     subject: "Server error",
                     body: `Page: ${request.URL.href}\n\nPlease describe the circumstances under which you ran into the error:`,
                   })
                     .toString()
                     .replaceAll("+", "%20")}"
-                  >${application.configuration.systemAdministratorEmail ??
-                  "system-administrator@courselore.org"}</a
+                  >${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }</a
                 >
               </div>
             </div>

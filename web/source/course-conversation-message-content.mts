@@ -238,23 +238,24 @@ export default async (application: Application): Promise<void> => {
             <i class="bi bi-link"></i>
           </button>
           <div type="popover">Link</div>
-          $${!(
-            Boolean(
-              course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
-            ) === false &&
-            courseParticipation.courseParticipationRole ===
-              "courseParticipationRoleStudent"
-          )
-            ? html`
-                <div
-                  type="form"
-                  method="POST"
-                  action="/courses/${course.publicId}/messages/attachments"
-                  enctype="multipart/form-data"
-                  css="${css`
+          $${
+            !(
+              Boolean(
+                course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+              ) === false &&
+              courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleStudent"
+            )
+              ? html`
+                  <div
+                    type="form"
+                    method="POST"
+                    action="/courses/${course.publicId}/messages/attachments"
+                    enctype="multipart/form-data"
+                    css="${css`
                     display: flex;
                   `}"
-                  javascript="${javascript`
+                    javascript="${javascript`
                     const popover = javascript.popover({
                       element: this.querySelector("label"),
                       target: this.querySelector("label").nextElementSibling.nextElementSibling,
@@ -278,33 +279,34 @@ export default async (application: Application): Promise<void> => {
                       popover.hidePopover();
                     });
                   `}"
-                >
-                  <label
-                    class="button button--square button--icon button--transparent"
-                    javascript="${javascript`
+                  >
+                    <label
+                      class="button button--square button--icon button--transparent"
+                      javascript="${javascript`
                       javascript.popover({ element: this });
                     `}"
-                  >
-                    <i class="bi bi-paperclip"></i>
-                    <input type="file" name="attachments[]" multiple hidden />
-                  </label>
-                  <div type="popover">Attachment</div>
-                  <div type="popover">
-                    <div
-                      css="${css`
+                    >
+                      <i class="bi bi-paperclip"></i>
+                      <input type="file" name="attachments[]" multiple hidden />
+                    </label>
+                    <div type="popover">Attachment</div>
+                    <div type="popover">
+                      <div
+                        css="${css`
                         color: light-dark(
                           var(--color--slate--600),
                           var(--color--slate--400)
                         );
                         animation: var(--animation--pulse);
                       `}"
-                    >
-                      <i class="bi bi-three-dots"></i>
+                      >
+                        <i class="bi bi-three-dots"></i>
+                      </div>
                     </div>
                   </div>
-                </div>
-              `
-            : html``}
+                `
+              : html``
+          }
           <button
             type="button"
             class="button button--square button--icon button--transparent"
@@ -606,10 +608,11 @@ export default async (application: Application): Promise<void> => {
                             this.name = ${courseParticipationUser.name};
                           `}"
                           >${courseParticipationUser.name}</span
-                        >$${courseParticipation.courseParticipationRole ===
-                        "courseParticipationRoleInstructor"
-                          ? html`<span
-                              css="${css`
+                        >$${
+                          courseParticipation.courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                            ? html`<span
+                                css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
                                 color: light-dark(
@@ -617,10 +620,11 @@ export default async (application: Application): Promise<void> => {
                                   var(--color--slate--400)
                                 );
                               `}"
-                            >
-                              (instructor)</span
-                            >`
-                          : html``}
+                              >
+                                (instructor)</span
+                              >`
+                            : html``
+                        }
                       </div>
                     </button>
                   `;
@@ -971,8 +975,7 @@ export default async (application: Application): Promise<void> => {
             }
           `}"
         >
-${courseConversationMessageContent}</textarea
-        >
+${courseConversationMessageContent}</textarea>
         <div
           key="courseConversationMessageContentEditor--loading"
           css="${css`
@@ -1795,8 +1798,9 @@ You may also use the buttons on the message content editor to ${
             <html>
               <body>
                 <div
-                  key="courseConversationMessageContent ${courseConversationMessage?.publicId ??
-                  ""}"
+                  key="courseConversationMessageContent ${
+                    courseConversationMessage?.publicId ?? ""
+                  }"
                   css="${css`
                     h1,
                     h2,
@@ -2168,34 +2172,31 @@ You may also use the buttons on the message content editor to ${
           }
           if (child.nodeType !== child.ELEMENT_NODE) continue;
           for (const attributeName of child.getAttributeNames())
-            if (
-              !(
-                attributeName === "data-position" ||
-                (child.matches("a") && attributeName === "href") ||
-                (child.matches("code") &&
-                  attributeName === "class" &&
-                  child
-                    .getAttribute(attributeName)
-                    .match(
-                      /^(?:language-math math-inline)|(?:language-math math-display)|(?:language-[a-z0-9\-+#]+)$/,
-                    )) ||
-                (child.matches("img, video, audio") &&
-                  attributeName === "src") ||
-                (child.matches("img, video") &&
-                  (attributeName === "width" || attributeName === "height")) ||
-                (child.matches("img") && attributeName === "alt") ||
-                (child.matches("input") &&
-                  (attributeName === "type" ||
-                    attributeName === "disabled" ||
-                    attributeName === "checked")) ||
-                ((child.matches("td") || child.matches("th")) &&
-                  attributeName === "align" &&
-                  (child.getAttribute(attributeName) === "left" ||
-                    child.getAttribute(attributeName) === "center" ||
-                    child.getAttribute(attributeName) === "right")) ||
-                attributeName === "id"
-              )
-            )
+            if (!(
+              attributeName === "data-position" ||
+              (child.matches("a") && attributeName === "href") ||
+              (child.matches("code") &&
+                attributeName === "class" &&
+                child
+                  .getAttribute(attributeName)
+                  .match(
+                    /^(?:language-math math-inline)|(?:language-math math-display)|(?:language-[a-z0-9\-+#]+)$/,
+                  )) ||
+              (child.matches("img, video, audio") && attributeName === "src") ||
+              (child.matches("img, video") &&
+                (attributeName === "width" || attributeName === "height")) ||
+              (child.matches("img") && attributeName === "alt") ||
+              (child.matches("input") &&
+                (attributeName === "type" ||
+                  attributeName === "disabled" ||
+                  attributeName === "checked")) ||
+              ((child.matches("td") || child.matches("th")) &&
+                attributeName === "align" &&
+                (child.getAttribute(attributeName) === "left" ||
+                  child.getAttribute(attributeName) === "center" ||
+                  child.getAttribute(attributeName) === "right")) ||
+              attributeName === "id"
+            ))
               child.removeAttribute(attributeName);
           sanitize(child);
         }
@@ -2235,9 +2236,11 @@ You may also use the buttons on the message content editor to ${
       for (const element of document.querySelectorAll("video"))
         if (mode === "emailNotification")
           element.outerHTML = html`<a
-            href="https://${application.configuration
-              .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-              .publicId}?${new URLSearchParams({
+            href="https://${
+              application.configuration.hostname
+            }/courses/${course.publicId}/conversations/${
+              courseConversation!.publicId
+            }?${new URLSearchParams({
               message: courseConversationMessage!.publicId,
             }).toString()}"
             >[Video]</a
@@ -2256,9 +2259,11 @@ You may also use the buttons on the message content editor to ${
       for (const element of document.querySelectorAll("audio"))
         if (mode === "emailNotification")
           element.outerHTML = html`<a
-            href="https://${application.configuration
-              .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-              .publicId}?${new URLSearchParams({
+            href="https://${
+              application.configuration.hostname
+            }/courses/${course.publicId}/conversations/${
+              courseConversation!.publicId
+            }?${new URLSearchParams({
               message: courseConversationMessage!.publicId,
             }).toString()}"
             >[Audio]</a
@@ -2277,9 +2282,11 @@ You may also use the buttons on the message content editor to ${
           element.outerHTML = html`
             <div>
               <a
-                href="https://${application.configuration
-                  .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                  .publicId}?${new URLSearchParams({
+                href="https://${
+                  application.configuration.hostname
+                }/courses/${course.publicId}/conversations/${
+                  courseConversation!.publicId
+                }?${new URLSearchParams({
                   message: courseConversationMessage!.publicId,
                 }).toString()}"
                 >[Poll]</a
@@ -2344,14 +2351,16 @@ You may also use the buttons on the message content editor to ${
               "beforeend",
               html`
                 <details
-                  css="${pollOption.votes.length === 0
-                    ? css`
-                        margin: var(--size--0);
-                      `
-                    : css`
-                        margin: var(--size--1) var(--size--0) var(--size--0)
-                          var(--size--0);
-                      `}"
+                  css="${
+                    pollOption.votes.length === 0
+                      ? css`
+                          margin: var(--size--0);
+                        `
+                      : css`
+                          margin: var(--size--1) var(--size--0) var(--size--0)
+                            var(--size--0);
+                        `
+                  }"
                 >
                   <summary
                     css="${css`
@@ -2360,15 +2369,16 @@ You may also use the buttons on the message content editor to ${
                       position: relative;
                     `}"
                   >
-                    $${0 < pollOption.votes.length
-                      ? html`
-                          <div
-                            style="width: ${String(
+                    $${
+                      0 < pollOption.votes.length
+                        ? html`
+                            <div
+                              style="width: ${String(
                               Math.round(
                                 (pollOption.votes.length / votesCount) * 100,
                               ),
                             )}%;"
-                            css="${css`
+                              css="${css`
                               background-color: light-dark(
                                 var(--color--blue--500),
                                 var(--color--blue--500)
@@ -2378,9 +2388,10 @@ You may also use the buttons on the message content editor to ${
                               position: absolute;
                               top: var(--size--0);
                             `}"
-                          ></div>
-                        `
-                      : html``}
+                            ></div>
+                          `
+                        : html``
+                    }
                     ${String(pollOption.votes.length)}
                     vote${pollOption.votes.length !== 1 ? "s" : ""}
                   </summary>
@@ -2466,11 +2477,14 @@ You may also use the buttons on the message content editor to ${
                                 margin-top: var(--size--0-5);
                               `}"
                             >
-                              ${courseConversationMessageContentPollOptionVoteUser?.name ??
-                              "Deleted course participant"}$${courseConversationMessageContentPollOptionVoteCourseParticipation?.courseParticipationRole ===
-                              "courseParticipationRoleInstructor"
-                                ? html`<span
-                                    css="${css`
+                              ${
+                                courseConversationMessageContentPollOptionVoteUser?.name ??
+                                "Deleted course participant"
+                              }$${
+                                courseConversationMessageContentPollOptionVoteCourseParticipation?.courseParticipationRole ===
+                                "courseParticipationRoleInstructor"
+                                  ? html`<span
+                                      css="${css`
                                       font-size: var(--font-size--3);
                                       line-height: var(
                                         --font-size--3--line-height
@@ -2480,10 +2494,11 @@ You may also use the buttons on the message content editor to ${
                                         var(--color--slate--400)
                                       );
                                     `}"
-                                  >
-                                    (instructor)</span
-                                  >`
-                                : html``}
+                                    >
+                                      (instructor)</span
+                                    >`
+                                  : html``
+                              }
                             </div>
                           </div>
                         `;
@@ -2513,9 +2528,11 @@ You may also use the buttons on the message content editor to ${
                   type="submit"
                   class="button button--rectangle button--transparent"
                 >
-                  ${element.querySelector("input:checked") === null
-                    ? "Vote"
-                    : "Update vote"}
+                  ${
+                    element.querySelector("input:checked") === null
+                      ? "Vote"
+                      : "Update vote"
+                  }
                 </button>
               </div>
             `,
@@ -2524,12 +2541,15 @@ You may also use the buttons on the message content editor to ${
           <div
             type="form poll"
             method="PATCH"
-            action="/courses/${course.publicId}${courseConversation !==
-            undefined
-              ? `/conversations/${courseConversation.publicId}`
-              : ""}${courseConversationMessage !== undefined
-              ? `/messages/${courseConversationMessage.publicId}`
-              : ""}/polls/${String(elementIndex)}"
+            action="/courses/${course.publicId}${
+              courseConversation !== undefined
+                ? `/conversations/${courseConversation.publicId}`
+                : ""
+            }${
+              courseConversationMessage !== undefined
+                ? `/messages/${courseConversationMessage.publicId}`
+                : ""
+            }/polls/${String(elementIndex)}"
           >
             $${element.innerHTML}
           </div>
@@ -2614,9 +2634,11 @@ You may also use the buttons on the message content editor to ${
             element.parentElement.outerHTML = html`
               <div>
                 <a
-                  href="https://${application.configuration
-                    .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                    .publicId}${new URLSearchParams({
+                  href="https://${
+                    application.configuration.hostname
+                  }/courses/${course.publicId}/conversations/${
+                    courseConversation!.publicId
+                  }${new URLSearchParams({
                     message: courseConversationMessage!.publicId,
                   }).toString()}"
                   >[Mathematics]</a
@@ -2625,9 +2647,11 @@ You may also use the buttons on the message content editor to ${
             `;
           else
             element.outerHTML = html`<a
-              href="https://${application.configuration
-                .hostname}/courses/${course.publicId}/conversations/${courseConversation!
-                .publicId}${new URLSearchParams({
+              href="https://${
+                application.configuration.hostname
+              }/courses/${course.publicId}/conversations/${
+                courseConversation!.publicId
+              }${new URLSearchParams({
                 message: courseConversationMessage!.publicId,
               }).toString()}"
               >[mathematics]</a
@@ -2799,14 +2823,18 @@ You may also use the buttons on the message content editor to ${
                   if (mentionUser === undefined) throw new Error();
                   mentions.add(courseParticipationPublicId);
                   return html`<strong
-                    $${courseParticipation !== undefined &&
-                    courseParticipation.id === mentionCourseParticipation.id
-                      ? html`class="highlight"`
-                      : html``}
-                    >@${mentionUser.name}${mentionCourseParticipation.courseParticipationRole ===
-                    "courseParticipationRoleInstructor"
-                      ? " (instructor)"
-                      : ""}</strong
+                    $${
+                      courseParticipation !== undefined &&
+                      courseParticipation.id === mentionCourseParticipation.id
+                        ? html`class="highlight"`
+                        : html``
+                    }
+                    >@${mentionUser.name}${
+                      mentionCourseParticipation.courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                        ? " (instructor)"
+                        : ""
+                    }</strong
                   >`;
                 },
               )

@@ -21,9 +21,7 @@ export type ApplicationAuthentication = {
           privateKey: string;
           certificate: string;
           userRolesWhoMayCreateCourses:
-            | "userRoleUser"
-            | "userRoleStaff"
-            | "userRoleSystemAdministrator";
+            "userRoleUser" | "userRoleStaff" | "userRoleSystemAdministrator";
         };
         userSession: {
           id: number;
@@ -66,14 +64,10 @@ export type ApplicationAuthentication = {
             | "rose";
           avatarImage: string | null;
           userRole:
-            | "userRoleSystemAdministrator"
-            | "userRoleStaff"
-            | "userRoleUser";
+            "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
           lastSeenOnlineAt: string | null;
           darkMode:
-            | "userDarkModeSystem"
-            | "userDarkModeLight"
-            | "userDarkModeDark";
+            "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
           sidebarWidth: number;
           emailNotificationsForAllMessages: number;
           emailNotificationsForMessagesIncludingAMention: number;
@@ -151,9 +145,7 @@ export default async (application: Application): Promise<void> => {
         privateKey: string;
         certificate: string;
         userRolesWhoMayCreateCourses:
-          | "userRoleUser"
-          | "userRoleStaff"
-          | "userRoleSystemAdministrator";
+          "userRoleUser" | "userRoleStaff" | "userRoleSystemAdministrator";
       }>(
         sql`
           select
@@ -285,14 +277,10 @@ export default async (application: Application): Promise<void> => {
           | "rose";
         avatarImage: string | null;
         userRole:
-          | "userRoleSystemAdministrator"
-          | "userRoleStaff"
-          | "userRoleUser";
+          "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
         lastSeenOnlineAt: string | null;
         darkMode:
-          | "userDarkModeSystem"
-          | "userDarkModeLight"
-          | "userDarkModeDark";
+          "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
         emailNotificationsForMessagesIncludingAMention: number;
@@ -848,8 +836,9 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form"
                       method="POST"
-                      action="/authentication/reset-password${request.URL
-                        .search}"
+                      action="/authentication/reset-password${
+                        request.URL.search
+                      }"
                       css="${css`
                         padding: var(--size--2) var(--size--0);
                         border-bottom: var(--border-width--1) solid
@@ -908,12 +897,13 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
                   </details>
-                  $${typeof application.configuration.saml === "object"
-                    ? html`
-                        <details>
-                          <summary
-                            class="button button--rectangle button--transparent"
-                            css="${css`
+                  $${
+                    typeof application.configuration.saml === "object"
+                      ? html`
+                          <details>
+                            <summary
+                              class="button button--rectangle button--transparent"
+                              css="${css`
                               font-size: var(--font-size--3);
                               line-height: var(--font-size--3--line-height);
                               font-weight: 600;
@@ -922,9 +912,9 @@ export default async (application: Application): Promise<void> => {
                                 var(--color--slate--400)
                               );
                             `}"
-                          >
-                            <span
-                              css="${css`
+                            >
+                              <span
+                                css="${css`
                                 display: inline-block;
                                 transition-property: var(
                                   --transition-property--transform
@@ -939,13 +929,13 @@ export default async (application: Application): Promise<void> => {
                                   rotate: var(--rotate--90);
                                 }
                               `}"
-                            >
-                              <i class="bi bi-chevron-right"></i>
-                            </span>
-                            Institution credentials
-                          </summary>
-                          <div
-                            css="${css`
+                              >
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
+                              Institution credentials
+                            </summary>
+                            <div
+                              css="${css`
                               padding: var(--size--2) var(--size--0);
                               border-bottom: var(--border-width--1) solid
                                 light-dark(
@@ -956,25 +946,27 @@ export default async (application: Application): Promise<void> => {
                               flex-direction: column;
                               gap: var(--size--4);
                             `}"
-                          >
-                            $${Object.entries(
+                            >
+                              $${Object.entries(
                               application.configuration.saml,
                             ).map(
                               ([samlIdentifier, saml]) => html`
                                 <div>
                                   <a
-                                    href="/authentication/saml/${samlIdentifier}/initiate${request
-                                      .URL.search}"
+                                    href="/authentication/saml/${samlIdentifier}/initiate${
+                                      request.URL.search
+                                    }"
                                     class="link"
                                     >${saml.name}</a
                                   >
                                 </div>
                               `,
                             )}
-                          </div>
-                        </details>
-                      `
-                    : html``}
+                            </div>
+                          </details>
+                        `
+                      : html``
+                  }
                 </div>
               </details>
             </div>
@@ -1057,27 +1049,30 @@ export default async (application: Application): Promise<void> => {
                       If it was you, please sign in instead, and if you don’t
                       remember your password use the “Forgot password” feature
                       <a
-                        href="https://${application.configuration
-                          .hostname}/authentication${request.URL.search}"
-                        >https://${application.configuration
-                          .hostname}/authentication${request.URL.search}</a
+                        href="https://${
+                          application.configuration.hostname
+                        }/authentication${request.URL.search}"
+                        >https://${
+                          application.configuration.hostname
+                        }/authentication${request.URL.search}</a
                       >
                     </p>
                     <p>
                       If it was not you, please report the issue to
                       <a
-                        href="mailto:${application.configuration
-                          .systemAdministratorEmail ??
-                        "system-administrator@courselore.org"}?${new URLSearchParams(
-                          {
-                            subject: "Potential impersonation",
-                            body: `Email: ${request.body.email}`,
-                          },
-                        )
+                        href="mailto:${
+                          application.configuration.systemAdministratorEmail ??
+                          "system-administrator@courselore.org"
+                        }?${new URLSearchParams({
+                          subject: "Potential impersonation",
+                          body: `Email: ${request.body.email}`,
+                        })
                           .toString()
                           .replaceAll("+", "%20")}"
-                        >${application.configuration.systemAdministratorEmail ??
-                        "system-administrator@courselore.org"}</a
+                        >${
+                          application.configuration.systemAdministratorEmail ??
+                          "system-administrator@courselore.org"
+                        }</a
                       >
                     </p>
                   `,
@@ -1121,14 +1116,10 @@ export default async (application: Application): Promise<void> => {
             | "rose";
           avatarImage: string | null;
           userRole:
-            | "userRoleSystemAdministrator"
-            | "userRoleStaff"
-            | "userRoleUser";
+            "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
           lastSeenOnlineAt: string | null;
           darkMode:
-            | "userDarkModeSystem"
-            | "userDarkModeLight"
-            | "userDarkModeDark";
+            "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
           sidebarWidth: number;
           emailNotificationsForAllMessages: number;
           emailNotificationsForMessagesIncludingAMention: number;
@@ -1252,29 +1243,34 @@ export default async (application: Application): Promise<void> => {
                   <p>
                     If it was you, please confirm your email:
                     <a
-                      href="https://${application.configuration
-                        .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
-                        .URL.search}"
-                      >https://${application.configuration
-                        .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
-                        .URL.search}</a
+                      href="https://${
+                        application.configuration.hostname
+                      }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                        request.URL.search
+                      }"
+                      >https://${
+                        application.configuration.hostname
+                      }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                        request.URL.search
+                      }</a
                     >
                   </p>
                   <p>
                     If it was not you, please report the issue to
                     <a
-                      href="mailto:${application.configuration
-                        .systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}?${new URLSearchParams(
-                        {
-                          subject: "Potential impersonation",
-                          body: `Email: ${request.state.user.email}`,
-                        },
-                      )
+                      href="mailto:${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }?${new URLSearchParams({
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user.email}`,
+                      })
                         .toString()
                         .replaceAll("+", "%20")}"
-                      >${application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}</a
+                      >${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }</a
                     >
                   </p>
                 `,
@@ -1330,24 +1326,27 @@ export default async (application: Application): Promise<void> => {
                 Email verification
               </div>
               <p>To continue please check your email.</p>
-              $${request.state.user !== undefined &&
-              typeof request.state.user.emailVerificationEmail === "string" &&
-              typeof request.state.user.emailVerificationCreatedAt === "string"
-                ? html`
-                    <div
-                      type="form"
-                      method="POST"
-                      action="/authentication/email-verification/resend${request
-                        .URL.search}"
-                      css="${css`
+              $${
+                request.state.user !== undefined &&
+                typeof request.state.user.emailVerificationEmail === "string" &&
+                typeof request.state.user.emailVerificationCreatedAt ===
+                  "string"
+                  ? html`
+                      <div
+                        type="form"
+                        method="POST"
+                        action="/authentication/email-verification/resend${
+                        request.URL.search
+                      }"
+                        css="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--size--4);
                       `}"
-                    >
-                      <label>
-                        <div
-                          css="${css`
+                      >
+                        <label>
+                          <div
+                            css="${css`
                             font-size: var(--font-size--3);
                             line-height: var(--font-size--3--line-height);
                             font-weight: 600;
@@ -1356,56 +1355,60 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--500)
                             );
                           `}"
-                        >
-                          Email
-                        </div>
-                        <div
-                          css="${css`
+                          >
+                            Email
+                          </div>
+                          <div
+                            css="${css`
                             display: flex;
                           `}"
-                        >
-                          <input
-                            type="email"
-                            value="${request.state.user.emailVerificationEmail}"
-                            disabled
-                            class="input--text"
-                            css="${css`
+                          >
+                            <input
+                              type="email"
+                              value="${request.state.user.emailVerificationEmail}"
+                              disabled
+                              class="input--text"
+                              css="${css`
                               flex: 1;
                             `}"
-                          />
-                        </div>
-                      </label>
-                      <div
-                        css="${css`
+                            />
+                          </div>
+                        </label>
+                        <div
+                          css="${css`
                           font-size: var(--font-size--3);
                           line-height: var(--font-size--3--line-height);
                         `}"
-                      >
-                        $${new Date(Date.now() - 5 * 60 * 1000).toISOString() <
-                        request.state.user.emailVerificationCreatedAt
-                          ? html`
-                              <p>
-                                Wait until
-                                <span
-                                  javascript="${javascript`
+                        >
+                          $${
+                          new Date(Date.now() - 5 * 60 * 1000).toISOString() <
+                          request.state.user.emailVerificationCreatedAt
+                            ? html`
+                                <p>
+                                  Wait until
+                                  <span
+                                    javascript="${javascript`
                                     this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
                                   `}"
-                                ></span>
-                                before you can request a new email verification.
-                              </p>
-                            `
-                          : html`
-                              <button
-                                type="submit"
-                                class="button button--rectangle button--blue"
-                              >
-                                Send new email verification
-                              </button>
-                            `}
+                                  ></span>
+                                  before you can request a new email
+                                  verification.
+                                </p>
+                              `
+                            : html`
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Send new email verification
+                                </button>
+                              `
+                        }
+                        </div>
                       </div>
-                    </div>
-                  `
-                : html``}
+                    `
+                  : html``
+              }
             </div>
           `,
         }),
@@ -1479,29 +1482,34 @@ export default async (application: Application): Promise<void> => {
                 <p>
                   If it was you, please confirm your email:
                   <a
-                    href="https://${application.configuration
-                      .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
-                      .URL.search}"
-                    >https://${application.configuration
-                      .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
-                      .URL.search}</a
+                    href="https://${
+                      application.configuration.hostname
+                    }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                      request.URL.search
+                    }"
+                    >https://${
+                      application.configuration.hostname
+                    }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                      request.URL.search
+                    }</a
                   >
                 </p>
                 <p>
                   If it was not you, please report the issue to
                   <a
-                    href="mailto:${application.configuration
-                      .systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}?${new URLSearchParams(
-                      {
-                        subject: "Potential impersonation",
-                        body: `Email: ${request.state.user.emailVerificationEmail}`,
-                      },
-                    )
+                    href="mailto:${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }?${new URLSearchParams({
+                      subject: "Potential impersonation",
+                      body: `Email: ${request.state.user.emailVerificationEmail}`,
+                    })
                       .toString()
                       .replaceAll("+", "%20")}"
-                    >${application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}</a
+                    >${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }</a
                   >
                 </p>
               `,
@@ -1570,25 +1578,26 @@ export default async (application: Application): Promise<void> => {
               >
                 Email verification
               </div>
-              $${request.state.user === undefined
-                ? html`
-                    <div
-                      type="form"
-                      method="POST"
-                      action="/authentication/sign-in?${new URLSearchParams({
+              $${
+                request.state.user === undefined
+                  ? html`
+                      <div
+                        type="form"
+                        method="POST"
+                        action="/authentication/sign-in?${new URLSearchParams({
                         redirect: `/authentication/email-verification/${
                           request.pathname.emailVerificationNonce
                         }${request.URL.search}`,
                       }).toString()}"
-                      css="${css`
+                        css="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--size--4);
                       `}"
-                    >
-                      <label>
-                        <div
-                          css="${css`
+                      >
+                        <label>
+                          <div
+                            css="${css`
                             font-size: var(--font-size--3);
                             line-height: var(--font-size--3--line-height);
                             font-weight: 600;
@@ -1597,30 +1606,30 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--500)
                             );
                           `}"
-                        >
-                          Email
-                        </div>
-                        <div
-                          css="${css`
+                          >
+                            Email
+                          </div>
+                          <div
+                            css="${css`
                             display: flex;
                           `}"
-                        >
-                          <input
-                            type="email"
-                            name="email"
-                            required
-                            maxlength="2000"
-                            autofocus
-                            class="input--text"
-                            css="${css`
+                          >
+                            <input
+                              type="email"
+                              name="email"
+                              required
+                              maxlength="2000"
+                              autofocus
+                              class="input--text"
+                              css="${css`
                               flex: 1;
                             `}"
-                          />
-                        </div>
-                      </label>
-                      <label>
-                        <div
-                          css="${css`
+                            />
+                          </div>
+                        </label>
+                        <label>
+                          <div
+                            css="${css`
                             font-size: var(--font-size--3);
                             line-height: var(--font-size--3--line-height);
                             font-weight: 600;
@@ -1629,57 +1638,58 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--500)
                             );
                           `}"
-                        >
-                          Password
-                        </div>
-                        <div
-                          css="${css`
+                          >
+                            Password
+                          </div>
+                          <div
+                            css="${css`
                             display: flex;
                           `}"
-                        >
-                          <input
-                            type="password"
-                            name="password"
-                            required
-                            minlength="8"
-                            maxlength="2000"
-                            class="input--text"
-                            css="${css`
+                          >
+                            <input
+                              type="password"
+                              name="password"
+                              required
+                              minlength="8"
+                              maxlength="2000"
+                              class="input--text"
+                              css="${css`
                               flex: 1;
                             `}"
-                          />
-                        </div>
-                      </label>
-                      <div
-                        css="${css`
+                            />
+                          </div>
+                        </label>
+                        <div
+                          css="${css`
                           font-size: var(--font-size--3);
                           line-height: var(--font-size--3--line-height);
                         `}"
-                      >
-                        <button
-                          type="submit"
-                          class="button button--rectangle button--blue"
                         >
-                          Sign in
-                        </button>
+                          <button
+                            type="submit"
+                            class="button button--rectangle button--blue"
+                          >
+                            Sign in
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  `
-                : html`
-                    <div
-                      type="form"
-                      method="POST"
-                      action="/authentication/email-verification/${request
-                        .pathname.emailVerificationNonce}${request.URL.search}"
-                      css="${css`
+                    `
+                  : html`
+                      <div
+                        type="form"
+                        method="POST"
+                        action="/authentication/email-verification/${
+                        request.pathname.emailVerificationNonce
+                      }${request.URL.search}"
+                        css="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--size--4);
                       `}"
-                    >
-                      <label>
-                        <div
-                          css="${css`
+                      >
+                        <label>
+                          <div
+                            css="${css`
                             font-size: var(--font-size--3);
                             line-height: var(--font-size--3--line-height);
                             font-weight: 600;
@@ -1688,41 +1698,43 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--500)
                             );
                           `}"
-                        >
-                          Email
-                        </div>
-                        <div
-                          css="${css`
+                          >
+                            Email
+                          </div>
+                          <div
+                            css="${css`
                             display: flex;
                           `}"
-                        >
-                          <input
-                            type="email"
-                            value="${request.state.user
-                              .emailVerificationEmail!}"
-                            disabled
-                            class="input--text"
-                            css="${css`
+                          >
+                            <input
+                              type="email"
+                              value="${
+                              request.state.user.emailVerificationEmail!
+                            }"
+                              disabled
+                              class="input--text"
+                              css="${css`
                               flex: 1;
                             `}"
-                          />
-                        </div>
-                      </label>
-                      <div
-                        css="${css`
+                            />
+                          </div>
+                        </label>
+                        <div
+                          css="${css`
                           font-size: var(--font-size--3);
                           line-height: var(--font-size--3--line-height);
                         `}"
-                      >
-                        <button
-                          type="submit"
-                          class="button button--rectangle button--blue"
                         >
-                          Verify email
-                        </button>
+                          <button
+                            type="submit"
+                            class="button button--rectangle button--blue"
+                          >
+                            Verify email
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  `}
+                    `
+              }
             </div>
           `,
         }),
@@ -1869,14 +1881,10 @@ export default async (application: Application): Promise<void> => {
           | "rose";
         avatarImage: string | null;
         userRole:
-          | "userRoleSystemAdministrator"
-          | "userRoleStaff"
-          | "userRoleUser";
+          "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
         lastSeenOnlineAt: string | null;
         darkMode:
-          | "userDarkModeSystem"
-          | "userDarkModeLight"
-          | "userDarkModeDark";
+          "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
         emailNotificationsForMessagesIncludingAMention: number;
@@ -1987,18 +1995,19 @@ export default async (application: Application): Promise<void> => {
                 <p>
                   If it was not you, please report the issue to
                   <a
-                    href="mailto:${application.configuration
-                      .systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}?${new URLSearchParams(
-                      {
-                        subject: "Potential impersonation",
-                        body: `Email: ${request.state.user.email}`,
-                      },
-                    )
+                    href="mailto:${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }?${new URLSearchParams({
+                      subject: "Potential impersonation",
+                      body: `Email: ${request.state.user.email}`,
+                    })
                       .toString()
                       .replaceAll("+", "%20")}"
-                    >${application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}</a
+                    >${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }</a
                   >
                 </p>
               `,
@@ -2056,8 +2065,9 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="POST"
-                action="/settings/two-factor-authentication${request.URL
-                  .search}"
+                action="/settings/two-factor-authentication${
+                  request.URL.search
+                }"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -2162,8 +2172,9 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="POST"
-                action="/authentication/sign-in/two-factor-authentication${request
-                  .URL.search}"
+                action="/authentication/sign-in/two-factor-authentication${
+                  request.URL.search
+                }"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -2415,14 +2426,16 @@ export default async (application: Application): Promise<void> => {
         response.setFlash!(html`
           <div class="flash--red">
             Invalid
-            ${typeof request.body.twoFactorAuthenticationCode === "string"
-              ? "“Two-factor authentication code”"
-              : typeof request.body.twoFactorAuthenticationRecoveryCode ===
-                  "string"
-                ? "“Two-factor authentication recovery code”"
-                : (() => {
-                    throw new Error();
-                  })()}.
+            ${
+              typeof request.body.twoFactorAuthenticationCode === "string"
+                ? "“Two-factor authentication code”"
+                : typeof request.body.twoFactorAuthenticationRecoveryCode ===
+                    "string"
+                  ? "“Two-factor authentication recovery code”"
+                  : (() => {
+                      throw new Error();
+                    })()
+            }.
           </div>
         `);
         response.redirect!(
@@ -2535,14 +2548,10 @@ export default async (application: Application): Promise<void> => {
           | "rose";
         avatarImage: string | null;
         userRole:
-          | "userRoleSystemAdministrator"
-          | "userRoleStaff"
-          | "userRoleUser";
+          "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
         lastSeenOnlineAt: string | null;
         darkMode:
-          | "userDarkModeSystem"
-          | "userDarkModeLight"
-          | "userDarkModeDark";
+          "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
         emailNotificationsForMessagesIncludingAMention: number;
@@ -2625,31 +2634,34 @@ export default async (application: Application): Promise<void> => {
                   <p>
                     If it was you, please reset your password:
                     <a
-                      href="https://${application.configuration
-                        .hostname}/authentication/reset-password/${request.state
-                        .user.publicId}/${passwordResetNoncePlaintext}${request
-                        .URL.search}"
-                      >https://${application.configuration
-                        .hostname}/authentication/reset-password/${request.state
-                        .user.publicId}/${passwordResetNoncePlaintext}${request
-                        .URL.search}</a
+                      href="https://${
+                        application.configuration.hostname
+                      }/authentication/reset-password/${
+                        request.state.user.publicId
+                      }/${passwordResetNoncePlaintext}${request.URL.search}"
+                      >https://${
+                        application.configuration.hostname
+                      }/authentication/reset-password/${
+                        request.state.user.publicId
+                      }/${passwordResetNoncePlaintext}${request.URL.search}</a
                     >
                   </p>
                   <p>
                     If it was not you, please report the issue to
                     <a
-                      href="mailto:${application.configuration
-                        .systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}?${new URLSearchParams(
-                        {
-                          subject: "Potential impersonation",
-                          body: `Email: ${request.state.user.emailVerificationEmail}`,
-                        },
-                      )
+                      href="mailto:${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }?${new URLSearchParams({
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user.emailVerificationEmail}`,
+                      })
                         .toString()
                         .replaceAll("+", "%20")}"
-                      >${application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}</a
+                      >${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }</a
                     >
                   </p>
                 `,
@@ -2767,9 +2779,9 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="POST"
-                action="/authentication/reset-password/${request.pathname
-                  .userPublicId}/${request.pathname.passwordResetNonce}${request
-                  .URL.search}"
+                action="/authentication/reset-password/${
+                  request.pathname.userPublicId
+                }/${request.pathname.passwordResetNonce}${request.URL.search}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -2935,14 +2947,10 @@ export default async (application: Application): Promise<void> => {
           | "rose";
         avatarImage: string | null;
         userRole:
-          | "userRoleSystemAdministrator"
-          | "userRoleStaff"
-          | "userRoleUser";
+          "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
         lastSeenOnlineAt: string | null;
         darkMode:
-          | "userDarkModeSystem"
-          | "userDarkModeLight"
-          | "userDarkModeDark";
+          "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
         emailNotificationsForMessagesIncludingAMention: number;
@@ -3048,18 +3056,19 @@ export default async (application: Application): Promise<void> => {
                 <p>
                   If it was not you, please report the issue to
                   <a
-                    href="mailto:${application.configuration
-                      .systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}?${new URLSearchParams(
-                      {
-                        subject: "Potential impersonation",
-                        body: `Email: ${request.state.user.emailVerificationEmail}`,
-                      },
-                    )
+                    href="mailto:${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }?${new URLSearchParams({
+                      subject: "Potential impersonation",
+                      body: `Email: ${request.state.user.emailVerificationEmail}`,
+                    })
                       .toString()
                       .replaceAll("+", "%20")}"
-                    >${application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}</a
+                    >${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }</a
                   >
                 </p>
               `,
@@ -3335,9 +3344,7 @@ export default async (application: Application): Promise<void> => {
                 | "userRoleUser";
               lastSeenOnlineAt: string | null;
               darkMode:
-                | "userDarkModeSystem"
-                | "userDarkModeLight"
-                | "userDarkModeDark";
+                "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
               sidebarWidth: number;
               emailNotificationsForAllMessages: number;
               emailNotificationsForMessagesIncludingAMention: number;
@@ -3419,9 +3426,7 @@ export default async (application: Application): Promise<void> => {
                 | "userRoleUser";
               lastSeenOnlineAt: string | null;
               darkMode:
-                | "userDarkModeSystem"
-                | "userDarkModeLight"
-                | "userDarkModeDark";
+                "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
               sidebarWidth: number;
               emailNotificationsForAllMessages: number;
               emailNotificationsForMessagesIncludingAMention: number;
@@ -3578,18 +3583,19 @@ export default async (application: Application): Promise<void> => {
                   <p>
                     If it was not you, please report the issue to
                     <a
-                      href="mailto:${application.configuration
-                        .systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}?${new URLSearchParams(
-                        {
-                          subject: "Potential impersonation",
-                          body: `Email: ${request.state.user!.email}`,
-                        },
-                      )
+                      href="mailto:${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }?${new URLSearchParams({
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user!.email}`,
+                      })
                         .toString()
                         .replaceAll("+", "%20")}"
-                      >${application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}</a
+                      >${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }</a
                     >
                   </p>
                 `,
@@ -3710,53 +3716,59 @@ export default async (application: Application): Promise<void> => {
                       `,
                     );
                     return html`
-                      $${0 < courses.length
-                        ? courses.map(
-                            (course) => html`
-                              <div
-                                key="course-selector ${course.publicId}"
-                                type="form"
-                                method="PATCH"
-                                action="/courses/${course.publicId}/settings/participations/lti"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="ltiIdentifier"
-                                  value="${request.pathname.ltiIdentifier!}"
-                                />
-                                <input
-                                  type="hidden"
-                                  name="ltiContextId"
-                                  value="${(
-                                    idToken[
-                                      "https://purl.imsglobal.org/spec/lti/claim/context"
-                                    ] as any
-                                  )?.id}"
-                                />
-                                <input
-                                  type="hidden"
-                                  name="ltiNamesAndRoleProvisioningServicesURL"
-                                  value="${(
-                                    idToken[
-                                      "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
-                                    ] as any
-                                  )?.["context_memberships_url"]}"
-                                />
-                                <button
-                                  type="submit"
-                                  class="button button--rectangle button--transparent"
+                      $${
+                        0 < courses.length
+                          ? courses.map(
+                              (course) => html`
+                                <div
+                                  key="course-selector ${course.publicId}"
+                                  type="form"
+                                  method="PATCH"
+                                  action="/courses/${course.publicId}/settings/participations/lti"
                                 >
-                                  <div
-                                    css="${css`
+                                  <input
+                                    type="hidden"
+                                    name="ltiIdentifier"
+                                    value="${request.pathname.ltiIdentifier!}"
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="ltiContextId"
+                                    value="${
+                                    (
+                                      idToken[
+                                        "https://purl.imsglobal.org/spec/lti/claim/context"
+                                      ] as any
+                                    )?.id
+                                  }"
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="ltiNamesAndRoleProvisioningServicesURL"
+                                    value="${
+                                    (
+                                      idToken[
+                                        "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+                                      ] as any
+                                    )?.["context_memberships_url"]
+                                  }"
+                                  />
+                                  <button
+                                    type="submit"
+                                    class="button button--rectangle button--transparent"
+                                  >
+                                    <div
+                                      css="${css`
                                       font-weight: 500;
                                     `}"
-                                  >
-                                    ${course.name}
-                                  </div>
-                                  $${typeof course.information === "string"
-                                    ? html`
-                                        <div
-                                          css="${css`
+                                    >
+                                      ${course.name}
+                                    </div>
+                                    $${
+                                    typeof course.information === "string"
+                                      ? html`
+                                          <div
+                                            css="${css`
                                             font-size: var(--font-size--3);
                                             line-height: var(
                                               --font-size--3--line-height
@@ -3766,22 +3778,24 @@ export default async (application: Application): Promise<void> => {
                                               var(--color--slate--400)
                                             );
                                           `}"
-                                        >
-                                          ${course.information}
-                                        </div>
-                                      `
-                                    : html``}
-                                </button>
+                                          >
+                                            ${course.information}
+                                          </div>
+                                        `
+                                      : html``
+                                  }
+                                  </button>
+                                </div>
+                              `,
+                            )
+                          : html`
+                              <div>
+                                You need to create the course in Courselore
+                                before you can connect a Learning Management
+                                System (LMS) course a with it.
                               </div>
-                            `,
-                          )
-                        : html`
-                            <div>
-                              You need to create the course in Courselore before
-                              you can connect a Learning Management System (LMS)
-                              course a with it.
-                            </div>
-                          `}
+                            `
+                      }
                     `;
                   })()}
                 </div>
@@ -3892,9 +3906,7 @@ export default async (application: Application): Promise<void> => {
       privateKey: string;
       certificate: string;
       userRolesWhoMayCreateCourses:
-        | "userRoleUser"
-        | "userRoleStaff"
-        | "userRoleSystemAdministrator";
+        "userRoleUser" | "userRoleStaff" | "userRoleSystemAdministrator";
     }>(
       sql`
         select
@@ -4103,14 +4115,10 @@ export default async (application: Application): Promise<void> => {
               | "rose";
             avatarImage: string | null;
             userRole:
-              | "userRoleSystemAdministrator"
-              | "userRoleStaff"
-              | "userRoleUser";
+              "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
             lastSeenOnlineAt: string | null;
             darkMode:
-              | "userDarkModeSystem"
-              | "userDarkModeLight"
-              | "userDarkModeDark";
+              "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
             sidebarWidth: number;
             emailNotificationsForAllMessages: number;
             emailNotificationsForMessagesIncludingAMention: number;
@@ -4187,14 +4195,10 @@ export default async (application: Application): Promise<void> => {
               | "rose";
             avatarImage: string | null;
             userRole:
-              | "userRoleSystemAdministrator"
-              | "userRoleStaff"
-              | "userRoleUser";
+              "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
             lastSeenOnlineAt: string | null;
             darkMode:
-              | "userDarkModeSystem"
-              | "userDarkModeLight"
-              | "userDarkModeDark";
+              "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
             sidebarWidth: number;
             emailNotificationsForAllMessages: number;
             emailNotificationsForMessagesIncludingAMention: number;
@@ -4351,18 +4355,19 @@ export default async (application: Application): Promise<void> => {
                 <p>
                   If it was not you, please report the issue to
                   <a
-                    href="mailto:${application.configuration
-                      .systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}?${new URLSearchParams(
-                      {
-                        subject: "Potential impersonation",
-                        body: `Email: ${request.state.user!.email}`,
-                      },
-                    )
+                    href="mailto:${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }?${new URLSearchParams({
+                      subject: "Potential impersonation",
+                      body: `Email: ${request.state.user!.email}`,
+                    })
                       .toString()
                       .replaceAll("+", "%20")}"
-                    >${application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}</a
+                    >${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }</a
                   >
                 </p>
               `,

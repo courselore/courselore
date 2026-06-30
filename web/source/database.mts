@@ -860,8 +860,7 @@ export default async (application: Application): Promise<void> => {
         emailNotificationsForAllMessagesAt: string | null;
         emailNotificationsForMentionsAt: string | null;
         emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          | string
-          | null;
+          string | null;
         emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
         emailNotificationsDigestsFrequency: "hourly" | "daily" | null;
       }>(
@@ -1041,8 +1040,7 @@ export default async (application: Application): Promise<void> => {
         emailNotificationsForAllMessagesAt: string | null;
         emailNotificationsForMentionsAt: string | null;
         emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          | string
-          | null;
+          string | null;
         emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
         emailNotificationsDigestsFrequency: "hourly" | "daily" | null;
       }>(
@@ -1678,15 +1676,11 @@ export default async (application: Application): Promise<void> => {
         biographyPreprocessed: string | null;
         systemRole: "none" | "staff" | "administrator";
         emailNotificationsForAllMessages:
-          | "none"
-          | "instant"
-          | "hourly-digests"
-          | "daily-digests";
+          "none" | "instant" | "hourly-digests" | "daily-digests";
         emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
         emailNotificationsForMentionsAt: string | null;
         emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          | string
-          | null;
+          string | null;
         emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
         preferContentEditorProgrammerModeAt: string | null;
         preferContentEditorToolbarInCompactAt: string | null;
@@ -1854,15 +1848,11 @@ export default async (application: Application): Promise<void> => {
         biographyPreprocessed: string | null;
         systemRole: "none" | "staff" | "administrator";
         emailNotificationsForAllMessages:
-          | "none"
-          | "instant"
-          | "hourly-digests"
-          | "daily-digests";
+          "none" | "instant" | "hourly-digests" | "daily-digests";
         emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
         emailNotificationsForMentionsAt: string | null;
         emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          | string
-          | null;
+          string | null;
         emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
         preferContentEditorProgrammerModeAt: string | null;
         preferContentEditorToolbarInCompactAt: string | null;
@@ -2621,9 +2611,7 @@ export default async (application: Application): Promise<void> => {
           privateKey: string;
           certificate: string;
           userSystemRolesWhoMayCreateCourses:
-            | "all"
-            | "staff-and-administrators"
-            | "administrators";
+            "all" | "staff-and-administrators" | "administrators";
         }>(
           sql`
           select "privateKey", "certificate", "userSystemRolesWhoMayCreateCourses" from "old_administrationOptions";
@@ -2681,14 +2669,10 @@ export default async (application: Application): Promise<void> => {
           | "rose";
         systemRole: "none" | "staff" | "administrator";
         emailNotificationsForAllMessages:
-          | "none"
-          | "instant"
-          | "hourly-digests"
-          | "daily-digests";
+          "none" | "instant" | "hourly-digests" | "daily-digests";
         emailNotificationsForMentionsAt: string | null;
         emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          | string
-          | null;
+          string | null;
         emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
       }>(
         sql`
@@ -3591,16 +3575,15 @@ export default async (application: Application): Promise<void> => {
                   1,
                 )[0],
             ),
-          ].map(
-            (user, userIndex) =>
-              database.get<{
-                id: number;
-                publicId: string;
-                courseParticipationRole:
-                  | "courseParticipationRoleInstructor"
-                  | "courseParticipationRoleStudent";
-              }>(
-                sql`
+          ].map((user, userIndex) =>
+            database.get<{
+              id: number;
+              publicId: string;
+              courseParticipationRole:
+                | "courseParticipationRoleInstructor"
+                | "courseParticipationRoleStudent";
+            }>(
+              sql`
                   select * from "courseParticipations" where "id" = ${
                     database.run(
                       sql`
@@ -3641,7 +3624,7 @@ export default async (application: Application): Promise<void> => {
                     ).lastInsertRowid
                   };
                 `,
-              )!,
+            )!,
           );
           const courseConversationsTags = [
             { name: "Assignment 1" },
@@ -3658,10 +3641,9 @@ export default async (application: Application): Promise<void> => {
               name: "Duplicate question",
               privateToCourseParticipationRoleInstructors: true,
             },
-          ].map(
-            (courseConversationsTag, courseConversationsTagIndex) =>
-              database.get<{ id: number }>(
-                sql`
+          ].map((courseConversationsTag, courseConversationsTagIndex) =>
+            database.get<{ id: number }>(
+              sql`
                   select * from "courseConversationsTags" where "id" = ${
                     database.run(
                       sql`
@@ -3683,7 +3665,7 @@ export default async (application: Application): Promise<void> => {
                     ).lastInsertRowid
                   };
                 `,
-              )!,
+            )!,
           );
           for (
             let courseConversationPublicId = 1;

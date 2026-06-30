@@ -655,8 +655,9 @@ export default async (application: Application): Promise<void> => {
                 <p>
                   <small>
                     <a
-                      href="https://${application.configuration
-                        .hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
+                      href="https://${
+                        application.configuration.hostname
+                      }/courses/${course.publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
                         {
                           message: courseConversationMessage.publicId,
                         },
@@ -664,8 +665,9 @@ export default async (application: Application): Promise<void> => {
                       >See message in Courselore</a
                     > ·
                     <a
-                      href="https://${application.configuration
-                        .hostname}/settings"
+                      href="https://${
+                        application.configuration.hostname
+                      }/settings"
                       >Change email notification preferences</a
                     >
                   </small>
@@ -797,10 +799,9 @@ export default async (application: Application): Promise<void> => {
         <div
           type="form"
           method="PATCH"
-          action="/courses/${request.state.course
-            .publicId}/conversations/${request.state.courseConversation
-            .publicId}/messages/${request.state.courseConversationMessage
-            .publicId}"
+          action="/courses/${request.state.course.publicId}/conversations/${
+            request.state.courseConversation.publicId
+          }/messages/${request.state.courseConversationMessage.publicId}"
           css="${css`
             display: flex;
             flex-direction: column;
@@ -892,11 +893,13 @@ export default async (application: Application): Promise<void> => {
                           name="courseConversationMessageType"
                           value="courseConversationMessageTypeMessage"
                           required
-                          $${request.state.courseConversationMessage
-                            .courseConversationMessageType ===
-                          "courseConversationMessageTypeMessage"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.courseConversationMessage
+                              .courseConversationMessageType ===
+                            "courseConversationMessageTypeMessage"
+                              ? html`checked`
+                              : html``
+                          }
                           hidden
                         /><span
                           css="${css`
@@ -910,11 +913,13 @@ export default async (application: Application): Promise<void> => {
                           name="courseConversationMessageType"
                           value="courseConversationMessageTypeAnswer"
                           required
-                          $${request.state.courseConversationMessage
-                            .courseConversationMessageType ===
-                          "courseConversationMessageTypeAnswer"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.courseConversationMessage
+                              .courseConversationMessageType ===
+                            "courseConversationMessageTypeAnswer"
+                              ? html`checked`
+                              : html``
+                          }
                           hidden
                         /><span
                           css="${css`
@@ -932,11 +937,13 @@ export default async (application: Application): Promise<void> => {
                           name="courseConversationMessageType"
                           value="courseConversationMessageTypeFollowUpQuestion"
                           required
-                          $${request.state.courseConversationMessage
-                            .courseConversationMessageType ===
-                          "courseConversationMessageTypeFollowUpQuestion"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.courseConversationMessage
+                              .courseConversationMessageType ===
+                            "courseConversationMessageTypeFollowUpQuestion"
+                              ? html`checked`
+                              : html``
+                          }
                           hidden
                         /><span
                           css="${css`
@@ -1023,11 +1030,13 @@ export default async (application: Application): Promise<void> => {
                           name="courseConversationMessageVisibility"
                           value="courseConversationMessageVisibilityEveryone"
                           required
-                          $${request.state.courseConversationMessage
-                            .courseConversationMessageVisibility ===
-                          "courseConversationMessageVisibilityEveryone"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.courseConversationMessage
+                              .courseConversationMessageVisibility ===
+                            "courseConversationMessageVisibilityEveryone"
+                              ? html`checked`
+                              : html``
+                          }
                           hidden
                         /><span
                           css="${css`
@@ -1041,11 +1050,13 @@ export default async (application: Application): Promise<void> => {
                           name="courseConversationMessageVisibility"
                           value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"
                           required
-                          $${request.state.courseConversationMessage
-                            .courseConversationMessageVisibility ===
-                          "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.courseConversationMessage
+                              .courseConversationMessageVisibility ===
+                            "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                              ? html`checked`
+                              : html``
+                          }
                           hidden
                         /><span
                           css="${css`
@@ -1125,11 +1136,13 @@ export default async (application: Application): Promise<void> => {
                           name="courseConversationMessageAnonymity"
                           value="courseConversationMessageAnonymityNone"
                           required
-                          $${request.state.courseConversationMessage
-                            .courseConversationMessageAnonymity ===
-                          "courseConversationMessageAnonymityNone"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.courseConversationMessage
+                              .courseConversationMessageAnonymity ===
+                            "courseConversationMessageAnonymityNone"
+                              ? html`checked`
+                              : html``
+                          }
                           hidden
                         /><span
                           css="${css`
@@ -1143,17 +1156,19 @@ export default async (application: Application): Promise<void> => {
                           name="courseConversationMessageAnonymity"
                           value="courseConversationMessageAnonymityCourseParticipationRoleStudents"
                           required
-                          $${request.state.courseConversationMessage
-                            .courseConversationMessageAnonymity ===
-                            "courseConversationMessageAnonymityCourseParticipationRoleStudents" ||
-                          (request.state.course
-                            .courseParticipationRoleStudentsAnonymityAllowed ===
-                            "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
+                          $${
                             request.state.courseConversationMessage
                               .courseConversationMessageAnonymity ===
-                              "courseConversationMessageAnonymityEveryone")
-                            ? html`checked`
-                            : html``}
+                              "courseConversationMessageAnonymityCourseParticipationRoleStudents" ||
+                            (request.state.course
+                              .courseParticipationRoleStudentsAnonymityAllowed ===
+                              "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
+                              request.state.courseConversationMessage
+                                .courseConversationMessageAnonymity ===
+                                "courseConversationMessageAnonymityEveryone")
+                              ? html`checked`
+                              : html``
+                          }
                           hidden
                         /><span
                           css="${css`
@@ -1162,29 +1177,33 @@ export default async (application: Application): Promise<void> => {
                             }
                           `}"
                           >Anonymous to students</span
-                        >$${request.state.course
-                          .courseParticipationRoleStudentsAnonymityAllowed ===
-                        "courseParticipationRoleStudentsAnonymityAllowedEveryone"
-                          ? html`<input
-                                type="radio"
-                                name="courseConversationMessageAnonymity"
-                                value="courseConversationMessageAnonymityEveryone"
-                                required
-                                $${request.state.courseConversationMessage
-                                  .courseConversationMessageAnonymity ===
-                                "courseConversationMessageAnonymityEveryone"
-                                  ? html`checked`
-                                  : html``}
-                                hidden
-                              /><span
-                                css="${css`
+                        >$${
+                          request.state.course
+                            .courseParticipationRoleStudentsAnonymityAllowed ===
+                          "courseParticipationRoleStudentsAnonymityAllowedEveryone"
+                            ? html`<input
+                                  type="radio"
+                                  name="courseConversationMessageAnonymity"
+                                  value="courseConversationMessageAnonymityEveryone"
+                                  required
+                                  $${
+                                  request.state.courseConversationMessage
+                                    .courseConversationMessageAnonymity ===
+                                  "courseConversationMessageAnonymityEveryone"
+                                    ? html`checked`
+                                    : html``
+                                }
+                                  hidden
+                                /><span
+                                  css="${css`
                                   :not(:checked) + & {
                                     display: none;
                                   }
                                 `}"
-                                >Anonymous to everyone</span
-                              >`
-                          : html``} <i class="bi bi-chevron-down"></i>
+                                  >Anonymous to everyone</span
+                                >`
+                            : html``
+                        } <i class="bi bi-chevron-down"></i>
                       </form>
                     </button>
                     <div
@@ -1217,23 +1236,25 @@ export default async (application: Application): Promise<void> => {
                       >
                         Anonymous to students
                       </button>
-                      $${request.state.course
-                        .courseParticipationRoleStudentsAnonymityAllowed ===
-                      "courseParticipationRoleStudentsAnonymityAllowedEveryone"
-                        ? html`
-                            <button
-                              type="button"
-                              class="button button--rectangle button--transparent button--dropdown-menu"
-                              javascript="${javascript`
+                      $${
+                        request.state.course
+                          .courseParticipationRoleStudentsAnonymityAllowed ===
+                        "courseParticipationRoleStudentsAnonymityAllowedEveryone"
+                          ? html`
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
                                 this.onclick = () => {
                                   this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityEveryone"]').click();
                                 };
                               `}"
-                            >
-                              Anonymous to everyone
-                            </button>
-                          `
-                        : html``}
+                              >
+                                Anonymous to everyone
+                              </button>
+                            `
+                          : html``
+                      }
                     </div>
                   `;
                 return courseConversationMessageEditOptionsHTML !== html``

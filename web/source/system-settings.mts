@@ -123,10 +123,12 @@ export default async (application: Application): Promise<void> => {
                           type="radio"
                           name="userRolesWhoMayCreateCourses"
                           value="userRoleUser"
-                          $${request.state.systemSettings
-                            .userRolesWhoMayCreateCourses === "userRoleUser"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.systemSettings
+                              .userRolesWhoMayCreateCourses === "userRoleUser"
+                              ? html`checked`
+                              : html``
+                          }
                           class="input--radio"
                         />  User
                       </label>
@@ -137,10 +139,12 @@ export default async (application: Application): Promise<void> => {
                           type="radio"
                           name="userRolesWhoMayCreateCourses"
                           value="userRoleStaff"
-                          $${request.state.systemSettings
-                            .userRolesWhoMayCreateCourses === "userRoleStaff"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.systemSettings
+                              .userRolesWhoMayCreateCourses === "userRoleStaff"
+                              ? html`checked`
+                              : html``
+                          }
                           class="input--radio"
                         />  Staff
                       </label>
@@ -151,11 +155,13 @@ export default async (application: Application): Promise<void> => {
                           type="radio"
                           name="userRolesWhoMayCreateCourses"
                           value="userRoleSystemAdministrator"
-                          $${request.state.systemSettings
-                            .userRolesWhoMayCreateCourses ===
-                          "userRoleSystemAdministrator"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.systemSettings
+                              .userRolesWhoMayCreateCourses ===
+                            "userRoleSystemAdministrator"
+                              ? html`checked`
+                              : html``
+                          }
                           class="input--radio"
                         />  System administrator
                       </label>
@@ -402,10 +408,12 @@ export default async (application: Application): Promise<void> => {
                                       name="users[${user.publicId}].userRole"
                                       value="userRoleSystemAdministrator"
                                       required
-                                      $${user.userRole ===
-                                      "userRoleSystemAdministrator"
-                                        ? html`checked`
-                                        : html``}
+                                      $${
+                                        user.userRole ===
+                                        "userRoleSystemAdministrator"
+                                          ? html`checked`
+                                          : html``
+                                      }
                                       hidden
                                     /><span
                                       css="${css`
@@ -419,9 +427,11 @@ export default async (application: Application): Promise<void> => {
                                       name="users[${user.publicId}].userRole"
                                       value="userRoleStaff"
                                       required
-                                      $${user.userRole === "userRoleStaff"
-                                        ? html`checked`
-                                        : html``}
+                                      $${
+                                        user.userRole === "userRoleStaff"
+                                          ? html`checked`
+                                          : html``
+                                      }
                                       hidden
                                     /><span
                                       css="${css`
@@ -435,9 +445,11 @@ export default async (application: Application): Promise<void> => {
                                       name="users[${user.publicId}].userRole"
                                       value="userRoleUser"
                                       required
-                                      $${user.userRole === "userRoleUser"
-                                        ? html`checked`
-                                        : html``}
+                                      $${
+                                        user.userRole === "userRoleUser"
+                                          ? html`checked`
+                                          : html``
+                                      }
                                       hidden
                                     /><span
                                       css="${css`
@@ -688,10 +700,11 @@ export default async (application: Application): Promise<void> => {
                                     font-weight: 500;
                                   `}"
                                   >${course.name}</span
-                                >  $${typeof course.information === "string"
-                                  ? html`
-                                      <span
-                                        css="${css`
+                                >  $${
+                                  typeof course.information === "string"
+                                    ? html`
+                                        <span
+                                          css="${css`
                                           font-size: var(--font-size--3);
                                           line-height: var(
                                             --font-size--3--line-height
@@ -701,11 +714,12 @@ export default async (application: Application): Promise<void> => {
                                             var(--color--slate--400)
                                           );
                                         `}"
-                                      >
-                                        ${course.information}
-                                      </span>
-                                    `
-                                  : html``}
+                                        >
+                                          ${course.information}
+                                        </span>
+                                      `
+                                    : html``
+                                }
                               </div>
                               <div
                                 css="${css`
@@ -808,21 +822,23 @@ export default async (application: Application): Promise<void> => {
                                       `
                                     : html``;
                                 })()}
-                                $${course.courseState === "courseStateArchived"
-                                  ? html`
-                                      <div
-                                        key="courseConversation--archived"
-                                        css="${css`
+                                $${
+                                  course.courseState === "courseStateArchived"
+                                    ? html`
+                                        <div
+                                          key="courseConversation--archived"
+                                          css="${css`
                                           color: light-dark(
                                             var(--color--red--500),
                                             var(--color--red--500)
                                           );
                                         `}"
-                                      >
-                                        Archived
-                                      </div>
-                                    `
-                                  : html``}
+                                        >
+                                          Archived
+                                        </div>
+                                      `
+                                    : html``
+                                }
                               </div>
                             </div>
                           </div>
@@ -849,9 +865,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           userRolesWhoMayCreateCourses:
-            | "userRoleUser"
-            | "userRoleStaff"
-            | "userRoleSystemAdministrator";
+            "userRoleUser" | "userRoleStaff" | "userRoleSystemAdministrator";
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -895,9 +909,7 @@ export default async (application: Application): Promise<void> => {
         {
           usersPublicIds: string[];
           [userRole: `users[${string}].userRole`]:
-            | "userRoleUser"
-            | "userRoleStaff"
-            | "userRoleSystemAdministrator";
+            "userRoleUser" | "userRoleStaff" | "userRoleSystemAdministrator";
           usersPublicIdsToRemove: string[];
         },
         Application["types"]["states"]["Course"]

@@ -136,30 +136,33 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
               >
-                $${(request.state.systemSettings
-                  .userRolesWhoMayCreateCourses === "userRoleUser" &&
-                  (request.state.user.userRole === "userRoleUser" ||
-                    request.state.user.userRole === "userRoleStaff" ||
+                $${
+                  (request.state.systemSettings.userRolesWhoMayCreateCourses ===
+                    "userRoleUser" &&
+                    (request.state.user.userRole === "userRoleUser" ||
+                      request.state.user.userRole === "userRoleStaff" ||
+                      request.state.user.userRole ===
+                        "userRoleSystemAdministrator")) ||
+                  (request.state.systemSettings.userRolesWhoMayCreateCourses ===
+                    "userRoleStaff" &&
+                    (request.state.user.userRole === "userRoleStaff" ||
+                      request.state.user.userRole ===
+                        "userRoleSystemAdministrator")) ||
+                  (request.state.systemSettings.userRolesWhoMayCreateCourses ===
+                    "userRoleSystemAdministrator" &&
                     request.state.user.userRole ===
-                      "userRoleSystemAdministrator")) ||
-                (request.state.systemSettings.userRolesWhoMayCreateCourses ===
-                  "userRoleStaff" &&
-                  (request.state.user.userRole === "userRoleStaff" ||
-                    request.state.user.userRole ===
-                      "userRoleSystemAdministrator")) ||
-                (request.state.systemSettings.userRolesWhoMayCreateCourses ===
-                  "userRoleSystemAdministrator" &&
-                  request.state.user.userRole === "userRoleSystemAdministrator")
-                  ? html`
-                      <div>
-                        <a
-                          href="/courses/new"
-                          class="button button--rectangle button--blue"
-                          >Create a new course</a
-                        >
-                      </div>
-                    `
-                  : html``}
+                      "userRoleSystemAdministrator")
+                    ? html`
+                        <div>
+                          <a
+                            href="/courses/new"
+                            class="button button--rectangle button--blue"
+                            >Create a new course</a
+                          >
+                        </div>
+                      `
+                    : html``
+                }
                 <div>
                   <button
                     type="button"
@@ -330,9 +333,11 @@ export default async (application: Application): Promise<void> => {
                     >
                       <div
                         key="userAvatar--withoutAvatarImage"
-                        $${typeof request.state.user.avatarImage === "string"
-                          ? html`hidden`
-                          : html``}
+                        $${
+                          typeof request.state.user.avatarImage === "string"
+                            ? html`hidden`
+                            : html``
+                        }
                       >
                         $${application.partials.userAvatar({
                           user: { ...request.state.user, avatarImage: null },
@@ -342,9 +347,11 @@ export default async (application: Application): Promise<void> => {
                       </div>
                       <div
                         key="userAvatar--withAvatarImage"
-                        $${request.state.user.avatarImage === null
-                          ? html`hidden`
-                          : html``}
+                        $${
+                          request.state.user.avatarImage === null
+                            ? html`hidden`
+                            : html``
+                        }
                         javascript="${javascript`
                           this.morph = false;
                         `}"
@@ -404,27 +411,32 @@ export default async (application: Application): Promise<void> => {
                           />
                           <div
                             key="userAvatar--add"
-                            $${typeof request.state.user.avatarImage ===
-                            "string"
-                              ? html`hidden`
-                              : html``}
+                            $${
+                              typeof request.state.user.avatarImage === "string"
+                                ? html`hidden`
+                                : html``
+                            }
                           >
                             Add
                           </div>
                           <div
                             key="userAvatar--change"
-                            $${request.state.user.avatarImage === null
-                              ? html`hidden`
-                              : html``}
+                            $${
+                              request.state.user.avatarImage === null
+                                ? html`hidden`
+                                : html``
+                            }
                           >
                             Change
                           </div>
                         </label>
                         <label
                           key="userAvatar--remove"
-                          $${request.state.user.avatarImage === null
-                            ? html`hidden`
-                            : html``}
+                          $${
+                            request.state.user.avatarImage === null
+                              ? html`hidden`
+                              : html``
+                          }
                           class="button button--rectangle button--transparent"
                         >
                           <input
@@ -482,10 +494,11 @@ export default async (application: Application): Promise<void> => {
                           type="radio"
                           name="darkMode"
                           value="userDarkModeSystem"
-                          $${request.state.user.darkMode ===
-                          "userDarkModeSystem"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.user.darkMode === "userDarkModeSystem"
+                              ? html`checked`
+                              : html``
+                          }
                           class="input--radio"
                         />  System
                       </label>
@@ -496,9 +509,11 @@ export default async (application: Application): Promise<void> => {
                           type="radio"
                           name="darkMode"
                           value="userDarkModeLight"
-                          $${request.state.user.darkMode === "userDarkModeLight"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.user.darkMode === "userDarkModeLight"
+                              ? html`checked`
+                              : html``
+                          }
                           class="input--radio"
                         />  Light
                       </label>
@@ -509,9 +524,11 @@ export default async (application: Application): Promise<void> => {
                           type="radio"
                           name="darkMode"
                           value="userDarkModeDark"
-                          $${request.state.user.darkMode === "userDarkModeDark"
-                            ? html`checked`
-                            : html``}
+                          $${
+                            request.state.user.darkMode === "userDarkModeDark"
+                              ? html`checked`
+                              : html``
+                          }
                           class="input--radio"
                         />  Dark
                       </label>
@@ -729,13 +746,14 @@ export default async (application: Application): Promise<void> => {
                           />
                         </div>
                       </label>
-                      $${Boolean(
-                        request.state.user.twoFactorAuthenticationEnabled,
-                      )
-                        ? html`
-                            <label>
-                              <div
-                                css="${css`
+                      $${
+                        Boolean(
+                          request.state.user.twoFactorAuthenticationEnabled,
+                        )
+                          ? html`
+                              <label>
+                                <div
+                                  css="${css`
                                   font-size: var(--font-size--3);
                                   line-height: var(--font-size--3--line-height);
                                   font-weight: 600;
@@ -744,29 +762,30 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--slate--500)
                                   );
                                 `}"
-                              >
-                                Two-factor authentication code
-                              </div>
-                              <div
-                                css="${css`
+                                >
+                                  Two-factor authentication code
+                                </div>
+                                <div
+                                  css="${css`
                                   display: flex;
                                 `}"
-                              >
-                                <input
-                                  type="text"
-                                  inputmode="numeric"
-                                  name="twoFactorAuthenticationConfirmation"
-                                  required
-                                  minlength="6"
-                                  class="input--text"
-                                  css="${css`
+                                >
+                                  <input
+                                    type="text"
+                                    inputmode="numeric"
+                                    name="twoFactorAuthenticationConfirmation"
+                                    required
+                                    minlength="6"
+                                    class="input--text"
+                                    css="${css`
                                     flex: 1;
                                   `}"
-                                />
-                              </div>
-                            </label>
-                          `
-                        : html``}
+                                  />
+                                </div>
+                              </label>
+                            `
+                          : html``
+                      }
                       <div
                         css="${css`
                           font-size: var(--font-size--3);
@@ -940,13 +959,14 @@ export default async (application: Application): Promise<void> => {
                           />
                         </div>
                       </label>
-                      $${Boolean(
-                        request.state.user.twoFactorAuthenticationEnabled,
-                      )
-                        ? html`
-                            <label>
-                              <div
-                                css="${css`
+                      $${
+                        Boolean(
+                          request.state.user.twoFactorAuthenticationEnabled,
+                        )
+                          ? html`
+                              <label>
+                                <div
+                                  css="${css`
                                   font-size: var(--font-size--3);
                                   line-height: var(--font-size--3--line-height);
                                   font-weight: 600;
@@ -955,29 +975,30 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--slate--500)
                                   );
                                 `}"
-                              >
-                                Two-factor authentication code
-                              </div>
-                              <div
-                                css="${css`
+                                >
+                                  Two-factor authentication code
+                                </div>
+                                <div
+                                  css="${css`
                                   display: flex;
                                 `}"
-                              >
-                                <input
-                                  type="text"
-                                  inputmode="numeric"
-                                  name="twoFactorAuthenticationConfirmation"
-                                  required
-                                  minlength="6"
-                                  class="input--text"
-                                  css="${css`
+                                >
+                                  <input
+                                    type="text"
+                                    inputmode="numeric"
+                                    name="twoFactorAuthenticationConfirmation"
+                                    required
+                                    minlength="6"
+                                    class="input--text"
+                                    css="${css`
                                     flex: 1;
                                   `}"
-                                />
-                              </div>
-                            </label>
-                          `
-                        : html``}
+                                  />
+                                </div>
+                              </label>
+                            `
+                          : html``
+                      }
                       <div
                         css="${css`
                           font-size: var(--font-size--3);
@@ -1025,15 +1046,16 @@ export default async (application: Application): Promise<void> => {
                       </span>
                       Two-factor authentication
                     </summary>
-                    $${Boolean(
-                      request.state.user.twoFactorAuthenticationEnabled,
-                    ) === false
-                      ? html`
-                          <div
-                            type="form"
-                            method="POST"
-                            action="/settings/two-factor-authentication"
-                            css="${css`
+                    $${
+                      Boolean(
+                        request.state.user.twoFactorAuthenticationEnabled,
+                      ) === false
+                        ? html`
+                            <div
+                              type="form"
+                              method="POST"
+                              action="/settings/two-factor-authentication"
+                              css="${css`
                               padding: var(--size--2) var(--size--0);
                               border-bottom: var(--border-width--1) solid
                                 light-dark(
@@ -1044,9 +1066,9 @@ export default async (application: Application): Promise<void> => {
                               flex-direction: column;
                               gap: var(--size--4);
                             `}"
-                          >
-                            <div
-                              css="${css`
+                            >
+                              <div
+                                css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
                                 font-weight: 600;
@@ -1055,12 +1077,12 @@ export default async (application: Application): Promise<void> => {
                                   var(--color--red--500)
                                 );
                               `}"
-                            >
-                              Two-factor authentication is disabled.
-                            </div>
-                            <label>
-                              <div
-                                css="${css`
+                              >
+                                Two-factor authentication is disabled.
+                              </div>
+                              <label>
+                                <div
+                                  css="${css`
                                   font-size: var(--font-size--3);
                                   line-height: var(--font-size--3--line-height);
                                   font-weight: 600;
@@ -1069,48 +1091,48 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--slate--500)
                                   );
                                 `}"
-                              >
-                                Password confirmation
-                              </div>
-                              <div
-                                css="${css`
+                                >
+                                  Password confirmation
+                                </div>
+                                <div
+                                  css="${css`
                                   display: flex;
                                 `}"
-                              >
-                                <input
-                                  type="password"
-                                  name="passwordConfirmation"
-                                  required
-                                  minlength="8"
-                                  maxlength="2000"
-                                  class="input--text"
-                                  css="${css`
+                                >
+                                  <input
+                                    type="password"
+                                    name="passwordConfirmation"
+                                    required
+                                    minlength="8"
+                                    maxlength="2000"
+                                    class="input--text"
+                                    css="${css`
                                     flex: 1;
                                   `}"
-                                />
-                              </div>
-                            </label>
-                            <div
-                              css="${css`
+                                  />
+                                </div>
+                              </label>
+                              <div
+                                css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
                               `}"
-                            >
-                              <button
-                                type="submit"
-                                class="button button--rectangle button--blue"
                               >
-                                Enable two-factor authentication
-                              </button>
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Enable two-factor authentication
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        `
-                      : html`
-                          <div
-                            type="form"
-                            method="DELETE"
-                            action="/settings/two-factor-authentication"
-                            css="${css`
+                          `
+                        : html`
+                            <div
+                              type="form"
+                              method="DELETE"
+                              action="/settings/two-factor-authentication"
+                              css="${css`
                               padding: var(--size--2) var(--size--0);
                               border-bottom: var(--border-width--1) solid
                                 light-dark(
@@ -1121,14 +1143,14 @@ export default async (application: Application): Promise<void> => {
                               flex-direction: column;
                               gap: var(--size--4);
                             `}"
-                            javascript="${javascript`
+                              javascript="${javascript`
                               this.onsubmit = () => {
                                 javascript.reset(this);
                               };
                             `}"
-                          >
-                            <div
-                              css="${css`
+                            >
+                              <div
+                                css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
                                 font-weight: 600;
@@ -1137,12 +1159,12 @@ export default async (application: Application): Promise<void> => {
                                   var(--color--green--500)
                                 );
                               `}"
-                            >
-                              Two-factor authentication is enabled.
-                            </div>
-                            <label>
-                              <div
-                                css="${css`
+                              >
+                                Two-factor authentication is enabled.
+                              </div>
+                              <label>
+                                <div
+                                  css="${css`
                                   font-size: var(--font-size--3);
                                   line-height: var(--font-size--3--line-height);
                                   font-weight: 600;
@@ -1151,30 +1173,30 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--slate--500)
                                   );
                                 `}"
-                              >
-                                Password confirmation
-                              </div>
-                              <div
-                                css="${css`
+                                >
+                                  Password confirmation
+                                </div>
+                                <div
+                                  css="${css`
                                   display: flex;
                                 `}"
-                              >
-                                <input
-                                  type="password"
-                                  name="passwordConfirmation"
-                                  required
-                                  minlength="8"
-                                  maxlength="2000"
-                                  class="input--text"
-                                  css="${css`
+                                >
+                                  <input
+                                    type="password"
+                                    name="passwordConfirmation"
+                                    required
+                                    minlength="8"
+                                    maxlength="2000"
+                                    class="input--text"
+                                    css="${css`
                                     flex: 1;
                                   `}"
-                                />
-                              </div>
-                            </label>
-                            <label>
-                              <div
-                                css="${css`
+                                  />
+                                </div>
+                              </label>
+                              <label>
+                                <div
+                                  css="${css`
                                   font-size: var(--font-size--3);
                                   line-height: var(--font-size--3--line-height);
                                   font-weight: 600;
@@ -1183,42 +1205,43 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--slate--500)
                                   );
                                 `}"
-                              >
-                                Two-factor authentication code
-                              </div>
-                              <div
-                                css="${css`
+                                >
+                                  Two-factor authentication code
+                                </div>
+                                <div
+                                  css="${css`
                                   display: flex;
                                 `}"
-                              >
-                                <input
-                                  type="text"
-                                  inputmode="numeric"
-                                  name="twoFactorAuthenticationConfirmation"
-                                  required
-                                  minlength="6"
-                                  class="input--text"
-                                  css="${css`
+                                >
+                                  <input
+                                    type="text"
+                                    inputmode="numeric"
+                                    name="twoFactorAuthenticationConfirmation"
+                                    required
+                                    minlength="6"
+                                    class="input--text"
+                                    css="${css`
                                     flex: 1;
                                   `}"
-                                />
-                              </div>
-                            </label>
-                            <div
-                              css="${css`
+                                  />
+                                </div>
+                              </label>
+                              <div
+                                css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
                               `}"
-                            >
-                              <button
-                                type="submit"
-                                class="button button--rectangle button--blue"
                               >
-                                Disable two-factor authentication
-                              </button>
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Disable two-factor authentication
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        `}
+                          `
+                    }
                   </details>
                 </div>
               </details>
@@ -1275,11 +1298,13 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="checkbox"
                         name="emailNotificationsForAllMessages"
-                        $${Boolean(
-                          request.state.user.emailNotificationsForAllMessages,
-                        )
-                          ? html`checked`
-                          : html``}
+                        $${
+                          Boolean(
+                            request.state.user.emailNotificationsForAllMessages,
+                          )
+                            ? html`checked`
+                            : html``
+                        }
                         class="input--checkbox"
                         javascript="${javascript`
                           this.oninput = () => {
@@ -1294,12 +1319,14 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="checkbox"
                         name="emailNotificationsForMessagesIncludingAMention"
-                        $${Boolean(
-                          request.state.user
-                            .emailNotificationsForMessagesIncludingAMention,
-                        )
-                          ? html`checked`
-                          : html``}
+                        $${
+                          Boolean(
+                            request.state.user
+                              .emailNotificationsForMessagesIncludingAMention,
+                          )
+                            ? html`checked`
+                            : html``
+                        }
                         class="input--checkbox"
                         javascript="${javascript`
                           this.oninput = () => {
@@ -1319,12 +1346,14 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="checkbox"
                         name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"
-                        $${Boolean(
-                          request.state.user
-                            .emailNotificationsForMessagesInConversationsInWhichYouParticipated,
-                        )
-                          ? html`checked`
-                          : html``}
+                        $${
+                          Boolean(
+                            request.state.user
+                              .emailNotificationsForMessagesInConversationsInWhichYouParticipated,
+                          )
+                            ? html`checked`
+                            : html``
+                        }
                         class="input--checkbox"
                         javascript="${javascript`
                           this.oninput = () => {
@@ -1341,12 +1370,14 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="checkbox"
                         name="emailNotificationsForMessagesInConversationsThatYouStarted"
-                        $${Boolean(
-                          request.state.user
-                            .emailNotificationsForMessagesInConversationsThatYouStarted,
-                        )
-                          ? html`checked`
-                          : html``}
+                        $${
+                          Boolean(
+                            request.state.user
+                              .emailNotificationsForMessagesInConversationsThatYouStarted,
+                          )
+                            ? html`checked`
+                            : html``
+                        }
                         class="input--checkbox"
                         javascript="${javascript`
                           this.oninput = () => {
@@ -1573,13 +1604,14 @@ export default async (application: Application): Promise<void> => {
                           />
                         </div>
                       </label>
-                      $${Boolean(
-                        request.state.user.twoFactorAuthenticationEnabled,
-                      )
-                        ? html`
-                            <label>
-                              <div
-                                css="${css`
+                      $${
+                        Boolean(
+                          request.state.user.twoFactorAuthenticationEnabled,
+                        )
+                          ? html`
+                              <label>
+                                <div
+                                  css="${css`
                                   font-size: var(--font-size--3);
                                   line-height: var(--font-size--3--line-height);
                                   font-weight: 600;
@@ -1588,29 +1620,30 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--slate--500)
                                   );
                                 `}"
-                              >
-                                Two-factor authentication code
-                              </div>
-                              <div
-                                css="${css`
+                                >
+                                  Two-factor authentication code
+                                </div>
+                                <div
+                                  css="${css`
                                   display: flex;
                                 `}"
-                              >
-                                <input
-                                  type="text"
-                                  inputmode="numeric"
-                                  name="twoFactorAuthenticationConfirmation"
-                                  required
-                                  minlength="6"
-                                  class="input--text"
-                                  css="${css`
+                                >
+                                  <input
+                                    type="text"
+                                    inputmode="numeric"
+                                    name="twoFactorAuthenticationConfirmation"
+                                    required
+                                    minlength="6"
+                                    class="input--text"
+                                    css="${css`
                                     flex: 1;
                                   `}"
-                                />
-                              </div>
-                            </label>
-                          `
-                        : html``}
+                                  />
+                                </div>
+                              </label>
+                            `
+                          : html``
+                      }
                       <div>
                         <button
                           type="submit"
@@ -1647,9 +1680,7 @@ export default async (application: Application): Promise<void> => {
           avatarImage: serverTypes.RequestBodyFile;
           "avatarImage--remove": "on";
           darkMode:
-            | "userDarkModeSystem"
-            | "userDarkModeLight"
-            | "userDarkModeDark";
+            "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -1750,11 +1781,12 @@ export default async (application: Application): Promise<void> => {
         response.setFlash!(html`
           <div class="flash--red">
             Invalid “Password
-            confirmation”${Boolean(
-              request.state.user.twoFactorAuthenticationEnabled,
-            ) === true
-              ? " or “Two-factor authentication code”"
-              : ""}.
+            confirmation”${
+              Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
+              true
+                ? " or “Two-factor authentication code”"
+                : ""
+            }.
           </div>
         `);
         response.redirect!("/settings");
@@ -1809,18 +1841,19 @@ export default async (application: Application): Promise<void> => {
                 <p>
                   If it was not you, please report the issue to
                   <a
-                    href="mailto:${application.configuration
-                      .systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}?${new URLSearchParams(
-                      {
-                        subject: "Potential impersonation",
-                        body: `Email: ${request.state.user.email}`,
-                      },
-                    )
+                    href="mailto:${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }?${new URLSearchParams({
+                      subject: "Potential impersonation",
+                      body: `Email: ${request.state.user.email}`,
+                    })
                       .toString()
                       .replaceAll("+", "%20")}"
-                    >${application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}</a
+                    >${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }</a
                   >
                 </p>
               `,
@@ -1852,29 +1885,34 @@ export default async (application: Application): Promise<void> => {
                 <p>
                   If it was you, please confirm your email:
                   <a
-                    href="https://${application.configuration
-                      .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
-                      .URL.search}"
-                    >https://${application.configuration
-                      .hostname}/authentication/email-verification/${emailVerificationNoncePlaintext}${request
-                      .URL.search}</a
+                    href="https://${
+                      application.configuration.hostname
+                    }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                      request.URL.search
+                    }"
+                    >https://${
+                      application.configuration.hostname
+                    }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                      request.URL.search
+                    }</a
                   >
                 </p>
                 <p>
                   If it was not you, please report the issue to
                   <a
-                    href="mailto:${application.configuration
-                      .systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}?${new URLSearchParams(
-                      {
-                        subject: "Potential impersonation",
-                        body: `Email: ${request.state.user.emailVerificationEmail}`,
-                      },
-                    )
+                    href="mailto:${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }?${new URLSearchParams({
+                      subject: "Potential impersonation",
+                      body: `Email: ${request.state.user.emailVerificationEmail}`,
+                    })
                       .toString()
                       .replaceAll("+", "%20")}"
-                    >${application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}</a
+                    >${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }</a
                   >
                 </p>
               `,
@@ -1944,11 +1982,12 @@ export default async (application: Application): Promise<void> => {
         response.setFlash!(html`
           <div class="flash--red">
             Invalid “Current
-            password”${Boolean(
-              request.state.user.twoFactorAuthenticationEnabled,
-            ) === true
-              ? " or “Two-factor authentication code”"
-              : ""}.
+            password”${
+              Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
+              true
+                ? " or “Two-factor authentication code”"
+                : ""
+            }.
           </div>
         `);
         response.redirect!("/settings");
@@ -1996,18 +2035,19 @@ export default async (application: Application): Promise<void> => {
                 <p>
                   If it was not you, please report the issue to
                   <a
-                    href="mailto:${application.configuration
-                      .systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}?${new URLSearchParams(
-                      {
-                        subject: "Potential impersonation",
-                        body: `Email: ${request.state.user.email}`,
-                      },
-                    )
+                    href="mailto:${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }?${new URLSearchParams({
+                      subject: "Potential impersonation",
+                      body: `Email: ${request.state.user.email}`,
+                    })
                       .toString()
                       .replaceAll("+", "%20")}"
-                    >${application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"}</a
+                    >${
+                      application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"
+                    }</a
                   >
                 </p>
               `,
@@ -2188,8 +2228,9 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="POST"
-                action="/settings/two-factor-authentication/enable${request.URL
-                  .search}"
+                action="/settings/two-factor-authentication/enable${
+                  request.URL.search
+                }"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -2490,11 +2531,12 @@ export default async (application: Application): Promise<void> => {
         response.setFlash!(html`
           <div class="flash--red">
             Invalid “Password
-            confirmation”${Boolean(
-              request.state.user.twoFactorAuthenticationEnabled,
-            ) === true
-              ? " or “Two-factor authentication code”"
-              : ""}.
+            confirmation”${
+              Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
+              true
+                ? " or “Two-factor authentication code”"
+                : ""
+            }.
           </div>
         `);
         response.redirect!("/settings");
@@ -2588,18 +2630,19 @@ export default async (application: Application): Promise<void> => {
                   <p>
                     If it was not you, please report the issue to
                     <a
-                      href="mailto:${application.configuration
-                        .systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}?${new URLSearchParams(
-                        {
-                          subject: "Potential impersonation",
-                          body: `Email: ${request.state.user!.email}`,
-                        },
-                      )
+                      href="mailto:${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }?${new URLSearchParams({
+                        subject: "Potential impersonation",
+                        body: `Email: ${request.state.user!.email}`,
+                      })
                         .toString()
                         .replaceAll("+", "%20")}"
-                      >${application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}</a
+                      >${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }</a
                     >
                   </p>
                 `,
@@ -2630,12 +2673,13 @@ export default async (application: Application): Promise<void> => {
         }
       `}"
     >
-      $${typeof user === "object" && typeof user.avatarImage === "string"
-        ? html`
-            <img
-              src="${user.avatarImage}"
-              loading="lazy"
-              css="${css`
+      $${
+        typeof user === "object" && typeof user.avatarImage === "string"
+          ? html`
+              <img
+                src="${user.avatarImage}"
+                loading="lazy"
+                css="${css`
                 background-color: light-dark(
                   var(--color--white),
                   var(--color--white)
@@ -2643,82 +2687,94 @@ export default async (application: Application): Promise<void> => {
                 border-radius: var(--border-radius--1);
                 display: block;
                 object-fit: cover;
-              `} ${size === 6
-                ? css`
-                    width: var(--size--6);
-                    height: var(--size--6);
-                  `
-                : size === 9
+              `} ${
+                size === 6
                   ? css`
-                      width: var(--size--9);
-                      height: var(--size--9);
+                      width: var(--size--6);
+                      height: var(--size--6);
                     `
-                  : (() => {
-                      throw new Error();
-                    })()}"
-            />
-          `
-        : html`
-            <div
-              style="
-                --color--light: var(--color--${typeof user === "object"
-                ? user.avatarColor
-                : user === "courseParticipationDeleted"
-                  ? "red"
-                  : user === "anonymous"
-                    ? "blue"
+                  : size === 9
+                    ? css`
+                        width: var(--size--9);
+                        height: var(--size--9);
+                      `
                     : (() => {
                         throw new Error();
-                      })()}--800);
-                --color--dark: var(--color--${typeof user === "object"
-                ? user.avatarColor
-                : user === "courseParticipationDeleted"
-                  ? "red"
-                  : user === "anonymous"
-                    ? "blue"
-                    : (() => {
-                        throw new Error();
-                      })()}--200);
-                --background-color--light: var(--color--${typeof user ===
-              "object"
-                ? user.avatarColor
-                : user === "courseParticipationDeleted"
-                  ? "red"
-                  : user === "anonymous"
-                    ? "blue"
-                    : (() => {
-                        throw new Error();
-                      })()}--200);
-                --background-color--dark: var(--color--${typeof user ===
-              "object"
-                ? user.avatarColor
-                : user === "courseParticipationDeleted"
-                  ? "red"
-                  : user === "anonymous"
-                    ? "blue"
-                    : (() => {
-                        throw new Error();
-                      })()}--800);
-                --border-color--light: var(--color--${typeof user === "object"
-                ? user.avatarColor
-                : user === "courseParticipationDeleted"
-                  ? "red"
-                  : user === "anonymous"
-                    ? "blue"
-                    : (() => {
-                        throw new Error();
-                      })()}--300);
-                --border-color--dark: var(--color--${typeof user === "object"
-                ? user.avatarColor
-                : user === "courseParticipationDeleted"
-                  ? "red"
-                  : user === "anonymous"
-                    ? "blue"
-                    : (() => {
-                        throw new Error();
-                      })()}--900);
+                      })()
+              }"
+              />
+            `
+          : html`
+              <div
+                style="
+                --color--light: var(--color--${
+                  typeof user === "object"
+                    ? user.avatarColor
+                    : user === "courseParticipationDeleted"
+                      ? "red"
+                      : user === "anonymous"
+                        ? "blue"
+                        : (() => {
+                            throw new Error();
+                          })()
+                }--800);
+                --color--dark: var(--color--${
+                  typeof user === "object"
+                    ? user.avatarColor
+                    : user === "courseParticipationDeleted"
+                      ? "red"
+                      : user === "anonymous"
+                        ? "blue"
+                        : (() => {
+                            throw new Error();
+                          })()
+                }--200);
+                --background-color--light: var(--color--${
+                  typeof user === "object"
+                    ? user.avatarColor
+                    : user === "courseParticipationDeleted"
+                      ? "red"
+                      : user === "anonymous"
+                        ? "blue"
+                        : (() => {
+                            throw new Error();
+                          })()
+                }--200);
+                --background-color--dark: var(--color--${
+                  typeof user === "object"
+                    ? user.avatarColor
+                    : user === "courseParticipationDeleted"
+                      ? "red"
+                      : user === "anonymous"
+                        ? "blue"
+                        : (() => {
+                            throw new Error();
+                          })()
+                }--800);
+                --border-color--light: var(--color--${
+                  typeof user === "object"
+                    ? user.avatarColor
+                    : user === "courseParticipationDeleted"
+                      ? "red"
+                      : user === "anonymous"
+                        ? "blue"
+                        : (() => {
+                            throw new Error();
+                          })()
+                }--300);
+                --border-color--dark: var(--color--${
+                  typeof user === "object"
+                    ? user.avatarColor
+                    : user === "courseParticipationDeleted"
+                      ? "red"
+                      : user === "anonymous"
+                        ? "blue"
+                        : (() => {
+                            throw new Error();
+                          })()
+                }--900);
               "
-              css="${css`
+                css="${css`
                 font-family: "Roboto Serif Variable", var(--font-family--serif);
                 line-height: var(--size--0);
                 font-weight: 900;
@@ -2737,77 +2793,85 @@ export default async (application: Application): Promise<void> => {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-              `} ${size === 6
-                ? `${
-                    typeof user === "object"
-                      ? css`
-                          font-size: var(--font-size--2-5);
-                        `
-                      : css`
-                          font-size: var(--font-size--4);
-                        `
-                  } ${css`
-                    width: var(--size--6);
-                    height: var(--size--6);
-                  `}`
-                : size === 9
+              `} ${
+                size === 6
                   ? `${
                       typeof user === "object"
                         ? css`
-                            font-size: var(--font-size--3-5);
+                            font-size: var(--font-size--2-5);
                           `
                         : css`
-                            font-size: var(--font-size--6);
+                            font-size: var(--font-size--4);
                           `
                     } ${css`
-                      width: var(--size--9);
-                      height: var(--size--9);
+                      width: var(--size--6);
+                      height: var(--size--6);
                     `}`
-                  : (() => {
-                      throw new Error();
-                    })()}"
-            >
-              $${typeof user === "object"
-                ? (() => {
-                    const nameParts = [
-                      ...user.name.matchAll(
-                        /[\p{Letter}\p{Number}\p{Private_Use}]+/gu,
-                      ),
-                    ];
-                    return html`${nameParts.length === 0
-                      ? (() => {
-                          throw new Error();
-                        })()
-                      : nameParts.length === 1
-                        ? [
-                            ...new Intl.Segmenter("en-US").segment(
-                              nameParts[0][0],
-                            ),
-                          ][0].segment
-                        : [
-                            ...new Intl.Segmenter("en-US").segment(
-                              nameParts.at(0)![0],
-                            ),
-                          ][0].segment +
-                          [
-                            ...new Intl.Segmenter("en-US").segment(
-                              nameParts.at(-1)![0],
-                            ),
-                          ][0].segment}`;
-                  })()
-                : user === "courseParticipationDeleted"
-                  ? html`<i class="bi bi-person-x"></i>`
-                  : user === "anonymous"
-                    ? html`<i class="bi bi-person"></i>`
+                  : size === 9
+                    ? `${
+                        typeof user === "object"
+                          ? css`
+                              font-size: var(--font-size--3-5);
+                            `
+                          : css`
+                              font-size: var(--font-size--6);
+                            `
+                      } ${css`
+                        width: var(--size--9);
+                        height: var(--size--9);
+                      `}`
                     : (() => {
                         throw new Error();
-                      })()}
-            </div>
-          `}
-      $${onlineIndicator && typeof user === "object"
-        ? html`
-            <div
-              css="${css`
+                      })()
+              }"
+              >
+                $${
+                typeof user === "object"
+                  ? (() => {
+                      const nameParts = [
+                        ...user.name.matchAll(
+                          /[\p{Letter}\p{Number}\p{Private_Use}]+/gu,
+                        ),
+                      ];
+                      return html`${
+                        nameParts.length === 0
+                          ? (() => {
+                              throw new Error();
+                            })()
+                          : nameParts.length === 1
+                            ? [
+                                ...new Intl.Segmenter("en-US").segment(
+                                  nameParts[0][0],
+                                ),
+                              ][0].segment
+                            : [
+                                ...new Intl.Segmenter("en-US").segment(
+                                  nameParts.at(0)![0],
+                                ),
+                              ][0].segment +
+                              [
+                                ...new Intl.Segmenter("en-US").segment(
+                                  nameParts.at(-1)![0],
+                                ),
+                              ][0].segment
+                      }`;
+                    })()
+                  : user === "courseParticipationDeleted"
+                    ? html`<i class="bi bi-person-x"></i>`
+                    : user === "anonymous"
+                      ? html`<i class="bi bi-person"></i>`
+                      : (() => {
+                          throw new Error();
+                        })()
+              }
+              </div>
+            `
+      }
+      $${
+        onlineIndicator && typeof user === "object"
+          ? html`
+              <div
+                css="${css`
                 font-size: var(--size--1-5);
                 line-height: var(--size--0);
                 color: light-dark(
@@ -2822,18 +2886,21 @@ export default async (application: Application): Promise<void> => {
                 transition-timing-function: var(
                   --transition-timing-function--ease-in-out
                 );
-              `} ${user.lastSeenOnlineAt === null ||
-              user.lastSeenOnlineAt <
-                new Date(Date.now() - 6 * 60 * 1000).toISOString()
-                ? css`
-                    opacity: var(--opacity--0);
-                  `
-                : css``}"
-            >
-              <i class="bi bi-circle-fill"></i>
-            </div>
-          `
-        : html``}
+              `} ${
+                user.lastSeenOnlineAt === null ||
+                user.lastSeenOnlineAt <
+                  new Date(Date.now() - 6 * 60 * 1000).toISOString()
+                  ? css`
+                      opacity: var(--opacity--0);
+                    `
+                  : css``
+              }"
+              >
+                <i class="bi bi-circle-fill"></i>
+              </div>
+            `
+          : html``
+      }
     </div>
   `;
 
