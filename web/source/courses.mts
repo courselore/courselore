@@ -636,8 +636,9 @@ export default async (application: Application): Promise<void> => {
                 </div>
                 <div>
                   <a
-                    href="/courses/${request.state.course
-                      .publicId}/conversations/new"
+                    href="/courses/${
+                      request.state.course.publicId
+                    }/conversations/new"
                     class="button button--rectangle button--transparent"
                     >Start the first conversation</a
                   >
@@ -695,435 +696,457 @@ export default async (application: Application): Promise<void> => {
               >
                 Course settings
               </div>
-              $${request.state.courseParticipation.courseParticipationRole ===
-              "courseParticipationRoleInstructor"
-                ? html`
-                    <details>
-                      <summary
-                        class="button button--rectangle button--transparent"
-                        css="${css`
-                          font-weight: 500;
-                        `}"
-                      >
-                        <span
+              $${
+                request.state.courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleInstructor"
+                  ? html`
+                      <details>
+                        <summary
+                          class="button button--rectangle button--transparent"
                           css="${css`
-                            display: inline-block;
-                            transition-property: var(
-                              --transition-property--transform
-                            );
-                            transition-duration: var(
-                              --transition-duration--150
-                            );
-                            transition-timing-function: var(
-                              --transition-timing-function--ease-in-out
-                            );
-                            details[open] > summary > & {
-                              rotate: var(--rotate--90);
-                            }
+                            font-weight: 500;
                           `}"
                         >
-                          <i class="bi bi-chevron-right"></i>
-                        </span>
-                        General settings
-                      </summary>
-                      <div
-                        type="form"
-                        method="PATCH"
-                        action="/courses/${request.state.course
-                          .publicId}/settings/general-settings"
-                        css="${css`
-                          padding: var(--size--2) var(--size--0);
-                          border-bottom: var(--border-width--1) solid
-                            light-dark(
-                              var(--color--slate--200),
-                              var(--color--slate--800)
-                            );
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--4);
-                        `}"
-                      >
-                        <label>
-                          <div
+                          <span
                             css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--500),
-                                var(--color--slate--500)
+                              display: inline-block;
+                              transition-property: var(
+                                --transition-property--transform
                               );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              details[open] > summary > & {
+                                rotate: var(--rotate--90);
+                              }
                             `}"
                           >
-                            Name
-                          </div>
-                          <div
-                            css="${css`
-                              display: flex;
-                            `}"
-                          >
-                            <input
-                              type="text"
-                              name="name"
-                              value="${request.state.course.name}"
-                              required
-                              maxlength="2000"
-                              class="input--text"
+                            <i class="bi bi-chevron-right"></i>
+                          </span>
+                          General settings
+                        </summary>
+                        <div
+                          type="form"
+                          method="PATCH"
+                          action="/courses/${
+                            request.state.course.publicId
+                          }/settings/general-settings"
+                          css="${css`
+                            padding: var(--size--2) var(--size--0);
+                            border-bottom: var(--border-width--1) solid
+                              light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--4);
+                          `}"
+                        >
+                          <label>
+                            <div
                               css="${css`
-                                flex: 1;
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
                               `}"
-                            />
-                          </div>
-                        </label>
-                        <label>
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--500),
-                                var(--color--slate--500)
-                              );
-                            `}"
-                          >
-                            Information
-                          </div>
-                          <div
-                            css="${css`
-                              display: flex;
-                            `}"
-                          >
-                            <input
-                              type="text"
-                              name="information"
-                              placeholder="Year / Term / Institution / Code / …"
-                              value="${request.state.course.information ?? ""}"
-                              maxlength="2000"
-                              class="input--text"
+                            >
+                              Name
+                            </div>
+                            <div
                               css="${css`
-                                flex: 1;
+                                display: flex;
                               `}"
-                            />
-                          </div>
-                        </label>
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--size--1);
-                          `}"
-                        >
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--500),
-                                var(--color--slate--500)
-                              );
-                            `}"
-                          >
-                            Anonymity
-                          </div>
-                          <form
-                            css="${css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--2);
-                            `}"
-                          >
-                            <label
-                              class="button button--rectangle button--transparent"
                             >
                               <input
-                                type="radio"
-                                name="courseParticipationRoleStudentsAnonymityAllowed"
-                                value="courseParticipationRoleStudentsAnonymityAllowedNone"
-                                $${request.state.course
-                                  .courseParticipationRoleStudentsAnonymityAllowed ===
-                                "courseParticipationRoleStudentsAnonymityAllowedNone"
-                                  ? html`checked`
-                                  : html``}
-                                class="input--radio"
-                              />  Students may not send anonymous messages
-                            </label>
-                            <label
-                              class="button button--rectangle button--transparent"
-                            >
-                              <input
-                                type="radio"
-                                name="courseParticipationRoleStudentsAnonymityAllowed"
-                                value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-                                $${request.state.course
-                                  .courseParticipationRoleStudentsAnonymityAllowed ===
-                                "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-                                  ? html`checked`
-                                  : html``}
-                                class="input--radio"
-                              />  Students may send messages that are anonymous
-                              to other students, but not anonymous to
-                              instructors
-                            </label>
-                            <label
-                              class="button button--rectangle button--transparent"
-                            >
-                              <input
-                                type="radio"
-                                name="courseParticipationRoleStudentsAnonymityAllowed"
-                                value="courseParticipationRoleStudentsAnonymityAllowedEveryone"
-                                $${request.state.course
-                                  .courseParticipationRoleStudentsAnonymityAllowed ===
-                                "courseParticipationRoleStudentsAnonymityAllowedEveryone"
-                                  ? html`checked`
-                                  : html``}
-                                class="input--radio"
-                              />  Students may send messages that are anonymous
-                              to everyone, including instructors
-                            </label>
-                          </form>
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--size--1);
-                          `}"
-                        >
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--500),
-                                var(--color--slate--500)
-                              );
-                            `}"
-                          >
-                            Students permissions
-                          </div>
-                          <div
-                            css="${css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--2);
-                            `}"
-                          >
-                            <label
-                              class="button button--rectangle button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent"
-                                $${Boolean(
-                                  request.state.course
-                                    .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
-                                )
-                                  ? html`checked`
-                                  : html``}
-                                class="input--checkbox"
-                              />  Students may attach files or images to their
-                              messages
-                            </label>
-                          </div>
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--size--1);
-                          `}"
-                        >
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--500),
-                                var(--color--slate--500)
-                              );
-                            `}"
-                          >
-                            Course state
-                          </div>
-                          <form
-                            css="${css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--2);
-                            `}"
-                          >
-                            <label
-                              class="button button--rectangle button--transparent"
-                            >
-                              <input
-                                type="radio"
-                                name="courseState"
-                                value="courseStateActive"
-                                $${request.state.course.courseState ===
-                                "courseStateActive"
-                                  ? html`checked`
-                                  : html``}
-                                class="input--radio"
-                              />  Active
-                            </label>
-                            <label
-                              class="button button--rectangle button--transparent"
-                            >
-                              <input
-                                type="radio"
-                                name="courseState"
-                                value="courseStateArchived"
-                                $${request.state.course.courseState ===
-                                "courseStateArchived"
-                                  ? html`checked`
-                                  : html``}
-                                class="input--radio"
-                              />  Archived
-                              <span
+                                type="text"
+                                name="name"
+                                value="${request.state.course.name}"
+                                required
+                                maxlength="2000"
+                                class="input--text"
                                 css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
+                                  flex: 1;
                                 `}"
-                                >(read-only)</span
-                              >
-                            </label>
-                          </form>
-                        </div>
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                          `}"
-                        >
-                          <button
-                            type="submit"
-                            class="button button--rectangle button--blue"
+                              />
+                            </div>
+                          </label>
+                          <label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Information
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                              `}"
+                            >
+                              <input
+                                type="text"
+                                name="information"
+                                placeholder="Year / Term / Institution / Code / …"
+                                value="${request.state.course.information ?? ""}"
+                                maxlength="2000"
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                            </div>
+                          </label>
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--1);
+                            `}"
                           >
-                            Update general settings
-                          </button>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Anonymity
+                            </div>
+                            <form
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="radio"
+                                  name="courseParticipationRoleStudentsAnonymityAllowed"
+                                  value="courseParticipationRoleStudentsAnonymityAllowedNone"
+                                  $${
+                                    request.state.course
+                                      .courseParticipationRoleStudentsAnonymityAllowed ===
+                                    "courseParticipationRoleStudentsAnonymityAllowedNone"
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--radio"
+                                />  Students may not send anonymous messages
+                              </label>
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="radio"
+                                  name="courseParticipationRoleStudentsAnonymityAllowed"
+                                  value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                                  $${
+                                    request.state.course
+                                      .courseParticipationRoleStudentsAnonymityAllowed ===
+                                    "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--radio"
+                                />  Students may send messages that are
+                                anonymous to other students, but not anonymous
+                                to instructors
+                              </label>
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="radio"
+                                  name="courseParticipationRoleStudentsAnonymityAllowed"
+                                  value="courseParticipationRoleStudentsAnonymityAllowedEveryone"
+                                  $${
+                                    request.state.course
+                                      .courseParticipationRoleStudentsAnonymityAllowed ===
+                                    "courseParticipationRoleStudentsAnonymityAllowedEveryone"
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--radio"
+                                />  Students may send messages that are
+                                anonymous to everyone, including instructors
+                              </label>
+                            </form>
+                          </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--1);
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Students permissions
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent"
+                                  $${
+                                    Boolean(
+                                      request.state.course
+                                        .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+                                    )
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--checkbox"
+                                />  Students may attach files or images to their
+                                messages
+                              </label>
+                            </div>
+                          </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--1);
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Course state
+                            </div>
+                            <form
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="radio"
+                                  name="courseState"
+                                  value="courseStateActive"
+                                  $${
+                                    request.state.course.courseState ===
+                                    "courseStateActive"
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--radio"
+                                />  Active
+                              </label>
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="radio"
+                                  name="courseState"
+                                  value="courseStateArchived"
+                                  $${
+                                    request.state.course.courseState ===
+                                    "courseStateArchived"
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--radio"
+                                />  Archived
+                                <span
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                  `}"
+                                  >(read-only)</span
+                                >
+                              </label>
+                            </form>
+                          </div>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                            `}"
+                          >
+                            <button
+                              type="submit"
+                              class="button button--rectangle button--blue"
+                            >
+                              Update general settings
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    </details>
-                    <details>
-                      <summary
-                        class="button button--rectangle button--transparent"
-                        css="${css`
-                          font-weight: 500;
-                        `}"
-                      >
-                        <span
+                      </details>
+                      <details>
+                        <summary
+                          class="button button--rectangle button--transparent"
                           css="${css`
-                            display: inline-block;
-                            transition-property: var(
-                              --transition-property--transform
-                            );
-                            transition-duration: var(
-                              --transition-duration--150
-                            );
-                            transition-timing-function: var(
-                              --transition-timing-function--ease-in-out
-                            );
-                            details[open] > summary > & {
-                              rotate: var(--rotate--90);
-                            }
+                            font-weight: 500;
                           `}"
                         >
-                          <i class="bi bi-chevron-right"></i>
-                        </span>
-                        Conversation tags
-                      </summary>
-                      <div
-                        type="form"
-                        method="PATCH"
-                        action="/courses/${request.state.course
-                          .publicId}/settings/tags"
-                        css="${css`
-                          padding: var(--size--2) var(--size--0);
-                          border-bottom: var(--border-width--1) solid
-                            light-dark(
-                              var(--color--slate--200),
-                              var(--color--slate--800)
-                            );
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--4);
-                        `}"
-                        javascript="${javascript`
+                          <span
+                            css="${css`
+                              display: inline-block;
+                              transition-property: var(
+                                --transition-property--transform
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              details[open] > summary > & {
+                                rotate: var(--rotate--90);
+                              }
+                            `}"
+                          >
+                            <i class="bi bi-chevron-right"></i>
+                          </span>
+                          Conversation tags
+                        </summary>
+                        <div
+                          type="form"
+                          method="PATCH"
+                          action="/courses/${
+                            request.state.course.publicId
+                          }/settings/tags"
+                          css="${css`
+                            padding: var(--size--2) var(--size--0);
+                            border-bottom: var(--border-width--1) solid
+                              light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--4);
+                          `}"
+                          javascript="${javascript`
                           this.morph = false;
                           this.onsubmit = () => {
                             delete this.morph;
                             for (const element of javascript.children(this)) delete element.isModified;
                           };
                         `}"
-                      >
-                        <label
-                          class="button button--rectangle button--transparent"
                         >
-                          <input
-                            type="checkbox"
-                            name="courseConversationRequiresTagging"
-                            $${Boolean(
-                              request.state.course
-                                .courseConversationRequiresTagging,
-                            )
-                              ? html`checked`
-                              : html``}
-                            class="input--checkbox"
-                          />  Tags are required when creating a conversation
-                        </label>
-                        $${(() => {
-                          const courseConversationsTagPartial = (
-                            courseConversationsTag?: (typeof request.state.courseConversationsTags)[number],
-                          ): HTML => html`
-                            <div
-                              key="courseConversationsTag ${courseConversationsTag?.publicId ??
-                              ""}"
-                              css="${css`
-                                display: flex;
-                                align-items: center;
-                                gap: var(--size--3);
-                              `}"
-                              javascript="${javascript`
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="courseConversationRequiresTagging"
+                              $${
+                                Boolean(
+                                  request.state.course
+                                    .courseConversationRequiresTagging,
+                                )
+                                  ? html`checked`
+                                  : html``
+                              }
+                              class="input--checkbox"
+                            />  Tags are required when creating a conversation
+                          </label>
+                          $${(() => {
+                            const courseConversationsTagPartial = (
+                              courseConversationsTag?: (typeof request.state.courseConversationsTags)[number],
+                            ): HTML => html`
+                              <div
+                                key="courseConversationsTag ${
+                                  courseConversationsTag?.publicId ?? ""
+                                }"
+                                css="${css`
+                                  display: flex;
+                                  align-items: center;
+                                  gap: var(--size--3);
+                                `}"
+                                javascript="${javascript`
                                 if (${courseConversationsTag === undefined}) this.isModified = true;
                               `}"
-                            >
-                              <input
-                                type="hidden"
-                                name="courseConversationsTagsPublicIds[]"
-                                $${courseConversationsTag !== undefined
-                                  ? html`
-                                      value="${courseConversationsTag.publicId}"
-                                    `
-                                  : html`
-                                      javascript="${javascript`
+                              >
+                                <input
+                                  type="hidden"
+                                  name="courseConversationsTagsPublicIds[]"
+                                  $${
+                                    courseConversationsTag !== undefined
+                                      ? html`
+                                          value="${courseConversationsTag.publicId}"
+                                        `
+                                      : html`
+                                          javascript="${javascript`
                                         this.setAttribute("value", utilities.randomString());
                                       `}"
-                                    `}
-                              />
-                              <div
-                                css="${css`
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--1);
-                                `}"
-                              >
-                                <div>
-                                  <button
-                                    type="button"
-                                    class="button button--square button--icon button--transparent"
-                                    javascript="${javascript`
+                                        `
+                                  }
+                                />
+                                <div
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--1);
+                                  `}"
+                                >
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--square button--icon button--transparent"
+                                      javascript="${javascript`
                                       this.onclick = () => {
                                         const element = this.closest('[key~="courseConversationsTag"]');
                                         const previousElement = element.previousElementSibling;
@@ -1133,15 +1156,15 @@ export default async (application: Application): Promise<void> => {
                                         }
                                       };
                                     `}"
-                                  >
-                                    <i class="bi bi-caret-up-fill"></i>
-                                  </button>
-                                </div>
-                                <div>
-                                  <button
-                                    type="button"
-                                    class="button button--square button--icon button--transparent"
-                                    javascript="${javascript`
+                                    >
+                                      <i class="bi bi-caret-up-fill"></i>
+                                    </button>
+                                  </div>
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--square button--icon button--transparent"
+                                      javascript="${javascript`
                                       this.onclick = () => {
                                         const element = this.closest('[key~="courseConversationsTag"]');
                                         const nextElement = element.nextElementSibling;
@@ -1151,83 +1174,93 @@ export default async (application: Application): Promise<void> => {
                                         }
                                       };
                                     `}"
-                                  >
-                                    <i class="bi bi-caret-down-fill"></i>
-                                  </button>
+                                    >
+                                      <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                  </div>
                                 </div>
-                              </div>
-                              <div
-                                css="${css`
-                                  flex: 1;
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--2);
-                                `}"
-                              >
-                                <input
-                                  type="text"
-                                  name="courseConversationsTags[${courseConversationsTag?.publicId ??
-                                  "{tag}"}].name"
-                                  value="${courseConversationsTag?.name ?? ""}"
-                                  required
-                                  maxlength="2000"
-                                  class="input--text"
-                                  css="${css`
-                                    flex: 1;
-                                  `}"
-                                  $${courseConversationsTag === undefined
-                                    ? html`
-                                        javascript="${javascript`
-                                          this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")));
-                                        `}"
-                                      `
-                                    : html``}
-                                />
                                 <div
                                   css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    font-weight: 600;
-                                    color: light-dark(
-                                      var(--color--slate--600),
-                                      var(--color--slate--400)
-                                    );
+                                    flex: 1;
                                     display: flex;
-                                    align-items: baseline;
-                                    flex-wrap: wrap;
-                                    column-gap: var(--size--4);
-                                    row-gap: var(--size--2);
+                                    flex-direction: column;
+                                    gap: var(--size--2);
                                   `}"
                                 >
-                                  <label
-                                    class="button button--rectangle button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      name="courseConversationsTags[${courseConversationsTag?.publicId ??
-                                      "{tag}"}].privateToCourseParticipationRoleInstructors"
-                                      $${Boolean(
-                                        courseConversationsTag?.privateToCourseParticipationRoleInstructors ??
-                                        false,
-                                      )
-                                        ? html`checked`
-                                        : html``}
-                                      class="input--checkbox"
-                                      $${courseConversationsTag === undefined
+                                  <input
+                                    type="text"
+                                    name="courseConversationsTags[${
+                                      courseConversationsTag?.publicId ??
+                                      "{tag}"
+                                    }].name"
+                                    value="${courseConversationsTag?.name ?? ""}"
+                                    required
+                                    maxlength="2000"
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                    $${
+                                      courseConversationsTag === undefined
                                         ? html`
                                             javascript="${javascript`
+                                          this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")));
+                                        `}"
+                                          `
+                                        : html``
+                                    }
+                                  />
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                      display: flex;
+                                      align-items: baseline;
+                                      flex-wrap: wrap;
+                                      column-gap: var(--size--4);
+                                      row-gap: var(--size--2);
+                                    `}"
+                                  >
+                                    <label
+                                      class="button button--rectangle button--transparent"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="courseConversationsTags[${
+                                          courseConversationsTag?.publicId ??
+                                          "{tag}"
+                                        }].privateToCourseParticipationRoleInstructors"
+                                        $${
+                                          Boolean(
+                                            courseConversationsTag?.privateToCourseParticipationRoleInstructors ??
+                                            false,
+                                          )
+                                            ? html`checked`
+                                            : html``
+                                        }
+                                        class="input--checkbox"
+                                        $${
+                                          courseConversationsTag === undefined
+                                            ? html`
+                                                javascript="${javascript`
                                               this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")));
                                             `}"
-                                          `
-                                        : html``}
-                                    />  Private to instructors
-                                  </label>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent"
-                                    javascript="${javascript`
+                                              `
+                                            : html``
+                                        }
+                                      />  Private to instructors
+                                    </label>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--transparent"
+                                      javascript="${javascript`
                                       if (${
                                         courseConversationsTag !== undefined &&
                                         application.database.get(
@@ -1247,49 +1280,49 @@ export default async (application: Application): Promise<void> => {
                                           this.nextElementSibling.querySelector("button").click();
                                         };
                                     `}"
-                                  >
-                                    Remove
-                                  </button>
-                                  <div
-                                    type="popover"
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--size--2);
-                                    `}"
-                                  >
+                                    >
+                                      Remove
+                                    </button>
                                     <div
+                                      type="popover"
                                       css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                        font-weight: 600;
-                                        color: light-dark(
-                                          var(--color--red--500),
-                                          var(--color--red--500)
-                                        );
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--2);
                                       `}"
                                     >
-                                      <i
-                                        class="bi bi-exclamation-triangle-fill"
-                                      ></i
-                                      > The tag will be removed from the
-                                      conversations that use it, but the
-                                      conversations themselves will be
-                                      preserved.
-                                    </div>
-                                    <div>
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--red"
+                                      <div
                                         css="${css`
                                           font-size: var(--font-size--3);
                                           line-height: var(
                                             --font-size--3--line-height
                                           );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
                                         `}"
-                                        javascript="${javascript`
+                                      >
+                                        <i
+                                          class="bi bi-exclamation-triangle-fill"
+                                        ></i
+                                        > The tag will be removed from the
+                                        conversations that use it, but the
+                                        conversations themselves will be
+                                        preserved.
+                                      </div>
+                                      <div>
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--red"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
+                                          javascript="${javascript`
                                           this.onclick = () => {
                                             if (${courseConversationsTag !== undefined}) {
                                               this.closest('[type~="form"]').isModified = true;
@@ -1310,50 +1343,52 @@ export default async (application: Application): Promise<void> => {
                                             courseConversationsTags.hidden = courseConversationsTags.children.length === 0;
                                           };
                                         `}"
-                                      >
-                                        Remove tag
-                                      </button>
+                                        >
+                                          Remove tag
+                                        </button>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          `;
-                          return html`
-                            <div
-                              key="courseConversationsTags"
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--4);
-                              `}"
-                              $${request.state.courseConversationsTags
-                                .length === 0
-                                ? html`hidden`
-                                : html``}
-                            >
-                              $${request.state.courseConversationsTags.map(
-                                (courseConversationsTag) =>
-                                  courseConversationsTagPartial(
-                                    courseConversationsTag,
-                                  ),
-                              )}
-                            </div>
-                            <div
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                color: light-dark(
-                                  var(--color--slate--600),
-                                  var(--color--slate--400)
-                                );
-                              `}"
-                            >
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
+                            `;
+                            return html`
+                              <div
+                                key="courseConversationsTags"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--4);
+                                `}"
+                                $${
+                                  request.state.courseConversationsTags
+                                    .length === 0
+                                    ? html`hidden`
+                                    : html``
+                                }
+                              >
+                                $${request.state.courseConversationsTags.map(
+                                  (courseConversationsTag) =>
+                                    courseConversationsTagPartial(
+                                      courseConversationsTag,
+                                    ),
+                                )}
+                              </div>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent"
+                                  javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[type~="form"]').querySelector('[key~="courseConversationsTags"]').hidden = false;
                                     javascript.execute(
@@ -1366,753 +1401,779 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   };
                                 `}"
-                              >
-                                Add tag
-                              </button>
-                            </div>
-                          `;
-                        })()}
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                          `}"
-                        >
-                          <button
-                            type="submit"
-                            class="button button--rectangle button--blue"
-                          >
-                            Update conversation tags
-                          </button>
-                        </div>
-                      </div>
-                    </details>
-                    <details>
-                      <summary
-                        class="button button--rectangle button--transparent"
-                        css="${css`
-                          font-weight: 500;
-                        `}"
-                      >
-                        <span
-                          css="${css`
-                            display: inline-block;
-                            transition-property: var(
-                              --transition-property--transform
-                            );
-                            transition-duration: var(
-                              --transition-duration--150
-                            );
-                            transition-timing-function: var(
-                              --transition-timing-function--ease-in-out
-                            );
-                            details[open] > summary > & {
-                              rotate: var(--rotate--90);
-                            }
-                          `}"
-                        >
-                          <i class="bi bi-chevron-right"></i>
-                        </span>
-                        Invitations
-                      </summary>
-                      <div
-                        css="${css`
-                          padding: var(--size--2) var(--size--0);
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--2);
-                        `}"
-                      >
-                        <details>
-                          <summary
-                            class="button button--rectangle button--transparent"
+                                >
+                                  Add tag
+                                </button>
+                              </div>
+                            `;
+                          })()}
+                          <div
                             css="${css`
                               font-size: var(--font-size--3);
                               line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--600),
-                                var(--color--slate--400)
-                              );
                             `}"
                           >
-                            <span
-                              css="${css`
-                                display: inline-block;
-                                transition-property: var(
-                                  --transition-property--transform
-                                );
-                                transition-duration: var(
-                                  --transition-duration--150
-                                );
-                                transition-timing-function: var(
-                                  --transition-timing-function--ease-in-out
-                                );
-                                details[open] > summary > & {
-                                  rotate: var(--rotate--90);
-                                }
-                              `}"
+                            <button
+                              type="submit"
+                              class="button button--rectangle button--blue"
                             >
-                              <i class="bi bi-chevron-right"></i>
-                            </span>
-                            Invitation links
-                          </summary>
-                          <div
-                            type="form"
-                            method="PATCH"
-                            action="/courses/${request.state.course
-                              .publicId}/settings/invitation-links"
+                              Update conversation tags
+                            </button>
+                          </div>
+                        </div>
+                      </details>
+                      <details>
+                        <summary
+                          class="button button--rectangle button--transparent"
+                          css="${css`
+                            font-weight: 500;
+                          `}"
+                        >
+                          <span
                             css="${css`
-                              padding: var(--size--2) var(--size--0);
-                              border-bottom: var(--border-width--1) solid
-                                light-dark(
-                                  var(--color--slate--200),
-                                  var(--color--slate--800)
-                                );
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--4);
+                              display: inline-block;
+                              transition-property: var(
+                                --transition-property--transform
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              details[open] > summary > & {
+                                rotate: var(--rotate--90);
+                              }
                             `}"
                           >
-                            <div
-                              key="invitationLink"
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--2);
-                              `}"
-                            >
-                              <label
-                                class="button button--rectangle button--transparent"
-                              >
-                                <input
-                                  type="checkbox"
-                                  name="invitationLinkCourseParticipationRoleInstructorsEnabled"
-                                  $${Boolean(
-                                    request.state.course
-                                      .invitationLinkCourseParticipationRoleInstructorsEnabled,
-                                  )
-                                    ? html`checked`
-                                    : html``}
-                                  class="input--checkbox"
-                                />  Invitation link for instructors
-                              </label>
-                              <input
-                                key="invitationLinkToken--hide--input"
-                                type="text"
-                                value="https://${application.configuration
-                                  .hostname}/courses/${request.state.course
-                                  .publicId}/invitations/${"*".repeat(
-                                  request.state.course
-                                    .invitationLinkCourseParticipationRoleInstructorsToken
-                                    .length,
-                                )}"
-                                readonly
-                                class="input--text"
-                                css="${css`
-                                  font-family:
-                                    "Roboto Mono Variable",
-                                    var(--font-family--monospace);
-                                `}"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.select();
-                                  };
-                                `}"
-                              />
-                              <input
-                                key="invitationLinkToken--show--input"
-                                type="text"
-                                value="https://${application.configuration
-                                  .hostname}/courses/${request.state.course
-                                  .publicId}/invitations/${request.state.course
-                                  .invitationLinkCourseParticipationRoleInstructorsToken}"
-                                readonly
-                                hidden
-                                class="input--text"
-                                css="${css`
-                                  font-family:
-                                    "Roboto Mono Variable",
-                                    var(--font-family--monospace);
-                                `}"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.select();
-                                  };
-                                `}"
-                              />
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
-                                  display: flex;
-                                  align-items: baseline;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--size--4);
-                                  row-gap: var(--size--2);
-                                `}"
-                              >
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    const popover = javascript.popover({ element: this, trigger: "none" });
-                                    this.onclick = async () => {
-                                      await navigator.clipboard.writeText(${`https://${
-                                        application.configuration.hostname
-                                      }/courses/${
-                                        request.state.course.publicId
-                                      }/invitations/${
-                                        request.state.course
-                                          .invitationLinkCourseParticipationRoleInstructorsToken
-                                      }`});
-                                      popover.showPopover();
-                                      await utilities.sleep(1000);
-                                      popover.hidePopover();
-                                    };
-                                  `}"
-                                >
-                                  Copy
-                                </button>
-                                <div type="popover">Copied</div>
-                                <button
-                                  key="invitationLinkToken--show--button"
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
-                                    };
-                                  `}"
-                                >
-                                  Show
-                                </button>
-                                <button
-                                  key="invitationLinkToken--hide--button"
-                                  type="button"
-                                  hidden
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
-                                    };
-                                  `}"
-                                >
-                                  Hide
-                                </button>
-                                <button
-                                  key="invitationLinkToken--QRCode--show--button"
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = false;
-                                    };
-                                  `}"
-                                >
-                                  Show QR code
-                                </button>
-                                <button
-                                  key="invitationLinkToken--QRCode--hide--button"
-                                  type="button"
-                                  hidden
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = true;
-                                    };
-                                  `}"
-                                >
-                                  Hide QR code
-                                </button>
-                                <div>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent"
-                                    javascript="${javascript`
-                                      javascript.popover({ element: this, trigger: "click" });
-                                    `}"
-                                  >
-                                    Renew
-                                  </button>
-                                  <div
-                                    type="form popover"
-                                    method="POST"
-                                    action="/courses/${request.state.course
-                                      .publicId}/settings/invitation-links/renew"
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="renewInvitationLinkCourseParticipationRoleInstructorsToken"
-                                      value="true"
-                                    />
-                                    <div
-                                      css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                        font-weight: 600;
-                                        color: light-dark(
-                                          var(--color--red--500),
-                                          var(--color--red--500)
-                                        );
-                                      `}"
-                                    >
-                                      <i
-                                        class="bi bi-exclamation-triangle-fill"
-                                      ></i
-                                      > The existing invitation link will become
-                                      invalid and a new invitation link will be
-                                      created. Only renew the invitation link if
-                                      it has been distributed to people who
-                                      shouldn’t have access to it.
-                                    </div>
-                                    <div>
-                                      <button
-                                        type="submit"
-                                        class="button button--rectangle button--red"
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                        `}"
-                                      >
-                                        Renew invitation link
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                key="invitationLinkToken--QRCode--show--input"
-                                hidden
-                                css="${css`
-                                  display: flex;
-                                  justify-content: center;
-                                `}"
-                              >
-                                <div
-                                  css="${css`
-                                    max-width: var(--size--48);
-                                    width: 100%;
-                                  `}"
-                                >
-                                  $${(
-                                    await QRCode.toString(
-                                      `https://${
-                                        application.configuration.hostname
-                                      }/courses/${
-                                        request.state.course.publicId
-                                      }/invitations/${
-                                        request.state.course
-                                          .invitationLinkCourseParticipationRoleInstructorsToken
-                                      }`,
-                                      { type: "svg", margin: 0 },
-                                    )
-                                  )
-                                    .replace("#000000", "currentColor")
-                                    .replace("#ffffff", "transparent")}
-                                </div>
-                              </div>
-                            </div>
-                            <div
-                              key="invitationLink"
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--2);
-                              `}"
-                            >
-                              <label
-                                class="button button--rectangle button--transparent"
-                              >
-                                <input
-                                  type="checkbox"
-                                  name="invitationLinkCourseParticipationRoleStudentsEnabled"
-                                  $${Boolean(
-                                    request.state.course
-                                      .invitationLinkCourseParticipationRoleStudentsEnabled,
-                                  )
-                                    ? html`checked`
-                                    : html``}
-                                  class="input--checkbox"
-                                />  Invitation link for students
-                              </label>
-                              <input
-                                key="invitationLinkToken--hide--input"
-                                type="text"
-                                value="https://${application.configuration
-                                  .hostname}/courses/${request.state.course
-                                  .publicId}/invitations/${"*".repeat(
-                                  request.state.course
-                                    .invitationLinkCourseParticipationRoleStudentsToken
-                                    .length,
-                                )}"
-                                readonly
-                                class="input--text"
-                                css="${css`
-                                  font-family:
-                                    "Roboto Mono Variable",
-                                    var(--font-family--monospace);
-                                `}"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.select();
-                                  };
-                                `}"
-                              />
-                              <input
-                                key="invitationLinkToken--show--input"
-                                type="text"
-                                value="https://${application.configuration
-                                  .hostname}/courses/${request.state.course
-                                  .publicId}/invitations/${request.state.course
-                                  .invitationLinkCourseParticipationRoleStudentsToken}"
-                                readonly
-                                hidden
-                                class="input--text"
-                                css="${css`
-                                  font-family:
-                                    "Roboto Mono Variable",
-                                    var(--font-family--monospace);
-                                `}"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.select();
-                                  };
-                                `}"
-                              />
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
-                                  display: flex;
-                                  align-items: baseline;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--size--4);
-                                  row-gap: var(--size--2);
-                                `}"
-                              >
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    const popover = javascript.popover({ element: this, trigger: "none" });
-                                    this.onclick = async () => {
-                                      await navigator.clipboard.writeText(${`https://${
-                                        application.configuration.hostname
-                                      }/courses/${
-                                        request.state.course.publicId
-                                      }/invitations/${
-                                        request.state.course
-                                          .invitationLinkCourseParticipationRoleStudentsToken
-                                      }`});
-                                      popover.showPopover();
-                                      await utilities.sleep(1000);
-                                      popover.hidePopover();
-                                    };
-                                  `}"
-                                >
-                                  Copy
-                                </button>
-                                <div type="popover">Copied</div>
-                                <button
-                                  key="invitationLinkToken--show--button"
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
-                                    };
-                                  `}"
-                                >
-                                  Show
-                                </button>
-                                <button
-                                  key="invitationLinkToken--hide--button"
-                                  type="button"
-                                  hidden
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
-                                    };
-                                  `}"
-                                >
-                                  Hide
-                                </button>
-                                <button
-                                  key="invitationLinkToken--QRCode--show--button"
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = false;
-                                    };
-                                  `}"
-                                >
-                                  Show QR code
-                                </button>
-                                <button
-                                  key="invitationLinkToken--QRCode--hide--button"
-                                  type="button"
-                                  hidden
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = true;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = false;
-                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = true;
-                                    };
-                                  `}"
-                                >
-                                  Hide QR code
-                                </button>
-                                <div>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent"
-                                    javascript="${javascript`
-                                      javascript.popover({ element: this, trigger: "click" });
-                                    `}"
-                                  >
-                                    Renew
-                                  </button>
-                                  <div
-                                    type="form popover"
-                                    method="POST"
-                                    action="/courses/${request.state.course
-                                      .publicId}/settings/invitation-links/renew"
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="renewInvitationLinkCourseParticipationRoleStudentsToken"
-                                      value="true"
-                                    />
-                                    <div
-                                      css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                        font-weight: 600;
-                                        color: light-dark(
-                                          var(--color--red--500),
-                                          var(--color--red--500)
-                                        );
-                                      `}"
-                                    >
-                                      <i
-                                        class="bi bi-exclamation-triangle-fill"
-                                      ></i
-                                      > The existing invitation link will become
-                                      invalid and a new invitation link will be
-                                      created. Only renew the invitation link if
-                                      it has been distributed to people who
-                                      shouldn’t have access to it.
-                                    </div>
-                                    <div>
-                                      <button
-                                        type="submit"
-                                        class="button button--rectangle button--red"
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                        `}"
-                                      >
-                                        Renew invitation link
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                key="invitationLinkToken--QRCode--show--input"
-                                hidden
-                                css="${css`
-                                  display: flex;
-                                  justify-content: center;
-                                `}"
-                              >
-                                <div
-                                  css="${css`
-                                    max-width: var(--size--48);
-                                    width: 100%;
-                                  `}"
-                                >
-                                  $${(
-                                    await QRCode.toString(
-                                      `https://${
-                                        application.configuration.hostname
-                                      }/courses/${
-                                        request.state.course.publicId
-                                      }/invitations/${
-                                        request.state.course
-                                          .invitationLinkCourseParticipationRoleStudentsToken
-                                      }`,
-                                      { type: "svg", margin: 0 },
-                                    )
-                                  )
-                                    .replace("#000000", "currentColor")
-                                    .replace("#ffffff", "transparent")}
-                                </div>
-                              </div>
-                            </div>
-                            <div
+                            <i class="bi bi-chevron-right"></i>
+                          </span>
+                          Invitations
+                        </summary>
+                        <div
+                          css="${css`
+                            padding: var(--size--2) var(--size--0);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--2);
+                          `}"
+                        >
+                          <details>
+                            <summary
+                              class="button button--rectangle button--transparent"
                               css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
                               `}"
                             >
-                              <button
-                                type="submit"
-                                class="button button--rectangle button--blue"
+                              <span
+                                css="${css`
+                                  display: inline-block;
+                                  transition-property: var(
+                                    --transition-property--transform
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  details[open] > summary > & {
+                                    rotate: var(--rotate--90);
+                                  }
+                                `}"
                               >
-                                Update invitation links
-                              </button>
-                            </div>
-                          </div>
-                        </details>
-                        <details>
-                          <summary
-                            class="button button--rectangle button--transparent"
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--600),
-                                var(--color--slate--400)
-                              );
-                            `}"
-                          >
-                            <span
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
+                              Invitation links
+                            </summary>
+                            <div
+                              type="form"
+                              method="PATCH"
+                              action="/courses/${
+                                request.state.course.publicId
+                              }/settings/invitation-links"
                               css="${css`
-                                display: inline-block;
-                                transition-property: var(
-                                  --transition-property--transform
-                                );
-                                transition-duration: var(
-                                  --transition-duration--150
-                                );
-                                transition-timing-function: var(
-                                  --transition-timing-function--ease-in-out
-                                );
-                                details[open] > summary > & {
-                                  rotate: var(--rotate--90);
-                                }
+                                padding: var(--size--2) var(--size--0);
+                                border-bottom: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
                               `}"
                             >
-                              <i class="bi bi-chevron-right"></i>
-                            </span>
-                            Send invitation emails
-                          </summary>
-                          <div
-                            type="form"
-                            method="POST"
-                            action="/courses/${request.state.course
-                              .publicId}/settings/invitation-emails"
-                            css="${css`
-                              padding: var(--size--2) var(--size--0);
-                              border-bottom: var(--border-width--1) solid
-                                light-dark(
-                                  var(--color--slate--200),
-                                  var(--color--slate--800)
+                              <div
+                                key="invitationLink"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="invitationLinkCourseParticipationRoleInstructorsEnabled"
+                                    $${
+                                      Boolean(
+                                        request.state.course
+                                          .invitationLinkCourseParticipationRoleInstructorsEnabled,
+                                      )
+                                        ? html`checked`
+                                        : html``
+                                    }
+                                    class="input--checkbox"
+                                  />  Invitation link for instructors
+                                </label>
+                                <input
+                                  key="invitationLinkToken--hide--input"
+                                  type="text"
+                                  value="https://${
+                                    application.configuration.hostname
+                                  }/courses/${
+                                    request.state.course.publicId
+                                  }/invitations/${"*".repeat(
+                                    request.state.course
+                                      .invitationLinkCourseParticipationRoleInstructorsToken
+                                      .length,
+                                  )}"
+                                  readonly
+                                  class="input--text"
+                                  css="${css`
+                                    font-family:
+                                      "Roboto Mono Variable",
+                                      var(--font-family--monospace);
+                                  `}"
+                                  javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.select();
+                                  };
+                                `}"
+                                />
+                                <input
+                                  key="invitationLinkToken--show--input"
+                                  type="text"
+                                  value="https://${
+                                    application.configuration.hostname
+                                  }/courses/${
+                                    request.state.course.publicId
+                                  }/invitations/${
+                                    request.state.course
+                                      .invitationLinkCourseParticipationRoleInstructorsToken
+                                  }"
+                                  readonly
+                                  hidden
+                                  class="input--text"
+                                  css="${css`
+                                    font-family:
+                                      "Roboto Mono Variable",
+                                      var(--font-family--monospace);
+                                  `}"
+                                  javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.select();
+                                  };
+                                `}"
+                                />
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                    display: flex;
+                                    align-items: baseline;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--size--4);
+                                    row-gap: var(--size--2);
+                                  `}"
+                                >
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    const popover = javascript.popover({ element: this, trigger: "none" });
+                                    this.onclick = async () => {
+                                      await navigator.clipboard.writeText(${`https://${
+                                        application.configuration.hostname
+                                      }/courses/${
+                                        request.state.course.publicId
+                                      }/invitations/${
+                                        request.state.course
+                                          .invitationLinkCourseParticipationRoleInstructorsToken
+                                      }`});
+                                      popover.showPopover();
+                                      await utilities.sleep(1000);
+                                      popover.hidePopover();
+                                    };
+                                  `}"
+                                  >
+                                    Copy
+                                  </button>
+                                  <div type="popover">Copied</div>
+                                  <button
+                                    key="invitationLinkToken--show--button"
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
+                                    };
+                                  `}"
+                                  >
+                                    Show
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--hide--button"
+                                    type="button"
+                                    hidden
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
+                                    };
+                                  `}"
+                                  >
+                                    Hide
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--QRCode--show--button"
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = false;
+                                    };
+                                  `}"
+                                  >
+                                    Show QR code
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--QRCode--hide--button"
+                                    type="button"
+                                    hidden
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = true;
+                                    };
+                                  `}"
+                                  >
+                                    Hide QR code
+                                  </button>
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--transparent"
+                                      javascript="${javascript`
+                                      javascript.popover({ element: this, trigger: "click" });
+                                    `}"
+                                    >
+                                      Renew
+                                    </button>
+                                    <div
+                                      type="form popover"
+                                      method="POST"
+                                      action="/courses/${
+                                        request.state.course.publicId
+                                      }/settings/invitation-links/renew"
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="renewInvitationLinkCourseParticipationRoleInstructorsToken"
+                                        value="true"
+                                      />
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                      >
+                                        <i
+                                          class="bi bi-exclamation-triangle-fill"
+                                        ></i
+                                        > The existing invitation link will
+                                        become invalid and a new invitation link
+                                        will be created. Only renew the
+                                        invitation link if it has been
+                                        distributed to people who shouldn’t have
+                                        access to it.
+                                      </div>
+                                      <div>
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--red"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
+                                        >
+                                          Renew invitation link
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  key="invitationLinkToken--QRCode--show--input"
+                                  hidden
+                                  css="${css`
+                                    display: flex;
+                                    justify-content: center;
+                                  `}"
+                                >
+                                  <div
+                                    css="${css`
+                                      max-width: var(--size--48);
+                                      width: 100%;
+                                    `}"
+                                  >
+                                    $${(
+                                      await QRCode.toString(
+                                        `https://${
+                                          application.configuration.hostname
+                                        }/courses/${
+                                          request.state.course.publicId
+                                        }/invitations/${
+                                          request.state.course
+                                            .invitationLinkCourseParticipationRoleInstructorsToken
+                                        }`,
+                                        { type: "svg", margin: 0 },
+                                      )
+                                    )
+                                      .replace("#000000", "currentColor")
+                                      .replace("#ffffff", "transparent")}
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                key="invitationLink"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="invitationLinkCourseParticipationRoleStudentsEnabled"
+                                    $${
+                                      Boolean(
+                                        request.state.course
+                                          .invitationLinkCourseParticipationRoleStudentsEnabled,
+                                      )
+                                        ? html`checked`
+                                        : html``
+                                    }
+                                    class="input--checkbox"
+                                  />  Invitation link for students
+                                </label>
+                                <input
+                                  key="invitationLinkToken--hide--input"
+                                  type="text"
+                                  value="https://${
+                                    application.configuration.hostname
+                                  }/courses/${
+                                    request.state.course.publicId
+                                  }/invitations/${"*".repeat(
+                                    request.state.course
+                                      .invitationLinkCourseParticipationRoleStudentsToken
+                                      .length,
+                                  )}"
+                                  readonly
+                                  class="input--text"
+                                  css="${css`
+                                    font-family:
+                                      "Roboto Mono Variable",
+                                      var(--font-family--monospace);
+                                  `}"
+                                  javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.select();
+                                  };
+                                `}"
+                                />
+                                <input
+                                  key="invitationLinkToken--show--input"
+                                  type="text"
+                                  value="https://${
+                                    application.configuration.hostname
+                                  }/courses/${
+                                    request.state.course.publicId
+                                  }/invitations/${
+                                    request.state.course
+                                      .invitationLinkCourseParticipationRoleStudentsToken
+                                  }"
+                                  readonly
+                                  hidden
+                                  class="input--text"
+                                  css="${css`
+                                    font-family:
+                                      "Roboto Mono Variable",
+                                      var(--font-family--monospace);
+                                  `}"
+                                  javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.select();
+                                  };
+                                `}"
+                                />
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                    display: flex;
+                                    align-items: baseline;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--size--4);
+                                    row-gap: var(--size--2);
+                                  `}"
+                                >
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    const popover = javascript.popover({ element: this, trigger: "none" });
+                                    this.onclick = async () => {
+                                      await navigator.clipboard.writeText(${`https://${
+                                        application.configuration.hostname
+                                      }/courses/${
+                                        request.state.course.publicId
+                                      }/invitations/${
+                                        request.state.course
+                                          .invitationLinkCourseParticipationRoleStudentsToken
+                                      }`});
+                                      popover.showPopover();
+                                      await utilities.sleep(1000);
+                                      popover.hidePopover();
+                                    };
+                                  `}"
+                                  >
+                                    Copy
+                                  </button>
+                                  <div type="popover">Copied</div>
+                                  <button
+                                    key="invitationLinkToken--show--button"
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
+                                    };
+                                  `}"
+                                  >
+                                    Show
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--hide--button"
+                                    type="button"
+                                    hidden
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
+                                    };
+                                  `}"
+                                  >
+                                    Hide
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--QRCode--show--button"
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = false;
+                                    };
+                                  `}"
+                                  >
+                                    Show QR code
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--QRCode--hide--button"
+                                    type="button"
+                                    hidden
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = true;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = false;
+                                      this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = true;
+                                    };
+                                  `}"
+                                  >
+                                    Hide QR code
+                                  </button>
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--transparent"
+                                      javascript="${javascript`
+                                      javascript.popover({ element: this, trigger: "click" });
+                                    `}"
+                                    >
+                                      Renew
+                                    </button>
+                                    <div
+                                      type="form popover"
+                                      method="POST"
+                                      action="/courses/${
+                                        request.state.course.publicId
+                                      }/settings/invitation-links/renew"
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="renewInvitationLinkCourseParticipationRoleStudentsToken"
+                                        value="true"
+                                      />
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                      >
+                                        <i
+                                          class="bi bi-exclamation-triangle-fill"
+                                        ></i
+                                        > The existing invitation link will
+                                        become invalid and a new invitation link
+                                        will be created. Only renew the
+                                        invitation link if it has been
+                                        distributed to people who shouldn’t have
+                                        access to it.
+                                      </div>
+                                      <div>
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--red"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
+                                        >
+                                          Renew invitation link
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  key="invitationLinkToken--QRCode--show--input"
+                                  hidden
+                                  css="${css`
+                                    display: flex;
+                                    justify-content: center;
+                                  `}"
+                                >
+                                  <div
+                                    css="${css`
+                                      max-width: var(--size--48);
+                                      width: 100%;
+                                    `}"
+                                  >
+                                    $${(
+                                      await QRCode.toString(
+                                        `https://${
+                                          application.configuration.hostname
+                                        }/courses/${
+                                          request.state.course.publicId
+                                        }/invitations/${
+                                          request.state.course
+                                            .invitationLinkCourseParticipationRoleStudentsToken
+                                        }`,
+                                        { type: "svg", margin: 0 },
+                                      )
+                                    )
+                                      .replace("#000000", "currentColor")
+                                      .replace("#ffffff", "transparent")}
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
+                              >
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Update invitation links
+                                </button>
+                              </div>
+                            </div>
+                          </details>
+                          <details>
+                            <summary
+                              class="button button--rectangle button--transparent"
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
                                 );
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--4);
-                            `}"
-                            javascript="${javascript`
+                              `}"
+                            >
+                              <span
+                                css="${css`
+                                  display: inline-block;
+                                  transition-property: var(
+                                    --transition-property--transform
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  details[open] > summary > & {
+                                    rotate: var(--rotate--90);
+                                  }
+                                `}"
+                              >
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
+                              Send invitation emails
+                            </summary>
+                            <div
+                              type="form"
+                              method="POST"
+                              action="/courses/${
+                                request.state.course.publicId
+                              }/settings/invitation-emails"
+                              css="${css`
+                                padding: var(--size--2) var(--size--0);
+                                border-bottom: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+                              `}"
+                              javascript="${javascript`
                               this.onsubmit = () => {
                                 javascript.reset(this);
                               };
                             `}"
-                          >
-                            <form
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--2);
-                              `}"
                             >
-                              <label
-                                class="button button--rectangle button--transparent"
+                              <form
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
                               >
-                                <input
-                                  type="radio"
-                                  name="courseParticipationRole"
-                                  value="courseParticipationRoleInstructor"
-                                  class="input--radio"
-                                />  Instructors
-                              </label>
-                              <label
-                                class="button button--rectangle button--transparent"
-                              >
-                                <input
-                                  type="radio"
-                                  name="courseParticipationRole"
-                                  value="courseParticipationRoleStudent"
-                                  checked
-                                  class="input--radio"
-                                />  Students
-                              </label>
-                            </form>
-                            <textarea
-                              name="coursePendingInvitationEmails"
-                              placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, ...`}"
-                              required
-                              maxlength="50000"
-                              class="input--text"
-                              css="${css`
-                                font-family:
-                                  "Roboto Mono Variable",
-                                  var(--font-family--monospace);
-                                height: var(--size--48);
-                              `}"
-                              javascript="${javascript`
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="courseParticipationRole"
+                                    value="courseParticipationRoleInstructor"
+                                    class="input--radio"
+                                  />  Instructors
+                                </label>
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="courseParticipationRole"
+                                    value="courseParticipationRoleStudent"
+                                    checked
+                                    class="input--radio"
+                                  />  Students
+                                </label>
+                              </form>
+                              <textarea
+                                name="coursePendingInvitationEmails"
+                                placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, ...`}"
+                                required
+                                maxlength="50000"
+                                class="input--text"
+                                css="${css`
+                                  font-family:
+                                    "Roboto Mono Variable",
+                                    var(--font-family--monospace);
+                                  height: var(--size--48);
+                                `}"
+                                javascript="${javascript`
                                 this.onvalidate = () => {
                                   const addresses = emailAddresses.parseAddressList(this.value.replaceAll(/\\n+/g, " , "));
                                   if (
@@ -2127,32 +2188,32 @@ export default async (application: Application): Promise<void> => {
                                     throw new javascript.ValidationError("Invalid email list");
                                 };
                               `}"
-                            ></textarea>
-                            <div
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                              `}"
-                            >
-                              <button
-                                type="submit"
-                                class="button button--rectangle button--blue"
+                              ></textarea>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
                               >
-                                Send invitation emails
-                              </button>
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Send invitation emails
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        </details>
-                        $${(() => {
-                          const coursePendingInvitationEmails =
-                            application.database.all<{
-                              publicId: string;
-                              email: string;
-                              courseParticipationRole:
-                                | "courseParticipationRoleInstructor"
-                                | "courseParticipationRoleStudent";
-                            }>(
-                              sql`
+                          </details>
+                          $${(() => {
+                            const coursePendingInvitationEmails =
+                              application.database.all<{
+                                publicId: string;
+                                email: string;
+                                courseParticipationRole:
+                                  | "courseParticipationRoleInstructor"
+                                  | "courseParticipationRoleStudent";
+                              }>(
+                                sql`
                                 select
                                   "publicId",
                                   "email",
@@ -2161,93 +2222,929 @@ export default async (application: Application): Promise<void> => {
                                 where "course" = ${request.state.course.id}
                                 order by "id" desc;
                               `,
-                            );
-                          return 0 < coursePendingInvitationEmails.length
-                            ? html`
-                                <details>
-                                  <summary
-                                    class="button button--rectangle button--transparent"
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      font-weight: 600;
-                                      color: light-dark(
-                                        var(--color--slate--600),
-                                        var(--color--slate--400)
-                                      );
-                                    `}"
-                                  >
-                                    <span
+                              );
+                            return 0 < coursePendingInvitationEmails.length
+                              ? html`
+                                  <details>
+                                    <summary
+                                      class="button button--rectangle button--transparent"
                                       css="${css`
-                                        display: inline-block;
-                                        transition-property: var(
-                                          --transition-property--transform
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
                                         );
-                                        transition-duration: var(
-                                          --transition-duration--150
+                                        font-weight: 600;
+                                        color: light-dark(
+                                          var(--color--slate--600),
+                                          var(--color--slate--400)
                                         );
-                                        transition-timing-function: var(
-                                          --transition-timing-function--ease-in-out
-                                        );
-                                        details[open] > summary > & {
-                                          rotate: var(--rotate--90);
-                                        }
                                       `}"
                                     >
-                                      <i class="bi bi-chevron-right"></i>
-                                    </span>
-                                    Pending invitation emails
-                                  </summary>
-                                  <div
-                                    type="form"
-                                    method="PATCH"
-                                    action="/courses/${request.state.course
-                                      .publicId}/settings/invitation-emails"
-                                    css="${css`
-                                      padding: var(--size--2) var(--size--0);
-                                      border-bottom: var(--border-width--1)
-                                        solid
-                                        light-dark(
-                                          var(--color--slate--200),
-                                          var(--color--slate--800)
-                                        );
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--size--4);
-                                    `}"
-                                    javascript="${javascript`
+                                      <span
+                                        css="${css`
+                                          display: inline-block;
+                                          transition-property: var(
+                                            --transition-property--transform
+                                          );
+                                          transition-duration: var(
+                                            --transition-duration--150
+                                          );
+                                          transition-timing-function: var(
+                                            --transition-timing-function--ease-in-out
+                                          );
+                                          details[open] > summary > & {
+                                            rotate: var(--rotate--90);
+                                          }
+                                        `}"
+                                      >
+                                        <i class="bi bi-chevron-right"></i>
+                                      </span>
+                                      Pending invitation emails
+                                    </summary>
+                                    <div
+                                      type="form"
+                                      method="PATCH"
+                                      action="/courses/${
+                                        request.state.course.publicId
+                                      }/settings/invitation-emails"
+                                      css="${css`
+                                        padding: var(--size--2) var(--size--0);
+                                        border-bottom: var(--border-width--1)
+                                          solid
+                                          light-dark(
+                                            var(--color--slate--200),
+                                            var(--color--slate--800)
+                                          );
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--4);
+                                      `}"
+                                      javascript="${javascript`
                                       this.morph = false;
                                       this.onsubmit = () => {
                                         delete this.morph;
                                         delete this.isModified;
                                       };
                                     `}"
+                                    >
+                                      $${coursePendingInvitationEmails.map(
+                                        (coursePendingInvitationEmail) => html`
+                                          <div
+                                            key="coursePendingInvitationEmail ${coursePendingInvitationEmail.publicId}"
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--size--1);
+                                            `}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="coursePendingInvitationEmailsPublicIds[]"
+                                              value="${coursePendingInvitationEmail.publicId}"
+                                            />
+                                            <div
+                                              css="${css`
+                                                font-family:
+                                                  "Roboto Mono Variable",
+                                                  var(--font-family--monospace);
+                                              `}"
+                                            >
+                                              ${coursePendingInvitationEmail.email}
+                                            </div>
+                                            <div
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                                font-weight: 600;
+                                                color: light-dark(
+                                                  var(--color--slate--600),
+                                                  var(--color--slate--400)
+                                                );
+                                                display: flex;
+                                                align-items: baseline;
+                                                flex-wrap: wrap;
+                                                column-gap: var(--size--4);
+                                                row-gap: var(--size--2);
+                                              `}"
+                                            >
+                                              <button
+                                                type="button"
+                                                class="button button--rectangle button--transparent"
+                                                javascript="${javascript`
+                                                javascript.popover({ element: this, trigger: "click" });
+                                              `}"
+                                              >
+                                                <form>
+                                                  <span
+                                                    css="${css`
+                                                      color: light-dark(
+                                                        var(
+                                                          --color--slate--500
+                                                        ),
+                                                        var(--color--slate--500)
+                                                      );
+                                                    `}"
+                                                    >Role:</span
+                                                  >  <input
+                                                    type="radio"
+                                                    name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"
+                                                    value="courseParticipationRoleInstructor"
+                                                    required
+                                                    $${
+                                                      coursePendingInvitationEmail.courseParticipationRole ===
+                                                      "courseParticipationRoleInstructor"
+                                                        ? html`checked`
+                                                        : html``
+                                                    }
+                                                    hidden
+                                                  /><span
+                                                    css="${css`
+                                                      :not(:checked) + & {
+                                                        display: none;
+                                                      }
+                                                    `}"
+                                                    >Instructor</span
+                                                  ><input
+                                                    type="radio"
+                                                    name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"
+                                                    value="courseParticipationRoleStudent"
+                                                    required
+                                                    $${
+                                                      coursePendingInvitationEmail.courseParticipationRole ===
+                                                      "courseParticipationRoleStudent"
+                                                        ? html`checked`
+                                                        : html``
+                                                    }
+                                                    hidden
+                                                  /><span
+                                                    css="${css`
+                                                      :not(:checked) + & {
+                                                        display: none;
+                                                      }
+                                                    `}"
+                                                    >Student</span
+                                                  > <i
+                                                    class="bi bi-chevron-down"
+                                                  ></i>
+                                                </form>
+                                              </button>
+                                              <div
+                                                type="popover"
+                                                css="${css`
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--size--2);
+                                                `}"
+                                              >
+                                                <button
+                                                  type="button"
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                  this.onclick = () => {
+                                                    this.closest('[key~="coursePendingInvitationEmail"]').querySelector(${`[name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
+                                                  };
+                                                `}"
+                                                >
+                                                  Instructor
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                  this.onclick = () => {
+                                                    this.closest('[key~="coursePendingInvitationEmail"]').querySelector(${`[name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                                  };
+                                                `}"
+                                                >
+                                                  Student
+                                                </button>
+                                              </div>
+                                              <button
+                                                type="button"
+                                                class="button button--rectangle button--transparent"
+                                                javascript="${javascript`
+                                                this.onclick = () => {
+                                                  this.closest('[type~="form"]').isModified = true;
+                                                  this.closest('[type~="form"]')
+                                                    .insertAdjacentElement(
+                                                      "beforeend",
+                                                      javascript.stringToElement(${html`
+                                                        <input
+                                                          type="hidden"
+                                                          name="coursePendingInvitationEmailsPublicIdsToRemove[]"
+                                                          value="${coursePendingInvitationEmail.publicId}"
+                                                        />
+                                                      `})
+                                                    );
+                                                  this.closest('[key~="coursePendingInvitationEmail"]').remove();
+                                                };
+                                              `}"
+                                              >
+                                                Remove
+                                              </button>
+                                            </div>
+                                          </div>
+                                        `,
+                                      )}
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                        `}"
+                                      >
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--blue"
+                                        >
+                                          Update pending invitation emails
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </details>
+                                `
+                              : html``;
+                          })()}
+                        </div>
+                      </details>
+                      <details key="courseParticipations">
+                        <summary
+                          class="button button--rectangle button--transparent"
+                          css="${css`
+                            font-weight: 500;
+                          `}"
+                        >
+                          <span
+                            css="${css`
+                              display: inline-block;
+                              transition-property: var(
+                                --transition-property--transform
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              details[open] > summary > & {
+                                rotate: var(--rotate--90);
+                              }
+                            `}"
+                          >
+                            <i class="bi bi-chevron-right"></i>
+                          </span>
+                          Course participants
+                        </summary>
+                        <div
+                          css="${css`
+                            padding: var(--size--2) var(--size--0);
+                            border-bottom: var(--border-width--1) solid
+                              light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--4);
+                          `}"
+                        >
+                          $${
+                            request.state.course.ltiIdentifier !== null
+                              ? html`
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      display: flex;
+                                      align-items: baseline;
+                                      flex-wrap: wrap;
+                                      column-gap: var(--size--4);
+                                      row-gap: var(--size--2);
+                                    `}"
                                   >
-                                    $${coursePendingInvitationEmails.map(
-                                      (coursePendingInvitationEmail) => html`
+                                    <div
+                                      type="form"
+                                      method="POST"
+                                      action="/courses/${
+                                        request.state.course.publicId
+                                      }/settings/participations/lti/sync"
+                                      javascript="${javascript`
+                                    this.onsubmit = () => {
+                                      delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                      delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                    };
+                                  `}"
+                                    >
+                                      <button
+                                        type="submit"
+                                        class="button button--rectangle button--blue"
+                                      >
+                                        Sync with Learning Management System
+                                        (LMS)
+                                      </button>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--red"
+                                      javascript="${javascript`
+                                    javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                                  `}"
+                                    >
+                                      Disconnect from LMS
+                                    </button>
+                                    <div
+                                      type="form popover"
+                                      method="DELETE"
+                                      action="/courses/${
+                                        request.state.course.publicId
+                                      }/settings/participations/lti"
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                      >
+                                        <i
+                                          class="bi bi-exclamation-triangle-fill"
+                                        ></i
+                                        > Once you disconnect the Courselore
+                                        course from the LMS course, students
+                                        following the resource link from the LMS
+                                        to Courselore will see an error message.
+                                      </div>
+                                      <div>
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--red"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
+                                        >
+                                          Disconnect from LMS
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  $${(() => {
+                                    const courseParticipations =
+                                      application.database.all<{
+                                        id: number;
+                                        publicId: string;
+                                        user: number;
+                                        courseParticipationRole:
+                                          | "courseParticipationRoleInstructor"
+                                          | "courseParticipationRoleStudent";
+                                      }>(
+                                        sql`
+                                      select
+                                        "courseParticipations"."id" as "id",
+                                        "courseParticipations"."publicId" as "publicId",
+                                        "courseParticipations"."user" as "user",
+                                        "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                      from "courseParticipations"
+                                      join "users" on "courseParticipations"."user" = "users"."id"
+                                      where
+                                        "courseParticipations"."course" = ${request.state.course.id} and
+                                        "courseParticipations"."ltiState" = 'ltiStateMissingInLMS'
+                                      order by
+                                        "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                        "users"."name" asc;
+                                    `,
+                                      );
+                                    return 0 < courseParticipations.length
+                                      ? html`
+                                          <div
+                                            css="${css`
+                                              font-size: var(--font-size--3);
+                                              line-height: var(
+                                                --font-size--3--line-height
+                                              );
+                                              font-weight: 600;
+                                              color: light-dark(
+                                                var(--color--red--500),
+                                                var(--color--red--500)
+                                              );
+                                            `}"
+                                          >
+                                            <i
+                                              class="bi bi-exclamation-triangle-fill"
+                                            ></i
+                                            > The following course participants
+                                            are missing in the LMS
+                                          </div>
+                                          <div
+                                            type="form"
+                                            method="PATCH"
+                                            action="/courses/${
+                                              request.state.course.publicId
+                                            }/settings/participations/lti/sync/missing"
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--size--4);
+                                            `}"
+                                            javascript="${javascript`
+                                          this.onsubmit = () => {
+                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                          };
+                                        `}"
+                                          >
+                                            $${courseParticipations.map(
+                                              (courseParticipation) => {
+                                                const user =
+                                                  application.database.get<{
+                                                    publicId: string;
+                                                    name: string;
+                                                    email: string;
+                                                    avatarColor:
+                                                      | "red"
+                                                      | "orange"
+                                                      | "amber"
+                                                      | "yellow"
+                                                      | "lime"
+                                                      | "green"
+                                                      | "emerald"
+                                                      | "teal"
+                                                      | "cyan"
+                                                      | "sky"
+                                                      | "blue"
+                                                      | "indigo"
+                                                      | "violet"
+                                                      | "purple"
+                                                      | "fuchsia"
+                                                      | "pink"
+                                                      | "rose";
+                                                    avatarImage: string | null;
+                                                    lastSeenOnlineAt:
+                                                      string | null;
+                                                  }>(
+                                                    sql`
+                                                  select
+                                                    "publicId",
+                                                    "name",
+                                                    "email",
+                                                    "avatarColor",
+                                                    "avatarImage",
+                                                    "lastSeenOnlineAt"
+                                                  from "users"
+                                                  where "id" = ${courseParticipation.user};
+                                                `,
+                                                  );
+                                                if (user === undefined)
+                                                  throw new Error();
+                                                return html`
+                                                  <div
+                                                    key="courseParticipation ${courseParticipation.publicId}"
+                                                    css="${css`
+                                                      display: flex;
+                                                      align-items: center;
+                                                      gap: var(--size--3);
+                                                    `}"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="courseParticipationsPublicIds[]"
+                                                      value="${courseParticipation.publicId}"
+                                                    />
+                                                    <div>
+                                                      $${application.partials.userAvatar(
+                                                        {
+                                                          user,
+                                                          size: 9,
+                                                        },
+                                                      )}
+                                                    </div>
+                                                    <div
+                                                      css="${css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--size--1);
+                                                      `}"
+                                                    >
+                                                      <div>
+                                                        <span
+                                                          css="${css`
+                                                            font-weight: 500;
+                                                          `}"
+                                                          >${user.name}</span
+                                                        >  <span
+                                                          css="${css`
+                                                            font-family:
+                                                              "Roboto Mono Variable",
+                                                              var(
+                                                                --font-family--monospace
+                                                              );
+                                                            font-size: var(
+                                                              --font-size--3
+                                                            );
+                                                            line-height: var(
+                                                              --font-size--3--line-height
+                                                            );
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--slate--600
+                                                              ),
+                                                              var(
+                                                                --color--slate--400
+                                                              )
+                                                            );
+                                                          `}"
+                                                          >${`<${user.email}>`}</span
+                                                        >
+                                                      </div>
+                                                      <div
+                                                        css="${css`
+                                                          font-size: var(
+                                                            --font-size--3
+                                                          );
+                                                          line-height: var(
+                                                            --font-size--3--line-height
+                                                          );
+                                                          font-weight: 600;
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--slate--600
+                                                            ),
+                                                            var(
+                                                              --color--slate--400
+                                                            )
+                                                          );
+                                                          display: flex;
+                                                          align-items: baseline;
+                                                          flex-wrap: wrap;
+                                                          column-gap: var(
+                                                            --size--4
+                                                          );
+                                                          row-gap: var(
+                                                            --size--2
+                                                          );
+                                                        `}"
+                                                      >
+                                                        <span>
+                                                          <span
+                                                            css="${css`
+                                                              color: light-dark(
+                                                                var(
+                                                                  --color--slate--500
+                                                                ),
+                                                                var(
+                                                                  --color--slate--500
+                                                                )
+                                                              );
+                                                            `}"
+                                                            >Role:</span
+                                                          >  $${
+                                                            courseParticipation.courseParticipationRole ===
+                                                            "courseParticipationRoleInstructor"
+                                                              ? html`Instructor`
+                                                              : html`Student`
+                                                          }
+                                                        </span>
+                                                        <label
+                                                          class="button button--rectangle button--transparent"
+                                                          css="${css`
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--green--500
+                                                              ),
+                                                              var(
+                                                                --color--green--500
+                                                              )
+                                                            );
+                                                          `}"
+                                                        >
+                                                          <input
+                                                            type="radio"
+                                                            name="courseParticipations[${courseParticipation.publicId}].action"
+                                                            value="keep"
+                                                            required
+                                                            class="input--radio"
+                                                          />  Keep
+                                                        </label>
+                                                        <label
+                                                          class="button button--rectangle button--transparent"
+                                                          css="${css`
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--red--500
+                                                              ),
+                                                              var(
+                                                                --color--red--500
+                                                              )
+                                                            );
+                                                          `}"
+                                                        >
+                                                          <input
+                                                            type="radio"
+                                                            name="courseParticipations[${courseParticipation.publicId}].action"
+                                                            value="remove"
+                                                            required
+                                                            class="input--radio"
+                                                          />  Remove
+                                                        </label>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                `;
+                                              },
+                                            )}
+                                            <div
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                              `}"
+                                            >
+                                              <button
+                                                type="button"
+                                                class="button button--rectangle button--blue"
+                                                javascript="${javascript`
+                                              javascript.popover({ element: this, trigger: "click" });
+                                            `}"
+                                              >
+                                                Update course participants
+                                                missing in LMS
+                                              </button>
+                                              <div
+                                                type="popover"
+                                                css="${css`
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--size--2);
+                                                `}"
+                                              >
+                                                <div
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--3
+                                                    );
+                                                    line-height: var(
+                                                      --font-size--3--line-height
+                                                    );
+                                                    font-weight: 600;
+                                                    color: light-dark(
+                                                      var(--color--red--500),
+                                                      var(--color--red--500)
+                                                    );
+                                                  `}"
+                                                >
+                                                  <i
+                                                    class="bi bi-exclamation-triangle-fill"
+                                                  ></i
+                                                  > The participants that you
+                                                  remove from the course may
+                                                  only participate again with an
+                                                  invitation.
+                                                </div>
+                                                <div>
+                                                  <button
+                                                    type="submit"
+                                                    class="button button--rectangle button--red"
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--3
+                                                      );
+                                                      line-height: var(
+                                                        --font-size--3--line-height
+                                                      );
+                                                    `}"
+                                                  >
+                                                    Update course participants
+                                                    missing in LMS
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <hr class="separator" />
+                                        `
+                                      : html``;
+                                  })()}
+                                `
+                              : html``
+                          }
+                          <div
+                            key="courseParticipations--update"
+                            type="form"
+                            method="PATCH"
+                            action="/courses/${
+                              request.state.course.publicId
+                            }/settings/participations"
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--4);
+                            `}"
+                            javascript="${javascript`
+                            this.morph = false;
+                            this.onsubmit = () => {
+                              delete this.morph;
+                              delete this.isModified;
+                            };
+                          `}"
+                          >
+                            $${(() => {
+                              const courseParticipations =
+                                application.database.all<{
+                                  id: number;
+                                  publicId: string;
+                                  user: number;
+                                  courseParticipationRole:
+                                    | "courseParticipationRoleInstructor"
+                                    | "courseParticipationRoleStudent";
+                                }>(
+                                  sql`
+                                  select
+                                    "courseParticipations"."id" as "id",
+                                    "courseParticipations"."publicId" as "publicId",
+                                    "courseParticipations"."user" as "user",
+                                    "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                  from "courseParticipations"
+                                  join "users" on "courseParticipations"."user" = "users"."id"
+                                  where "courseParticipations"."course" = ${request.state.course.id}
+                                  order by
+                                    "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                    "users"."name" asc;
+                                `,
+                                );
+                              const courseParticipationsCourseParticipationRoleInstructors =
+                                courseParticipations.filter(
+                                  (courseParticipation) =>
+                                    courseParticipation.courseParticipationRole ===
+                                    "courseParticipationRoleInstructor",
+                                );
+                              const courseParticipationsCourseParticipationRoleStudents =
+                                courseParticipations.filter(
+                                  (courseParticipation) =>
+                                    courseParticipation.courseParticipationRole ===
+                                    "courseParticipationRoleStudent",
+                                );
+                              return html`
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                  `}"
+                                >
+                                  ${String(courseParticipations.length)} course
+                                  participant${
+                                    courseParticipations.length === 1 ? "" : "s"
+                                  } /
+                                  ${String(
+                                    courseParticipationsCourseParticipationRoleInstructors.length,
+                                  )}
+                                  instructor${
+                                    courseParticipationsCourseParticipationRoleInstructors.length ===
+                                    1
+                                      ? ""
+                                      : "s"
+                                  } ·
+                                  ${String(
+                                    courseParticipationsCourseParticipationRoleStudents.length,
+                                  )}
+                                  student${
+                                    courseParticipationsCourseParticipationRoleStudents.length ===
+                                    1
+                                      ? ""
+                                      : "s"
+                                  } /
+                                  ${String(
+                                    courseParticipations.filter(
+                                      (courseParticipation) =>
+                                        application.database.get(
+                                          sql`
+                                          select true
+                                          from "users"
+                                          where
+                                            "id" = ${courseParticipation.user} and
+                                            "lastSeenOnlineAt" is not null and
+                                            ${new Date(
+                                              Date.now() - 6 * 60 * 1000,
+                                            ).toISOString()} <= "lastSeenOnlineAt";
+                                        `,
+                                        ) !== undefined,
+                                    ).length,
+                                  )}
+                                  online
+                                </div>
+                                $${courseParticipations.map(
+                                  (courseParticipation) => {
+                                    const user = application.database.get<{
+                                      publicId: string;
+                                      name: string;
+                                      email: string;
+                                      avatarColor:
+                                        | "red"
+                                        | "orange"
+                                        | "amber"
+                                        | "yellow"
+                                        | "lime"
+                                        | "green"
+                                        | "emerald"
+                                        | "teal"
+                                        | "cyan"
+                                        | "sky"
+                                        | "blue"
+                                        | "indigo"
+                                        | "violet"
+                                        | "purple"
+                                        | "fuchsia"
+                                        | "pink"
+                                        | "rose";
+                                      avatarImage: string | null;
+                                      lastSeenOnlineAt: string | null;
+                                    }>(
+                                      sql`
+                                      select
+                                        "publicId",
+                                        "name",
+                                        "email",
+                                        "avatarColor",
+                                        "avatarImage",
+                                        "lastSeenOnlineAt"
+                                      from "users"
+                                      where "id" = ${courseParticipation.user};
+                                    `,
+                                    );
+                                    if (user === undefined) throw new Error();
+                                    return html`
+                                      <div
+                                        key="courseParticipation ${courseParticipation.publicId}"
+                                        css="${css`
+                                          display: flex;
+                                          align-items: center;
+                                          gap: var(--size--3);
+                                        `}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="courseParticipationsPublicIds[]"
+                                          value="${courseParticipation.publicId}"
+                                        />
+                                        <div>
+                                          $${application.partials.userAvatar({
+                                            user,
+                                            size: 9,
+                                          })}
+                                        </div>
                                         <div
-                                          key="coursePendingInvitationEmail ${coursePendingInvitationEmail.publicId}"
                                           css="${css`
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--size--1);
                                           `}"
                                         >
-                                          <input
-                                            type="hidden"
-                                            name="coursePendingInvitationEmailsPublicIds[]"
-                                            value="${coursePendingInvitationEmail.publicId}"
-                                          />
-                                          <div
-                                            css="${css`
-                                              font-family:
-                                                "Roboto Mono Variable",
-                                                var(--font-family--monospace);
-                                            `}"
-                                          >
-                                            ${coursePendingInvitationEmail.email}
+                                          <div>
+                                            <span
+                                              css="${css`
+                                                font-weight: 500;
+                                              `}"
+                                              >${user.name}</span
+                                            >  <span
+                                              css="${css`
+                                                font-family:
+                                                  "Roboto Mono Variable",
+                                                  var(--font-family--monospace);
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                                color: light-dark(
+                                                  var(--color--slate--600),
+                                                  var(--color--slate--400)
+                                                );
+                                              `}"
+                                              >${`<${user.email}>`}</span
+                                            >
                                           </div>
                                           <div
                                             css="${css`
@@ -2271,8 +3168,8 @@ export default async (application: Application): Promise<void> => {
                                               type="button"
                                               class="button button--rectangle button--transparent"
                                               javascript="${javascript`
-                                                javascript.popover({ element: this, trigger: "click" });
-                                              `}"
+                                              javascript.popover({ element: this, trigger: "click" });
+                                            `}"
                                             >
                                               <form>
                                                 <span
@@ -2285,13 +3182,15 @@ export default async (application: Application): Promise<void> => {
                                                   >Role:</span
                                                 >  <input
                                                   type="radio"
-                                                  name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"
+                                                  name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
                                                   value="courseParticipationRoleInstructor"
                                                   required
-                                                  $${coursePendingInvitationEmail.courseParticipationRole ===
-                                                  "courseParticipationRoleInstructor"
-                                                    ? html`checked`
-                                                    : html``}
+                                                  $${
+                                                    courseParticipation.courseParticipationRole ===
+                                                    "courseParticipationRoleInstructor"
+                                                      ? html`checked`
+                                                      : html``
+                                                  }
                                                   hidden
                                                 /><span
                                                   css="${css`
@@ -2302,13 +3201,15 @@ export default async (application: Application): Promise<void> => {
                                                   >Instructor</span
                                                 ><input
                                                   type="radio"
-                                                  name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"
+                                                  name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
                                                   value="courseParticipationRoleStudent"
                                                   required
-                                                  $${coursePendingInvitationEmail.courseParticipationRole ===
-                                                  "courseParticipationRoleStudent"
-                                                    ? html`checked`
-                                                    : html``}
+                                                  $${
+                                                    courseParticipation.courseParticipationRole ===
+                                                    "courseParticipationRoleStudent"
+                                                      ? html`checked`
+                                                      : html``
+                                                  }
                                                   hidden
                                                 /><span
                                                   css="${css`
@@ -2334,10 +3235,10 @@ export default async (application: Application): Promise<void> => {
                                                 type="button"
                                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                                 javascript="${javascript`
-                                                  this.onclick = () => {
-                                                    this.closest('[key~="coursePendingInvitationEmail"]').querySelector(${`[name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
-                                                  };
-                                                `}"
+                                                this.onclick = () => {
+                                                  this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
+                                                };
+                                              `}"
                                               >
                                                 Instructor
                                               </button>
@@ -2345,10 +3246,10 @@ export default async (application: Application): Promise<void> => {
                                                 type="button"
                                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                                 javascript="${javascript`
-                                                  this.onclick = () => {
-                                                    this.closest('[key~="coursePendingInvitationEmail"]').querySelector(${`[name="coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
-                                                  };
-                                                `}"
+                                                this.onclick = () => {
+                                                  this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                                };
+                                              `}"
                                               >
                                                 Student
                                               </button>
@@ -2357,486 +3258,20 @@ export default async (application: Application): Promise<void> => {
                                               type="button"
                                               class="button button--rectangle button--transparent"
                                               javascript="${javascript`
-                                                this.onclick = () => {
-                                                  this.closest('[type~="form"]').isModified = true;
-                                                  this.closest('[type~="form"]')
-                                                    .insertAdjacentElement(
-                                                      "beforeend",
-                                                      javascript.stringToElement(${html`
-                                                        <input
-                                                          type="hidden"
-                                                          name="coursePendingInvitationEmailsPublicIdsToRemove[]"
-                                                          value="${coursePendingInvitationEmail.publicId}"
-                                                        />
-                                                      `})
-                                                    );
-                                                  this.closest('[key~="coursePendingInvitationEmail"]').remove();
-                                                };
-                                              `}"
+                                              javascript.popover({ element: this, trigger: "click" });
+                                            `}"
                                             >
                                               Remove
                                             </button>
-                                          </div>
-                                        </div>
-                                      `,
-                                    )}
-                                    <div
-                                      css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                      `}"
-                                    >
-                                      <button
-                                        type="submit"
-                                        class="button button--rectangle button--blue"
-                                      >
-                                        Update pending invitation emails
-                                      </button>
-                                    </div>
-                                  </div>
-                                </details>
-                              `
-                            : html``;
-                        })()}
-                      </div>
-                    </details>
-                    <details key="courseParticipations">
-                      <summary
-                        class="button button--rectangle button--transparent"
-                        css="${css`
-                          font-weight: 500;
-                        `}"
-                      >
-                        <span
-                          css="${css`
-                            display: inline-block;
-                            transition-property: var(
-                              --transition-property--transform
-                            );
-                            transition-duration: var(
-                              --transition-duration--150
-                            );
-                            transition-timing-function: var(
-                              --transition-timing-function--ease-in-out
-                            );
-                            details[open] > summary > & {
-                              rotate: var(--rotate--90);
-                            }
-                          `}"
-                        >
-                          <i class="bi bi-chevron-right"></i>
-                        </span>
-                        Course participants
-                      </summary>
-                      <div
-                        css="${css`
-                          padding: var(--size--2) var(--size--0);
-                          border-bottom: var(--border-width--1) solid
-                            light-dark(
-                              var(--color--slate--200),
-                              var(--color--slate--800)
-                            );
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--4);
-                        `}"
-                      >
-                        $${request.state.course.ltiIdentifier !== null
-                          ? html`
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  display: flex;
-                                  align-items: baseline;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--size--4);
-                                  row-gap: var(--size--2);
-                                `}"
-                              >
-                                <div
-                                  type="form"
-                                  method="POST"
-                                  action="/courses/${request.state.course
-                                    .publicId}/settings/participations/lti/sync"
-                                  javascript="${javascript`
-                                    this.onsubmit = () => {
-                                      delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
-                                      delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
-                                    };
-                                  `}"
-                                >
-                                  <button
-                                    type="submit"
-                                    class="button button--rectangle button--blue"
-                                  >
-                                    Sync with Learning Management System (LMS)
-                                  </button>
-                                </div>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--red"
-                                  javascript="${javascript`
-                                    javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
-                                  `}"
-                                >
-                                  Disconnect from LMS
-                                </button>
-                                <div
-                                  type="form popover"
-                                  method="DELETE"
-                                  action="/courses/${request.state.course
-                                    .publicId}/settings/participations/lti"
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
-                                  `}"
-                                >
-                                  <div
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      font-weight: 600;
-                                      color: light-dark(
-                                        var(--color--red--500),
-                                        var(--color--red--500)
-                                      );
-                                    `}"
-                                  >
-                                    <i
-                                      class="bi bi-exclamation-triangle-fill"
-                                    ></i
-                                    > Once you disconnect the Courselore course
-                                    from the LMS course, students following the
-                                    resource link from the LMS to Courselore
-                                    will see an error message.
-                                  </div>
-                                  <div>
-                                    <button
-                                      type="submit"
-                                      class="button button--rectangle button--red"
-                                      css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                      `}"
-                                    >
-                                      Disconnect from LMS
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                              $${(() => {
-                                const courseParticipations =
-                                  application.database.all<{
-                                    id: number;
-                                    publicId: string;
-                                    user: number;
-                                    courseParticipationRole:
-                                      | "courseParticipationRoleInstructor"
-                                      | "courseParticipationRoleStudent";
-                                  }>(
-                                    sql`
-                                      select
-                                        "courseParticipations"."id" as "id",
-                                        "courseParticipations"."publicId" as "publicId",
-                                        "courseParticipations"."user" as "user",
-                                        "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                      from "courseParticipations"
-                                      join "users" on "courseParticipations"."user" = "users"."id"
-                                      where
-                                        "courseParticipations"."course" = ${request.state.course.id} and
-                                        "courseParticipations"."ltiState" = 'ltiStateMissingInLMS'
-                                      order by
-                                        "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                        "users"."name" asc;
-                                    `,
-                                  );
-                                return 0 < courseParticipations.length
-                                  ? html`
-                                      <div
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                          font-weight: 600;
-                                          color: light-dark(
-                                            var(--color--red--500),
-                                            var(--color--red--500)
-                                          );
-                                        `}"
-                                      >
-                                        <i
-                                          class="bi bi-exclamation-triangle-fill"
-                                        ></i
-                                        > The following course participants are
-                                        missing in the LMS
-                                      </div>
-                                      <div
-                                        type="form"
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/settings/participations/lti/sync/missing"
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--size--4);
-                                        `}"
-                                        javascript="${javascript`
-                                          this.onsubmit = () => {
-                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
-                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
-                                          };
-                                        `}"
-                                      >
-                                        $${courseParticipations.map(
-                                          (courseParticipation) => {
-                                            const user =
-                                              application.database.get<{
-                                                publicId: string;
-                                                name: string;
-                                                email: string;
-                                                avatarColor:
-                                                  | "red"
-                                                  | "orange"
-                                                  | "amber"
-                                                  | "yellow"
-                                                  | "lime"
-                                                  | "green"
-                                                  | "emerald"
-                                                  | "teal"
-                                                  | "cyan"
-                                                  | "sky"
-                                                  | "blue"
-                                                  | "indigo"
-                                                  | "violet"
-                                                  | "purple"
-                                                  | "fuchsia"
-                                                  | "pink"
-                                                  | "rose";
-                                                avatarImage: string | null;
-                                                lastSeenOnlineAt: string | null;
-                                              }>(
-                                                sql`
-                                                  select
-                                                    "publicId",
-                                                    "name",
-                                                    "email",
-                                                    "avatarColor",
-                                                    "avatarImage",
-                                                    "lastSeenOnlineAt"
-                                                  from "users"
-                                                  where "id" = ${courseParticipation.user};
-                                                `,
-                                              );
-                                            if (user === undefined)
-                                              throw new Error();
-                                            return html`
+                                            <div
+                                              type="popover"
+                                              css="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--size--2);
+                                              `}"
+                                            >
                                               <div
-                                                key="courseParticipation ${courseParticipation.publicId}"
-                                                css="${css`
-                                                  display: flex;
-                                                  align-items: center;
-                                                  gap: var(--size--3);
-                                                `}"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="courseParticipationsPublicIds[]"
-                                                  value="${courseParticipation.publicId}"
-                                                />
-                                                <div>
-                                                  $${application.partials.userAvatar(
-                                                    {
-                                                      user,
-                                                      size: 9,
-                                                    },
-                                                  )}
-                                                </div>
-                                                <div
-                                                  css="${css`
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    gap: var(--size--1);
-                                                  `}"
-                                                >
-                                                  <div>
-                                                    <span
-                                                      css="${css`
-                                                        font-weight: 500;
-                                                      `}"
-                                                      >${user.name}</span
-                                                    >  <span
-                                                      css="${css`
-                                                        font-family:
-                                                          "Roboto Mono Variable",
-                                                          var(
-                                                            --font-family--monospace
-                                                          );
-                                                        font-size: var(
-                                                          --font-size--3
-                                                        );
-                                                        line-height: var(
-                                                          --font-size--3--line-height
-                                                        );
-                                                        color: light-dark(
-                                                          var(
-                                                            --color--slate--600
-                                                          ),
-                                                          var(
-                                                            --color--slate--400
-                                                          )
-                                                        );
-                                                      `}"
-                                                      >${`<${user.email}>`}</span
-                                                    >
-                                                  </div>
-                                                  <div
-                                                    css="${css`
-                                                      font-size: var(
-                                                        --font-size--3
-                                                      );
-                                                      line-height: var(
-                                                        --font-size--3--line-height
-                                                      );
-                                                      font-weight: 600;
-                                                      color: light-dark(
-                                                        var(
-                                                          --color--slate--600
-                                                        ),
-                                                        var(--color--slate--400)
-                                                      );
-                                                      display: flex;
-                                                      align-items: baseline;
-                                                      flex-wrap: wrap;
-                                                      column-gap: var(
-                                                        --size--4
-                                                      );
-                                                      row-gap: var(--size--2);
-                                                    `}"
-                                                  >
-                                                    <span>
-                                                      <span
-                                                        css="${css`
-                                                          color: light-dark(
-                                                            var(
-                                                              --color--slate--500
-                                                            ),
-                                                            var(
-                                                              --color--slate--500
-                                                            )
-                                                          );
-                                                        `}"
-                                                        >Role:</span
-                                                      >  $${courseParticipation.courseParticipationRole ===
-                                                      "courseParticipationRoleInstructor"
-                                                        ? html`Instructor`
-                                                        : html`Student`}
-                                                    </span>
-                                                    <label
-                                                      class="button button--rectangle button--transparent"
-                                                      css="${css`
-                                                        color: light-dark(
-                                                          var(
-                                                            --color--green--500
-                                                          ),
-                                                          var(
-                                                            --color--green--500
-                                                          )
-                                                        );
-                                                      `}"
-                                                    >
-                                                      <input
-                                                        type="radio"
-                                                        name="courseParticipations[${courseParticipation.publicId}].action"
-                                                        value="keep"
-                                                        required
-                                                        class="input--radio"
-                                                      />  Keep
-                                                    </label>
-                                                    <label
-                                                      class="button button--rectangle button--transparent"
-                                                      css="${css`
-                                                        color: light-dark(
-                                                          var(
-                                                            --color--red--500
-                                                          ),
-                                                          var(--color--red--500)
-                                                        );
-                                                      `}"
-                                                    >
-                                                      <input
-                                                        type="radio"
-                                                        name="courseParticipations[${courseParticipation.publicId}].action"
-                                                        value="remove"
-                                                        required
-                                                        class="input--radio"
-                                                      />  Remove
-                                                    </label>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            `;
-                                          },
-                                        )}
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                          `}"
-                                        >
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--blue"
-                                            javascript="${javascript`
-                                              javascript.popover({ element: this, trigger: "click" });
-                                            `}"
-                                          >
-                                            Update course participants missing
-                                            in LMS
-                                          </button>
-                                          <div
-                                            type="popover"
-                                            css="${css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--size--2);
-                                            `}"
-                                          >
-                                            <div
-                                              css="${css`
-                                                font-size: var(--font-size--3);
-                                                line-height: var(
-                                                  --font-size--3--line-height
-                                                );
-                                                font-weight: 600;
-                                                color: light-dark(
-                                                  var(--color--red--500),
-                                                  var(--color--red--500)
-                                                );
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-exclamation-triangle-fill"
-                                              ></i
-                                              > The participants that you remove
-                                              from the course may only
-                                              participate again with an
-                                              invitation.
-                                            </div>
-                                            <div>
-                                              <button
-                                                type="submit"
-                                                class="button button--rectangle button--red"
                                                 css="${css`
                                                   font-size: var(
                                                     --font-size--3
@@ -2844,369 +3279,34 @@ export default async (application: Application): Promise<void> => {
                                                   line-height: var(
                                                     --font-size--3--line-height
                                                   );
-                                                `}"
-                                              >
-                                                Update course participants
-                                                missing in LMS
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <hr class="separator" />
-                                    `
-                                  : html``;
-                              })()}
-                            `
-                          : html``}
-                        <div
-                          key="courseParticipations--update"
-                          type="form"
-                          method="PATCH"
-                          action="/courses/${request.state.course
-                            .publicId}/settings/participations"
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--size--4);
-                          `}"
-                          javascript="${javascript`
-                            this.morph = false;
-                            this.onsubmit = () => {
-                              delete this.morph;
-                              delete this.isModified;
-                            };
-                          `}"
-                        >
-                          $${(() => {
-                            const courseParticipations =
-                              application.database.all<{
-                                id: number;
-                                publicId: string;
-                                user: number;
-                                courseParticipationRole:
-                                  | "courseParticipationRoleInstructor"
-                                  | "courseParticipationRoleStudent";
-                              }>(
-                                sql`
-                                  select
-                                    "courseParticipations"."id" as "id",
-                                    "courseParticipations"."publicId" as "publicId",
-                                    "courseParticipations"."user" as "user",
-                                    "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                  from "courseParticipations"
-                                  join "users" on "courseParticipations"."user" = "users"."id"
-                                  where "courseParticipations"."course" = ${request.state.course.id}
-                                  order by
-                                    "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                    "users"."name" asc;
-                                `,
-                              );
-                            const courseParticipationsCourseParticipationRoleInstructors =
-                              courseParticipations.filter(
-                                (courseParticipation) =>
-                                  courseParticipation.courseParticipationRole ===
-                                  "courseParticipationRoleInstructor",
-                              );
-                            const courseParticipationsCourseParticipationRoleStudents =
-                              courseParticipations.filter(
-                                (courseParticipation) =>
-                                  courseParticipation.courseParticipationRole ===
-                                  "courseParticipationRoleStudent",
-                              );
-                            return html`
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
-                                `}"
-                              >
-                                ${String(courseParticipations.length)} course
-                                participant${courseParticipations.length === 1
-                                  ? ""
-                                  : "s"} /
-                                ${String(
-                                  courseParticipationsCourseParticipationRoleInstructors.length,
-                                )}
-                                instructor${courseParticipationsCourseParticipationRoleInstructors.length ===
-                                1
-                                  ? ""
-                                  : "s"} ·
-                                ${String(
-                                  courseParticipationsCourseParticipationRoleStudents.length,
-                                )}
-                                student${courseParticipationsCourseParticipationRoleStudents.length ===
-                                1
-                                  ? ""
-                                  : "s"} /
-                                ${String(
-                                  courseParticipations.filter(
-                                    (courseParticipation) =>
-                                      application.database.get(
-                                        sql`
-                                          select true
-                                          from "users"
-                                          where
-                                            "id" = ${courseParticipation.user} and
-                                            "lastSeenOnlineAt" is not null and
-                                            ${new Date(
-                                              Date.now() - 6 * 60 * 1000,
-                                            ).toISOString()} <= "lastSeenOnlineAt";
-                                        `,
-                                      ) !== undefined,
-                                  ).length,
-                                )}
-                                online
-                              </div>
-                              $${courseParticipations.map(
-                                (courseParticipation) => {
-                                  const user = application.database.get<{
-                                    publicId: string;
-                                    name: string;
-                                    email: string;
-                                    avatarColor:
-                                      | "red"
-                                      | "orange"
-                                      | "amber"
-                                      | "yellow"
-                                      | "lime"
-                                      | "green"
-                                      | "emerald"
-                                      | "teal"
-                                      | "cyan"
-                                      | "sky"
-                                      | "blue"
-                                      | "indigo"
-                                      | "violet"
-                                      | "purple"
-                                      | "fuchsia"
-                                      | "pink"
-                                      | "rose";
-                                    avatarImage: string | null;
-                                    lastSeenOnlineAt: string | null;
-                                  }>(
-                                    sql`
-                                      select
-                                        "publicId",
-                                        "name",
-                                        "email",
-                                        "avatarColor",
-                                        "avatarImage",
-                                        "lastSeenOnlineAt"
-                                      from "users"
-                                      where "id" = ${courseParticipation.user};
-                                    `,
-                                  );
-                                  if (user === undefined) throw new Error();
-                                  return html`
-                                    <div
-                                      key="courseParticipation ${courseParticipation.publicId}"
-                                      css="${css`
-                                        display: flex;
-                                        align-items: center;
-                                        gap: var(--size--3);
-                                      `}"
-                                    >
-                                      <input
-                                        type="hidden"
-                                        name="courseParticipationsPublicIds[]"
-                                        value="${courseParticipation.publicId}"
-                                      />
-                                      <div>
-                                        $${application.partials.userAvatar({
-                                          user,
-                                          size: 9,
-                                        })}
-                                      </div>
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--size--1);
-                                        `}"
-                                      >
-                                        <div>
-                                          <span
-                                            css="${css`
-                                              font-weight: 500;
-                                            `}"
-                                            >${user.name}</span
-                                          >  <span
-                                            css="${css`
-                                              font-family:
-                                                "Roboto Mono Variable",
-                                                var(--font-family--monospace);
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
-                                              );
-                                              color: light-dark(
-                                                var(--color--slate--600),
-                                                var(--color--slate--400)
-                                              );
-                                            `}"
-                                            >${`<${user.email}>`}</span
-                                          >
-                                        </div>
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            font-weight: 600;
-                                            color: light-dark(
-                                              var(--color--slate--600),
-                                              var(--color--slate--400)
-                                            );
-                                            display: flex;
-                                            align-items: baseline;
-                                            flex-wrap: wrap;
-                                            column-gap: var(--size--4);
-                                            row-gap: var(--size--2);
-                                          `}"
-                                        >
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--transparent"
-                                            javascript="${javascript`
-                                              javascript.popover({ element: this, trigger: "click" });
-                                            `}"
-                                          >
-                                            <form>
-                                              <span
-                                                css="${css`
+                                                  font-weight: 600;
                                                   color: light-dark(
-                                                    var(--color--slate--500),
-                                                    var(--color--slate--500)
+                                                    var(--color--red--500),
+                                                    var(--color--red--500)
                                                   );
                                                 `}"
-                                                >Role:</span
-                                              >  <input
-                                                type="radio"
-                                                name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
-                                                value="courseParticipationRoleInstructor"
-                                                required
-                                                $${courseParticipation.courseParticipationRole ===
-                                                "courseParticipationRoleInstructor"
-                                                  ? html`checked`
-                                                  : html``}
-                                                hidden
-                                              /><span
-                                                css="${css`
-                                                  :not(:checked) + & {
-                                                    display: none;
-                                                  }
-                                                `}"
-                                                >Instructor</span
-                                              ><input
-                                                type="radio"
-                                                name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
-                                                value="courseParticipationRoleStudent"
-                                                required
-                                                $${courseParticipation.courseParticipationRole ===
-                                                "courseParticipationRoleStudent"
-                                                  ? html`checked`
-                                                  : html``}
-                                                hidden
-                                              /><span
-                                                css="${css`
-                                                  :not(:checked) + & {
-                                                    display: none;
-                                                  }
-                                                `}"
-                                                >Student</span
-                                              > <i
-                                                class="bi bi-chevron-down"
-                                              ></i>
-                                            </form>
-                                          </button>
-                                          <div
-                                            type="popover"
-                                            css="${css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--size--2);
-                                            `}"
-                                          >
-                                            <button
-                                              type="button"
-                                              class="button button--rectangle button--transparent button--dropdown-menu"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
-                                                };
-                                              `}"
-                                            >
-                                              Instructor
-                                            </button>
-                                            <button
-                                              type="button"
-                                              class="button button--rectangle button--transparent button--dropdown-menu"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
-                                                };
-                                              `}"
-                                            >
-                                              Student
-                                            </button>
-                                          </div>
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--transparent"
-                                            javascript="${javascript`
-                                              javascript.popover({ element: this, trigger: "click" });
-                                            `}"
-                                          >
-                                            Remove
-                                          </button>
-                                          <div
-                                            type="popover"
-                                            css="${css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--size--2);
-                                            `}"
-                                          >
-                                            <div
-                                              css="${css`
-                                                font-size: var(--font-size--3);
-                                                line-height: var(
-                                                  --font-size--3--line-height
-                                                );
-                                                font-weight: 600;
-                                                color: light-dark(
-                                                  var(--color--red--500),
-                                                  var(--color--red--500)
-                                                );
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-exclamation-triangle-fill"
-                                              ></i
-                                              > Once you remove this course
-                                              participant from the course, they
-                                              may only participate again with an
-                                              invitation.
-                                            </div>
-                                            <div>
-                                              <button
-                                                type="button"
-                                                class="button button--rectangle button--red"
-                                                css="${css`
-                                                  font-size: var(
-                                                    --font-size--3
-                                                  );
-                                                  line-height: var(
-                                                    --font-size--3--line-height
-                                                  );
-                                                `}"
-                                                javascript="${javascript`
+                                              >
+                                                <i
+                                                  class="bi bi-exclamation-triangle-fill"
+                                                ></i
+                                                > Once you remove this course
+                                                participant from the course,
+                                                they may only participate again
+                                                with an invitation.
+                                              </div>
+                                              <div>
+                                                <button
+                                                  type="button"
+                                                  class="button button--rectangle button--red"
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--3
+                                                    );
+                                                    line-height: var(
+                                                      --font-size--3--line-height
+                                                    );
+                                                  `}"
+                                                  javascript="${javascript`
                                                   this.onclick = () => {
                                                     this.closest('[type~="form"]').isModified = true;
                                                     this.closest('[type~="form"]')
@@ -3223,37 +3323,38 @@ export default async (application: Application): Promise<void> => {
                                                     this.closest('[key~="courseParticipation"]').remove();
                                                   };
                                                 `}"
-                                              >
-                                                Remove course participant
-                                              </button>
+                                                >
+                                                  Remove course participant
+                                                </button>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  `;
-                                },
-                              )}
-                            `;
-                          })()}
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                            `}"
-                          >
-                            <button
-                              type="submit"
-                              class="button button--rectangle button--blue"
+                                    `;
+                                  },
+                                )}
+                              `;
+                            })()}
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                              `}"
                             >
-                              Update course participants
-                            </button>
+                              <button
+                                type="submit"
+                                class="button button--rectangle button--blue"
+                              >
+                                Update course participants
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </details>
-                  `
-                : html``}
+                      </details>
+                    `
+                  : html``
+              }
               <details>
                 <summary
                   class="button button--rectangle button--transparent"
@@ -3311,8 +3412,9 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form popover"
                       method="DELETE"
-                      action="/courses/${request.state.course
-                        .publicId}/settings/participation"
+                      action="/courses/${
+                        request.state.course.publicId
+                      }/settings/participation"
                       css="${css`
                         display: flex;
                         flex-direction: column;
@@ -3881,9 +3983,11 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="POST"
-                action="/courses/${request.pathname
-                  .coursePublicId}/invitations/${request.pathname
-                  .invitationLinkToken}${request.URL.search}"
+                action="/courses/${
+                  request.pathname.coursePublicId
+                }/invitations/${
+                  request.pathname.invitationLinkToken
+                }${request.URL.search}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -4161,30 +4265,33 @@ export default async (application: Application): Promise<void> => {
                   <p>
                     If you wish to join, please follow this invitation link:
                     <a
-                      href="https://${application.configuration
-                        .hostname}/courses/${request.state.course
-                        .publicId}/invitation-emails/${coursePendingInvitationEmail.publicId}"
-                      >https://${application.configuration
-                        .hostname}/courses/${request.state.course
-                        .publicId}/invitation-emails/${coursePendingInvitationEmail.publicId}</a
+                      href="https://${
+                        application.configuration.hostname
+                      }/courses/${
+                        request.state.course.publicId
+                      }/invitation-emails/${coursePendingInvitationEmail.publicId}"
+                      >https://${application.configuration.hostname}/courses/${
+                        request.state.course.publicId
+                      }/invitation-emails/${coursePendingInvitationEmail.publicId}</a
                     >
                   </p>
                   <p>
                     If you believe that this was a mistake, please report the
                     issue to
                     <a
-                      href="mailto:${application.configuration
-                        .systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}?${new URLSearchParams(
-                        {
-                          subject: "Potential invitation issue",
-                          body: `Course: ${request.state.course.publicId}\n\nEmail: ${userEmail}`,
-                        },
-                      )
+                      href="mailto:${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }?${new URLSearchParams({
+                        subject: "Potential invitation issue",
+                        body: `Course: ${request.state.course.publicId}\n\nEmail: ${userEmail}`,
+                      })
                         .toString()
                         .replaceAll("+", "%20")}"
-                      >${application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"}</a
+                      >${
+                        application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"
+                      }</a
                     >
                   </p>
                 `,
@@ -4408,9 +4515,11 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="POST"
-                action="/courses/${request.pathname
-                  .coursePublicId}/invitation-emails/${request.pathname
-                  .coursePendingInvitationEmailPublicId}${request.URL.search}"
+                action="/courses/${
+                  request.pathname.coursePublicId
+                }/invitation-emails/${
+                  request.pathname.coursePendingInvitationEmailPublicId
+                }${request.URL.search}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -4981,19 +5090,11 @@ export default async (application: Application): Promise<void> => {
                 email: ltiCourseMember.email,
                 name: ltiCourseMember.name,
                 courseParticipationRole:
-                  Array.isArray(
-                    ltiCourseMember[
-                      "https://purl.imsglobal.org/spec/lti/claim/roles"
-                    ],
-                  ) &&
-                  (ltiCourseMember[
-                    "https://purl.imsglobal.org/spec/lti/claim/roles"
-                  ].includes(
+                  Array.isArray(ltiCourseMember.roles) &&
+                  (ltiCourseMember.roles.includes(
                     "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
                   ) ||
-                    ltiCourseMember[
-                      "https://purl.imsglobal.org/spec/lti/claim/roles"
-                    ].includes("Instructor"))
+                    ltiCourseMember.roles.includes("Instructor"))
                     ? "courseParticipationRoleInstructor"
                     : "courseParticipationRoleStudent",
               });
