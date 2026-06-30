@@ -904,31 +904,31 @@ export default async (application: Application): Promise<void> => {
                             <summary
                               class="button button--rectangle button--transparent"
                               css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--600),
-                                var(--color--slate--400)
-                              );
-                            `}"
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
                             >
                               <span
                                 css="${css`
-                                display: inline-block;
-                                transition-property: var(
-                                  --transition-property--transform
-                                );
-                                transition-duration: var(
-                                  --transition-duration--150
-                                );
-                                transition-timing-function: var(
-                                  --transition-timing-function--ease-in-out
-                                );
-                                details[open] > summary > & {
-                                  rotate: var(--rotate--90);
-                                }
-                              `}"
+                                  display: inline-block;
+                                  transition-property: var(
+                                    --transition-property--transform
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  details[open] > summary > & {
+                                    rotate: var(--rotate--90);
+                                  }
+                                `}"
                               >
                                 <i class="bi bi-chevron-right"></i>
                               </span>
@@ -936,32 +936,32 @@ export default async (application: Application): Promise<void> => {
                             </summary>
                             <div
                               css="${css`
-                              padding: var(--size--2) var(--size--0);
-                              border-bottom: var(--border-width--1) solid
-                                light-dark(
-                                  var(--color--slate--200),
-                                  var(--color--slate--800)
-                                );
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--4);
-                            `}"
+                                padding: var(--size--2) var(--size--0);
+                                border-bottom: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+                              `}"
                             >
                               $${Object.entries(
-                              application.configuration.saml,
-                            ).map(
-                              ([samlIdentifier, saml]) => html`
-                                <div>
-                                  <a
-                                    href="/authentication/saml/${samlIdentifier}/initiate${
-                                      request.URL.search
-                                    }"
-                                    class="link"
-                                    >${saml.name}</a
-                                  >
-                                </div>
-                              `,
-                            )}
+                                application.configuration.saml,
+                              ).map(
+                                ([samlIdentifier, saml]) => html`
+                                  <div>
+                                    <a
+                                      href="/authentication/saml/${samlIdentifier}/initiate${
+                                        request.URL.search
+                                      }"
+                                      class="link"
+                                      >${saml.name}</a
+                                    >
+                                  </div>
+                                `,
+                              )}
                             </div>
                           </details>
                         `
@@ -1336,32 +1336,32 @@ export default async (application: Application): Promise<void> => {
                         type="form"
                         method="POST"
                         action="/authentication/email-verification/resend${
-                        request.URL.search
-                      }"
+                          request.URL.search
+                        }"
                         css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--size--4);
-                      `}"
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--size--4);
+                        `}"
                       >
                         <label>
                           <div
                             css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
                           >
                             Email
                           </div>
                           <div
                             css="${css`
-                            display: flex;
-                          `}"
+                              display: flex;
+                            `}"
                           >
                             <input
                               type="email"
@@ -1369,41 +1369,41 @@ export default async (application: Application): Promise<void> => {
                               disabled
                               class="input--text"
                               css="${css`
-                              flex: 1;
-                            `}"
+                                flex: 1;
+                              `}"
                             />
                           </div>
                         </label>
                         <div
                           css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                        `}"
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                          `}"
                         >
                           $${
-                          new Date(Date.now() - 5 * 60 * 1000).toISOString() <
-                          request.state.user.emailVerificationCreatedAt
-                            ? html`
-                                <p>
-                                  Wait until
-                                  <span
-                                    javascript="${javascript`
+                            new Date(Date.now() - 5 * 60 * 1000).toISOString() <
+                            request.state.user.emailVerificationCreatedAt
+                              ? html`
+                                  <p>
+                                    Wait until
+                                    <span
+                                      javascript="${javascript`
                                     this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
                                   `}"
-                                  ></span>
-                                  before you can request a new email
-                                  verification.
-                                </p>
-                              `
-                            : html`
-                                <button
-                                  type="submit"
-                                  class="button button--rectangle button--blue"
-                                >
-                                  Send new email verification
-                                </button>
-                              `
-                        }
+                                    ></span>
+                                    before you can request a new email
+                                    verification.
+                                  </p>
+                                `
+                              : html`
+                                  <button
+                                    type="submit"
+                                    class="button button--rectangle button--blue"
+                                  >
+                                    Send new email verification
+                                  </button>
+                                `
+                          }
                         </div>
                       </div>
                     `
@@ -1585,34 +1585,34 @@ export default async (application: Application): Promise<void> => {
                         type="form"
                         method="POST"
                         action="/authentication/sign-in?${new URLSearchParams({
-                        redirect: `/authentication/email-verification/${
-                          request.pathname.emailVerificationNonce
-                        }${request.URL.search}`,
-                      }).toString()}"
+                          redirect: `/authentication/email-verification/${
+                            request.pathname.emailVerificationNonce
+                          }${request.URL.search}`,
+                        }).toString()}"
                         css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--size--4);
-                      `}"
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--size--4);
+                        `}"
                       >
                         <label>
                           <div
                             css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
                           >
                             Email
                           </div>
                           <div
                             css="${css`
-                            display: flex;
-                          `}"
+                              display: flex;
+                            `}"
                           >
                             <input
                               type="email"
@@ -1622,29 +1622,29 @@ export default async (application: Application): Promise<void> => {
                               autofocus
                               class="input--text"
                               css="${css`
-                              flex: 1;
-                            `}"
+                                flex: 1;
+                              `}"
                             />
                           </div>
                         </label>
                         <label>
                           <div
                             css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
                           >
                             Password
                           </div>
                           <div
                             css="${css`
-                            display: flex;
-                          `}"
+                              display: flex;
+                            `}"
                           >
                             <input
                               type="password"
@@ -1654,16 +1654,16 @@ export default async (application: Application): Promise<void> => {
                               maxlength="2000"
                               class="input--text"
                               css="${css`
-                              flex: 1;
-                            `}"
+                                flex: 1;
+                              `}"
                             />
                           </div>
                         </label>
                         <div
                           css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                        `}"
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                          `}"
                         >
                           <button
                             type="submit"
@@ -1679,51 +1679,51 @@ export default async (application: Application): Promise<void> => {
                         type="form"
                         method="POST"
                         action="/authentication/email-verification/${
-                        request.pathname.emailVerificationNonce
-                      }${request.URL.search}"
+                          request.pathname.emailVerificationNonce
+                        }${request.URL.search}"
                         css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--size--4);
-                      `}"
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--size--4);
+                        `}"
                       >
                         <label>
                           <div
                             css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
                           >
                             Email
                           </div>
                           <div
                             css="${css`
-                            display: flex;
-                          `}"
+                              display: flex;
+                            `}"
                           >
                             <input
                               type="email"
                               value="${
-                              request.state.user.emailVerificationEmail!
-                            }"
+                                request.state.user.emailVerificationEmail!
+                              }"
                               disabled
                               class="input--text"
                               css="${css`
-                              flex: 1;
-                            `}"
+                                flex: 1;
+                              `}"
                             />
                           </div>
                         </label>
                         <div
                           css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                        `}"
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                          `}"
                         >
                           <button
                             type="submit"
@@ -3715,6 +3715,24 @@ export default async (application: Application): Promise<void> => {
                         order by "courseParticipations"."id" desc;
                       `,
                     );
+                    const mayCreateANewCourse =
+                      request.state.systemSettings !== undefined &&
+                      ((request.state.systemSettings
+                        .userRolesWhoMayCreateCourses === "userRoleUser" &&
+                        (request.state.user.userRole === "userRoleUser" ||
+                          request.state.user.userRole === "userRoleStaff" ||
+                          request.state.user.userRole ===
+                            "userRoleSystemAdministrator")) ||
+                        (request.state.systemSettings
+                          .userRolesWhoMayCreateCourses === "userRoleStaff" &&
+                          (request.state.user.userRole === "userRoleStaff" ||
+                            request.state.user.userRole ===
+                              "userRoleSystemAdministrator")) ||
+                        (request.state.systemSettings
+                          .userRolesWhoMayCreateCourses ===
+                          "userRoleSystemAdministrator" &&
+                          request.state.user.userRole ===
+                            "userRoleSystemAdministrator"));
                     return html`
                       $${
                         0 < courses.length
@@ -3735,23 +3753,23 @@ export default async (application: Application): Promise<void> => {
                                     type="hidden"
                                     name="ltiContextId"
                                     value="${
-                                    (
-                                      idToken[
-                                        "https://purl.imsglobal.org/spec/lti/claim/context"
-                                      ] as any
-                                    )?.id
-                                  }"
+                                      (
+                                        idToken[
+                                          "https://purl.imsglobal.org/spec/lti/claim/context"
+                                        ] as any
+                                      )?.id
+                                    }"
                                   />
                                   <input
                                     type="hidden"
                                     name="ltiNamesAndRoleProvisioningServicesURL"
                                     value="${
-                                    (
-                                      idToken[
-                                        "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
-                                      ] as any
-                                    )?.["context_memberships_url"]
-                                  }"
+                                      (
+                                        idToken[
+                                          "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+                                        ] as any
+                                      )?.["context_memberships_url"]
+                                    }"
                                   />
                                   <button
                                     type="submit"
@@ -3759,31 +3777,31 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     <div
                                       css="${css`
-                                      font-weight: 500;
-                                    `}"
+                                        font-weight: 500;
+                                      `}"
                                     >
                                       ${course.name}
                                     </div>
                                     $${
-                                    typeof course.information === "string"
-                                      ? html`
-                                          <div
-                                            css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            color: light-dark(
-                                              var(--color--slate--600),
-                                              var(--color--slate--400)
-                                            );
-                                          `}"
-                                          >
-                                            ${course.information}
-                                          </div>
-                                        `
-                                      : html``
-                                  }
+                                      typeof course.information === "string"
+                                        ? html`
+                                            <div
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                                color: light-dark(
+                                                  var(--color--slate--600),
+                                                  var(--color--slate--400)
+                                                );
+                                              `}"
+                                            >
+                                              ${course.information}
+                                            </div>
+                                          `
+                                        : html``
+                                    }
                                   </button>
                                 </div>
                               `,
