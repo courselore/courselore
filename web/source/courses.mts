@@ -194,7 +194,12 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        { name: string },
+        {
+          name: string;
+          ltiIdentifier: string;
+          ltiContextId: string;
+          ltiNamesAndRoleProvisioningServicesURL: string;
+        },
         Application["types"]["states"]["Course"]
       >,
       response,
@@ -220,7 +225,32 @@ export default async (application: Application): Promise<void> => {
         return;
       if (
         typeof request.body.name !== "string" ||
-        request.body.name.trim() === ""
+        request.body.name.trim() === "" ||
+        !(
+          (request.body.ltiIdentifier === undefined &&
+            request.body.ltiContextId === undefined &&
+            request.body.ltiNamesAndRoleProvisioningServicesURL ===
+              undefined) ||
+          (typeof request.body.ltiIdentifier === "string" &&
+            typeof request.body.ltiContextId === "string" &&
+            typeof request.body.ltiNamesAndRoleProvisioningServicesURL ===
+              "string")
+        ) ||
+        (typeof request.body.ltiIdentifier === "string" &&
+          application.configuration.lti?.[request.body.ltiIdentifier] ===
+            undefined) ||
+        (typeof request.body.ltiContextId === "string" &&
+          request.body.ltiContextId.trim() === "") ||
+        (typeof request.body.ltiNamesAndRoleProvisioningServicesURL ===
+          "string" &&
+          (() => {
+            try {
+              new URL(request.body.ltiNamesAndRoleProvisioningServicesURL);
+              return false;
+            } catch {
+              return true;
+            }
+          })())
       )
         throw "validation";
       request.state.course = application.database.get<{
@@ -278,9 +308,9 @@ export default async (application: Application): Promise<void> => {
                   ${Number(true)},
                   ${"courseStateActive"},
                   ${1},
-                  ${null},
-                  ${null},
-                  ${null}
+                  ${request.body.ltiIdentifier},
+                  ${request.body.ltiContextId},
+                  ${request.body.ltiNamesAndRoleProvisioningServicesURL}
                 );
               `,
               ).lastInsertRowid

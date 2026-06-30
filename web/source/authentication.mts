@@ -3719,20 +3719,25 @@ export default async (application: Application): Promise<void> => {
                       request.state.systemSettings !== undefined &&
                       ((request.state.systemSettings
                         .userRolesWhoMayCreateCourses === "userRoleUser" &&
-                        (request.state.user.userRole === "userRoleUser" ||
-                          request.state.user.userRole === "userRoleStaff" ||
-                          request.state.user.userRole ===
+                        (request.state.user!.userRole === "userRoleUser" ||
+                          request.state.user!.userRole === "userRoleStaff" ||
+                          request.state.user!.userRole ===
                             "userRoleSystemAdministrator")) ||
                         (request.state.systemSettings
                           .userRolesWhoMayCreateCourses === "userRoleStaff" &&
-                          (request.state.user.userRole === "userRoleStaff" ||
-                            request.state.user.userRole ===
+                          (request.state.user!.userRole === "userRoleStaff" ||
+                            request.state.user!.userRole ===
                               "userRoleSystemAdministrator")) ||
                         (request.state.systemSettings
                           .userRolesWhoMayCreateCourses ===
                           "userRoleSystemAdministrator" &&
-                          request.state.user.userRole ===
-                            "userRoleSystemAdministrator"));
+                          request.state.user!.userRole ===
+                            "userRoleSystemAdministrator")) &&
+                      typeof (
+                        idToken[
+                          "https://purl.imsglobal.org/spec/lti/claim/context"
+                        ] as any
+                      )?.title === "string";
                     return html`
                       $${
                         0 < courses.length
@@ -3806,13 +3811,83 @@ export default async (application: Application): Promise<void> => {
                                 </div>
                               `,
                             )
-                          : html`
-                              <div>
-                                You need to create the course in Courselore
-                                before you can connect a Learning Management
-                                System (LMS) course a with it.
+                          : html``
+                      }
+                      $${
+                        0 < courses.length && mayCreateANewCourse
+                          ? html`<hr class="separator" />`
+                          : html``
+                      }
+                      $${
+                        mayCreateANewCourse
+                          ? html`
+                              <div type="form" method="POST" action="/courses">
+                                <input
+                                  type="hidden"
+                                  name="name"
+                                  value="${
+                                    (
+                                      idToken[
+                                        "https://purl.imsglobal.org/spec/lti/claim/context"
+                                      ] as any
+                                    ).title
+                                  }"
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ltiIdentifier"
+                                  value="${request.pathname.ltiIdentifier!}"
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ltiContextId"
+                                  value="${
+                                    (
+                                      idToken[
+                                        "https://purl.imsglobal.org/spec/lti/claim/context"
+                                      ] as any
+                                    )?.id
+                                  }"
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ltiNamesAndRoleProvisioningServicesURL"
+                                  value="${
+                                    (
+                                      idToken[
+                                        "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+                                      ] as any
+                                    )?.["context_memberships_url"]
+                                  }"
+                                />
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Create a new course:
+                                  “${
+                                    (
+                                      idToken[
+                                        "https://purl.imsglobal.org/spec/lti/claim/context"
+                                      ] as any
+                                    ).title
+                                  }”
+                                </button>
                               </div>
                             `
+                          : html``
+                      }
+                      $${
+                        courses.length === 0 && !mayCreateANewCourse
+                          ? html`
+                              <div>
+                                You need to have a course in Courselore before
+                                you can connect a Learning Management System
+                                (LMS) course a with it. Please contact the
+                                system administrator.
+                              </div>
+                            `
+                          : html``
                       }
                     `;
                   })()}
