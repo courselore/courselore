@@ -49,5 +49,15 @@
     "remark-stringify": "^11.0.0",
     "typescript": "^6.0.3"
   },
+  "allowScripts": {
+    "@radically-straightforward/caddy@2.0.12": true,
+    "@radically-straightforward/ffmpeg@1.0.2": true,
+    "@radically-straightforward/typescript@1.0.5": true,
+    "argon2@0.44.0": true,
+    "esbuild@0.28.0": true,
+    "fsevents@2.3.3": true,
+    "xxhash-addon@2.1.0": true,
+    "better-sqlite3@12.11.1": true
+  },
   "prettier": {}
 }
