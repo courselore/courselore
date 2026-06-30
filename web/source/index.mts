@@ -109,7 +109,12 @@ await fs.mkdir(application.configuration.dataDirectory, { recursive: true });
 application.configuration.environment ??= "production";
 application.privateConfiguration = {} as Application["privateConfiguration"];
 application.privateConfiguration.ports = Array.from(
-  { length: os.availableParallelism() },
+  {
+    length:
+      application.configuration.environment === "development"
+        ? 1
+        : os.availableParallelism(),
+  },
   (value, index) => 18000 + index,
 );
 application.privateConfiguration.argon2 = {
