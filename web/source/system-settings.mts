@@ -312,10 +312,15 @@ export default async (application: Application): Promise<void> => {
                         ${String(
                           users.filter(
                             (user) =>
-                              user.lastSeenOnlineAt !== null &&
-                              new Date(
-                                Date.now() - 6 * 60 * 1000,
-                              ).toISOString() <= user.lastSeenOnlineAt,
+                              application.database.get(
+                                sql`
+                                  select true
+                                  from "userSessions"
+                                  where
+                                    "user" = ${user.id} and
+                                    ${new Date(Date.now() - 6 * 60 * 1000).toISOString()} < "lastUsedAt";
+                                `,
+                              ) !== undefined,
                           ).length,
                         )}
                         online

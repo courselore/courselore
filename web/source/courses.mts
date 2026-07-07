@@ -3071,15 +3071,12 @@ export default async (application: Application): Promise<void> => {
                                       (courseParticipation) =>
                                         application.database.get(
                                           sql`
-                                          select true
-                                          from "users"
-                                          where
-                                            "id" = ${courseParticipation.user} and
-                                            "lastSeenOnlineAt" is not null and
-                                            ${new Date(
-                                              Date.now() - 6 * 60 * 1000,
-                                            ).toISOString()} <= "lastSeenOnlineAt";
-                                        `,
+                                            select true
+                                            from "userSessions"
+                                            where
+                                              "user" = ${courseParticipation.user} and
+                                              ${new Date(Date.now() - 6 * 60 * 1000).toISOString()} < "lastUsedAt";
+                                          `,
                                         ) !== undefined,
                                     ).length,
                                   )}
