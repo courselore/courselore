@@ -253,8 +253,8 @@ export default async (application: Application): Promise<void> => {
                     action="/courses/${course.publicId}/messages/attachments"
                     enctype="multipart/form-data"
                     css="${css`
-                    display: flex;
-                  `}"
+                      display: flex;
+                    `}"
                     javascript="${javascript`
                     const popover = javascript.popover({
                       element: this.querySelector("label"),
@@ -293,12 +293,12 @@ export default async (application: Application): Promise<void> => {
                     <div type="popover">
                       <div
                         css="${css`
-                        color: light-dark(
-                          var(--color--slate--600),
-                          var(--color--slate--400)
-                        );
-                        animation: var(--animation--pulse);
-                      `}"
+                          color: light-dark(
+                            var(--color--slate--600),
+                            var(--color--slate--400)
+                          );
+                          animation: var(--animation--pulse);
+                        `}"
                       >
                         <i class="bi bi-three-dots"></i>
                       </div>
@@ -562,15 +562,13 @@ export default async (application: Application): Promise<void> => {
                       | "pink"
                       | "rose";
                     avatarImage: string | null;
-                    lastSeenOnlineAt: string | null;
                   }>(
                     sql`
                       select
                         "publicId",
                         "name",
                         "avatarColor",
-                        "avatarImage",
-                        "lastSeenOnlineAt"
+                        "avatarImage"
                       from "users"
                       where "id" = ${courseParticipation.user};
                     `,
@@ -613,13 +611,13 @@ export default async (application: Application): Promise<void> => {
                           "courseParticipationRoleInstructor"
                             ? html`<span
                                 css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                color: light-dark(
-                                  var(--color--slate--600),
-                                  var(--color--slate--400)
-                                );
-                              `}"
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
+                                `}"
                               >
                                 (instructor)</span
                               >`
@@ -2374,20 +2372,20 @@ You may also use the buttons on the message content editor to ${
                         ? html`
                             <div
                               style="width: ${String(
-                              Math.round(
-                                (pollOption.votes.length / votesCount) * 100,
-                              ),
-                            )}%;"
+                                Math.round(
+                                  (pollOption.votes.length / votesCount) * 100,
+                                ),
+                              )}%;"
                               css="${css`
-                              background-color: light-dark(
-                                var(--color--blue--500),
-                                var(--color--blue--500)
-                              );
-                              height: var(--border-width--4);
-                              border-radius: var(--border-radius--round);
-                              position: absolute;
-                              top: var(--size--0);
-                            `}"
+                                background-color: light-dark(
+                                  var(--color--blue--500),
+                                  var(--color--blue--500)
+                                );
+                                height: var(--border-width--4);
+                                border-radius: var(--border-radius--round);
+                                position: absolute;
+                                top: var(--size--0);
+                              `}"
                             ></div>
                           `
                         : html``
@@ -2446,15 +2444,13 @@ You may also use the buttons on the message content editor to ${
                                   | "pink"
                                   | "rose";
                                 avatarImage: string | null;
-                                lastSeenOnlineAt: string | null;
                               }>(
                                 sql`
                                   select
                                     "publicId",
                                     "name",
                                     "avatarColor",
-                                    "avatarImage",
-                                    "lastSeenOnlineAt"
+                                    "avatarImage"
                                   from "users"
                                   where "id" = ${courseConversationMessageContentPollOptionVoteCourseParticipation.user};
                                 `,
@@ -2485,15 +2481,15 @@ You may also use the buttons on the message content editor to ${
                                 "courseParticipationRoleInstructor"
                                   ? html`<span
                                       css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      color: light-dark(
-                                        var(--color--slate--600),
-                                        var(--color--slate--400)
-                                      );
-                                    `}"
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        color: light-dark(
+                                          var(--color--slate--600),
+                                          var(--color--slate--400)
+                                        );
+                                      `}"
                                     >
                                       (instructor)</span
                                     >`

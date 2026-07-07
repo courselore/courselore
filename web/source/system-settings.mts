@@ -259,7 +259,6 @@ export default async (application: Application): Promise<void> => {
                         | "userRoleSystemAdministrator"
                         | "userRoleStaff"
                         | "userRoleUser";
-                      lastSeenOnlineAt: string | null;
                     }>(
                       sql`
                         select 
@@ -268,8 +267,7 @@ export default async (application: Application): Promise<void> => {
                           "email",
                           "avatarColor",
                           "avatarImage",
-                          "userRole",
-                          "lastSeenOnlineAt"
+                          "userRole"
                         from "users"
                         order by
                           "userRole" = 'userRoleSystemAdministrator' desc,
@@ -705,15 +703,15 @@ export default async (application: Application): Promise<void> => {
                                     ? html`
                                         <span
                                           css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                          color: light-dark(
-                                            var(--color--slate--600),
-                                            var(--color--slate--400)
-                                          );
-                                        `}"
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
+                                          `}"
                                         >
                                           ${course.information}
                                         </span>
@@ -828,11 +826,11 @@ export default async (application: Application): Promise<void> => {
                                         <div
                                           key="courseConversation--archived"
                                           css="${css`
-                                          color: light-dark(
-                                            var(--color--red--500),
-                                            var(--color--red--500)
-                                          );
-                                        `}"
+                                            color: light-dark(
+                                              var(--color--red--500),
+                                              var(--color--red--500)
+                                            );
+                                          `}"
                                         >
                                           Archived
                                         </div>

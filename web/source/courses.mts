@@ -2727,8 +2727,6 @@ export default async (application: Application): Promise<void> => {
                                                       | "pink"
                                                       | "rose";
                                                     avatarImage: string | null;
-                                                    lastSeenOnlineAt:
-                                                      string | null;
                                                   }>(
                                                     sql`
                                                   select
@@ -2736,8 +2734,7 @@ export default async (application: Application): Promise<void> => {
                                                     "name",
                                                     "email",
                                                     "avatarColor",
-                                                    "avatarImage",
-                                                    "lastSeenOnlineAt"
+                                                    "avatarImage"
                                                   from "users"
                                                   where "id" = ${courseParticipation.user};
                                                 `,
@@ -3111,7 +3108,6 @@ export default async (application: Application): Promise<void> => {
                                         | "pink"
                                         | "rose";
                                       avatarImage: string | null;
-                                      lastSeenOnlineAt: string | null;
                                     }>(
                                       sql`
                                       select
@@ -3119,8 +3115,7 @@ export default async (application: Application): Promise<void> => {
                                         "name",
                                         "email",
                                         "avatarColor",
-                                        "avatarImage",
-                                        "lastSeenOnlineAt"
+                                        "avatarImage"
                                       from "users"
                                       where "id" = ${courseParticipation.user};
                                     `,
@@ -5175,7 +5170,6 @@ export default async (application: Application): Promise<void> => {
                         "avatarColor",
                         "avatarImage",
                         "userRole",
-                        "lastSeenOnlineAt",
                         "darkMode",
                         "sidebarWidth",
                         "emailNotificationsForAllMessages",
@@ -5221,7 +5215,6 @@ export default async (application: Application): Promise<void> => {
                         },
                         ${null},
                         ${"userRoleUser"},
-                        ${null},
                         ${"userDarkModeSystem"},
                         ${80 * 4},
                         ${Number(false)},

@@ -43,7 +43,6 @@ export type ApplicationUsers = {
               | "pink"
               | "rose";
             avatarImage: string | null;
-            lastSeenOnlineAt: string | null;
           }
         | "courseParticipationDeleted"
         | "anonymous";

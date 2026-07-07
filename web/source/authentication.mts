@@ -65,7 +65,6 @@ export type ApplicationAuthentication = {
           avatarImage: string | null;
           userRole:
             "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
-          lastSeenOnlineAt: string | null;
           darkMode:
             "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
           sidebarWidth: number;
@@ -234,7 +233,6 @@ export default async (application: Application): Promise<void> => {
         avatarImage: string | null;
         userRole:
           "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
-        lastSeenOnlineAt: string | null;
         darkMode:
           "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
@@ -266,7 +264,6 @@ export default async (application: Application): Promise<void> => {
             "avatarColor",
             "avatarImage",
             "userRole",
-            "lastSeenOnlineAt",
             "darkMode",
             "sidebarWidth",
             "emailNotificationsForAllMessages",
@@ -355,14 +352,6 @@ export default async (application: Application): Promise<void> => {
           update "userSessions"
           set "lastUsedAt" = ${request.state.userSession.lastUsedAt}
           where "id" = ${request.state.userSession.id};
-        `,
-      );
-      request.state.user.lastSeenOnlineAt = new Date().toISOString();
-      application.database.run(
-        sql`
-          update "users"
-          set "lastSeenOnlineAt" = ${request.state.user.lastSeenOnlineAt}
-          where "id" = ${request.state.user.id};
         `,
       );
     },
@@ -1081,7 +1070,6 @@ export default async (application: Application): Promise<void> => {
           avatarImage: string | null;
           userRole:
             "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
-          lastSeenOnlineAt: string | null;
           darkMode:
             "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
           sidebarWidth: number;
@@ -1115,7 +1103,6 @@ export default async (application: Application): Promise<void> => {
                     "avatarColor",
                     "avatarImage",
                     "userRole",
-                    "lastSeenOnlineAt",
                     "darkMode",
                     "sidebarWidth",
                     "emailNotificationsForAllMessages",
@@ -1846,7 +1833,6 @@ export default async (application: Application): Promise<void> => {
         avatarImage: string | null;
         userRole:
           "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
-        lastSeenOnlineAt: string | null;
         darkMode:
           "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
@@ -1878,7 +1864,6 @@ export default async (application: Application): Promise<void> => {
             "avatarColor",
             "avatarImage",
             "userRole",
-            "lastSeenOnlineAt",
             "darkMode",
             "sidebarWidth",
             "emailNotificationsForAllMessages",
@@ -2517,7 +2502,6 @@ export default async (application: Application): Promise<void> => {
         avatarImage: string | null;
         userRole:
           "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
-        lastSeenOnlineAt: string | null;
         darkMode:
           "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
@@ -2549,7 +2533,6 @@ export default async (application: Application): Promise<void> => {
             "avatarColor",
             "avatarImage",
             "userRole",
-            "lastSeenOnlineAt",
             "darkMode",
             "sidebarWidth",
             "emailNotificationsForAllMessages",
@@ -2916,7 +2899,6 @@ export default async (application: Application): Promise<void> => {
         avatarImage: string | null;
         userRole:
           "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
-        lastSeenOnlineAt: string | null;
         darkMode:
           "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
@@ -2948,7 +2930,6 @@ export default async (application: Application): Promise<void> => {
             "avatarColor",
             "avatarImage",
             "userRole",
-            "lastSeenOnlineAt",
             "darkMode",
             "sidebarWidth",
             "emailNotificationsForAllMessages",
@@ -3311,7 +3292,6 @@ export default async (application: Application): Promise<void> => {
                 | "userRoleSystemAdministrator"
                 | "userRoleStaff"
                 | "userRoleUser";
-              lastSeenOnlineAt: string | null;
               darkMode:
                 "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
               sidebarWidth: number;
@@ -3343,7 +3323,6 @@ export default async (application: Application): Promise<void> => {
                   "avatarColor",
                   "avatarImage",
                   "userRole",
-                  "lastSeenOnlineAt",
                   "darkMode",
                   "sidebarWidth",
                   "emailNotificationsForAllMessages",
@@ -3393,7 +3372,6 @@ export default async (application: Application): Promise<void> => {
                 | "userRoleSystemAdministrator"
                 | "userRoleStaff"
                 | "userRoleUser";
-              lastSeenOnlineAt: string | null;
               darkMode:
                 "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
               sidebarWidth: number;
@@ -3427,7 +3405,6 @@ export default async (application: Application): Promise<void> => {
                         "avatarColor",
                         "avatarImage",
                         "userRole",
-                        "lastSeenOnlineAt",
                         "darkMode",
                         "sidebarWidth",
                         "emailNotificationsForAllMessages",
@@ -4178,7 +4155,6 @@ export default async (application: Application): Promise<void> => {
             avatarImage: string | null;
             userRole:
               "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
-            lastSeenOnlineAt: string | null;
             darkMode:
               "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
             sidebarWidth: number;
@@ -4210,7 +4186,6 @@ export default async (application: Application): Promise<void> => {
                 "avatarColor",
                 "avatarImage",
                 "userRole",
-                "lastSeenOnlineAt",
                 "darkMode",
                 "sidebarWidth",
                 "emailNotificationsForAllMessages",
@@ -4258,7 +4233,6 @@ export default async (application: Application): Promise<void> => {
             avatarImage: string | null;
             userRole:
               "userRoleSystemAdministrator" | "userRoleStaff" | "userRoleUser";
-            lastSeenOnlineAt: string | null;
             darkMode:
               "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
             sidebarWidth: number;
@@ -4292,7 +4266,6 @@ export default async (application: Application): Promise<void> => {
                       "avatarColor",
                       "avatarImage",
                       "userRole",
-                      "lastSeenOnlineAt",
                       "darkMode",
                       "sidebarWidth",
                       "emailNotificationsForAllMessages",
