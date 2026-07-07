@@ -233,6 +233,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   $${(() => {
                     const users = application.database.all<{
+                      id: number;
                       publicId: string;
                       name: string;
                       email: string;
@@ -261,7 +262,8 @@ export default async (application: Application): Promise<void> => {
                         | "userRoleUser";
                     }>(
                       sql`
-                        select 
+                        select
+                          "id",
                           "publicId",
                           "name",
                           "email",

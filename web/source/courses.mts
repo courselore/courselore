@@ -2705,6 +2705,7 @@ export default async (application: Application): Promise<void> => {
                                               (courseParticipation) => {
                                                 const user =
                                                   application.database.get<{
+                                                    id: number;
                                                     publicId: string;
                                                     name: string;
                                                     email: string;
@@ -2729,15 +2730,16 @@ export default async (application: Application): Promise<void> => {
                                                     avatarImage: string | null;
                                                   }>(
                                                     sql`
-                                                  select
-                                                    "publicId",
-                                                    "name",
-                                                    "email",
-                                                    "avatarColor",
-                                                    "avatarImage"
-                                                  from "users"
-                                                  where "id" = ${courseParticipation.user};
-                                                `,
+                                                      select
+                                                        "id",
+                                                        "publicId",
+                                                        "name",
+                                                        "email",
+                                                        "avatarColor",
+                                                        "avatarImage"
+                                                      from "users"
+                                                      where "id" = ${courseParticipation.user};
+                                                    `,
                                                   );
                                                 if (user === undefined)
                                                   throw new Error();
@@ -3086,6 +3088,7 @@ export default async (application: Application): Promise<void> => {
                                 $${courseParticipations.map(
                                   (courseParticipation) => {
                                     const user = application.database.get<{
+                                      id: number;
                                       publicId: string;
                                       name: string;
                                       email: string;
@@ -3111,6 +3114,7 @@ export default async (application: Application): Promise<void> => {
                                     }>(
                                       sql`
                                       select
+                                        "id",
                                         "publicId",
                                         "name",
                                         "email",

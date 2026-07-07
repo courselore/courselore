@@ -541,6 +541,7 @@ export default async (application: Application): Promise<void> => {
                 )
                 .map((courseParticipation) => {
                   const courseParticipationUser = application.database.get<{
+                    id: number;
                     publicId: string;
                     name: string;
                     avatarColor:
@@ -565,6 +566,7 @@ export default async (application: Application): Promise<void> => {
                   }>(
                     sql`
                       select
+                        "id",
                         "publicId",
                         "name",
                         "avatarColor",
@@ -2423,6 +2425,7 @@ You may also use the buttons on the message content editor to ${
                           courseConversationMessageContentPollOptionVoteCourseParticipation !==
                           undefined
                             ? application.database.get<{
+                                id: number;
                                 publicId: string;
                                 name: string;
                                 avatarColor:
@@ -2447,6 +2450,7 @@ You may also use the buttons on the message content editor to ${
                               }>(
                                 sql`
                                   select
+                                    "id",
                                     "publicId",
                                     "name",
                                     "avatarColor",
