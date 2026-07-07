@@ -1156,7 +1156,6 @@ export default async (application: Application): Promise<void> => {
                         ? "userRoleSystemAdministrator"
                         : "userRoleUser"
                     },
-                    ${new Date().toISOString()},
                     ${"userDarkModeSystem"},
                     ${80 * 4},
                     ${Number(false)},
@@ -1171,6 +1170,38 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
+        // request.state.userSession = application.database.get<{
+        //   id: number;
+        //   publicId: string;
+        //   user: number;
+        //   lastUsedAt: string;
+        //   needsTwoFactorAuthentication: number;
+        // }>(
+        //   sql`
+        //   select * from "userSessions" where "id" = ${
+        //     application.database.run(
+        //       sql`
+        //         insert into "userSessions" (
+        //           "publicId",
+        //           "user",
+        //           "lastUsedAt",
+        //           "needsTwoFactorAuthentication"
+        //         )
+        //         values (
+        //           ${cryptoRandomString({
+        //             length: 100,
+        //             type: "alphanumeric",
+        //           })},
+        //           ${request.state.user.id},
+        //           ${new Date().toISOString()},
+        //           ${Number(false)}
+        //         );
+        //       `,
+        //     ).lastInsertRowid
+        //   };
+        // `,
+        // )!;
+        // response.setCookie!("session", request.state.userSession.publicId);
         application.database.run(
           sql`
             insert into "_backgroundJobs" (
