@@ -86,9 +86,18 @@ export type ApplicationAuthentication = {
 export default async (application: Application): Promise<void> => {
   if (application.configuration.environment === "development")
     application.server?.push({
-      handler: (request, response) => {
+      handler: (
+        request: serverTypes.Request<
+          {},
+          {},
+          {},
+          {},
+          Application["types"]["states"]["Authentication"]
+        >,
+        response,
+      ) => {
         if (
-          application.database.get<{ seq: number }>(
+          application.database.get(
             sql`
               select true from "sqlite_sequence" where "name" = 'userSessions';
             `,
@@ -96,8 +105,12 @@ export default async (application: Application): Promise<void> => {
           request.liveConnection
         )
           return;
-        const userSession = application.database.get<{
+        request.state.userSession = application.database.get<{
+          id: number;
           publicId: string;
+          user: number;
+          lastUsedAt: string;
+          needsTwoFactorAuthentication: number;
         }>(
           sql`
             select * from "userSessions" where "id" = ${
@@ -123,7 +136,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        response.setCookie!("session", userSession.publicId);
+        response.setCookie!("session", request.state.userSession.publicId);
         response.redirect!("/");
       },
     });
