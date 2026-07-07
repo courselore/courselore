@@ -199,50 +199,6 @@ export default async (application: Application): Promise<void> => {
           );
         return;
       }
-      if (
-        request.state.userSession.lastUsedAt <
-          new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString() &&
-        !request.liveConnection
-      ) {
-        application.database.run(
-          sql`
-            delete from "userSessions" where "id" = ${request.state.userSession.id};
-          `,
-        );
-        response.deleteCookie!("session");
-        request.state.userSession = application.database.get<{
-          id: number;
-          publicId: string;
-          user: number;
-          lastUsedAt: string;
-          needsTwoFactorAuthentication: number;
-        }>(
-          sql`
-            select * from "userSessions" where "id" = ${
-              application.database.run(
-                sql`
-                  insert into "userSessions" (
-                    "publicId",
-                    "user",
-                    "lastUsedAt",
-                    "needsTwoFactorAuthentication"
-                  )
-                  values (
-                    ${cryptoRandomString({
-                      length: 100,
-                      type: "alphanumeric",
-                    })},
-                    ${request.state.userSession.user},
-                    ${new Date().toISOString()},
-                    ${request.state.userSession.needsTwoFactorAuthentication}
-                  );
-                `,
-              ).lastInsertRowid
-            };
-          `,
-        )!;
-        response.setCookie!("session", request.state.userSession.publicId);
-      }
       request.state.user = application.database.get<{
         id: number;
         publicId: string;
@@ -393,6 +349,14 @@ export default async (application: Application): Promise<void> => {
           );
         return;
       }
+      request.state.userSession.lastUsedAt = new Date().toISOString();
+      application.database.run(
+        sql`
+          update "userSessions"
+          set "lastUsedAt" = ${request.state.userSession.lastUsedAt}
+          where "id" = ${request.state.userSession.id};
+        `,
+      );
       request.state.user.lastSeenOnlineAt = new Date().toISOString();
       application.database.run(
         sql`
@@ -408,7 +372,7 @@ export default async (application: Application): Promise<void> => {
     node.setInterval({ duration: 60 * 60 * 1000 }, () => {
       application.database.run(
         sql`
-          delete from "userSessions" where "lastUsedAt" < ${new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString()};
+          delete from "userSessions" where "lastUsedAt" < ${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()};
         `,
       );
     });
