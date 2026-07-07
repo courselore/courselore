@@ -27,7 +27,7 @@ export type ApplicationAuthentication = {
           id: number;
           publicId: string;
           user: number;
-          createdAt: string;
+          lastUsedAt: string;
           needsTwoFactorAuthentication: number;
         };
         user: {
@@ -107,7 +107,7 @@ export default async (application: Application): Promise<void> => {
                   insert into "userSessions" (
                     "publicId",
                     "user",
-                    "createdAt",
+                    "lastUsedAt",
                     "needsTwoFactorAuthentication"
                   )
                   values (
@@ -176,7 +176,7 @@ export default async (application: Application): Promise<void> => {
         id: number;
         publicId: string;
         user: number;
-        createdAt: string;
+        lastUsedAt: string;
         needsTwoFactorAuthentication: number;
       }>(
         sql`
@@ -184,7 +184,7 @@ export default async (application: Application): Promise<void> => {
             "id",
             "publicId",
             "user",
-            "createdAt",
+            "lastUsedAt",
             "needsTwoFactorAuthentication"
           from "userSessions"
           where "publicId" = ${request.cookies.session};
@@ -200,7 +200,7 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       if (
-        request.state.userSession.createdAt <
+        request.state.userSession.lastUsedAt <
           new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString() &&
         !request.liveConnection
       ) {
@@ -214,7 +214,7 @@ export default async (application: Application): Promise<void> => {
           id: number;
           publicId: string;
           user: number;
-          createdAt: string;
+          lastUsedAt: string;
           needsTwoFactorAuthentication: number;
         }>(
           sql`
@@ -224,7 +224,7 @@ export default async (application: Application): Promise<void> => {
                   insert into "userSessions" (
                     "publicId",
                     "user",
-                    "createdAt",
+                    "lastUsedAt",
                     "needsTwoFactorAuthentication"
                   )
                   values (
@@ -408,7 +408,7 @@ export default async (application: Application): Promise<void> => {
     node.setInterval({ duration: 60 * 60 * 1000 }, () => {
       application.database.run(
         sql`
-          delete from "userSessions" where "createdAt" < ${new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString()};
+          delete from "userSessions" where "lastUsedAt" < ${new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString()};
         `,
       );
     });
@@ -1948,7 +1948,7 @@ export default async (application: Application): Promise<void> => {
         id: number;
         publicId: string;
         user: number;
-        createdAt: string;
+        lastUsedAt: string;
         needsTwoFactorAuthentication: number;
       }>(
         sql`
@@ -1958,7 +1958,7 @@ export default async (application: Application): Promise<void> => {
                 insert into "userSessions" (
                   "publicId",
                   "user",
-                  "createdAt",
+                  "lastUsedAt",
                   "needsTwoFactorAuthentication"
                 )
                 values (
@@ -3537,7 +3537,7 @@ export default async (application: Application): Promise<void> => {
           id: number;
           publicId: string;
           user: number;
-          createdAt: string;
+          lastUsedAt: string;
           needsTwoFactorAuthentication: number;
         }>(
           sql`
@@ -3547,7 +3547,7 @@ export default async (application: Application): Promise<void> => {
                   insert into "userSessions" (
                     "publicId",
                     "user",
-                    "createdAt",
+                    "lastUsedAt",
                     "needsTwoFactorAuthentication"
                   )
                   values (
@@ -4402,7 +4402,7 @@ export default async (application: Application): Promise<void> => {
         id: number;
         publicId: string;
         user: number;
-        createdAt: string;
+        lastUsedAt: string;
         needsTwoFactorAuthentication: number;
       }>(
         sql`
@@ -4412,7 +4412,7 @@ export default async (application: Application): Promise<void> => {
                 insert into "userSessions" (
                   "publicId",
                   "user",
-                  "createdAt",
+                  "lastUsedAt",
                   "needsTwoFactorAuthentication"
                 )
                 values (
