@@ -4314,6 +4314,8 @@ export default async (application: Application): Promise<void> => {
       alter table "users" rename column "twoFactorAuthenticationRecoveryCodes" to "twoFactorAuthenticationRecoveryCodesHashes";
 
       alter table "userSessions" rename column "createdAt" to "lastUsedAt";
+
+      alter table "users" drop column "lastSeenOnlineAt";
     `,
   );
 };
