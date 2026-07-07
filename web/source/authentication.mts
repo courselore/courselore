@@ -1281,8 +1281,9 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
-        request.state.user !== undefined &&
-        request.state.user.emailVerificationEmail === null
+        request.state.user === undefined ||
+        request.state.user.emailVerificationEmail === null ||
+        request.state.user.emailVerificationCreatedAt === null
       )
         return;
       response.send(
@@ -1308,89 +1309,79 @@ export default async (application: Application): Promise<void> => {
                 Email verification
               </div>
               <p>To continue please check your email.</p>
-              $${
-                request.state.user !== undefined &&
-                typeof request.state.user.emailVerificationEmail === "string" &&
-                typeof request.state.user.emailVerificationCreatedAt ===
-                  "string"
-                  ? html`
-                      <div
-                        type="form"
-                        method="POST"
-                        action="/authentication/email-verification/resend${
-                          request.URL.search
-                        }"
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--4);
-                        `}"
-                      >
-                        <label>
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--500),
-                                var(--color--slate--500)
-                              );
-                            `}"
-                          >
-                            Email
-                          </div>
-                          <div
-                            css="${css`
-                              display: flex;
-                            `}"
-                          >
-                            <input
-                              type="email"
-                              value="${request.state.user.emailVerificationEmail}"
-                              disabled
-                              class="input--text"
-                              css="${css`
-                                flex: 1;
+              <div
+                type="form"
+                method="POST"
+                action="/authentication/email-verification/resend${
+                  request.URL.search
+                }"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Email
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="email"
+                      value="${request.state.user.emailVerificationEmail}"
+                      disabled
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                    />
+                  </div>
+                </label>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  $${
+                    new Date(Date.now() - 5 * 60 * 1000).toISOString() <
+                    request.state.user.emailVerificationCreatedAt
+                      ? html`
+                          <p>
+                            Wait until
+                            <span
+                              javascript="${javascript`
+                                this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
                               `}"
-                            />
-                          </div>
-                        </label>
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                          `}"
-                        >
-                          $${
-                            new Date(Date.now() - 5 * 60 * 1000).toISOString() <
-                            request.state.user.emailVerificationCreatedAt
-                              ? html`
-                                  <p>
-                                    Wait until
-                                    <span
-                                      javascript="${javascript`
-                                    this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
-                                  `}"
-                                    ></span>
-                                    before you can request a new email
-                                    verification.
-                                  </p>
-                                `
-                              : html`
-                                  <button
-                                    type="submit"
-                                    class="button button--rectangle button--blue"
-                                  >
-                                    Send new email verification
-                                  </button>
-                                `
-                          }
-                        </div>
-                      </div>
-                    `
-                  : html``
-              }
+                            ></span>
+                            before you can request a new email verification.
+                          </p>
+                        `
+                      : html`
+                          <button
+                            type="submit"
+                            class="button button--rectangle button--blue"
+                          >
+                            Send new email verification
+                          </button>
+                        `
+                  }
+                </div>
+              </div>
             </div>
           `,
         }),
