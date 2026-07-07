@@ -1295,8 +1295,9 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
-        request.state.user.emailVerificationEmail === null ||
-        request.state.user.emailVerificationCreatedAt === null
+        typeof request.state.user.emailVerificationEmail !== "string" ||
+        typeof request.state.user.emailVerificationNonceHash !== "string" ||
+        typeof request.state.user.emailVerificationCreatedAt !== "string"
       )
         return;
       response.send(
