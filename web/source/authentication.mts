@@ -1933,7 +1933,11 @@ export default async (application: Application): Promise<void> => {
         request.body.password,
         application.privateConfiguration.argon2,
       );
-      if (request.state.user === undefined || !passwordVerify) {
+      if (
+        request.state.user === undefined ||
+        typeof request.state.user.passwordHash !== "string" ||
+        !passwordVerify
+      ) {
         response.setFlash!(html`
           <div class="flash--red">Invalid email or password.</div>
         `);
@@ -3001,6 +3005,7 @@ export default async (application: Application): Promise<void> => {
       );
       if (
         request.state.user === undefined ||
+        typeof request.state.user.passwordResetNonceHash !== "string" ||
         !passwordResetNonceVerify ||
         typeof request.state.user.passwordResetCreatedAt !== "string" ||
         request.state.user.passwordResetCreatedAt <
