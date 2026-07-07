@@ -1191,28 +1191,28 @@ export default async (application: Application): Promise<void> => {
           needsTwoFactorAuthentication: number;
         }>(
           sql`
-          select * from "userSessions" where "id" = ${
-            application.database.run(
-              sql`
-                insert into "userSessions" (
-                  "publicId",
-                  "user",
-                  "lastUsedAt",
-                  "needsTwoFactorAuthentication"
-                )
-                values (
-                  ${cryptoRandomString({
-                    length: 100,
-                    type: "alphanumeric",
-                  })},
-                  ${request.state.user.id},
-                  ${new Date().toISOString()},
-                  ${Number(false)}
-                );
-              `,
-            ).lastInsertRowid
-          };
-        `,
+            select * from "userSessions" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "userSessions" (
+                    "publicId",
+                    "user",
+                    "lastUsedAt",
+                    "needsTwoFactorAuthentication"
+                  )
+                  values (
+                    ${cryptoRandomString({
+                      length: 100,
+                      type: "alphanumeric",
+                    })},
+                    ${request.state.user.id},
+                    ${new Date().toISOString()},
+                    ${Number(false)}
+                  );
+                `,
+              ).lastInsertRowid
+            };
+          `,
         )!;
         response.setCookie!("session", request.state.userSession.publicId);
         application.database.run(
