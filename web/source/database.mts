@@ -4308,8 +4308,8 @@ export default async (application: Application): Promise<void> => {
     `,
 
     sql`
-      alter table "users" rename column "password" to "passwordHash";
       alter table "users" rename column "emailVerificationNonce" to "emailVerificationNonceHash";
+      alter table "users" rename column "password" to "passwordHash";
       alter table "users" rename column "passwordResetNonce" to "passwordResetNonceHash";
       alter table "users" rename column "twoFactorAuthenticationRecoveryCodes" to "twoFactorAuthenticationRecoveryCodesHashes";
     `,

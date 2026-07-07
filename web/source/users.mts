@@ -754,21 +754,23 @@ export default async (application: Application): Promise<void> => {
                               <label>
                                 <div
                                   css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
                                 >
                                   Two-factor authentication code
                                 </div>
                                 <div
                                   css="${css`
-                                  display: flex;
-                                `}"
+                                    display: flex;
+                                  `}"
                                 >
                                   <input
                                     type="text"
@@ -778,8 +780,8 @@ export default async (application: Application): Promise<void> => {
                                     minlength="6"
                                     class="input--text"
                                     css="${css`
-                                    flex: 1;
-                                  `}"
+                                      flex: 1;
+                                    `}"
                                   />
                                 </div>
                               </label>
@@ -967,21 +969,23 @@ export default async (application: Application): Promise<void> => {
                               <label>
                                 <div
                                   css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
                                 >
                                   Two-factor authentication code
                                 </div>
                                 <div
                                   css="${css`
-                                  display: flex;
-                                `}"
+                                    display: flex;
+                                  `}"
                                 >
                                   <input
                                     type="text"
@@ -991,8 +995,8 @@ export default async (application: Application): Promise<void> => {
                                     minlength="6"
                                     class="input--text"
                                     css="${css`
-                                    flex: 1;
-                                  `}"
+                                      flex: 1;
+                                    `}"
                                   />
                                 </div>
                               </label>
@@ -1056,48 +1060,50 @@ export default async (application: Application): Promise<void> => {
                               method="POST"
                               action="/settings/two-factor-authentication"
                               css="${css`
-                              padding: var(--size--2) var(--size--0);
-                              border-bottom: var(--border-width--1) solid
-                                light-dark(
-                                  var(--color--slate--200),
-                                  var(--color--slate--800)
-                                );
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--4);
-                            `}"
+                                padding: var(--size--2) var(--size--0);
+                                border-bottom: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+                              `}"
                             >
                               <div
                                 css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                color: light-dark(
-                                  var(--color--red--500),
-                                  var(--color--red--500)
-                                );
-                              `}"
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--red--500),
+                                    var(--color--red--500)
+                                  );
+                                `}"
                               >
                                 Two-factor authentication is disabled.
                               </div>
                               <label>
                                 <div
                                   css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
                                 >
                                   Password confirmation
                                 </div>
                                 <div
                                   css="${css`
-                                  display: flex;
-                                `}"
+                                    display: flex;
+                                  `}"
                                 >
                                   <input
                                     type="password"
@@ -1107,16 +1113,16 @@ export default async (application: Application): Promise<void> => {
                                     maxlength="2000"
                                     class="input--text"
                                     css="${css`
-                                    flex: 1;
-                                  `}"
+                                      flex: 1;
+                                    `}"
                                   />
                                 </div>
                               </label>
                               <div
                                 css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                              `}"
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
                               >
                                 <button
                                   type="submit"
@@ -1133,16 +1139,16 @@ export default async (application: Application): Promise<void> => {
                               method="DELETE"
                               action="/settings/two-factor-authentication"
                               css="${css`
-                              padding: var(--size--2) var(--size--0);
-                              border-bottom: var(--border-width--1) solid
-                                light-dark(
-                                  var(--color--slate--200),
-                                  var(--color--slate--800)
-                                );
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--4);
-                            `}"
+                                padding: var(--size--2) var(--size--0);
+                                border-bottom: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+                              `}"
                               javascript="${javascript`
                               this.onsubmit = () => {
                                 javascript.reset(this);
@@ -1151,35 +1157,37 @@ export default async (application: Application): Promise<void> => {
                             >
                               <div
                                 css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                color: light-dark(
-                                  var(--color--green--500),
-                                  var(--color--green--500)
-                                );
-                              `}"
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--green--500),
+                                    var(--color--green--500)
+                                  );
+                                `}"
                               >
                                 Two-factor authentication is enabled.
                               </div>
                               <label>
                                 <div
                                   css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
                                 >
                                   Password confirmation
                                 </div>
                                 <div
                                   css="${css`
-                                  display: flex;
-                                `}"
+                                    display: flex;
+                                  `}"
                                 >
                                   <input
                                     type="password"
@@ -1189,29 +1197,31 @@ export default async (application: Application): Promise<void> => {
                                     maxlength="2000"
                                     class="input--text"
                                     css="${css`
-                                    flex: 1;
-                                  `}"
+                                      flex: 1;
+                                    `}"
                                   />
                                 </div>
                               </label>
                               <label>
                                 <div
                                   css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
                                 >
                                   Two-factor authentication code
                                 </div>
                                 <div
                                   css="${css`
-                                  display: flex;
-                                `}"
+                                    display: flex;
+                                  `}"
                                 >
                                   <input
                                     type="text"
@@ -1221,16 +1231,16 @@ export default async (application: Application): Promise<void> => {
                                     minlength="6"
                                     class="input--text"
                                     css="${css`
-                                    flex: 1;
-                                  `}"
+                                      flex: 1;
+                                    `}"
                                   />
                                 </div>
                               </label>
                               <div
                                 css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                              `}"
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
                               >
                                 <button
                                   type="submit"
@@ -1612,21 +1622,23 @@ export default async (application: Application): Promise<void> => {
                               <label>
                                 <div
                                   css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
                                 >
                                   Two-factor authentication code
                                 </div>
                                 <div
                                   css="${css`
-                                  display: flex;
-                                `}"
+                                    display: flex;
+                                  `}"
                                 >
                                   <input
                                     type="text"
@@ -1636,8 +1648,8 @@ export default async (application: Application): Promise<void> => {
                                     minlength="6"
                                     class="input--text"
                                     css="${css`
-                                    flex: 1;
-                                  `}"
+                                      flex: 1;
+                                    `}"
                                   />
                                 </div>
                               </label>
@@ -1763,7 +1775,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const passwordConfirmationVerify = await argon2.verify(
-        request.state.user.password!,
+        request.state.user.passwordHash!,
         request.body.passwordConfirmation,
         application.privateConfiguration.argon2,
       );
@@ -1793,12 +1805,12 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       request.state.user.emailVerificationEmail = request.body.email;
-      const emailVerificationNoncePlaintext = cryptoRandomString({
+      const emailVerificationNonce = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
-      request.state.user.emailVerificationNonce = await argon2.hash(
-        emailVerificationNoncePlaintext,
+      request.state.user.emailVerificationNonceHash = await argon2.hash(
+        emailVerificationNonce,
         application.privateConfiguration.argon2,
       );
       request.state.user.emailVerificationCreatedAt = new Date().toISOString();
@@ -1807,7 +1819,7 @@ export default async (application: Application): Promise<void> => {
           update "users"
           set
             "emailVerificationEmail" = ${request.state.user.emailVerificationEmail},
-            "emailVerificationNonce" = ${request.state.user.emailVerificationNonce},
+            "emailVerificationNonceHash" = ${request.state.user.emailVerificationNonceHash},
             "emailVerificationCreatedAt" = ${request.state.user.emailVerificationCreatedAt}
           where "id" = ${request.state.user.id};
         `,
@@ -1887,12 +1899,12 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="https://${
                       application.configuration.hostname
-                    }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                    }/authentication/email-verification/${emailVerificationNonce}${
                       request.URL.search
                     }"
                     >https://${
                       application.configuration.hostname
-                    }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                    }/authentication/email-verification/${emailVerificationNonce}${
                       request.URL.search
                     }</a
                   >
@@ -1964,7 +1976,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const passwordConfirmationVerify = await argon2.verify(
-        request.state.user.password!,
+        request.state.user.passwordHash!,
         request.body.passwordConfirmation,
         application.privateConfiguration.argon2,
       );
@@ -1993,14 +2005,14 @@ export default async (application: Application): Promise<void> => {
         response.redirect!("/settings");
         return;
       }
-      request.state.user.password = await argon2.hash(
+      request.state.user.passwordHash = await argon2.hash(
         request.body.password,
         application.privateConfiguration.argon2,
       );
       application.database.run(
         sql`
           update "users"
-          set "password" = ${request.state.user.password}
+          set "passwordHash" = ${request.state.user.passwordHash}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -2092,7 +2104,7 @@ export default async (application: Application): Promise<void> => {
         delete request.search.redirect;
       if (
         !(await argon2.verify(
-          request.state.user.password!,
+          request.state.user.passwordHash!,
           request.body.passwordConfirmation,
           application.privateConfiguration.argon2,
         ))
@@ -2105,17 +2117,18 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.user.twoFactorAuthenticationSecret =
         new OTPAuth.Secret().base32;
-      request.state.user.twoFactorAuthenticationRecoveryCodes = JSON.stringify(
-        Array.from({ length: 10 }, () =>
-          cryptoRandomString({ length: 10, type: "numeric" }),
-        ),
-      );
+      request.state.user.twoFactorAuthenticationRecoveryCodesHashes =
+        JSON.stringify(
+          Array.from({ length: 10 }, () =>
+            cryptoRandomString({ length: 10, type: "numeric" }),
+          ),
+        );
       application.database.run(
         sql`
           update "users"
           set
             "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
-            "twoFactorAuthenticationRecoveryCodes" = ${request.state.user.twoFactorAuthenticationRecoveryCodes}
+            "twoFactorAuthenticationRecoveryCodesHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesHashes}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -2142,7 +2155,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodes !==
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
           "string"
       )
         return;
@@ -2182,7 +2195,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 $${JSON.parse(
-                  request.state.user.twoFactorAuthenticationRecoveryCodes,
+                  request.state.user.twoFactorAuthenticationRecoveryCodesHashes,
                 ).map(
                   (twoFactorAuthenticationRecoveryCode: string) =>
                     html`<li>${twoFactorAuthenticationRecoveryCode}</li>`,
@@ -2307,7 +2320,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodes !==
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
           "string"
       )
         return;
@@ -2339,24 +2352,25 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       request.state.user.twoFactorAuthenticationEnabled = Number(true);
-      request.state.user.twoFactorAuthenticationRecoveryCodes = JSON.stringify(
-        await Promise.all(
-          JSON.parse(
-            request.state.user.twoFactorAuthenticationRecoveryCodes,
-          ).map((twoFactorAuthenticationRecoveryCode: string) =>
-            argon2.hash(
-              twoFactorAuthenticationRecoveryCode,
-              application.privateConfiguration.argon2,
+      request.state.user.twoFactorAuthenticationRecoveryCodesHashes =
+        JSON.stringify(
+          await Promise.all(
+            JSON.parse(
+              request.state.user.twoFactorAuthenticationRecoveryCodesHashes,
+            ).map((twoFactorAuthenticationRecoveryCode: string) =>
+              argon2.hash(
+                twoFactorAuthenticationRecoveryCode,
+                application.privateConfiguration.argon2,
+              ),
             ),
           ),
-        ),
-      );
+        );
       application.database.run(
         sql`
           update "users"
           set
             "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
-            "twoFactorAuthenticationRecoveryCodes" = ${request.state.user.twoFactorAuthenticationRecoveryCodes}
+            "twoFactorAuthenticationRecoveryCodesHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesHashes}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -2389,7 +2403,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodes !==
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
           "string"
       )
         return;
@@ -2401,7 +2415,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const passwordConfirmationVerify = await argon2.verify(
-        request.state.user.password!,
+        request.state.user.passwordHash!,
         request.body.passwordConfirmation,
         application.privateConfiguration.argon2,
       );
@@ -2422,14 +2436,14 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.user.twoFactorAuthenticationEnabled = Number(false);
       request.state.user.twoFactorAuthenticationSecret = null;
-      request.state.user.twoFactorAuthenticationRecoveryCodes = null;
+      request.state.user.twoFactorAuthenticationRecoveryCodesHashes = null;
       application.database.run(
         sql`
           update "users"
           set
             "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
             "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
-            "twoFactorAuthenticationRecoveryCodes" = ${request.state.user.twoFactorAuthenticationRecoveryCodes}
+            "twoFactorAuthenticationRecoveryCodesHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesHashes}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -2513,7 +2527,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const passwordConfirmationVerify = await argon2.verify(
-        request.state.user.password!,
+        request.state.user.passwordHash!,
         request.body.passwordConfirmation,
         application.privateConfiguration.argon2,
       );
@@ -2680,28 +2694,28 @@ export default async (application: Application): Promise<void> => {
                 src="${user.avatarImage}"
                 loading="lazy"
                 css="${css`
-                background-color: light-dark(
-                  var(--color--white),
-                  var(--color--white)
-                );
-                border-radius: var(--border-radius--1);
-                display: block;
-                object-fit: cover;
-              `} ${
-                size === 6
-                  ? css`
-                      width: var(--size--6);
-                      height: var(--size--6);
-                    `
-                  : size === 9
+                  background-color: light-dark(
+                    var(--color--white),
+                    var(--color--white)
+                  );
+                  border-radius: var(--border-radius--1);
+                  display: block;
+                  object-fit: cover;
+                `} ${
+                  size === 6
                     ? css`
-                        width: var(--size--9);
-                        height: var(--size--9);
+                        width: var(--size--6);
+                        height: var(--size--6);
                       `
-                    : (() => {
-                        throw new Error();
-                      })()
-              }"
+                    : size === 9
+                      ? css`
+                          width: var(--size--9);
+                          height: var(--size--9);
+                        `
+                      : (() => {
+                          throw new Error();
+                        })()
+                }"
               />
             `
           : html`
@@ -2775,95 +2789,96 @@ export default async (application: Application): Promise<void> => {
                 }--900);
               "
                 css="${css`
-                font-family: "Roboto Serif Variable", var(--font-family--serif);
-                line-height: var(--size--0);
-                font-weight: 900;
-                color: light-dark(var(--color--light), var(--color--dark));
-                background-color: light-dark(
-                  var(--background-color--light),
-                  var(--background-color--dark)
-                );
-                border: var(--border-width--1) solid
-                  light-dark(
-                    var(--border-color--light),
-                    var(--border-color--dark)
+                  font-family:
+                    "Roboto Serif Variable", var(--font-family--serif);
+                  line-height: var(--size--0);
+                  font-weight: 900;
+                  color: light-dark(var(--color--light), var(--color--dark));
+                  background-color: light-dark(
+                    var(--background-color--light),
+                    var(--background-color--dark)
                   );
-                border-radius: var(--border-radius--1);
-                overflow: hidden;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              `} ${
-                size === 6
-                  ? `${
-                      typeof user === "object"
-                        ? css`
-                            font-size: var(--font-size--2-5);
-                          `
-                        : css`
-                            font-size: var(--font-size--4);
-                          `
-                    } ${css`
-                      width: var(--size--6);
-                      height: var(--size--6);
-                    `}`
-                  : size === 9
+                  border: var(--border-width--1) solid
+                    light-dark(
+                      var(--border-color--light),
+                      var(--border-color--dark)
+                    );
+                  border-radius: var(--border-radius--1);
+                  overflow: hidden;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                `} ${
+                  size === 6
                     ? `${
                         typeof user === "object"
                           ? css`
-                              font-size: var(--font-size--3-5);
+                              font-size: var(--font-size--2-5);
                             `
                           : css`
-                              font-size: var(--font-size--6);
+                              font-size: var(--font-size--4);
                             `
                       } ${css`
-                        width: var(--size--9);
-                        height: var(--size--9);
+                        width: var(--size--6);
+                        height: var(--size--6);
                       `}`
-                    : (() => {
-                        throw new Error();
-                      })()
-              }"
-              >
-                $${
-                typeof user === "object"
-                  ? (() => {
-                      const nameParts = [
-                        ...user.name.matchAll(
-                          /[\p{Letter}\p{Number}\p{Private_Use}]+/gu,
-                        ),
-                      ];
-                      return html`${
-                        nameParts.length === 0
-                          ? (() => {
-                              throw new Error();
-                            })()
-                          : nameParts.length === 1
-                            ? [
-                                ...new Intl.Segmenter("en-US").segment(
-                                  nameParts[0][0],
-                                ),
-                              ][0].segment
-                            : [
-                                ...new Intl.Segmenter("en-US").segment(
-                                  nameParts.at(0)![0],
-                                ),
-                              ][0].segment +
-                              [
-                                ...new Intl.Segmenter("en-US").segment(
-                                  nameParts.at(-1)![0],
-                                ),
-                              ][0].segment
-                      }`;
-                    })()
-                  : user === "courseParticipationDeleted"
-                    ? html`<i class="bi bi-person-x"></i>`
-                    : user === "anonymous"
-                      ? html`<i class="bi bi-person"></i>`
+                    : size === 9
+                      ? `${
+                          typeof user === "object"
+                            ? css`
+                                font-size: var(--font-size--3-5);
+                              `
+                            : css`
+                                font-size: var(--font-size--6);
+                              `
+                        } ${css`
+                          width: var(--size--9);
+                          height: var(--size--9);
+                        `}`
                       : (() => {
                           throw new Error();
                         })()
-              }
+                }"
+              >
+                $${
+                  typeof user === "object"
+                    ? (() => {
+                        const nameParts = [
+                          ...user.name.matchAll(
+                            /[\p{Letter}\p{Number}\p{Private_Use}]+/gu,
+                          ),
+                        ];
+                        return html`${
+                          nameParts.length === 0
+                            ? (() => {
+                                throw new Error();
+                              })()
+                            : nameParts.length === 1
+                              ? [
+                                  ...new Intl.Segmenter("en-US").segment(
+                                    nameParts[0][0],
+                                  ),
+                                ][0].segment
+                              : [
+                                  ...new Intl.Segmenter("en-US").segment(
+                                    nameParts.at(0)![0],
+                                  ),
+                                ][0].segment +
+                                [
+                                  ...new Intl.Segmenter("en-US").segment(
+                                    nameParts.at(-1)![0],
+                                  ),
+                                ][0].segment
+                        }`;
+                      })()
+                    : user === "courseParticipationDeleted"
+                      ? html`<i class="bi bi-person-x"></i>`
+                      : user === "anonymous"
+                        ? html`<i class="bi bi-person"></i>`
+                        : (() => {
+                            throw new Error();
+                          })()
+                }
               </div>
             `
       }
@@ -2872,29 +2887,29 @@ export default async (application: Application): Promise<void> => {
           ? html`
               <div
                 css="${css`
-                font-size: var(--size--1-5);
-                line-height: var(--size--0);
-                color: light-dark(
-                  var(--color--green--500),
-                  var(--color--green--500)
-                );
-                justify-self: end;
-                align-self: end;
-                translate: 40% 40%;
-                transition-property: var(--transition-property--opacity);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--ease-in-out
-                );
-              `} ${
-                user.lastSeenOnlineAt === null ||
-                user.lastSeenOnlineAt <
-                  new Date(Date.now() - 6 * 60 * 1000).toISOString()
-                  ? css`
-                      opacity: var(--opacity--0);
-                    `
-                  : css``
-              }"
+                  font-size: var(--size--1-5);
+                  line-height: var(--size--0);
+                  color: light-dark(
+                    var(--color--green--500),
+                    var(--color--green--500)
+                  );
+                  justify-self: end;
+                  align-self: end;
+                  translate: 40% 40%;
+                  transition-property: var(--transition-property--opacity);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--ease-in-out
+                  );
+                `} ${
+                  user.lastSeenOnlineAt === null ||
+                  user.lastSeenOnlineAt <
+                    new Date(Date.now() - 6 * 60 * 1000).toISOString()
+                    ? css`
+                        opacity: var(--opacity--0);
+                      `
+                    : css``
+                }"
               >
                 <i class="bi bi-circle-fill"></i>
               </div>

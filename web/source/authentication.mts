@@ -36,14 +36,14 @@ export type ApplicationAuthentication = {
           name: string;
           email: string;
           emailVerificationEmail: string | null;
-          emailVerificationNonce: string | null;
+          emailVerificationNonceHash: string | null;
           emailVerificationCreatedAt: string | null;
-          password: string | null;
-          passwordResetNonce: string | null;
+          passwordHash: string | null;
+          passwordResetNonceHash: string | null;
           passwordResetCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
           twoFactorAuthenticationSecret: string | null;
-          twoFactorAuthenticationRecoveryCodes: string | null;
+          twoFactorAuthenticationRecoveryCodesHashes: string | null;
           avatarColor:
             | "red"
             | "orange"
@@ -249,14 +249,14 @@ export default async (application: Application): Promise<void> => {
         name: string;
         email: string;
         emailVerificationEmail: string | null;
-        emailVerificationNonce: string | null;
+        emailVerificationNonceHash: string | null;
         emailVerificationCreatedAt: string | null;
-        password: string | null;
-        passwordResetNonce: string | null;
+        passwordHash: string | null;
+        passwordResetNonceHash: string | null;
         passwordResetCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
-        twoFactorAuthenticationRecoveryCodes: string | null;
+        twoFactorAuthenticationRecoveryCodesHashes: string | null;
         avatarColor:
           | "red"
           | "orange"
@@ -299,14 +299,14 @@ export default async (application: Application): Promise<void> => {
             "name",
             "email",
             "emailVerificationEmail",
-            "emailVerificationNonce",
+            "emailVerificationNonceHash",
             "emailVerificationCreatedAt",
-            "password",
-            "passwordResetNonce",
+            "passwordHash",
+            "passwordResetNonceHash",
             "passwordResetCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
-            "twoFactorAuthenticationRecoveryCodes",
+            "twoFactorAuthenticationRecoveryCodesHashes",
             "avatarColor",
             "avatarImage",
             "userRole",
@@ -342,7 +342,7 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       if (
-        typeof request.state.user.password !== "string" &&
+        typeof request.state.user.passwordHash !== "string" &&
         !request.URL.pathname.match(
           new RegExp(
             "(?:^/authentication/set-password(?:$|/))|(?:^/authentication/sign-out(?:$|/))",
@@ -1003,15 +1003,15 @@ export default async (application: Application): Promise<void> => {
         request.body.password.length < 8
       )
         throw "validation";
-      const emailVerificationNoncePlaintext = cryptoRandomString({
+      const emailVerificationNonce = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
-      const emailVerificationNonce = await argon2.hash(
-        emailVerificationNoncePlaintext,
+      const emailVerificationNonceHash = await argon2.hash(
+        emailVerificationNonce,
         application.privateConfiguration.argon2,
       );
-      const password = await argon2.hash(
+      const passwordHash = await argon2.hash(
         request.body.password,
         application.privateConfiguration.argon2,
       );
@@ -1088,14 +1088,14 @@ export default async (application: Application): Promise<void> => {
           name: string;
           email: string;
           emailVerificationEmail: string | null;
-          emailVerificationNonce: string | null;
+          emailVerificationNonceHash: string | null;
           emailVerificationCreatedAt: string | null;
-          password: string | null;
-          passwordResetNonce: string | null;
+          passwordHash: string | null;
+          passwordResetNonceHash: string | null;
           passwordResetCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
           twoFactorAuthenticationSecret: string | null;
-          twoFactorAuthenticationRecoveryCodes: string | null;
+          twoFactorAuthenticationRecoveryCodesHashes: string | null;
           avatarColor:
             | "red"
             | "orange"
@@ -1140,14 +1140,14 @@ export default async (application: Application): Promise<void> => {
                     "name",
                     "email",
                     "emailVerificationEmail",
-                    "emailVerificationNonce",
+                    "emailVerificationNonceHash",
                     "emailVerificationCreatedAt",
-                    "password",
-                    "passwordResetNonce",
+                    "passwordHash",
+                    "passwordResetNonceHash",
                     "passwordResetCreatedAt",
                     "twoFactorAuthenticationEnabled",
                     "twoFactorAuthenticationSecret",
-                    "twoFactorAuthenticationRecoveryCodes",
+                    "twoFactorAuthenticationRecoveryCodesHashes",
                     "avatarColor",
                     "avatarImage",
                     "userRole",
@@ -1166,9 +1166,9 @@ export default async (application: Application): Promise<void> => {
                     ${request.body.name!},
                     ${request.body.email},
                     ${request.body.email},
-                    ${emailVerificationNonce},
+                    ${emailVerificationNonceHash},
                     ${new Date().toISOString()},
-                    ${password},
+                    ${passwordHash},
                     ${null},
                     ${null},
                     ${Number(false)},
@@ -1245,12 +1245,12 @@ export default async (application: Application): Promise<void> => {
                     <a
                       href="https://${
                         application.configuration.hostname
-                      }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                      }/authentication/email-verification/${emailVerificationNonce}${
                         request.URL.search
                       }"
                       >https://${
                         application.configuration.hostname
-                      }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                      }/authentication/email-verification/${emailVerificationNonce}${
                         request.URL.search
                       }</a
                     >
@@ -1432,7 +1432,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.user === undefined ||
         typeof request.state.user.emailVerificationEmail !== "string" ||
-        typeof request.state.user.emailVerificationNonce !== "string" ||
+        typeof request.state.user.emailVerificationNonceHash !== "string" ||
         typeof request.state.user.emailVerificationCreatedAt !== "string"
       )
         return;
@@ -1441,12 +1441,12 @@ export default async (application: Application): Promise<void> => {
         request.state.user.emailVerificationCreatedAt
       )
         throw "validation";
-      const emailVerificationNoncePlaintext = cryptoRandomString({
+      const emailVerificationNonce = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
-      request.state.user.emailVerificationNonce = await argon2.hash(
-        emailVerificationNoncePlaintext,
+      request.state.user.emailVerificationNonceHash = await argon2.hash(
+        emailVerificationNonce,
         application.privateConfiguration.argon2,
       );
       request.state.user.emailVerificationCreatedAt = new Date().toISOString();
@@ -1454,7 +1454,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           update "users"
           set
-            "emailVerificationNonce" = ${request.state.user.emailVerificationNonce},
+            "emailVerificationNonceHash" = ${request.state.user.emailVerificationNonceHash},
             "emailVerificationCreatedAt" = ${request.state.user.emailVerificationCreatedAt}
           where "id" = ${request.state.user.id};
         `,
@@ -1484,12 +1484,12 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="https://${
                       application.configuration.hostname
-                    }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                    }/authentication/email-verification/${emailVerificationNonce}${
                       request.URL.search
                     }"
                     >https://${
                       application.configuration.hostname
-                    }/authentication/email-verification/${emailVerificationNoncePlaintext}${
+                    }/authentication/email-verification/${emailVerificationNonce}${
                       request.URL.search
                     }</a
                   >
@@ -1762,7 +1762,7 @@ export default async (application: Application): Promise<void> => {
         request.state.userSession === undefined ||
         request.state.user === undefined ||
         typeof request.state.user.emailVerificationEmail !== "string" ||
-        typeof request.state.user.emailVerificationNonce !== "string" ||
+        typeof request.state.user.emailVerificationNonceHash !== "string" ||
         typeof request.state.user.emailVerificationCreatedAt !== "string"
       )
         return;
@@ -1773,7 +1773,7 @@ export default async (application: Application): Promise<void> => {
         delete request.search.redirect;
       if (
         !(await argon2.verify(
-          request.state.user.emailVerificationNonce,
+          request.state.user.emailVerificationNonceHash,
           request.pathname.emailVerificationNonce,
           application.privateConfiguration.argon2,
         )) ||
@@ -1793,7 +1793,7 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.user.email = request.state.user.emailVerificationEmail;
       request.state.user.emailVerificationEmail = null;
-      request.state.user.emailVerificationNonce = null;
+      request.state.user.emailVerificationNonceHash = null;
       request.state.user.emailVerificationCreatedAt = null;
       application.database.run(
         sql`
@@ -1801,7 +1801,7 @@ export default async (application: Application): Promise<void> => {
           set
             "email" = ${request.state.user.email},
             "emailVerificationEmail" = ${request.state.user.emailVerificationEmail},
-            "emailVerificationNonce" = ${request.state.user.emailVerificationNonce},
+            "emailVerificationNonceHash" = ${request.state.user.emailVerificationNonceHash},
             "emailVerificationCreatedAt" = ${request.state.user.emailVerificationCreatedAt}
           where "id" = ${request.state.user.id};
         `,
@@ -1853,14 +1853,14 @@ export default async (application: Application): Promise<void> => {
         name: string;
         email: string;
         emailVerificationEmail: string | null;
-        emailVerificationNonce: string | null;
+        emailVerificationNonceHash: string | null;
         emailVerificationCreatedAt: string | null;
-        password: string | null;
-        passwordResetNonce: string | null;
+        passwordHash: string | null;
+        passwordResetNonceHash: string | null;
         passwordResetCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
-        twoFactorAuthenticationRecoveryCodes: string | null;
+        twoFactorAuthenticationRecoveryCodesHashes: string | null;
         avatarColor:
           | "red"
           | "orange"
@@ -1903,14 +1903,14 @@ export default async (application: Application): Promise<void> => {
             "name",
             "email",
             "emailVerificationEmail",
-            "emailVerificationNonce",
+            "emailVerificationNonceHash",
             "emailVerificationCreatedAt",
-            "password",
-            "passwordResetNonce",
+            "passwordHash",
+            "passwordResetNonceHash",
             "passwordResetCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
-            "twoFactorAuthenticationRecoveryCodes",
+            "twoFactorAuthenticationRecoveryCodesHashes",
             "avatarColor",
             "avatarImage",
             "userRole",
@@ -1928,7 +1928,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       const passwordVerify = await argon2.verify(
-        request.state.user?.password ??
+        request.state.user?.passwordHash ??
           "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
         request.body.password,
         application.privateConfiguration.argon2,
@@ -2379,7 +2379,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodes !==
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
           "string"
       )
         return;
@@ -2412,7 +2412,7 @@ export default async (application: Application): Promise<void> => {
           !(
             await Promise.all(
               JSON.parse(
-                request.state.user.twoFactorAuthenticationRecoveryCodes,
+                request.state.user.twoFactorAuthenticationRecoveryCodesHashes,
               ).map((twoFactorAuthenticationRecoveryCode: string) =>
                 argon2.verify(
                   twoFactorAuthenticationRecoveryCode,
@@ -2448,14 +2448,14 @@ export default async (application: Application): Promise<void> => {
       ) {
         request.state.user.twoFactorAuthenticationEnabled = Number(false);
         request.state.user.twoFactorAuthenticationSecret = null;
-        request.state.user.twoFactorAuthenticationRecoveryCodes = null;
+        request.state.user.twoFactorAuthenticationRecoveryCodesHashes = null;
         application.database.run(
           sql`
             update "users"
             set
               "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
               "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
-              "twoFactorAuthenticationRecoveryCodes" = ${request.state.user.twoFactorAuthenticationRecoveryCodes}
+              "twoFactorAuthenticationRecoveryCodesHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesHashes}
             where "id" = ${request.state.user.id};
           `,
         );
@@ -2506,12 +2506,12 @@ export default async (application: Application): Promise<void> => {
         !request.body.email.match(utilities.emailRegExp)
       )
         throw "validation";
-      const passwordResetNoncePlaintext = cryptoRandomString({
+      const passwordResetNonce = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
-      const passwordResetNonce = await argon2.hash(
-        passwordResetNoncePlaintext,
+      const passwordResetNonceHash = await argon2.hash(
+        passwordResetNonce,
         application.privateConfiguration.argon2,
       );
       request.state.user = application.database.get<{
@@ -2520,14 +2520,14 @@ export default async (application: Application): Promise<void> => {
         name: string;
         email: string;
         emailVerificationEmail: string | null;
-        emailVerificationNonce: string | null;
+        emailVerificationNonceHash: string | null;
         emailVerificationCreatedAt: string | null;
-        password: string | null;
-        passwordResetNonce: string | null;
+        passwordHash: string | null;
+        passwordResetNonceHash: string | null;
         passwordResetCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
-        twoFactorAuthenticationRecoveryCodes: string | null;
+        twoFactorAuthenticationRecoveryCodesHashes: string | null;
         avatarColor:
           | "red"
           | "orange"
@@ -2570,14 +2570,14 @@ export default async (application: Application): Promise<void> => {
             "name",
             "email",
             "emailVerificationEmail",
-            "emailVerificationNonce",
+            "emailVerificationNonceHash",
             "emailVerificationCreatedAt",
-            "password",
-            "passwordResetNonce",
+            "passwordHash",
+            "passwordResetNonceHash",
             "passwordResetCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
-            "twoFactorAuthenticationRecoveryCodes",
+            "twoFactorAuthenticationRecoveryCodesHashes",
             "avatarColor",
             "avatarImage",
             "userRole",
@@ -2600,13 +2600,13 @@ export default async (application: Application): Promise<void> => {
           request.state.user.passwordResetCreatedAt <
             new Date(Date.now() - 5 * 60 * 1000).toISOString())
       ) {
-        request.state.user.passwordResetNonce = passwordResetNonce;
+        request.state.user.passwordResetNonceHash = passwordResetNonceHash;
         request.state.user.passwordResetCreatedAt = new Date().toISOString();
         application.database.run(
           sql`
             update "users"
             set
-              "passwordResetNonce" = ${request.state.user.passwordResetNonce},
+              "passwordResetNonceHash" = ${request.state.user.passwordResetNonceHash},
               "passwordResetCreatedAt" = ${request.state.user.passwordResetCreatedAt}
             where "id" = ${request.state.user.id};
           `,
@@ -2638,12 +2638,12 @@ export default async (application: Application): Promise<void> => {
                         application.configuration.hostname
                       }/authentication/reset-password/${
                         request.state.user.publicId
-                      }/${passwordResetNoncePlaintext}${request.URL.search}"
+                      }/${passwordResetNonce}${request.URL.search}"
                       >https://${
                         application.configuration.hostname
                       }/authentication/reset-password/${
                         request.state.user.publicId
-                      }/${passwordResetNoncePlaintext}${request.URL.search}</a
+                      }/${passwordResetNonce}${request.URL.search}</a
                     >
                   </p>
                   <p>
@@ -2909,7 +2909,7 @@ export default async (application: Application): Promise<void> => {
         !request.search.redirect.startsWith("/")
       )
         delete request.search.redirect;
-      const password = await argon2.hash(
+      const passwordHash = await argon2.hash(
         request.body.password,
         application.privateConfiguration.argon2,
       );
@@ -2919,14 +2919,14 @@ export default async (application: Application): Promise<void> => {
         name: string;
         email: string;
         emailVerificationEmail: string | null;
-        emailVerificationNonce: string | null;
+        emailVerificationNonceHash: string | null;
         emailVerificationCreatedAt: string | null;
-        password: string | null;
-        passwordResetNonce: string | null;
+        passwordHash: string | null;
+        passwordResetNonceHash: string | null;
         passwordResetCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
-        twoFactorAuthenticationRecoveryCodes: string | null;
+        twoFactorAuthenticationRecoveryCodesHashes: string | null;
         avatarColor:
           | "red"
           | "orange"
@@ -2969,14 +2969,14 @@ export default async (application: Application): Promise<void> => {
             "name",
             "email",
             "emailVerificationEmail",
-            "emailVerificationNonce",
+            "emailVerificationNonceHash",
             "emailVerificationCreatedAt",
-            "password",
-            "passwordResetNonce",
+            "passwordHash",
+            "passwordResetNonceHash",
             "passwordResetCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
-            "twoFactorAuthenticationRecoveryCodes",
+            "twoFactorAuthenticationRecoveryCodesHashes",
             "avatarColor",
             "avatarImage",
             "userRole",
@@ -2994,7 +2994,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       const passwordResetNonceVerify = await argon2.verify(
-        request.state.user?.passwordResetNonce ??
+        request.state.user?.passwordResetNonceHash ??
           "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
         request.pathname.passwordResetNonce,
         application.privateConfiguration.argon2,
@@ -3015,15 +3015,15 @@ export default async (application: Application): Promise<void> => {
         response.redirect!(`/authentication${request.URL.search}`);
         return;
       }
-      request.state.user.password = password;
-      request.state.user.passwordResetNonce = null;
+      request.state.user.passwordHash = passwordHash;
+      request.state.user.passwordResetNonceHash = null;
       request.state.user.passwordResetCreatedAt = null;
       application.database.run(
         sql`
           update "users"
           set
-            "password" = ${request.state.user.password},
-            "passwordResetNonce" = ${request.state.user.passwordResetNonce},
+            "passwordHash" = ${request.state.user.passwordHash},
+            "passwordResetNonceHash" = ${request.state.user.passwordResetNonceHash},
             "passwordResetCreatedAt" = ${request.state.user.passwordResetCreatedAt}
           where "id" = ${request.state.user.id};
         `,
@@ -3311,14 +3311,14 @@ export default async (application: Application): Promise<void> => {
               name: string;
               email: string;
               emailVerificationEmail: string | null;
-              emailVerificationNonce: string | null;
+              emailVerificationNonceHash: string | null;
               emailVerificationCreatedAt: string | null;
-              password: string | null;
-              passwordResetNonce: string | null;
+              passwordHash: string | null;
+              passwordResetNonceHash: string | null;
               passwordResetCreatedAt: string | null;
               twoFactorAuthenticationEnabled: number;
               twoFactorAuthenticationSecret: string | null;
-              twoFactorAuthenticationRecoveryCodes: string | null;
+              twoFactorAuthenticationRecoveryCodesHashes: string | null;
               avatarColor:
                 | "red"
                 | "orange"
@@ -3363,14 +3363,14 @@ export default async (application: Application): Promise<void> => {
                   "name",
                   "email",
                   "emailVerificationEmail",
-                  "emailVerificationNonce",
+                  "emailVerificationNonceHash",
                   "emailVerificationCreatedAt",
-                  "password",
-                  "passwordResetNonce",
+                  "passwordHash",
+                  "passwordResetNonceHash",
                   "passwordResetCreatedAt",
                   "twoFactorAuthenticationEnabled",
                   "twoFactorAuthenticationSecret",
-                  "twoFactorAuthenticationRecoveryCodes",
+                  "twoFactorAuthenticationRecoveryCodesHashes",
                   "avatarColor",
                   "avatarImage",
                   "userRole",
@@ -3393,14 +3393,14 @@ export default async (application: Application): Promise<void> => {
               name: string;
               email: string;
               emailVerificationEmail: string | null;
-              emailVerificationNonce: string | null;
+              emailVerificationNonceHash: string | null;
               emailVerificationCreatedAt: string | null;
-              password: string | null;
-              passwordResetNonce: string | null;
+              passwordHash: string | null;
+              passwordResetNonceHash: string | null;
               passwordResetCreatedAt: string | null;
               twoFactorAuthenticationEnabled: number;
               twoFactorAuthenticationSecret: string | null;
-              twoFactorAuthenticationRecoveryCodes: string | null;
+              twoFactorAuthenticationRecoveryCodesHashes: string | null;
               avatarColor:
                 | "red"
                 | "orange"
@@ -3447,14 +3447,14 @@ export default async (application: Application): Promise<void> => {
                         "name",
                         "email",
                         "emailVerificationEmail",
-                        "emailVerificationNonce",
+                        "emailVerificationNonceHash",
                         "emailVerificationCreatedAt",
-                        "password",
-                        "passwordResetNonce",
+                        "passwordHash",
+                        "passwordResetNonceHash",
                         "passwordResetCreatedAt",
                         "twoFactorAuthenticationEnabled",
                         "twoFactorAuthenticationSecret",
-                        "twoFactorAuthenticationRecoveryCodes",
+                        "twoFactorAuthenticationRecoveryCodesHashes",
                         "avatarColor",
                         "avatarImage",
                         "userRole",
@@ -4180,14 +4180,14 @@ export default async (application: Application): Promise<void> => {
             name: string;
             email: string;
             emailVerificationEmail: string | null;
-            emailVerificationNonce: string | null;
+            emailVerificationNonceHash: string | null;
             emailVerificationCreatedAt: string | null;
-            password: string | null;
-            passwordResetNonce: string | null;
+            passwordHash: string | null;
+            passwordResetNonceHash: string | null;
             passwordResetCreatedAt: string | null;
             twoFactorAuthenticationEnabled: number;
             twoFactorAuthenticationSecret: string | null;
-            twoFactorAuthenticationRecoveryCodes: string | null;
+            twoFactorAuthenticationRecoveryCodesHashes: string | null;
             avatarColor:
               | "red"
               | "orange"
@@ -4230,14 +4230,14 @@ export default async (application: Application): Promise<void> => {
                 "name",
                 "email",
                 "emailVerificationEmail",
-                "emailVerificationNonce",
+                "emailVerificationNonceHash",
                 "emailVerificationCreatedAt",
-                "password",
-                "passwordResetNonce",
+                "passwordHash",
+                "passwordResetNonceHash",
                 "passwordResetCreatedAt",
                 "twoFactorAuthenticationEnabled",
                 "twoFactorAuthenticationSecret",
-                "twoFactorAuthenticationRecoveryCodes",
+                "twoFactorAuthenticationRecoveryCodesHashes",
                 "avatarColor",
                 "avatarImage",
                 "userRole",
@@ -4260,14 +4260,14 @@ export default async (application: Application): Promise<void> => {
             name: string;
             email: string;
             emailVerificationEmail: string | null;
-            emailVerificationNonce: string | null;
+            emailVerificationNonceHash: string | null;
             emailVerificationCreatedAt: string | null;
-            password: string | null;
-            passwordResetNonce: string | null;
+            passwordHash: string | null;
+            passwordResetNonceHash: string | null;
             passwordResetCreatedAt: string | null;
             twoFactorAuthenticationEnabled: number;
             twoFactorAuthenticationSecret: string | null;
-            twoFactorAuthenticationRecoveryCodes: string | null;
+            twoFactorAuthenticationRecoveryCodesHashes: string | null;
             avatarColor:
               | "red"
               | "orange"
@@ -4312,14 +4312,14 @@ export default async (application: Application): Promise<void> => {
                       "name",
                       "email",
                       "emailVerificationEmail",
-                      "emailVerificationNonce",
+                      "emailVerificationNonceHash",
                       "emailVerificationCreatedAt",
-                      "password",
-                      "passwordResetNonce",
+                      "passwordHash",
+                      "passwordResetNonceHash",
                       "passwordResetCreatedAt",
                       "twoFactorAuthenticationEnabled",
                       "twoFactorAuthenticationSecret",
-                      "twoFactorAuthenticationRecoveryCodes",
+                      "twoFactorAuthenticationRecoveryCodesHashes",
                       "avatarColor",
                       "avatarImage",
                       "userRole",
@@ -4487,7 +4487,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
-        typeof request.state.user.password === "string"
+        typeof request.state.user.passwordHash === "string"
       )
         return;
       response.send(
@@ -4627,7 +4627,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
-        typeof request.state.user.password === "string"
+        typeof request.state.user.passwordHash === "string"
       )
         return;
       if (
@@ -4640,14 +4640,14 @@ export default async (application: Application): Promise<void> => {
         !request.search.redirect.startsWith("/")
       )
         delete request.search.redirect;
-      request.state.user.password = await argon2.hash(
+      request.state.user.passwordHash = await argon2.hash(
         request.body.password,
         application.privateConfiguration.argon2,
       );
       application.database.run(
         sql`
           update "users"
-          set "password" = ${request.state.user.password}
+          set "passwordHash" = ${request.state.user.passwordHash}
           where "id" = ${request.state.user.id};
         `,
       );
