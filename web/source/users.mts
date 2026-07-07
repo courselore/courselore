@@ -22,6 +22,7 @@ export type ApplicationUsers = {
     }: {
       user:
         | {
+            id: number;
             publicId: string;
             name: string;
             avatarColor:
@@ -2901,9 +2902,15 @@ export default async (application: Application): Promise<void> => {
                     --transition-timing-function--ease-in-out
                   );
                 `} ${
-                  user.lastSeenOnlineAt === null ||
-                  user.lastSeenOnlineAt <
-                    new Date(Date.now() - 6 * 60 * 1000).toISOString()
+                  application.database.get(
+                    sql`
+                      select true
+                      from "userSessions"
+                      where
+                        "user" = ${user.id} and
+                        ${new Date(Date.now() - 6 * 60 * 1000).toISOString()} < "lastUsedAt";
+                    `,
+                  ) === undefined
                     ? css`
                         opacity: var(--opacity--0);
                       `
