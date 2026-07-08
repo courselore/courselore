@@ -549,521 +549,83 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </div>
               </details>
-              <details>
-                <summary
-                  class="button button--rectangle button--transparent"
-                  css="${css`
-                    font-weight: 500;
-                  `}"
-                >
-                  <span
-                    css="${css`
-                      display: inline-block;
-                      transition-property: var(
-                        --transition-property--transform
-                      );
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--ease-in-out
-                      );
-                      details[open] > summary > & {
-                        rotate: var(--rotate--90);
-                      }
-                    `}"
-                  >
-                    <i class="bi bi-chevron-right"></i>
-                  </span>
-                  Authentication
-                </summary>
-                <div
-                  css="${css`
-                    padding: var(--size--2) var(--size--0);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size--2);
-                  `}"
-                >
-                  <details>
-                    <summary
-                      class="button button--rectangle button--transparent"
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--600),
-                          var(--color--slate--400)
-                        );
-                      `}"
-                    >
-                      <span
-                        css="${css`
-                          display: inline-block;
-                          transition-property: var(
-                            --transition-property--transform
-                          );
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--ease-in-out
-                          );
-                          details[open] > summary > & {
-                            rotate: var(--rotate--90);
-                          }
-                        `}"
-                      >
-                        <i class="bi bi-chevron-right"></i>
-                      </span>
-                      Email address
-                    </summary>
-                    <div
-                      type="form"
-                      method="PATCH"
-                      action="/settings/email-address"
-                      css="${css`
-                        padding: var(--size--2) var(--size--0);
-                        border-bottom: var(--border-width--1) solid
-                          light-dark(
-                            var(--color--slate--200),
-                            var(--color--slate--800)
-                          );
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--size--4);
-                      `}"
-                      javascript="${javascript`
-                        this.onsubmit = () => {
-                          javascript.reset(this);
-                        };
-                      `}"
-                    >
-                      <label>
-                        <div
+              $${
+                typeof request.state.user.passwordHash === "string"
+                  ? html`
+                      <details>
+                        <summary
+                          class="button button--rectangle button--transparent"
                           css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
+                            font-weight: 500;
                           `}"
                         >
-                          Current email address
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                          `}"
-                        >
-                          <input
-                            type="text"
-                            value="${request.state.user.email}"
-                            readonly
-                            class="input--text"
+                          <span
                             css="${css`
-                              flex: 1;
-                              font-family:
-                                "Roboto Mono Variable",
-                                var(--font-family--monospace);
+                              display: inline-block;
+                              transition-property: var(
+                                --transition-property--transform
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              details[open] > summary > & {
+                                rotate: var(--rotate--90);
+                              }
                             `}"
-                            javascript="${javascript`
-                              this.onclick = () => {
-                                this.select();
-                              };
-                            `}"
-                          />
-                        </div>
-                      </label>
-                      <label>
+                          >
+                            <i class="bi bi-chevron-right"></i>
+                          </span>
+                          Authentication
+                        </summary>
                         <div
                           css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                        >
-                          New email address
-                        </div>
-                        <div
-                          css="${css`
+                            padding: var(--size--2) var(--size--0);
                             display: flex;
+                            flex-direction: column;
+                            gap: var(--size--2);
                           `}"
                         >
-                          <input
-                            type="email"
-                            name="email"
-                            required
-                            maxlength="2000"
-                            class="input--text"
-                            css="${css`
-                              flex: 1;
-                              font-family:
-                                "Roboto Mono Variable",
-                                var(--font-family--monospace);
-                            `}"
-                            javascript="${javascript`
-                              this.onvalidate = () => {
-                                if (this.value === ${request.state.user.email})
-                                  throw new javascript.ValidationError("“New email address” cannot be the same as “Current email address”.");
-                              };
-                            `}"
-                          />
-                        </div>
-                      </label>
-                      <div
-                        css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                        `}"
-                      >
-                        <button
-                          type="submit"
-                          class="button button--rectangle button--blue"
-                        >
-                          Change email address
-                        </button>
-                      </div>
-                    </div>
-                  </details>
-                  <details>
-                    <summary
-                      class="button button--rectangle button--transparent"
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--600),
-                          var(--color--slate--400)
-                        );
-                      `}"
-                    >
-                      <span
-                        css="${css`
-                          display: inline-block;
-                          transition-property: var(
-                            --transition-property--transform
-                          );
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--ease-in-out
-                          );
-                          details[open] > summary > & {
-                            rotate: var(--rotate--90);
-                          }
-                        `}"
-                      >
-                        <i class="bi bi-chevron-right"></i>
-                      </span>
-                      Password
-                    </summary>
-                    <div
-                      type="form"
-                      method="PATCH"
-                      action="/settings/password"
-                      css="${css`
-                        padding: var(--size--2) var(--size--0);
-                        border-bottom: var(--border-width--1) solid
-                          light-dark(
-                            var(--color--slate--200),
-                            var(--color--slate--800)
-                          );
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--size--4);
-                      `}"
-                      javascript="${javascript`
-                        this.onsubmit = () => {
-                          javascript.reset(this);
-                        };
-                      `}"
-                    >
-                      <label>
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                        >
-                          Current password
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                          `}"
-                        >
-                          <input
-                            type="password"
-                            name="passwordConfirmation"
-                            required
-                            minlength="8"
-                            maxlength="2000"
-                            class="input--text"
-                            css="${css`
-                              flex: 1;
-                            `}"
-                          />
-                        </div>
-                      </label>
-                      <label>
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                        >
-                          New password
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                          `}"
-                        >
-                          <input
-                            type="password"
-                            name="password"
-                            required
-                            minlength="8"
-                            maxlength="2000"
-                            class="input--text"
-                            css="${css`
-                              flex: 1;
-                            `}"
-                            javascript="${javascript`
-                              this.onvalidate = () => {
-                                if (this.value === this.closest('[type~="form"]').querySelector('[name="passwordConfirmation"]').value)
-                                  throw new javascript.ValidationError("“New password” cannot be the same as “Current password”.");
-                              };
-                            `}"
-                          />
-                        </div>
-                      </label>
-                      <label>
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                        >
-                          New password confirmation
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                          `}"
-                        >
-                          <input
-                            type="password"
-                            required
-                            class="input--text"
-                            css="${css`
-                              flex: 1;
-                            `}"
-                            javascript="${javascript`
-                              this.onvalidate = () => {
-                                if (this.value !== this.closest('[type~="form"]').querySelector('[name="password"]').value)
-                                  throw new javascript.ValidationError("“New password” and “New password confirmation” don’t match.");
-                              };
-                            `}"
-                          />
-                        </div>
-                      </label>
-                      $${
-                        Boolean(
-                          request.state.user.twoFactorAuthenticationEnabled,
-                        )
-                          ? html`
-                              <label>
-                                <div
-                                  css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    font-weight: 600;
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                >
-                                  Two-factor authentication code
-                                </div>
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                  `}"
-                                >
-                                  <input
-                                    type="text"
-                                    inputmode="numeric"
-                                    name="twoFactorAuthenticationConfirmation"
-                                    required
-                                    minlength="6"
-                                    class="input--text"
-                                    css="${css`
-                                      flex: 1;
-                                    `}"
-                                  />
-                                </div>
-                              </label>
-                            `
-                          : html``
-                      }
-                      <div
-                        css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                        `}"
-                      >
-                        <button
-                          type="submit"
-                          class="button button--rectangle button--blue"
-                        >
-                          Change password
-                        </button>
-                      </div>
-                    </div>
-                  </details>
-                  <details>
-                    <summary
-                      class="button button--rectangle button--transparent"
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--600),
-                          var(--color--slate--400)
-                        );
-                      `}"
-                    >
-                      <span
-                        css="${css`
-                          display: inline-block;
-                          transition-property: var(
-                            --transition-property--transform
-                          );
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--ease-in-out
-                          );
-                          details[open] > summary > & {
-                            rotate: var(--rotate--90);
-                          }
-                        `}"
-                      >
-                        <i class="bi bi-chevron-right"></i>
-                      </span>
-                      Two-factor authentication
-                    </summary>
-                    $${
-                      Boolean(
-                        request.state.user.twoFactorAuthenticationEnabled,
-                      ) === false
-                        ? html`
-                            <div
-                              type="form"
-                              method="POST"
-                              action="/settings/two-factor-authentication"
+                          <details>
+                            <summary
+                              class="button button--rectangle button--transparent"
                               css="${css`
-                                padding: var(--size--2) var(--size--0);
-                                border-bottom: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--color--slate--200),
-                                    var(--color--slate--800)
-                                  );
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--4);
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
                               `}"
                             >
-                              <div
+                              <span
                                 css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--red--500),
-                                    var(--color--red--500)
+                                  display: inline-block;
+                                  transition-property: var(
+                                    --transition-property--transform
                                   );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  details[open] > summary > & {
+                                    rotate: var(--rotate--90);
+                                  }
                                 `}"
                               >
-                                Two-factor authentication is disabled.
-                              </div>
-                              <label>
-                                <div
-                                  css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    font-weight: 600;
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                >
-                                  Password confirmation
-                                </div>
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                  `}"
-                                >
-                                  <input
-                                    type="password"
-                                    name="passwordConfirmation"
-                                    required
-                                    minlength="8"
-                                    maxlength="2000"
-                                    class="input--text"
-                                    css="${css`
-                                      flex: 1;
-                                    `}"
-                                  />
-                                </div>
-                              </label>
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                `}"
-                              >
-                                <button
-                                  type="submit"
-                                  class="button button--rectangle button--blue"
-                                >
-                                  Enable two-factor authentication
-                                </button>
-                              </div>
-                            </div>
-                          `
-                        : html`
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
+                              Email address
+                            </summary>
                             <div
                               type="form"
-                              method="DELETE"
-                              action="/settings/two-factor-authentication"
+                              method="PATCH"
+                              action="/settings/email-address"
                               css="${css`
                                 padding: var(--size--2) var(--size--0);
                                 border-bottom: var(--border-width--1) solid
@@ -1076,24 +638,11 @@ export default async (application: Application): Promise<void> => {
                                 gap: var(--size--4);
                               `}"
                               javascript="${javascript`
-                              this.onsubmit = () => {
-                                javascript.reset(this);
-                              };
-                            `}"
+                                this.onsubmit = () => {
+                                  javascript.reset(this);
+                                };
+                              `}"
                             >
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--green--500),
-                                    var(--color--green--500)
-                                  );
-                                `}"
-                              >
-                                Two-factor authentication is enabled.
-                              </div>
                               <label>
                                 <div
                                   css="${css`
@@ -1108,7 +657,159 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   `}"
                                 >
-                                  Password confirmation
+                                  Current email address
+                                </div>
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                  `}"
+                                >
+                                  <input
+                                    type="text"
+                                    value="${request.state.user.email}"
+                                    readonly
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                      font-family:
+                                        "Roboto Mono Variable",
+                                        var(--font-family--monospace);
+                                    `}"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.select();
+                                      };
+                                    `}"
+                                  />
+                                </div>
+                              </label>
+                              <label>
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                >
+                                  New email address
+                                </div>
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                  `}"
+                                >
+                                  <input
+                                    type="email"
+                                    name="email"
+                                    required
+                                    maxlength="2000"
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                      font-family:
+                                        "Roboto Mono Variable",
+                                        var(--font-family--monospace);
+                                    `}"
+                                    javascript="${javascript`
+                                      this.onvalidate = () => {
+                                        if (this.value === ${request.state.user.email})
+                                          throw new javascript.ValidationError("“New email address” cannot be the same as “Current email address”.");
+                                      };
+                                    `}"
+                                  />
+                                </div>
+                              </label>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
+                              >
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Change email address
+                                </button>
+                              </div>
+                            </div>
+                          </details>
+                          <details>
+                            <summary
+                              class="button button--rectangle button--transparent"
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                            >
+                              <span
+                                css="${css`
+                                  display: inline-block;
+                                  transition-property: var(
+                                    --transition-property--transform
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  details[open] > summary > & {
+                                    rotate: var(--rotate--90);
+                                  }
+                                `}"
+                              >
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
+                              Password
+                            </summary>
+                            <div
+                              type="form"
+                              method="PATCH"
+                              action="/settings/password"
+                              css="${css`
+                                padding: var(--size--2) var(--size--0);
+                                border-bottom: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+                              `}"
+                              javascript="${javascript`
+                                this.onsubmit = () => {
+                                  javascript.reset(this);
+                                };
+                              `}"
+                            >
+                              <label>
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                >
+                                  Current password
                                 </div>
                                 <div
                                   css="${css`
@@ -1142,7 +843,7 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   `}"
                                 >
-                                  Two-factor authentication code
+                                  New password
                                 </div>
                                 <div
                                   css="${css`
@@ -1150,18 +851,104 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <input
-                                    type="text"
-                                    inputmode="numeric"
-                                    name="twoFactorAuthenticationConfirmation"
+                                    type="password"
+                                    name="password"
                                     required
-                                    minlength="6"
+                                    minlength="8"
+                                    maxlength="2000"
                                     class="input--text"
                                     css="${css`
                                       flex: 1;
                                     `}"
+                                    javascript="${javascript`
+                                      this.onvalidate = () => {
+                                        if (this.value === this.closest('[type~="form"]').querySelector('[name="passwordConfirmation"]').value)
+                                          throw new javascript.ValidationError("“New password” cannot be the same as “Current password”.");
+                                      };
+                                    `}"
                                   />
                                 </div>
                               </label>
+                              <label>
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                >
+                                  New password confirmation
+                                </div>
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                  `}"
+                                >
+                                  <input
+                                    type="password"
+                                    required
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                    javascript="${javascript`
+                                      this.onvalidate = () => {
+                                        if (this.value !== this.closest('[type~="form"]').querySelector('[name="password"]').value)
+                                          throw new javascript.ValidationError("“New password” and “New password confirmation” don’t match.");
+                                      };
+                                    `}"
+                                  />
+                                </div>
+                              </label>
+                              $${
+                                Boolean(
+                                  request.state.user
+                                    .twoFactorAuthenticationEnabled,
+                                )
+                                  ? html`
+                                      <label>
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            font-weight: 600;
+                                            color: light-dark(
+                                              var(--color--slate--500),
+                                              var(--color--slate--500)
+                                            );
+                                          `}"
+                                        >
+                                          Two-factor authentication code
+                                        </div>
+                                        <div
+                                          css="${css`
+                                            display: flex;
+                                          `}"
+                                        >
+                                          <input
+                                            type="text"
+                                            inputmode="numeric"
+                                            name="twoFactorAuthenticationConfirmation"
+                                            required
+                                            minlength="6"
+                                            class="input--text"
+                                            css="${css`
+                                              flex: 1;
+                                            `}"
+                                          />
+                                        </div>
+                                      </label>
+                                    `
+                                  : html``
+                              }
                               <div
                                 css="${css`
                                   font-size: var(--font-size--3);
@@ -1172,15 +959,264 @@ export default async (application: Application): Promise<void> => {
                                   type="submit"
                                   class="button button--rectangle button--blue"
                                 >
-                                  Disable two-factor authentication
+                                  Change password
                                 </button>
                               </div>
                             </div>
-                          `
-                    }
-                  </details>
-                </div>
-              </details>
+                          </details>
+                          <details>
+                            <summary
+                              class="button button--rectangle button--transparent"
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                            >
+                              <span
+                                css="${css`
+                                  display: inline-block;
+                                  transition-property: var(
+                                    --transition-property--transform
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  details[open] > summary > & {
+                                    rotate: var(--rotate--90);
+                                  }
+                                `}"
+                              >
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
+                              Two-factor authentication
+                            </summary>
+                            $${
+                              Boolean(
+                                request.state.user
+                                  .twoFactorAuthenticationEnabled,
+                              ) === false
+                                ? html`
+                                    <div
+                                      type="form"
+                                      method="POST"
+                                      action="/settings/two-factor-authentication"
+                                      css="${css`
+                                        padding: var(--size--2) var(--size--0);
+                                        border-bottom: var(--border-width--1)
+                                          solid
+                                          light-dark(
+                                            var(--color--slate--200),
+                                            var(--color--slate--800)
+                                          );
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--4);
+                                      `}"
+                                    >
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                      >
+                                        Two-factor authentication is disabled.
+                                      </div>
+                                      <label>
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            font-weight: 600;
+                                            color: light-dark(
+                                              var(--color--slate--500),
+                                              var(--color--slate--500)
+                                            );
+                                          `}"
+                                        >
+                                          Password confirmation
+                                        </div>
+                                        <div
+                                          css="${css`
+                                            display: flex;
+                                          `}"
+                                        >
+                                          <input
+                                            type="password"
+                                            name="passwordConfirmation"
+                                            required
+                                            minlength="8"
+                                            maxlength="2000"
+                                            class="input--text"
+                                            css="${css`
+                                              flex: 1;
+                                            `}"
+                                          />
+                                        </div>
+                                      </label>
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                        `}"
+                                      >
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--blue"
+                                        >
+                                          Enable two-factor authentication
+                                        </button>
+                                      </div>
+                                    </div>
+                                  `
+                                : html`
+                                    <div
+                                      type="form"
+                                      method="DELETE"
+                                      action="/settings/two-factor-authentication"
+                                      css="${css`
+                                        padding: var(--size--2) var(--size--0);
+                                        border-bottom: var(--border-width--1)
+                                          solid
+                                          light-dark(
+                                            var(--color--slate--200),
+                                            var(--color--slate--800)
+                                          );
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--4);
+                                      `}"
+                                      javascript="${javascript`
+                                      this.onsubmit = () => {
+                                        javascript.reset(this);
+                                      };
+                                    `}"
+                                    >
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--green--500),
+                                            var(--color--green--500)
+                                          );
+                                        `}"
+                                      >
+                                        Two-factor authentication is enabled.
+                                      </div>
+                                      <label>
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            font-weight: 600;
+                                            color: light-dark(
+                                              var(--color--slate--500),
+                                              var(--color--slate--500)
+                                            );
+                                          `}"
+                                        >
+                                          Password confirmation
+                                        </div>
+                                        <div
+                                          css="${css`
+                                            display: flex;
+                                          `}"
+                                        >
+                                          <input
+                                            type="password"
+                                            name="passwordConfirmation"
+                                            required
+                                            minlength="8"
+                                            maxlength="2000"
+                                            class="input--text"
+                                            css="${css`
+                                              flex: 1;
+                                            `}"
+                                          />
+                                        </div>
+                                      </label>
+                                      <label>
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            font-weight: 600;
+                                            color: light-dark(
+                                              var(--color--slate--500),
+                                              var(--color--slate--500)
+                                            );
+                                          `}"
+                                        >
+                                          Two-factor authentication code
+                                        </div>
+                                        <div
+                                          css="${css`
+                                            display: flex;
+                                          `}"
+                                        >
+                                          <input
+                                            type="text"
+                                            inputmode="numeric"
+                                            name="twoFactorAuthenticationConfirmation"
+                                            required
+                                            minlength="6"
+                                            class="input--text"
+                                            css="${css`
+                                              flex: 1;
+                                            `}"
+                                          />
+                                        </div>
+                                      </label>
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                        `}"
+                                      >
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--blue"
+                                        >
+                                          Disable two-factor authentication
+                                        </button>
+                                      </div>
+                                    </div>
+                                  `
+                            }
+                          </details>
+                        </div>
+                      </details>
+                    `
+                  : html``
+              }
               <details>
                 <summary
                   class="button button--rectangle button--transparent"
