@@ -977,7 +977,7 @@ export default async (application: Application): Promise<void> => {
                     </p>
                     <p>
                       If it was you, please sign in instead, and if you don’t
-                      remember your password use the “Forgot password” feature
+                      remember your password use the “Forgot password” feature:
                       <a
                         href="https://${
                           application.configuration.hostname
