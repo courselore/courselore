@@ -2655,24 +2655,6 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       }
-      response.redirect!(`/authentication/reset-password${request.URL.search}`);
-    },
-  });
-
-  application.server?.push({
-    method: "GET",
-    pathname: "/authentication/reset-password",
-    handler: (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {},
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (request.state.user !== undefined) return;
       response.send(
         application.layouts.main({
           request,
