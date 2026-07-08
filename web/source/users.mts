@@ -818,7 +818,7 @@ export default async (application: Application): Promise<void> => {
                                 >
                                   <input
                                     type="password"
-                                    name="passwordConfirmation"
+                                    name="currentPassword"
                                     required
                                     minlength="8"
                                     maxlength="2000"
@@ -852,7 +852,7 @@ export default async (application: Application): Promise<void> => {
                                 >
                                   <input
                                     type="password"
-                                    name="password"
+                                    name="newPassword"
                                     required
                                     minlength="8"
                                     maxlength="2000"
@@ -862,7 +862,7 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                     javascript="${javascript`
                                       this.onvalidate = () => {
-                                        if (this.value === this.closest('[type~="form"]').querySelector('[name="passwordConfirmation"]').value)
+                                        if (this.value === this.closest('[type~="form"]').querySelector('[name="currentPassword"]').value)
                                           throw new javascript.ValidationError("“New password” cannot be the same as “Current password”.");
                                       };
                                     `}"
@@ -899,56 +899,13 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                     javascript="${javascript`
                                       this.onvalidate = () => {
-                                        if (this.value !== this.closest('[type~="form"]').querySelector('[name="password"]').value)
+                                        if (this.value !== this.closest('[type~="form"]').querySelector('[name="newPassword"]').value)
                                           throw new javascript.ValidationError("“New password” and “New password confirmation” don’t match.");
                                       };
                                     `}"
                                   />
                                 </div>
                               </label>
-                              $${
-                                Boolean(
-                                  request.state.user
-                                    .twoFactorAuthenticationEnabled,
-                                )
-                                  ? html`
-                                      <label>
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            font-weight: 600;
-                                            color: light-dark(
-                                              var(--color--slate--500),
-                                              var(--color--slate--500)
-                                            );
-                                          `}"
-                                        >
-                                          Two-factor authentication code
-                                        </div>
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                          `}"
-                                        >
-                                          <input
-                                            type="text"
-                                            inputmode="numeric"
-                                            name="twoFactorAuthenticationConfirmation"
-                                            required
-                                            minlength="6"
-                                            class="input--text"
-                                            css="${css`
-                                              flex: 1;
-                                            `}"
-                                          />
-                                        </div>
-                                      </label>
-                                    `
-                                  : html``
-                              }
                               <div
                                 css="${css`
                                   font-size: var(--font-size--3);
@@ -1855,64 +1812,40 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        {
-          passwordConfirmation: string;
-          password: string;
-          twoFactorAuthenticationConfirmation: string;
-        },
+        { currentPassword: string; newPassword: string },
         Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
       if (
         request.state.userSession === undefined ||
-        request.state.user === undefined
+        request.state.user === undefined ||
+        typeof request.state.user.passwordHash !== "string"
       )
         return;
       if (
-        typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.length < 8 ||
-        typeof request.body.password !== "string" ||
-        request.body.password.length < 8 ||
-        request.body.passwordConfirmation === request.body.password ||
-        (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-          (typeof request.body.twoFactorAuthenticationConfirmation !==
-            "string" ||
-            request.body.twoFactorAuthenticationConfirmation.length < 6))
+        typeof request.body.currentPassword !== "string" ||
+        request.body.currentPassword.length < 8 ||
+        typeof request.body.newPassword !== "string" ||
+        request.body.newPassword.length < 8 ||
+        request.body.currentPassword === request.body.newPassword
       )
         throw "validation";
-      const passwordConfirmationVerify = await argon2.verify(
-        request.state.user.passwordHash!,
-        request.body.passwordConfirmation,
-        application.privateConfiguration.argon2,
-      );
-      const twoFactorAuthenticationValidate =
-        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-        typeof request.state.user.twoFactorAuthenticationSecret === "string" &&
-        typeof request.body.twoFactorAuthenticationConfirmation === "string"
-          ? new OTPAuth.TOTP({
-              secret: request.state.user.twoFactorAuthenticationSecret,
-            }).validate({
-              token: request.body.twoFactorAuthenticationConfirmation,
-            }) !== null
-          : true;
-      if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
+      if (
+        !(await argon2.verify(
+          request.state.user.passwordHash,
+          request.body.currentPassword,
+          application.privateConfiguration.argon2,
+        ))
+      ) {
         response.setFlash!(html`
-          <div class="flash--red">
-            Invalid “Current
-            password”${
-              Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
-              true
-                ? " or “Two-factor authentication code”"
-                : ""
-            }.
-          </div>
+          <div class="flash--red">Invalid “Current password”.</div>
         `);
         response.redirect!("/settings");
         return;
       }
       request.state.user.passwordHash = await argon2.hash(
-        request.body.password,
+        request.body.newPassword,
         application.privateConfiguration.argon2,
       );
       application.database.run(
