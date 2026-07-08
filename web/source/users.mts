@@ -2298,6 +2298,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        request.state.userSession === undefined ||
         request.state.user === undefined ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
@@ -2336,6 +2337,14 @@ export default async (application: Application): Promise<void> => {
           update "users"
           set "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled}
           where "id" = ${request.state.user.id};
+        `,
+      );
+      application.database.run(
+        sql`
+          delete from "userSessions"
+          where
+            "id" != ${request.state.userSession.id} and
+            "user" = ${request.state.user.id};
         `,
       );
       response.setFlash!(html`
