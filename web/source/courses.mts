@@ -4264,67 +4264,54 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        application.database.run(
-          sql`
-            insert into "_backgroundJobs" (
-              "type",
-              "startAt",
-              "parameters"
-            )
-            values (
-              'email',
-              ${new Date().toISOString()},
-              ${JSON.stringify({
-                from: {
-                  name: `${request.state.course.name} · Courselore`,
-                  address: application.configuration.email.from,
-                },
-                to: userEmail,
-                subject: `Invitation`,
-                html: html`
-                  <p>
-                    You’re invited to join the course
-                    “${request.state.course.name}” on Courselore with the
-                    following email address:
-                    <code>${userEmail}</code>
-                  </p>
-                  <p>
-                    If you wish to join, please follow this invitation link:
-                    <a
-                      href="https://${
-                        application.configuration.hostname
-                      }/courses/${
-                        request.state.course.publicId
-                      }/invitation-emails/${coursePendingInvitationEmail.publicId}"
-                      >https://${application.configuration.hostname}/courses/${
-                        request.state.course.publicId
-                      }/invitation-emails/${coursePendingInvitationEmail.publicId}</a
-                    >
-                  </p>
-                  <p>
-                    If you believe that this was a mistake, please report the
-                    issue to
-                    <a
-                      href="mailto:${
-                        application.configuration.systemAdministratorEmail ??
-                        "system-administrator@courselore.org"
-                      }?${new URLSearchParams({
-                        subject: "Potential invitation issue",
-                        body: `Course: ${request.state.course.publicId}\n\nEmail: ${userEmail}`,
-                      })
-                        .toString()
-                        .replaceAll("+", "%20")}"
-                      >${
-                        application.configuration.systemAdministratorEmail ??
-                        "system-administrator@courselore.org"
-                      }</a
-                    >
-                  </p>
-                `,
-              })}
-            );
-          `,
-        );
+        application.database.backgroundJob({
+          type: "email",
+          parameters: {
+            from: {
+              name: `${request.state.course.name} · Courselore`,
+              address: application.configuration.email.from,
+            },
+            to: userEmail,
+            subject: `Invitation`,
+            html: html`
+              <p>
+                You’re invited to join the course “${request.state.course.name}”
+                on Courselore with the following email address:
+                <code>${userEmail}</code>
+              </p>
+              <p>
+                If you wish to join, please follow this invitation link:
+                <a
+                  href="https://${application.configuration.hostname}/courses/${
+                    request.state.course.publicId
+                  }/invitation-emails/${coursePendingInvitationEmail.publicId}"
+                  >https://${application.configuration.hostname}/courses/${
+                    request.state.course.publicId
+                  }/invitation-emails/${coursePendingInvitationEmail.publicId}</a
+                >
+              </p>
+              <p>
+                If you believe that this was a mistake, please report the issue
+                to
+                <a
+                  href="mailto:${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }?${new URLSearchParams({
+                    subject: "Potential invitation issue",
+                    body: `Course: ${request.state.course.publicId}\n\nEmail: ${userEmail}`,
+                  })
+                    .toString()
+                    .replaceAll("+", "%20")}"
+                  >${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }</a
+                >
+              </p>
+            `,
+          },
+        });
       }
       response.setFlash!(html`
         <div class="flash--green">Invitation emails sent successfully.</div>

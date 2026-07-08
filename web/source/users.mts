@@ -1824,114 +1824,94 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      application.database.run(
-        sql`
-          insert into "_backgroundJobs" (
-            "type",
-            "startAt",
-            "parameters"
-          )
-          values (
-            'email',
-            ${new Date().toISOString()},
-            ${JSON.stringify({
-              from: `"Courselore" <${application.configuration.email.from}>`,
-              to: request.state.user.email,
-              subject: "Trying to change email address",
-              html: html`
-                <p>
-                  Someone is trying to change an account on Courselore from the
-                  email address <code>${request.state.user.email}</code> to the
-                  email address
-                  <code>${request.state.user.emailVerificationEmail}</code>.
-                </p>
-                <p>
-                  If it was you, please check the inbox for
-                  <code>${request.state.user.emailVerificationEmail}</code> to
-                  verify the email address.
-                </p>
-                <p>
-                  If it was not you, please report the issue to
-                  <a
-                    href="mailto:${
-                      application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"
-                    }?${new URLSearchParams({
-                      subject: "Potential impersonation",
-                      body: `Email: ${request.state.user.email}`,
-                    })
-                      .toString()
-                      .replaceAll("+", "%20")}"
-                    >${
-                      application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"
-                    }</a
-                  >
-                </p>
-              `,
-            })}
-          );
-        `,
-      );
-      application.database.run(
-        sql`
-          insert into "_backgroundJobs" (
-            "type",
-            "startAt",
-            "parameters"
-          )
-          values (
-            'email',
-            ${new Date().toISOString()},
-            ${JSON.stringify({
-              from: `"Courselore" <${application.configuration.email.from}>`,
-              to: request.state.user.emailVerificationEmail,
-              subject: "Email verification",
-              html: html`
-                <p>
-                  Someone is trying to change an account on Courselore from the
-                  email address <code>${request.state.user.email}</code> to the
-                  email address
-                  <code>${request.state.user.emailVerificationEmail}</code>.
-                </p>
-                <p>
-                  If it was you, please confirm your email:
-                  <a
-                    href="https://${
-                      application.configuration.hostname
-                    }/authentication/email-verification/${emailVerificationNonce}${
-                      request.URL.search
-                    }"
-                    >https://${
-                      application.configuration.hostname
-                    }/authentication/email-verification/${emailVerificationNonce}${
-                      request.URL.search
-                    }</a
-                  >
-                </p>
-                <p>
-                  If it was not you, please report the issue to
-                  <a
-                    href="mailto:${
-                      application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"
-                    }?${new URLSearchParams({
-                      subject: "Potential impersonation",
-                      body: `Email: ${request.state.user.emailVerificationEmail}`,
-                    })
-                      .toString()
-                      .replaceAll("+", "%20")}"
-                    >${
-                      application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"
-                    }</a
-                  >
-                </p>
-              `,
-            })}
-          );
-        `,
-      );
+      application.database.backgroundJob({
+        type: "email",
+        parameters: {
+          from: `"Courselore" <${application.configuration.email.from}>`,
+          to: request.state.user.email,
+          subject: "Trying to change email address",
+          html: html`
+            <p>
+              Someone is trying to change an account on Courselore from the
+              email address <code>${request.state.user.email}</code> to the
+              email address
+              <code>${request.state.user.emailVerificationEmail}</code>.
+            </p>
+            <p>
+              If it was you, please check the inbox for
+              <code>${request.state.user.emailVerificationEmail}</code> to
+              verify the email address.
+            </p>
+            <p>
+              If it was not you, please report the issue to
+              <a
+                href="mailto:${
+                  application.configuration.systemAdministratorEmail ??
+                  "system-administrator@courselore.org"
+                }?${new URLSearchParams({
+                  subject: "Potential impersonation",
+                  body: `Email: ${request.state.user.email}`,
+                })
+                  .toString()
+                  .replaceAll("+", "%20")}"
+                >${
+                  application.configuration.systemAdministratorEmail ??
+                  "system-administrator@courselore.org"
+                }</a
+              >
+            </p>
+          `,
+        },
+      });
+      application.database.backgroundJob({
+        type: "email",
+        parameters: {
+          from: `"Courselore" <${application.configuration.email.from}>`,
+          to: request.state.user.emailVerificationEmail,
+          subject: "Email verification",
+          html: html`
+            <p>
+              Someone is trying to change an account on Courselore from the
+              email address <code>${request.state.user.email}</code> to the
+              email address
+              <code>${request.state.user.emailVerificationEmail}</code>.
+            </p>
+            <p>
+              If it was you, please confirm your email:
+              <a
+                href="https://${
+                  application.configuration.hostname
+                }/authentication/email-verification/${emailVerificationNonce}${
+                  request.URL.search
+                }"
+                >https://${
+                  application.configuration.hostname
+                }/authentication/email-verification/${emailVerificationNonce}${
+                  request.URL.search
+                }</a
+              >
+            </p>
+            <p>
+              If it was not you, please report the issue to
+              <a
+                href="mailto:${
+                  application.configuration.systemAdministratorEmail ??
+                  "system-administrator@courselore.org"
+                }?${new URLSearchParams({
+                  subject: "Potential impersonation",
+                  body: `Email: ${request.state.user.emailVerificationEmail}`,
+                })
+                  .toString()
+                  .replaceAll("+", "%20")}"
+                >${
+                  application.configuration.systemAdministratorEmail ??
+                  "system-administrator@courselore.org"
+                }</a
+              >
+            </p>
+          `,
+        },
+      });
       response.setFlash!(html`
         <div class="flash--green">
           Check your inbox to verify the new email address.
@@ -2024,49 +2004,39 @@ export default async (application: Application): Promise<void> => {
             "user" = ${request.state.user.id};
         `,
       );
-      application.database.run(
-        sql`
-          insert into "_backgroundJobs" (
-            "type",
-            "startAt",
-            "parameters"
-          )
-          values (
-            'email',
-            ${new Date().toISOString()},
-            ${JSON.stringify({
-              from: `"Courselore" <${application.configuration.email.from}>`,
-              to: request.state.user.email,
-              subject: "Password changed",
-              html: html`
-                <p>
-                  Someone changed the password for an account on Courselore with
-                  the following email address:
-                  <code>${request.state.user.email}</code>
-                </p>
-                <p>
-                  If it was not you, please report the issue to
-                  <a
-                    href="mailto:${
-                      application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"
-                    }?${new URLSearchParams({
-                      subject: "Potential impersonation",
-                      body: `Email: ${request.state.user.email}`,
-                    })
-                      .toString()
-                      .replaceAll("+", "%20")}"
-                    >${
-                      application.configuration.systemAdministratorEmail ??
-                      "system-administrator@courselore.org"
-                    }</a
-                  >
-                </p>
-              `,
-            })}
-          );
-        `,
-      );
+      application.database.backgroundJob({
+        type: "email",
+        parameters: {
+          from: `"Courselore" <${application.configuration.email.from}>`,
+          to: request.state.user.email,
+          subject: "Password changed",
+          html: html`
+            <p>
+              Someone changed the password for an account on Courselore with the
+              following email address:
+              <code>${request.state.user.email}</code>
+            </p>
+            <p>
+              If it was not you, please report the issue to
+              <a
+                href="mailto:${
+                  application.configuration.systemAdministratorEmail ??
+                  "system-administrator@courselore.org"
+                }?${new URLSearchParams({
+                  subject: "Potential impersonation",
+                  body: `Email: ${request.state.user.email}`,
+                })
+                  .toString()
+                  .replaceAll("+", "%20")}"
+                >${
+                  application.configuration.systemAdministratorEmail ??
+                  "system-administrator@courselore.org"
+                }</a
+              >
+            </p>
+          `,
+        },
+      });
       response.setFlash!(html`
         <div class="flash--green">Password updated successfully.</div>
       `);
@@ -2594,49 +2564,39 @@ export default async (application: Application): Promise<void> => {
             delete from "users" where "id" = ${request.state.user!.id};
           `,
         );
-        application.database.run(
-          sql`
-            insert into "_backgroundJobs" (
-              "type",
-              "startAt",
-              "parameters"
-            )
-            values (
-              'email',
-              ${new Date().toISOString()},
-              ${JSON.stringify({
-                from: `"Courselore" <${application.configuration.email.from}>`,
-                to: request.state.user!.email,
-                subject: "Account deleted",
-                html: html`
-                  <p>
-                    Someone deleted the account on Courselore with the following
-                    email address:
-                    <code>${request.state.user!.email}</code>
-                  </p>
-                  <p>
-                    If it was not you, please report the issue to
-                    <a
-                      href="mailto:${
-                        application.configuration.systemAdministratorEmail ??
-                        "system-administrator@courselore.org"
-                      }?${new URLSearchParams({
-                        subject: "Potential impersonation",
-                        body: `Email: ${request.state.user!.email}`,
-                      })
-                        .toString()
-                        .replaceAll("+", "%20")}"
-                      >${
-                        application.configuration.systemAdministratorEmail ??
-                        "system-administrator@courselore.org"
-                      }</a
-                    >
-                  </p>
-                `,
-              })}
-            );
-          `,
-        );
+        application.database.backgroundJob({
+          type: "email",
+          parameters: {
+            from: `"Courselore" <${application.configuration.email.from}>`,
+            to: request.state.user!.email,
+            subject: "Account deleted",
+            html: html`
+              <p>
+                Someone deleted the account on Courselore with the following
+                email address:
+                <code>${request.state.user!.email}</code>
+              </p>
+              <p>
+                If it was not you, please report the issue to
+                <a
+                  href="mailto:${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }?${new URLSearchParams({
+                    subject: "Potential impersonation",
+                    body: `Email: ${request.state.user!.email}`,
+                  })
+                    .toString()
+                    .replaceAll("+", "%20")}"
+                  >${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }</a
+                >
+              </p>
+            `,
+          },
+        });
       });
       response.setFlash!(html`
         <div class="flash--green">Account deleted.</div>

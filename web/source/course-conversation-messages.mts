@@ -354,20 +354,13 @@ export default async (application: Application): Promise<void> => {
             );
           `,
         );
-        application.database.run(
-          sql`
-            insert into "_backgroundJobs" (
-              "type",
-              "startAt",
-              "parameters"
-            )
-            values (
-              'courseConversationMessageEmailNotification',
-              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
-              ${JSON.stringify({ courseConversationMessageId: courseConversationMessage.id })}
-            );
-          `,
-        );
+        application.database.backgroundJob({
+          type: "courseConversationMessageEmailNotification",
+          startAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+          parameters: {
+            courseConversationMessageId: courseConversationMessage.id,
+          },
+        });
       });
       response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
@@ -677,20 +670,10 @@ export default async (application: Application): Promise<void> => {
         }
         application.database.executeTransaction(() => {
           for (const courseConversationMessageEmailNotification of courseConversationMessageEmailNotifications)
-            application.database.run(
-              sql`
-              insert into "_backgroundJobs" (
-                "type",
-                "startAt",
-                "parameters"
-              )
-              values (
-                'email',
-                ${new Date().toISOString()},
-                ${JSON.stringify(courseConversationMessageEmailNotification)}
-              );
-            `,
-            );
+            application.database.backgroundJob({
+              type: "email",
+              parameters: courseConversationMessageEmailNotification,
+            });
         });
       },
     );
@@ -1187,19 +1170,19 @@ export default async (application: Application): Promise<void> => {
                                   value="courseConversationMessageAnonymityEveryone"
                                   required
                                   $${
-                                  request.state.courseConversationMessage
-                                    .courseConversationMessageAnonymity ===
-                                  "courseConversationMessageAnonymityEveryone"
-                                    ? html`checked`
-                                    : html``
-                                }
+                                    request.state.courseConversationMessage
+                                      .courseConversationMessageAnonymity ===
+                                    "courseConversationMessageAnonymityEveryone"
+                                      ? html`checked`
+                                      : html``
+                                  }
                                   hidden
                                 /><span
                                   css="${css`
-                                  :not(:checked) + & {
-                                    display: none;
-                                  }
-                                `}"
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
                                   >Anonymous to everyone</span
                                 >`
                             : html``

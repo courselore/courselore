@@ -2955,23 +2955,14 @@ export default async (application: Application): Promise<void> => {
             );
           `,
         );
-        application.database.run(
-          sql`
-            insert into "_backgroundJobs" (
-              "type",
-              "startAt",
-              "parameters"
-            )
-            values (
-              'courseConversationMessageEmailNotification',
-              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
-              ${JSON.stringify({
-                courseConversationMessageId: courseConversationMessage.id,
-                announcement: request.body.announcement === "on",
-              })}
-            );
-          `,
-        );
+        application.database.backgroundJob({
+          type: "courseConversationMessageEmailNotification",
+          startAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+          parameters: {
+            courseConversationMessageId: courseConversationMessage.id,
+            announcement: request.body.announcement === "on",
+          },
+        });
       });
       response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${courseConversation!.publicId}`,
