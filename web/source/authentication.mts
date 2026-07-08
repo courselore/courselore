@@ -1912,16 +1912,14 @@ export default async (application: Application): Promise<void> => {
           where "email" = ${request.body.email};
         `,
       );
-      const passwordVerify = await argon2.verify(
-        request.state.user?.passwordHash ??
-          "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
-        request.body.password,
-        application.privateConfiguration.argon2,
-      );
       if (
-        request.state.user === undefined ||
-        typeof request.state.user.passwordHash !== "string" ||
-        !passwordVerify
+        !(await argon2.verify(
+          request.state.user?.passwordHash ??
+            "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+          request.body.password,
+          application.privateConfiguration.argon2,
+        )) ||
+        typeof request.state.user?.passwordHash !== "string"
       ) {
         response.setFlash!(html`
           <div class="flash--red">Invalid email or password.</div>
@@ -2978,16 +2976,14 @@ export default async (application: Application): Promise<void> => {
           where "publicId" = ${request.pathname.userPublicId};
         `,
       );
-      const passwordResetNonceVerify = await argon2.verify(
-        request.state.user?.passwordResetNonceHash ??
-          "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
-        request.pathname.passwordResetNonce,
-        application.privateConfiguration.argon2,
-      );
       if (
-        request.state.user === undefined ||
-        typeof request.state.user.passwordResetNonceHash !== "string" ||
-        !passwordResetNonceVerify ||
+        !(await argon2.verify(
+          request.state.user?.passwordResetNonceHash ??
+            "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+          request.pathname.passwordResetNonce,
+          application.privateConfiguration.argon2,
+        )) ||
+        typeof request.state.user?.passwordResetNonceHash !== "string" ||
         typeof request.state.user.passwordResetCreatedAt !== "string" ||
         request.state.user.passwordResetCreatedAt <
           new Date(Date.now() - 15 * 60 * 1000).toISOString()
