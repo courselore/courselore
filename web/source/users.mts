@@ -2117,10 +2117,20 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.user.twoFactorAuthenticationSecret =
         new OTPAuth.Secret().base32;
+      const twoFactorAuthenticationRecoveryCodes = Array.from(
+        { length: 10 },
+        () => cryptoRandomString({ length: 10, type: "numeric" }),
+      );
       request.state.user.twoFactorAuthenticationRecoveryCodesHashes =
         JSON.stringify(
-          Array.from({ length: 10 }, () =>
-            cryptoRandomString({ length: 10, type: "numeric" }),
+          await Promise.all(
+            twoFactorAuthenticationRecoveryCodes.map(
+              (twoFactorAuthenticationRecoveryCode: string) =>
+                argon2.hash(
+                  twoFactorAuthenticationRecoveryCode,
+                  application.privateConfiguration.argon2,
+                ),
+            ),
           ),
         );
       application.database.run(
@@ -2132,33 +2142,6 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      response.redirect!(
-        `/settings/two-factor-authentication${request.URL.search}`,
-      );
-    },
-  });
-
-  application.server?.push({
-    method: "GET",
-    pathname: "/settings/two-factor-authentication",
-    handler: async (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {},
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (
-        request.state.user === undefined ||
-        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
-        typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
-          "string"
-      )
-        return;
       response.send(
         application.layouts.main({
           request,
@@ -2194,9 +2177,7 @@ export default async (application: Application): Promise<void> => {
                   columns: 2;
                 `}"
               >
-                $${JSON.parse(
-                  request.state.user.twoFactorAuthenticationRecoveryCodesHashes,
-                ).map(
+                $${twoFactorAuthenticationRecoveryCodes.map(
                   (twoFactorAuthenticationRecoveryCode: string) =>
                     html`<li>${twoFactorAuthenticationRecoveryCode}</li>`,
                 )}
@@ -2346,31 +2327,14 @@ export default async (application: Application): Promise<void> => {
             Invalid “Two-factor authentication code”.
           </div>
         `);
-        response.redirect!(
-          `/settings/two-factor-authentication${request.URL.search}`,
-        );
+        response.redirect!(`/settings`);
         return;
       }
       request.state.user.twoFactorAuthenticationEnabled = Number(true);
-      request.state.user.twoFactorAuthenticationRecoveryCodesHashes =
-        JSON.stringify(
-          await Promise.all(
-            JSON.parse(
-              request.state.user.twoFactorAuthenticationRecoveryCodesHashes,
-            ).map((twoFactorAuthenticationRecoveryCode: string) =>
-              argon2.hash(
-                twoFactorAuthenticationRecoveryCode,
-                application.privateConfiguration.argon2,
-              ),
-            ),
-          ),
-        );
       application.database.run(
         sql`
           update "users"
-          set
-            "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
-            "twoFactorAuthenticationRecoveryCodesHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesHashes}
+          set "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled}
           where "id" = ${request.state.user.id};
         `,
       );
