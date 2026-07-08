@@ -3292,7 +3292,6 @@ export default async (application: Application): Promise<void> => {
                             ? "userRoleSystemAdministrator"
                             : "userRoleUser"
                         },
-                        ${new Date().toISOString()},
                         ${"userDarkModeSystem"},
                         ${80 * 4},
                         ${Number(false)},
@@ -4143,7 +4142,6 @@ export default async (application: Application): Promise<void> => {
                           ? "userRoleSystemAdministrator"
                           : "userRoleUser"
                       },
-                      ${new Date().toISOString()},
                       ${"userDarkModeSystem"},
                       ${80 * 4},
                       ${Number(false)},
