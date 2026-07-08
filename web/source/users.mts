@@ -1719,7 +1719,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (request.state.user === undefined) return;
+      if (
+        request.state.user === undefined ||
+        typeof request.state.user.passwordHash !== "string"
+      )
+        return;
       if (
         typeof request.body.email !== "string" ||
         !request.body.email.match(utilities.emailRegExp) ||
