@@ -714,80 +714,6 @@ export default async (application: Application): Promise<void> => {
                           />
                         </div>
                       </label>
-                      <label>
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                        >
-                          Password confirmation
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                          `}"
-                        >
-                          <input
-                            type="password"
-                            name="passwordConfirmation"
-                            required
-                            minlength="8"
-                            maxlength="2000"
-                            class="input--text"
-                            css="${css`
-                              flex: 1;
-                            `}"
-                          />
-                        </div>
-                      </label>
-                      $${
-                        Boolean(
-                          request.state.user.twoFactorAuthenticationEnabled,
-                        )
-                          ? html`
-                              <label>
-                                <div
-                                  css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    font-weight: 600;
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                >
-                                  Two-factor authentication code
-                                </div>
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                  `}"
-                                >
-                                  <input
-                                    type="text"
-                                    inputmode="numeric"
-                                    name="twoFactorAuthenticationConfirmation"
-                                    required
-                                    minlength="6"
-                                    class="input--text"
-                                    css="${css`
-                                      flex: 1;
-                                    `}"
-                                  />
-                                </div>
-                              </label>
-                            `
-                          : html``
-                      }
                       <div
                         css="${css`
                           font-size: var(--font-size--3);
@@ -1752,11 +1678,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        {
-          email: string;
-          passwordConfirmation: string;
-          twoFactorAuthenticationConfirmation: string;
-        },
+        { email: string },
         Application["types"]["states"]["Authentication"]
       >,
       response,
@@ -1765,45 +1687,9 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.email !== "string" ||
         !request.body.email.match(utilities.emailRegExp) ||
-        request.body.email === request.state.user.email ||
-        typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.length < 8 ||
-        (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-          (typeof request.body.twoFactorAuthenticationConfirmation !==
-            "string" ||
-            request.body.twoFactorAuthenticationConfirmation.length < 6))
+        request.body.email === request.state.user.email
       )
         throw "validation";
-      const passwordConfirmationVerify = await argon2.verify(
-        request.state.user.passwordHash!,
-        request.body.passwordConfirmation,
-        application.privateConfiguration.argon2,
-      );
-      const twoFactorAuthenticationValidate =
-        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-        typeof request.state.user.twoFactorAuthenticationSecret === "string" &&
-        typeof request.body.twoFactorAuthenticationConfirmation === "string"
-          ? new OTPAuth.TOTP({
-              secret: request.state.user.twoFactorAuthenticationSecret,
-            }).validate({
-              token: request.body.twoFactorAuthenticationConfirmation,
-            }) !== null
-          : true;
-      if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
-        response.setFlash!(html`
-          <div class="flash--red">
-            Invalid “Password
-            confirmation”${
-              Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
-              true
-                ? " or “Two-factor authentication code”"
-                : ""
-            }.
-          </div>
-        `);
-        response.redirect!("/settings");
-        return;
-      }
       request.state.user.emailVerificationEmail = request.body.email;
       const emailVerificationNonce = cryptoRandomString({
         length: 100,
