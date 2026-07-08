@@ -2310,6 +2310,14 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
+      request.state.userSession.needsTwoFactorAuthentication = Number(false);
+      application.database.run(
+        sql`
+          update "userSessions"
+          set "needsTwoFactorAuthentication" = ${request.state.userSession.needsTwoFactorAuthentication}
+          where "id" = ${request.state.userSession.id};
+        `,
+      );
       if (
         typeof request.body.twoFactorAuthenticationRecoveryCode === "string"
       ) {
@@ -2328,9 +2336,10 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            update "userSessions"
-            set "needsTwoFactorAuthentication" = ${Number(false)}
-            where "user" = ${request.state.user.id};
+            delete from "userSessions"
+            where
+              "id" != ${request.state.userSession.id} and
+              "user" = ${request.state.user.id};
           `,
         );
         response.setFlash!(html`
@@ -2342,14 +2351,6 @@ export default async (application: Application): Promise<void> => {
         response.redirect!("/settings");
         return;
       }
-      request.state.userSession.needsTwoFactorAuthentication = Number(false);
-      application.database.run(
-        sql`
-          update "userSessions"
-          set "needsTwoFactorAuthentication" = ${request.state.userSession.needsTwoFactorAuthentication}
-          where "id" = ${request.state.userSession.id};
-        `,
-      );
       response.redirect!(request.search.redirect ?? "/");
     },
   });
