@@ -1909,7 +1909,7 @@ export default async (application: Application): Promise<void> => {
     handler: async (
       request: serverTypes.Request<
         {},
-        { redirect: string },
+        {},
         {},
         { passwordConfirmation: string },
         Application["types"]["states"]["Authentication"]
@@ -1918,6 +1918,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
+        typeof request.state.user.passwordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
       )
         return;
@@ -1926,11 +1927,6 @@ export default async (application: Application): Promise<void> => {
         request.body.passwordConfirmation.length < 8
       )
         throw "validation";
-      if (
-        typeof request.search.redirect === "string" &&
-        !request.search.redirect.startsWith("/")
-      )
-        delete request.search.redirect;
       if (
         !(await argon2.verify(
           request.state.user.passwordHash!,
@@ -1941,7 +1937,7 @@ export default async (application: Application): Promise<void> => {
         response.setFlash!(html`
           <div class="flash--red">Invalid “Password confirmation”.</div>
         `);
-        response.redirect!(request.search.redirect ?? "/settings");
+        response.redirect!("/settings");
         return;
       }
       request.state.user.twoFactorAuthenticationSecret =
@@ -2119,7 +2115,7 @@ export default async (application: Application): Promise<void> => {
     handler: async (
       request: serverTypes.Request<
         {},
-        { redirect: string },
+        {},
         {},
         { twoFactorAuthenticationConfirmation: string },
         Application["types"]["states"]["Authentication"]
@@ -2140,11 +2136,6 @@ export default async (application: Application): Promise<void> => {
         request.body.twoFactorAuthenticationConfirmation.length < 6
       )
         throw "validation";
-      if (
-        typeof request.search.redirect === "string" &&
-        !request.search.redirect.startsWith("/")
-      )
-        delete request.search.redirect;
       if (
         new OTPAuth.TOTP({
           secret: request.state.user.twoFactorAuthenticationSecret,
@@ -2181,7 +2172,7 @@ export default async (application: Application): Promise<void> => {
           Two-factor authentication enabled successfully.
         </div>
       `);
-      response.redirect!(request.search.redirect ?? "/settings");
+      response.redirect!("/settings");
     },
   });
 
