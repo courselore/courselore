@@ -1248,6 +1248,19 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  if (application.commandLineArguments.values.type === "backgroundJobWorker")
+    node.setInterval({ duration: 60 * 1000 }, () => {
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "emailVerificationNonceHash" = null,
+            "emailVerificationCreatedAt" = null
+          where "emailVerificationCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
+        `,
+      );
+    });
+
   application.server?.push({
     method: "GET",
     pathname: "/authentication/email-verification",

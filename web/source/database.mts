@@ -4314,8 +4314,13 @@ export default async (application: Application): Promise<void> => {
       alter table "users" rename column "twoFactorAuthenticationRecoveryCodes" to "twoFactorAuthenticationRecoveryCodesHashes";
 
       alter table "userSessions" rename column "createdAt" to "lastUsedAt";
+      drop index "index_userSessions_createdAt";
+      create index "index_userSessions_lastUsedAt" on "userSessions" ("lastUsedAt");
 
       alter table "users" drop column "lastSeenOnlineAt";
+
+      create index "index_users_emailVerificationCreatedAt" on "users" ("emailVerificationCreatedAt");
+      create index "index_users_passwordResetCreatedAt" on "users" ("passwordResetCreatedAt");
     `,
   );
 };
