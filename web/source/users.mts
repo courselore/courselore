@@ -1062,10 +1062,10 @@ export default async (application: Application): Promise<void> => {
                                         gap: var(--size--4);
                                       `}"
                                       javascript="${javascript`
-                                      this.onsubmit = () => {
-                                        javascript.reset(this);
-                                      };
-                                    `}"
+                                        this.onsubmit = () => {
+                                          javascript.reset(this);
+                                        };
+                                      `}"
                                     >
                                       <div
                                         css="${css`
