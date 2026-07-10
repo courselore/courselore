@@ -1082,6 +1082,177 @@ export default async (application: Application): Promise<void> => {
                                           />
                                         </div>
                                       </label>
+                                      <div
+                                        key="twoFactorAuthenticationCode"
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--size--1);
+                                        `}"
+                                      >
+                                        <label>
+                                          <div
+                                            css="${css`
+                                              font-size: var(--font-size--3);
+                                              line-height: var(
+                                                --font-size--3--line-height
+                                              );
+                                              font-weight: 600;
+                                              color: light-dark(
+                                                var(--color--slate--500),
+                                                var(--color--slate--500)
+                                              );
+                                            `}"
+                                          >
+                                            Two-factor authentication code
+                                          </div>
+                                          <div
+                                            css="${css`
+                                              display: flex;
+                                            `}"
+                                          >
+                                            <input
+                                              type="text"
+                                              inputmode="numeric"
+                                              name="twoFactorAuthenticationCode"
+                                              required
+                                              minlength="6"
+                                              class="input--text"
+                                              css="${css`
+                                                flex: 1;
+                                              `}"
+                                            />
+                                          </div>
+                                        </label>
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            font-weight: 600;
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
+                                          `}"
+                                        >
+                                          <button
+                                            type="button"
+                                            class="button button--rectangle button--transparent"
+                                            javascript="${javascript`
+                                              this.onclick = () => {
+                                                this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationCode"]').hidden = true;
+                                                this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationCode"]').disabled = true;
+                                                this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationRecoveryCode"]').hidden = false;
+                                                this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationRecoveryCode"]').disabled = false;
+                                              };
+                                            `}"
+                                          >
+                                            Use two-factor authentication
+                                            recovery code instead
+                                          </button>
+                                        </div>
+                                      </div>
+                                      <div
+                                        key="twoFactorAuthenticationRecoveryCode"
+                                        hidden
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--size--1);
+                                        `}"
+                                      >
+                                        <label>
+                                          <div
+                                            css="${css`
+                                              font-size: var(--font-size--3);
+                                              line-height: var(
+                                                --font-size--3--line-height
+                                              );
+                                              font-weight: 600;
+                                              color: light-dark(
+                                                var(--color--slate--500),
+                                                var(--color--slate--500)
+                                              );
+                                            `}"
+                                          >
+                                            Two-factor authentication recovery
+                                            code
+                                          </div>
+                                          <div
+                                            css="${css`
+                                              display: flex;
+                                            `}"
+                                          >
+                                            <input
+                                              type="text"
+                                              inputmode="numeric"
+                                              name="twoFactorAuthenticationRecoveryCode"
+                                              required
+                                              minlength="10"
+                                              disabled
+                                              class="input--text"
+                                              css="${css`
+                                                flex: 1;
+                                              `}"
+                                            />
+                                          </div>
+                                        </label>
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
+                                          `}"
+                                        >
+                                          The recovery codes have been shown to
+                                          you when you configured two-factor
+                                          authentication. Ten recovery codes
+                                          have been shown, and you may use any
+                                          one of them above. Only use a recovery
+                                          code if you lost the method of
+                                          two-factor authentication, for
+                                          example, if you lost your phone. A
+                                          recovery code may be used only once,
+                                          and after that you must configure
+                                          two-factor authentication again.
+                                        </div>
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            font-weight: 600;
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
+                                          `}"
+                                        >
+                                          <button
+                                            type="button"
+                                            class="button button--rectangle button--transparent"
+                                            javascript="${javascript`
+                                              this.onclick = () => {
+                                                this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationCode"]').hidden = false;
+                                                this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationCode"]').disabled = false;
+                                                this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationRecoveryCode"]').hidden = true;
+                                                this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationRecoveryCode"]').disabled = true;
+                                              };
+                                            `}"
+                                          >
+                                            Use two-factor authentication code
+                                            instead
+                                          </button>
+                                        </div>
+                                      </div>
                                       <label>
                                         <div
                                           css="${css`
