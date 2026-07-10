@@ -1992,13 +1992,13 @@ export default async (application: Application): Promise<void> => {
               </div>
               <div
                 css="${css`
-                font-size: var(--font-size--3);
-                line-height: var(--font-size--3--line-height);
-                color: light-dark(
-                  var(--color--slate--600),
-                  var(--color--slate--400)
-                );
-              `}"
+                  font-size: var(--font-size--3);
+                  line-height: var(--font-size--3--line-height);
+                  color: light-dark(
+                    var(--color--slate--600),
+                    var(--color--slate--400)
+                  );
+                `}"
               >
                 <a
                   href="otpauth://totp/Courselore (${application.configuration.hostname}):${request.state.user.email}?secret=${request.state.user.twoFactorAuthenticationSecret}&issuer=Courselore (${application.configuration.hostname})"
@@ -2192,10 +2192,10 @@ export default async (application: Application): Promise<void> => {
           secret: request.state.user.twoFactorAuthenticationSecret,
         }).validate({
           token: request.body.twoFactorAuthenticationConfirmation,
-        }) === null;
+        }) !== null;
       if (
         !passwordConfirmationVerification ||
-        twoFactorAuthenticationConfirmationVerification
+        !twoFactorAuthenticationConfirmationVerification
       ) {
         response.setFlash!(html`
           <div class="flash--red">
