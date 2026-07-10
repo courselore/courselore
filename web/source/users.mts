@@ -1990,7 +1990,16 @@ export default async (application: Application): Promise<void> => {
                     .replace("#ffffff", "transparent")}
                 </div>
               </div>
-              <div>
+              <div
+                css="${css`
+                font-size: var(--font-size--3);
+                line-height: var(--font-size--3--line-height);
+                color: light-dark(
+                  var(--color--slate--600),
+                  var(--color--slate--400)
+                );
+              `}"
+              >
                 <a
                   href="otpauth://totp/Courselore (${application.configuration.hostname}):${request.state.user.email}?secret=${request.state.user.twoFactorAuthenticationSecret}&issuer=Courselore (${application.configuration.hostname})"
                   class="link"
