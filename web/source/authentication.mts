@@ -2525,6 +2525,19 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  if (application.commandLineArguments.values.type === "backgroundJobWorker")
+    node.setInterval({ duration: 60 * 1000 }, () => {
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "passwordResetNonceHash" = null,
+            "passwordResetCreatedAt" = null
+          where "passwordResetCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
+        `,
+      );
+    });
+
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
