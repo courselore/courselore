@@ -2434,8 +2434,16 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.passwordConfirmation !== "string" ||
         request.body.passwordConfirmation.length < 8 ||
-        typeof request.body.twoFactorAuthenticationCode !== "string" ||
-        request.body.twoFactorAuthenticationCode.length < 6
+        (typeof request.body.twoFactorAuthenticationCode !== "string" &&
+          typeof request.body.twoFactorAuthenticationRecoveryCode !==
+            "string") ||
+        (typeof request.body.twoFactorAuthenticationCode === "string" &&
+          typeof request.body.twoFactorAuthenticationRecoveryCode ===
+            "string") ||
+        (typeof request.body.twoFactorAuthenticationCode === "string" &&
+          request.body.twoFactorAuthenticationCode.length < 6) ||
+        (typeof request.body.twoFactorAuthenticationRecoveryCode === "string" &&
+          request.body.twoFactorAuthenticationRecoveryCode.length < 10)
       )
         throw "validation";
       const passwordConfirmationVerification = await argon2.verify(
@@ -2444,18 +2452,43 @@ export default async (application: Application): Promise<void> => {
         application.privateConfiguration.argon2,
       );
       const twoFactorAuthenticationCodeVerification =
-        new OTPAuth.TOTP({
-          secret: request.state.user.twoFactorAuthenticationSecret,
-        }).validate({
-          token: request.body.twoFactorAuthenticationCode,
-        }) !== null;
+        (typeof request.body.twoFactorAuthenticationCode === "string" &&
+          new OTPAuth.TOTP({
+            secret: request.state.user.twoFactorAuthenticationSecret,
+          }).validate({
+            token: request.body.twoFactorAuthenticationCode,
+          }) !== null) ||
+        (typeof request.body.twoFactorAuthenticationRecoveryCode === "string" &&
+          (
+            await Promise.all(
+              JSON.parse(
+                request.state.user.twoFactorAuthenticationRecoveryCodesHashes,
+              ).map((twoFactorAuthenticationRecoveryCode: string) =>
+                argon2.verify(
+                  twoFactorAuthenticationRecoveryCode,
+                  request.body.twoFactorAuthenticationRecoveryCode!,
+                  application.privateConfiguration.argon2,
+                ),
+              ),
+            )
+          ).includes(true));
       if (
         !passwordConfirmationVerification ||
         !twoFactorAuthenticationCodeVerification
       ) {
         response.setFlash!(html`
           <div class="flash--red">
-            Invalid “Password confirmation” or “Two-factor authentication code”.
+            Invalid “Password confirmation” or
+            ${
+              typeof request.body.twoFactorAuthenticationCode === "string"
+                ? "“Two-factor authentication code”"
+                : typeof request.body.twoFactorAuthenticationRecoveryCode ===
+                    "string"
+                  ? "“Two-factor authentication recovery code”"
+                  : (() => {
+                      throw new Error();
+                    })()
+            }.
           </div>
         `);
         response.redirect!("/settings");
