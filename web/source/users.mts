@@ -2309,6 +2309,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.userSession === undefined ||
         request.state.user === undefined ||
+        typeof request.state.user.passwordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
         typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
@@ -2323,7 +2324,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const passwordConfirmationVerification = await argon2.verify(
-        request.state.user.passwordHash!,
+        request.state.user.passwordHash,
         request.body.passwordConfirmation,
         application.privateConfiguration.argon2,
       );
@@ -2414,6 +2415,7 @@ export default async (application: Application): Promise<void> => {
         {
           passwordConfirmation: string;
           twoFactorAuthenticationCode: string;
+          twoFactorAuthenticationRecoveryCode: string;
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -2422,6 +2424,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.userSession === undefined ||
         request.state.user === undefined ||
+        typeof request.state.user.passwordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
         typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
@@ -2435,18 +2438,21 @@ export default async (application: Application): Promise<void> => {
         request.body.twoFactorAuthenticationCode.length < 6
       )
         throw "validation";
-      const passwordConfirmationVerify = await argon2.verify(
-        request.state.user.passwordHash!,
+      const passwordConfirmationVerification = await argon2.verify(
+        request.state.user.passwordHash,
         request.body.passwordConfirmation,
         application.privateConfiguration.argon2,
       );
-      const twoFactorAuthenticationValidate =
+      const twoFactorAuthenticationCodeVerification =
         new OTPAuth.TOTP({
           secret: request.state.user.twoFactorAuthenticationSecret,
         }).validate({
           token: request.body.twoFactorAuthenticationCode,
         }) !== null;
-      if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
+      if (
+        !passwordConfirmationVerification ||
+        !twoFactorAuthenticationCodeVerification
+      ) {
         response.setFlash!(html`
           <div class="flash--red">
             Invalid “Password confirmation” or “Two-factor authentication code”.
