@@ -1276,9 +1276,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
-        typeof request.state.user.emailVerificationEmail !== "string" ||
-        typeof request.state.user.emailVerificationNonceHash !== "string" ||
-        typeof request.state.user.emailVerificationCreatedAt !== "string"
+        typeof request.state.user.emailVerificationEmail !== "string"
       )
         return;
       response.send(
@@ -1353,8 +1351,10 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   $${
+                    typeof request.state.user.emailVerificationCreatedAt ===
+                      "string" &&
                     new Date(Date.now() - 5 * 60 * 1000).toISOString() <
-                    request.state.user.emailVerificationCreatedAt
+                      request.state.user.emailVerificationCreatedAt
                       ? html`
                           <p>
                             Wait until
@@ -1399,14 +1399,13 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
-        typeof request.state.user.emailVerificationEmail !== "string" ||
-        typeof request.state.user.emailVerificationNonceHash !== "string" ||
-        typeof request.state.user.emailVerificationCreatedAt !== "string"
+        typeof request.state.user.emailVerificationEmail !== "string"
       )
         return;
       if (
+        typeof request.state.user.emailVerificationCreatedAt === "string" &&
         new Date(Date.now() - 5 * 60 * 1000).toISOString() <
-        request.state.user.emailVerificationCreatedAt
+          request.state.user.emailVerificationCreatedAt
       )
         throw "validation";
       const emailVerificationNonce = cryptoRandomString({
