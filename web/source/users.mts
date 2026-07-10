@@ -1212,16 +1212,10 @@ export default async (application: Application): Promise<void> => {
                                           `}"
                                         >
                                           The recovery codes have been shown to
-                                          you when you configured two-factor
+                                          you when you enabled two-factor
                                           authentication. Ten recovery codes
                                           have been shown, and you may use any
-                                          one of them above. Only use a recovery
-                                          code if you lost the method of
-                                          two-factor authentication, for
-                                          example, if you lost your phone. A
-                                          recovery code may be used only once,
-                                          and after that you must configure
-                                          two-factor authentication again.
+                                          one of them above.
                                         </div>
                                         <div
                                           css="${css`
@@ -1253,40 +1247,6 @@ export default async (application: Application): Promise<void> => {
                                           </button>
                                         </div>
                                       </div>
-                                      <label>
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            font-weight: 600;
-                                            color: light-dark(
-                                              var(--color--slate--500),
-                                              var(--color--slate--500)
-                                            );
-                                          `}"
-                                        >
-                                          Two-factor authentication code
-                                        </div>
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                          `}"
-                                        >
-                                          <input
-                                            type="text"
-                                            inputmode="numeric"
-                                            name="twoFactorAuthenticationConfirmation"
-                                            required
-                                            minlength="6"
-                                            class="input--text"
-                                            css="${css`
-                                              flex: 1;
-                                            `}"
-                                          />
-                                        </div>
-                                      </label>
                                       <div
                                         css="${css`
                                           font-size: var(--font-size--3);
@@ -2287,7 +2247,7 @@ export default async (application: Application): Promise<void> => {
                   <input
                     type="text"
                     inputmode="numeric"
-                    name="twoFactorAuthenticationConfirmation"
+                    name="twoFactorAuthenticationCode"
                     required
                     minlength="6"
                     class="input--text"
@@ -2340,7 +2300,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           passwordConfirmation: string;
-          twoFactorAuthenticationConfirmation: string;
+          twoFactorAuthenticationCode: string;
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -2358,8 +2318,8 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.passwordConfirmation !== "string" ||
         request.body.passwordConfirmation.length < 8 ||
-        typeof request.body.twoFactorAuthenticationConfirmation !== "string" ||
-        request.body.twoFactorAuthenticationConfirmation.length < 6
+        typeof request.body.twoFactorAuthenticationCode !== "string" ||
+        request.body.twoFactorAuthenticationCode.length < 6
       )
         throw "validation";
       const passwordConfirmationVerification = await argon2.verify(
@@ -2367,15 +2327,15 @@ export default async (application: Application): Promise<void> => {
         request.body.passwordConfirmation,
         application.privateConfiguration.argon2,
       );
-      const twoFactorAuthenticationConfirmationVerification =
+      const twoFactorAuthenticationCodeVerification =
         new OTPAuth.TOTP({
           secret: request.state.user.twoFactorAuthenticationSecret,
         }).validate({
-          token: request.body.twoFactorAuthenticationConfirmation,
+          token: request.body.twoFactorAuthenticationCode,
         }) !== null;
       if (
         !passwordConfirmationVerification ||
-        !twoFactorAuthenticationConfirmationVerification
+        !twoFactorAuthenticationCodeVerification
       ) {
         response.setFlash!(html`
           <div class="flash--red">
@@ -2453,7 +2413,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           passwordConfirmation: string;
-          twoFactorAuthenticationConfirmation: string;
+          twoFactorAuthenticationCode: string;
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -2471,8 +2431,8 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.passwordConfirmation !== "string" ||
         request.body.passwordConfirmation.length < 8 ||
-        typeof request.body.twoFactorAuthenticationConfirmation !== "string" ||
-        request.body.twoFactorAuthenticationConfirmation.length < 6
+        typeof request.body.twoFactorAuthenticationCode !== "string" ||
+        request.body.twoFactorAuthenticationCode.length < 6
       )
         throw "validation";
       const passwordConfirmationVerify = await argon2.verify(
@@ -2484,7 +2444,7 @@ export default async (application: Application): Promise<void> => {
         new OTPAuth.TOTP({
           secret: request.state.user.twoFactorAuthenticationSecret,
         }).validate({
-          token: request.body.twoFactorAuthenticationConfirmation,
+          token: request.body.twoFactorAuthenticationCode,
         }) !== null;
       if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
         response.setFlash!(html`

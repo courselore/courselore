@@ -2136,10 +2136,10 @@ export default async (application: Application): Promise<void> => {
                       );
                     `}"
                   >
-                    The recovery codes have been shown to you when you
-                    configured two-factor authentication. Ten recovery codes
-                    have been shown, and you may use any one of them above. Only
-                    use a recovery code if you lost the method of two-factor
+                    The recovery codes have been shown to you when you enabled
+                    two-factor authentication. Ten recovery codes have been
+                    shown, and you may use any one of them above. Only use a
+                    recovery code if you lost the method of two-factor
                     authentication, for example, if you lost your phone. A
                     recovery code may be used only once, and after that you must
                     configure two-factor authentication again.
