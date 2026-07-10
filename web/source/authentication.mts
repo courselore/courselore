@@ -2311,6 +2311,39 @@ export default async (application: Application): Promise<void> => {
               "user" = ${request.state.user.id};
           `,
         );
+        application.database.backgroundJob({
+          type: "email",
+          parameters: {
+            from: `"Courselore" <${application.configuration.email.from}>`,
+            to: request.state.user.email,
+            subject: "Two-factor authentication disabled",
+            html: html`
+              <p>
+                Someone used a recovery code and disabled two-factor
+                authentication in Courselore for the following email address:
+                <code>${request.state.user.email}</code>
+              </p>
+              <p>
+                If it was not you, please report the issue to
+                <a
+                  href="mailto:${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }?${new URLSearchParams({
+                    subject: "Potential impersonation",
+                    body: `Email: ${request.state.user.email}`,
+                  })
+                    .toString()
+                    .replaceAll("+", "%20")}"
+                  >${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }</a
+                >
+              </p>
+            `,
+          },
+        });
         response.setFlash!(html`
           <div class="flash--green">
             Two-factor authentication was disabled because you used a recovery
