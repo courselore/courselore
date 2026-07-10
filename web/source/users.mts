@@ -1975,51 +1975,52 @@ export default async (application: Application): Promise<void> => {
                   Scan the following QR code with a two-factor authentication
                   application on your phone, for example, Google Authenticator.
                 </div>
-                <div
-                  css="${css`
-                    display: flex;
-                    justify-content: center;
-                  `}"
-                >
-                  <div
-                    css="${css`
-                      max-width: var(--size--48);
-                      width: 100%;
-                    `}"
-                  >
-                    $${(
-                      await QRCode.toString(
-                        new OTPAuth.TOTP({
-                          issuer: `Courselore (${application.configuration.hostname})`,
-                          label: request.state.user.email,
-                          secret:
-                            request.state.user.twoFactorAuthenticationSecret,
-                        }).toString(),
-                        { type: "svg", margin: 0 },
-                      )
-                    )
-                      .replace("#000000", "currentColor")
-                      .replace("#ffffff", "transparent")}
-                  </div>
-                </div>
-                <div
-                  css="${css`
-                    font-size: var(--font-size--3);
-                    line-height: var(--font-size--3--line-height);
-                    color: light-dark(
-                      var(--color--slate--600),
-                      var(--color--slate--400)
-                    );
-                  `}"
-                >
-                  <a
-                    href="otpauth://totp/Courselore (${application.configuration.hostname}):${request.state.user.email}?secret=${request.state.user.twoFactorAuthenticationSecret}&issuer=Courselore (${application.configuration.hostname})"
-                    class="link"
-                  >
-                    Are you using Courselore from the phone in which you have
-                    the two-factor authentication application?
-                  </a>
-                </div>
+                $${await (async () => {
+                  const otpAuthURL = new OTPAuth.TOTP({
+                    issuer: `Courselore (${application.configuration.hostname})`,
+                    label: request.state.user!.email,
+                    secret: request.state.user!.twoFactorAuthenticationSecret!,
+                  }).toString();
+                  return html`
+                    <div
+                      css="${css`
+                        display: flex;
+                        justify-content: center;
+                      `}"
+                    >
+                      <div
+                        css="${css`
+                          max-width: var(--size--48);
+                          width: 100%;
+                        `}"
+                      >
+                        $${(
+                          await QRCode.toString(otpAuthURL, {
+                            type: "svg",
+                            margin: 0,
+                          })
+                        )
+                          .replace("#000000", "currentColor")
+                          .replace("#ffffff", "transparent")}
+                      </div>
+                    </div>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        color: light-dark(
+                          var(--color--slate--600),
+                          var(--color--slate--400)
+                        );
+                      `}"
+                    >
+                      <a href="${otpAuthURL}" class="link">
+                        Are you using Courselore from the phone in which you
+                        have the two-factor authentication application?
+                      </a>
+                    </div>
+                  `;
+                })()}
               </div>
               <hr class="separator" />
               <div
