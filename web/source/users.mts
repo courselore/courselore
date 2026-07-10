@@ -1922,10 +1922,15 @@ export default async (application: Application): Promise<void> => {
           head: html`<title>Two-factor authentication · Courselore</title>`,
           body: html`
             <div
+              type="form"
+              method="POST"
+              action="/settings/two-factor-authentication/enable${
+                request.URL.search
+              }"
               css="${css`
                 display: flex;
                 flex-direction: column;
-                gap: var(--size--2);
+                gap: var(--size--4);
               `}"
             >
               <div
@@ -1939,209 +1944,212 @@ export default async (application: Application): Promise<void> => {
               </div>
               <div
                 css="${css`
-                  font-size: var(--font-size--3);
-                  line-height: var(--font-size--3--line-height);
-                  font-weight: 600;
-                  color: light-dark(
-                    var(--color--slate--500),
-                    var(--color--slate--500)
-                  );
-                `}"
-              >
-                QR code
-              </div>
-              <div
-                css="${css`
-                  font-size: var(--font-size--3);
-                  line-height: var(--font-size--3--line-height);
-                  color: light-dark(
-                    var(--color--slate--600),
-                    var(--color--slate--400)
-                  );
-                `}"
-              >
-                Scan the following QR code with a two-factor authentication
-                application on your phone, for example, Google Authenticator.
-              </div>
-              <div
-                css="${css`
-                  display: flex;
-                  justify-content: center;
-                `}"
-              >
-                <div
-                  css="${css`
-                    max-width: var(--size--48);
-                    width: 100%;
-                  `}"
-                >
-                  $${(
-                    await QRCode.toString(
-                      new OTPAuth.TOTP({
-                        issuer: `Courselore (${application.configuration.hostname})`,
-                        label: request.state.user.email,
-                        secret:
-                          request.state.user.twoFactorAuthenticationSecret,
-                      }).toString(),
-                      { type: "svg", margin: 0 },
-                    )
-                  )
-                    .replace("#000000", "currentColor")
-                    .replace("#ffffff", "transparent")}
-                </div>
-              </div>
-              <div
-                css="${css`
-                  font-size: var(--font-size--3);
-                  line-height: var(--font-size--3--line-height);
-                  color: light-dark(
-                    var(--color--slate--600),
-                    var(--color--slate--400)
-                  );
-                `}"
-              >
-                <a
-                  href="otpauth://totp/Courselore (${application.configuration.hostname}):${request.state.user.email}?secret=${request.state.user.twoFactorAuthenticationSecret}&issuer=Courselore (${application.configuration.hostname})"
-                  class="link"
-                >
-                  Are you using Courselore from the phone in which you have the
-                  two-factor authentication application?
-                </a>
-              </div>
-              <hr class="separator" />
-              <div
-                css="${css`
-                  font-size: var(--font-size--3);
-                  line-height: var(--font-size--3--line-height);
-                  font-weight: 600;
-                  color: light-dark(
-                    var(--color--slate--500),
-                    var(--color--slate--500)
-                  );
-                `}"
-              >
-                Recovery codes
-              </div>
-              <ul
-                css="${css`
-                  font-family:
-                    "Roboto Mono Variable", var(--font-family--monospace);
-                  columns: 2;
-                `}"
-              >
-                $${twoFactorAuthenticationRecoveryCodes.map(
-                  (twoFactorAuthenticationRecoveryCode: string) =>
-                    html`<li>${twoFactorAuthenticationRecoveryCode}</li>`,
-                )}
-              </ul>
-              <label class="button button--rectangle button--transparent">
-                <input type="checkbox" class="input--checkbox" required />  I
-                have saved the recovery codes to use in case I lose the device
-                that generates two-factor authentication codes
-              </label>
-              <hr class="separator" />
-              <div
-                type="form"
-                method="POST"
-                action="/settings/two-factor-authentication/enable${
-                  request.URL.search
-                }"
-                css="${css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--size--4);
+                  gap: var(--size--2);
                 `}"
               >
-                <label>
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--3);
-                      line-height: var(--font-size--3--line-height);
-                      font-weight: 600;
-                      color: light-dark(
-                        var(--color--slate--500),
-                        var(--color--slate--500)
-                      );
-                    `}"
-                  >
-                    Password confirmation
-                  </div>
-                  <div
-                    css="${css`
-                      display: flex;
-                    `}"
-                  >
-                    <input
-                      type="password"
-                      name="passwordConfirmation"
-                      required
-                      minlength="8"
-                      maxlength="2000"
-                      class="input--text"
-                      css="${css`
-                        flex: 1;
-                      `}"
-                    />
-                  </div>
-                </label>
-                <label>
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--3);
-                      line-height: var(--font-size--3--line-height);
-                      font-weight: 600;
-                      color: light-dark(
-                        var(--color--slate--500),
-                        var(--color--slate--500)
-                      );
-                    `}"
-                  >
-                    Two-factor authentication code
-                  </div>
-                  <div
-                    css="${css`
-                      display: flex;
-                    `}"
-                  >
-                    <input
-                      type="text"
-                      inputmode="numeric"
-                      name="twoFactorAuthenticationConfirmation"
-                      required
-                      minlength="6"
-                      class="input--text"
-                      css="${css`
-                        flex: 1;
-                      `}"
-                    />
-                  </div>
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--3);
-                      line-height: var(--font-size--3--line-height);
-                      color: light-dark(
-                        var(--color--slate--600),
-                        var(--color--slate--400)
-                      );
-                    `}"
-                  >
-                    This is a code generated by your two-factor authentication
-                    application for Courselore.
-                  </div>
-                </label>
                 <div
                   css="${css`
                     font-size: var(--font-size--3);
                     line-height: var(--font-size--3--line-height);
+                    font-weight: 600;
+                    color: light-dark(
+                      var(--color--slate--500),
+                      var(--color--slate--500)
+                    );
                   `}"
                 >
-                  <button
-                    type="submit"
-                    class="button button--rectangle button--blue"
-                  >
-                    Enable two-factor authentication
-                  </button>
+                  QR code
                 </div>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    color: light-dark(
+                      var(--color--slate--600),
+                      var(--color--slate--400)
+                    );
+                  `}"
+                >
+                  Scan the following QR code with a two-factor authentication
+                  application on your phone, for example, Google Authenticator.
+                </div>
+                <div
+                  css="${css`
+                    display: flex;
+                    justify-content: center;
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      max-width: var(--size--48);
+                      width: 100%;
+                    `}"
+                  >
+                    $${(
+                      await QRCode.toString(
+                        new OTPAuth.TOTP({
+                          issuer: `Courselore (${application.configuration.hostname})`,
+                          label: request.state.user.email,
+                          secret:
+                            request.state.user.twoFactorAuthenticationSecret,
+                        }).toString(),
+                        { type: "svg", margin: 0 },
+                      )
+                    )
+                      .replace("#000000", "currentColor")
+                      .replace("#ffffff", "transparent")}
+                  </div>
+                </div>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    color: light-dark(
+                      var(--color--slate--600),
+                      var(--color--slate--400)
+                    );
+                  `}"
+                >
+                  <a
+                    href="otpauth://totp/Courselore (${application.configuration.hostname}):${request.state.user.email}?secret=${request.state.user.twoFactorAuthenticationSecret}&issuer=Courselore (${application.configuration.hostname})"
+                    class="link"
+                  >
+                    Are you using Courselore from the phone in which you have
+                    the two-factor authentication application?
+                  </a>
+                </div>
+              </div>
+              <hr class="separator" />
+              <div
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--2);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    font-weight: 600;
+                    color: light-dark(
+                      var(--color--slate--500),
+                      var(--color--slate--500)
+                    );
+                  `}"
+                >
+                  Recovery codes
+                </div>
+                <ul
+                  css="${css`
+                    font-family:
+                      "Roboto Mono Variable", var(--font-family--monospace);
+                    columns: 2;
+                  `}"
+                >
+                  $${twoFactorAuthenticationRecoveryCodes.map(
+                    (twoFactorAuthenticationRecoveryCode: string) =>
+                      html`<li>${twoFactorAuthenticationRecoveryCode}</li>`,
+                  )}
+                </ul>
+                <label class="button button--rectangle button--transparent">
+                  <input type="checkbox" class="input--checkbox" required />  I
+                  have saved the recovery codes to use in case I lose the device
+                  that generates two-factor authentication codes
+                </label>
+              </div>
+              <hr class="separator" />
+              <label>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    font-weight: 600;
+                    color: light-dark(
+                      var(--color--slate--500),
+                      var(--color--slate--500)
+                    );
+                  `}"
+                >
+                  Password confirmation
+                </div>
+                <div
+                  css="${css`
+                    display: flex;
+                  `}"
+                >
+                  <input
+                    type="password"
+                    name="passwordConfirmation"
+                    required
+                    minlength="8"
+                    maxlength="2000"
+                    class="input--text"
+                    css="${css`
+                      flex: 1;
+                    `}"
+                  />
+                </div>
+              </label>
+              <label>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    font-weight: 600;
+                    color: light-dark(
+                      var(--color--slate--500),
+                      var(--color--slate--500)
+                    );
+                  `}"
+                >
+                  Two-factor authentication code
+                </div>
+                <div
+                  css="${css`
+                    display: flex;
+                  `}"
+                >
+                  <input
+                    type="text"
+                    inputmode="numeric"
+                    name="twoFactorAuthenticationConfirmation"
+                    required
+                    minlength="6"
+                    class="input--text"
+                    css="${css`
+                      flex: 1;
+                    `}"
+                  />
+                </div>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    color: light-dark(
+                      var(--color--slate--600),
+                      var(--color--slate--400)
+                    );
+                  `}"
+                >
+                  This is a code generated by your two-factor authentication
+                  application for Courselore.
+                </div>
+              </label>
+              <div
+                css="${css`
+                  font-size: var(--font-size--3);
+                  line-height: var(--font-size--3--line-height);
+                `}"
+              >
+                <button
+                  type="submit"
+                  class="button button--rectangle button--blue"
+                >
+                  Enable two-factor authentication
+                </button>
               </div>
             </div>
           `,
