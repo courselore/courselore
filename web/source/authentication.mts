@@ -1718,9 +1718,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.pathname.emailVerificationNonce !== "string" ||
         request.state.userSession === undefined ||
         request.state.user === undefined ||
-        typeof request.state.user.emailVerificationEmail !== "string" ||
-        typeof request.state.user.emailVerificationNonceHash !== "string" ||
-        typeof request.state.user.emailVerificationCreatedAt !== "string"
+        typeof request.state.user.emailVerificationEmail !== "string"
       )
         return;
       if (
@@ -1730,12 +1728,12 @@ export default async (application: Application): Promise<void> => {
         delete request.search.redirect;
       if (
         !(await argon2.verify(
-          request.state.user.emailVerificationNonceHash,
+          request.state.user.emailVerificationNonceHash ??
+            "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
           request.pathname.emailVerificationNonce,
           application.privateConfiguration.argon2,
         )) ||
-        request.state.user.emailVerificationCreatedAt <
-          new Date(Date.now() - 15 * 60 * 1000).toISOString()
+        typeof request.state.user.emailVerificationNonceHash !== "string"
       ) {
         response.setFlash!(html`
           <div class="flash--red">
