@@ -993,40 +993,6 @@ export default async (application: Application): Promise<void> => {
                                       >
                                         Two-factor authentication is disabled.
                                       </div>
-                                      <label>
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            font-weight: 600;
-                                            color: light-dark(
-                                              var(--color--slate--500),
-                                              var(--color--slate--500)
-                                            );
-                                          `}"
-                                        >
-                                          Password confirmation
-                                        </div>
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                          `}"
-                                        >
-                                          <input
-                                            type="password"
-                                            name="passwordConfirmation"
-                                            required
-                                            minlength="8"
-                                            maxlength="2000"
-                                            class="input--text"
-                                            css="${css`
-                                              flex: 1;
-                                            `}"
-                                          />
-                                        </div>
-                                      </label>
                                       <div
                                         css="${css`
                                           font-size: var(--font-size--3);
@@ -2040,10 +2006,6 @@ export default async (application: Application): Promise<void> => {
                 </div>
               </div>
               <hr class="separator" />
-              <p>
-                Provide a code generated from your two-factor authentication
-                application.
-              </p>
               <div
                 type="form"
                 method="POST"
@@ -2056,6 +2018,42 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
               >
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Password confirmation
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="password"
+                      name="passwordConfirmation"
+                      required
+                      minlength="8"
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                    />
+                  </div>
+                </label>
+                <p>
+                  Provide a code generated from your two-factor authentication
+                  application.
+                </p>
                 <label>
                   <div
                     css="${css`
