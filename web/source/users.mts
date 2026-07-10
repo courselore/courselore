@@ -1877,7 +1877,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        { passwordConfirmation: string },
+        {},
         Application["types"]["states"]["Authentication"]
       >,
       response,
@@ -1888,24 +1888,6 @@ export default async (application: Application): Promise<void> => {
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
       )
         return;
-      if (
-        typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.length < 8
-      )
-        throw "validation";
-      if (
-        !(await argon2.verify(
-          request.state.user.passwordHash!,
-          request.body.passwordConfirmation,
-          application.privateConfiguration.argon2,
-        ))
-      ) {
-        response.setFlash!(html`
-          <div class="flash--red">Invalid “Password confirmation”.</div>
-        `);
-        response.redirect!("/settings");
-        return;
-      }
       request.state.user.twoFactorAuthenticationSecret =
         new OTPAuth.Secret().base32;
       const twoFactorAuthenticationRecoveryCodes = Array.from(
@@ -1955,29 +1937,32 @@ export default async (application: Application): Promise<void> => {
               >
                 Two-factor authentication
               </div>
-              <p>
-                Take note of the recovery codes below. They are only shown to
-                you now, and you will need one of them to access your account in
-                case you lose your method of two-factor authentication, for
-                example, if you lose your phone.
-              </p>
-              <ul
+              <div
                 css="${css`
-                  font-family:
-                    "Roboto Mono Variable", var(--font-family--monospace);
-                  columns: 2;
+                  font-size: var(--font-size--3);
+                  line-height: var(--font-size--3--line-height);
+                  font-weight: 600;
+                  color: light-dark(
+                    var(--color--slate--500),
+                    var(--color--slate--500)
+                  );
                 `}"
               >
-                $${twoFactorAuthenticationRecoveryCodes.map(
-                  (twoFactorAuthenticationRecoveryCode: string) =>
-                    html`<li>${twoFactorAuthenticationRecoveryCode}</li>`,
-                )}
-              </ul>
-              <hr class="separator" />
-              <p>
-                Scan the following QR code with your two-factor authentication
+                QR code
+              </div>
+              <div
+                css="${css`
+                  font-size: var(--font-size--3);
+                  line-height: var(--font-size--3--line-height);
+                  color: light-dark(
+                    var(--color--slate--600),
+                    var(--color--slate--400)
+                  );
+                `}"
+              >
+                Scan the following QR code with a two-factor authentication
                 application on your phone, for example, Google Authenticator.
-              </p>
+              </div>
               <div
                 css="${css`
                   display: flex;
@@ -2005,6 +1990,46 @@ export default async (application: Application): Promise<void> => {
                     .replace("#ffffff", "transparent")}
                 </div>
               </div>
+              <div>
+                <a
+                  href="otpauth://totp/Courselore (${application.configuration.hostname}):${request.state.user.email}?secret=${request.state.user.twoFactorAuthenticationSecret}&issuer=Courselore (${application.configuration.hostname})"
+                  class="link"
+                >
+                  Are you using Courselore from the phone in which you have the
+                  two-factor authentication application?
+                </a>
+              </div>
+              <hr class="separator" />
+              <div
+                css="${css`
+                  font-size: var(--font-size--3);
+                  line-height: var(--font-size--3--line-height);
+                  font-weight: 600;
+                  color: light-dark(
+                    var(--color--slate--500),
+                    var(--color--slate--500)
+                  );
+                `}"
+              >
+                Recovery codes
+              </div>
+              <ul
+                css="${css`
+                  font-family:
+                    "Roboto Mono Variable", var(--font-family--monospace);
+                  columns: 2;
+                `}"
+              >
+                $${twoFactorAuthenticationRecoveryCodes.map(
+                  (twoFactorAuthenticationRecoveryCode: string) =>
+                    html`<li>${twoFactorAuthenticationRecoveryCode}</li>`,
+                )}
+              </ul>
+              <label class="button button--rectangle button--transparent">
+                <input type="checkbox" class="input--checkbox" required />  I
+                have saved the recovery codes to use in case I lose the device
+                that generates two-factor authentication codes
+              </label>
               <hr class="separator" />
               <div
                 type="form"
@@ -2050,10 +2075,6 @@ export default async (application: Application): Promise<void> => {
                     />
                   </div>
                 </label>
-                <p>
-                  Provide a code generated from your two-factor authentication
-                  application.
-                </p>
                 <label>
                   <div
                     css="${css`
@@ -2085,6 +2106,19 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     />
                   </div>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      color: light-dark(
+                        var(--color--slate--600),
+                        var(--color--slate--400)
+                      );
+                    `}"
+                  >
+                    This is a code generated by your two-factor authentication
+                    application for Courselore.
+                  </div>
                 </label>
                 <div
                   css="${css`
@@ -2115,7 +2149,10 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        { twoFactorAuthenticationConfirmation: string },
+        {
+          passwordConfirmation: string;
+          twoFactorAuthenticationConfirmation: string;
+        },
         Application["types"]["states"]["Authentication"]
       >,
       response,
@@ -2130,20 +2167,30 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       if (
+        typeof request.body.passwordConfirmation !== "string" ||
+        request.body.passwordConfirmation.length < 8 ||
         typeof request.body.twoFactorAuthenticationConfirmation !== "string" ||
         request.body.twoFactorAuthenticationConfirmation.length < 6
       )
         throw "validation";
-      if (
+      const passwordConfirmationVerification = await argon2.verify(
+        request.state.user.passwordHash!,
+        request.body.passwordConfirmation,
+        application.privateConfiguration.argon2,
+      );
+      const twoFactorAuthenticationConfirmationVerification =
         new OTPAuth.TOTP({
           secret: request.state.user.twoFactorAuthenticationSecret,
         }).validate({
           token: request.body.twoFactorAuthenticationConfirmation,
-        }) === null
+        }) === null;
+      if (
+        !passwordConfirmationVerification ||
+        twoFactorAuthenticationConfirmationVerification
       ) {
         response.setFlash!(html`
           <div class="flash--red">
-            Invalid “Two-factor authentication code”.
+            Invalid “Password confirmation” or “Two-factor authentication code”.
           </div>
         `);
         response.redirect!(`/settings`);
