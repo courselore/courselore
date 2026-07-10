@@ -2818,10 +2818,7 @@ export default async (application: Application): Promise<void> => {
           request.pathname.passwordResetNonce,
           application.privateConfiguration.argon2,
         )) ||
-        typeof request.state.user?.passwordResetNonceHash !== "string" ||
-        typeof request.state.user.passwordResetCreatedAt !== "string" ||
-        request.state.user.passwordResetCreatedAt <
-          new Date(Date.now() - 15 * 60 * 1000).toISOString()
+        typeof request.state.user?.passwordResetNonceHash !== "string"
       ) {
         response.setFlash!(html`
           <div class="flash--red">
