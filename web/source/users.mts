@@ -2592,20 +2592,11 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
               >
-                <div
-                  css="${css`
-                    font-size: var(--font-size--3);
-                    line-height: var(--font-size--3--line-height);
-                    font-weight: 600;
-                    color: light-dark(
-                      var(--color--red--500),
-                      var(--color--red--500)
-                    );
-                  `}"
-                >
-                  <i class="bi bi-exclamation-triangle-fill"></i> This action
-                  cannot be undone. You’ll lose access to all your courses.
-                </div>
+                <label class="button button--rectangle button--transparent">
+                  <input type="checkbox" class="input--checkbox" required />  I
+                  understand that this action cannot be undone and that I’ll
+                  lose access to all my courses
+                </label>
                 <label>
                   <div
                     css="${css`
