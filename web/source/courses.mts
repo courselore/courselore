@@ -5165,7 +5165,9 @@ export default async (application: Application): Promise<void> => {
                         "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                         "emailNotificationsForMessagesInConversationsThatYouStarted",
                         "userAnonymityPreferred",
-                        "mostRecentlyVisitedCourseParticipation"
+                        "mostRecentlyVisitedCourseParticipation",
+                        "deleteMyAccountNonceHash",
+                        "deleteMyAccountCreatedAt"
                       )
                       values (
                         ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -5210,6 +5212,8 @@ export default async (application: Application): Promise<void> => {
                         ${Number(true)},
                         ${Number(true)},
                         ${"userAnonymityPreferredNone"},
+                        ${null},
+                        ${null},
                         ${null}
                       );
                     `,

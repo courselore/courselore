@@ -77,6 +77,8 @@ export type ApplicationAuthentication = {
             | "userAnonymityPreferredCourseParticipationRoleStudents"
             | "userAnonymityPreferredEveryone";
           mostRecentlyVisitedCourseParticipation: number | null;
+          deleteMyAccountNonceHash: string | null;
+          deleteMyAccountCreatedAt: string | null;
         };
       };
     };
@@ -258,6 +260,8 @@ export default async (application: Application): Promise<void> => {
           | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
+        deleteMyAccountNonceHash: string | null;
+        deleteMyAccountCreatedAt: string | null;
       }>(
         sql`
           select
@@ -284,7 +288,9 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
-            "mostRecentlyVisitedCourseParticipation"
+            "mostRecentlyVisitedCourseParticipation",
+            "deleteMyAccountNonceHash",
+            "deleteMyAccountCreatedAt"
           from "users"
           where "id" = ${request.state.userSession.user};
         `,
@@ -1049,6 +1055,8 @@ export default async (application: Application): Promise<void> => {
             | "userAnonymityPreferredCourseParticipationRoleStudents"
             | "userAnonymityPreferredEveryone";
           mostRecentlyVisitedCourseParticipation: number | null;
+          deleteMyAccountNonceHash: string | null;
+          deleteMyAccountCreatedAt: string | null;
         }>(
           sql`
             select * from "users" where "id" = ${
@@ -1077,7 +1085,9 @@ export default async (application: Application): Promise<void> => {
                     "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                     "emailNotificationsForMessagesInConversationsThatYouStarted",
                     "userAnonymityPreferred",
-                    "mostRecentlyVisitedCourseParticipation"
+                    "mostRecentlyVisitedCourseParticipation",
+                    "deleteMyAccountNonceHash",
+                    "deleteMyAccountCreatedAt"
                   )
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -1130,6 +1140,8 @@ export default async (application: Application): Promise<void> => {
                     ${Number(true)},
                     ${Number(true)},
                     ${"userAnonymityPreferredNone"},
+                    ${null},
+                    ${null},
                     ${null}
                   );
                 `,
@@ -1849,6 +1861,8 @@ export default async (application: Application): Promise<void> => {
           | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
+        deleteMyAccountNonceHash: string | null;
+        deleteMyAccountCreatedAt: string | null;
       }>(
         sql`
           select
@@ -1875,7 +1889,9 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
-            "mostRecentlyVisitedCourseParticipation"
+            "mostRecentlyVisitedCourseParticipation",
+            "deleteMyAccountNonceHash",
+            "deleteMyAccountCreatedAt"
           from "users"
           where "email" = ${request.body.email};
         `,
@@ -2431,6 +2447,8 @@ export default async (application: Application): Promise<void> => {
           | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
+        deleteMyAccountNonceHash: string | null;
+        deleteMyAccountCreatedAt: string | null;
       }>(
         sql`
           select
@@ -2457,7 +2475,9 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
-            "mostRecentlyVisitedCourseParticipation"
+            "mostRecentlyVisitedCourseParticipation",
+            "deleteMyAccountNonceHash",
+            "deleteMyAccountCreatedAt"
           from "users"
           where "email" = ${request.body.email};
         `,
@@ -2813,6 +2833,8 @@ export default async (application: Application): Promise<void> => {
           | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
+        deleteMyAccountNonceHash: string | null;
+        deleteMyAccountCreatedAt: string | null;
       }>(
         sql`
           select
@@ -2839,7 +2861,9 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
-            "mostRecentlyVisitedCourseParticipation"
+            "mostRecentlyVisitedCourseParticipation",
+            "deleteMyAccountNonceHash",
+            "deleteMyAccountCreatedAt"
           from "users"
           where "publicId" = ${request.pathname.userPublicId};
         `,
@@ -3191,6 +3215,8 @@ export default async (application: Application): Promise<void> => {
                 | "userAnonymityPreferredCourseParticipationRoleStudents"
                 | "userAnonymityPreferredEveryone";
               mostRecentlyVisitedCourseParticipation: number | null;
+              deleteMyAccountNonceHash: string | null;
+              deleteMyAccountCreatedAt: string | null;
             }>(
               sql`
                 select
@@ -3217,7 +3243,9 @@ export default async (application: Application): Promise<void> => {
                   "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                   "emailNotificationsForMessagesInConversationsThatYouStarted",
                   "userAnonymityPreferred",
-                  "mostRecentlyVisitedCourseParticipation"
+                  "mostRecentlyVisitedCourseParticipation",
+                  "deleteMyAccountNonceHash",
+                  "deleteMyAccountCreatedAt"
                 from "users"
                 where "email" = ${idToken.email as string};
               `,
@@ -3271,6 +3299,8 @@ export default async (application: Application): Promise<void> => {
                 | "userAnonymityPreferredCourseParticipationRoleStudents"
                 | "userAnonymityPreferredEveryone";
               mostRecentlyVisitedCourseParticipation: number | null;
+              deleteMyAccountNonceHash: string | null;
+              deleteMyAccountCreatedAt: string | null;
             }>(
               sql`
                 select * from "users" where "id" = ${
@@ -3299,7 +3329,9 @@ export default async (application: Application): Promise<void> => {
                         "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                         "emailNotificationsForMessagesInConversationsThatYouStarted",
                         "userAnonymityPreferred",
-                        "mostRecentlyVisitedCourseParticipation"
+                        "mostRecentlyVisitedCourseParticipation",
+                        "deleteMyAccountNonceHash",
+                        "deleteMyAccountCreatedAt"
                       )
                       values (
                         ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -3352,6 +3384,8 @@ export default async (application: Application): Promise<void> => {
                         ${Number(true)},
                         ${Number(true)},
                         ${"userAnonymityPreferredNone"},
+                        ${null},
+                        ${null},
                         ${null}
                       );
                     `,
@@ -4043,6 +4077,8 @@ export default async (application: Application): Promise<void> => {
               | "userAnonymityPreferredCourseParticipationRoleStudents"
               | "userAnonymityPreferredEveryone";
             mostRecentlyVisitedCourseParticipation: number | null;
+            deleteMyAccountNonceHash: string | null;
+            deleteMyAccountCreatedAt: string | null;
           }>(
             sql`
               select
@@ -4069,7 +4105,9 @@ export default async (application: Application): Promise<void> => {
                 "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                 "emailNotificationsForMessagesInConversationsThatYouStarted",
                 "userAnonymityPreferred",
-                "mostRecentlyVisitedCourseParticipation"
+                "mostRecentlyVisitedCourseParticipation",
+                "deleteMyAccountNonceHash",
+                "deleteMyAccountCreatedAt"
               from "users"
               where "email" = ${userData.email};
             `,
@@ -4121,6 +4159,8 @@ export default async (application: Application): Promise<void> => {
               | "userAnonymityPreferredCourseParticipationRoleStudents"
               | "userAnonymityPreferredEveryone";
             mostRecentlyVisitedCourseParticipation: number | null;
+            deleteMyAccountNonceHash: string | null;
+            deleteMyAccountCreatedAt: string | null;
           }>(
             sql`
               select * from "users" where "id" = ${
@@ -4149,7 +4189,9 @@ export default async (application: Application): Promise<void> => {
                       "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                       "emailNotificationsForMessagesInConversationsThatYouStarted",
                       "userAnonymityPreferred",
-                      "mostRecentlyVisitedCourseParticipation"
+                      "mostRecentlyVisitedCourseParticipation",
+                      "deleteMyAccountNonceHash",
+                      "deleteMyAccountCreatedAt"
                     )
                     values (
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -4202,6 +4244,8 @@ export default async (application: Application): Promise<void> => {
                       ${Number(true)},
                       ${Number(true)},
                       ${"userAnonymityPreferredNone"},
+                      ${null},
+                      ${null},
                       ${null}
                     );
                   `,
