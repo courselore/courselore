@@ -70,8 +70,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.systemSettings === undefined ||
-        request.state.user === undefined ||
-        request.liveConnection
+        request.state.user === undefined
       )
         return;
       const courseParticipation = application.database.get<{
@@ -105,7 +104,8 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (course === undefined) throw new Error();
-        response.redirect!(`/courses/${course.publicId}`);
+        if (!request.liveConnection)
+          response.redirect!(`/courses/${course.publicId}`);
         return;
       }
       response.send(
