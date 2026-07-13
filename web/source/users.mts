@@ -2469,10 +2469,10 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${
                     application.configuration.hostname
-                  }/users/delete-my-account/${deleteMyAccountNonce}"
+                  }/settings/delete-my-account/${deleteMyAccountNonce}"
                   >https://${
                     application.configuration.hostname
-                  }/users/delete-my-account/${deleteMyAccountNonce}</a
+                  }/settings/delete-my-account/${deleteMyAccountNonce}</a
                 >
               </p>
               <p>
@@ -2543,7 +2543,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/users/delete-my-account/(?<deleteMyAccountNonce>[0-9]+)$",
+      "^/settings/delete-my-account/(?<deleteMyAccountNonce>[0-9]+)$",
     ),
     handler: (
       request: serverTypes.Request<
@@ -2585,7 +2585,7 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="DELETE"
-                action="/users/delete-my-account/${request.pathname.deleteMyAccountNonce}"
+                action="/settings/delete-my-account/${request.pathname.deleteMyAccountNonce}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -2891,7 +2891,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "DELETE",
     pathname: new RegExp(
-      "^/users/delete-my-account/(?<deleteMyAccountNonce>[0-9]+)$",
+      "^/settings/delete-my-account/(?<deleteMyAccountNonce>[0-9]+)$",
     ),
     handler: async (
       request: serverTypes.Request<
@@ -2917,10 +2917,26 @@ export default async (application: Application): Promise<void> => {
           (typeof request.body.passwordConfirmation !== "string" ||
             request.body.passwordConfirmation.length < 8)) ||
         (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-          (typeof request.body.twoFactorAuthenticationCode !== "string" ||
-            request.body.twoFactorAuthenticationCode.length < 6))
+          ((typeof request.body.twoFactorAuthenticationCode !== "string" &&
+            typeof request.body.twoFactorAuthenticationRecoveryCode !==
+              "string") ||
+            (typeof request.body.twoFactorAuthenticationCode === "string" &&
+              typeof request.body.twoFactorAuthenticationRecoveryCode ===
+                "string") ||
+            (typeof request.body.twoFactorAuthenticationCode === "string" &&
+              request.body.twoFactorAuthenticationCode.length < 6) ||
+            (typeof request.body.twoFactorAuthenticationRecoveryCode ===
+              "string" &&
+              request.body.twoFactorAuthenticationRecoveryCode.length < 10)))
       )
         throw "validation";
+      const deleteMyAccountNonceVerification =
+        (await argon2.verify(
+          request.state.user.deleteMyAccountNonceHash ??
+            "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+          request.pathname.deleteMyAccountNonce,
+          application.privateConfiguration.argon2,
+        )) && typeof request.state.user.deleteMyAccountNonceHash === "string";
       const passwordConfirmationVerification =
         typeof request.state.user.passwordHash === "string"
           ? await argon2.verify(
@@ -2931,48 +2947,54 @@ export default async (application: Application): Promise<void> => {
           : true;
       const twoFactorAuthenticationCodeVerification =
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
-          ? new OTPAuth.TOTP({
-              secret: request.state.user.twoFactorAuthenticationSecret!,
-            }).validate({
-              token: request.body.twoFactorAuthenticationCode!,
-            }) !== null
+          ? (typeof request.body.twoFactorAuthenticationCode === "string" &&
+              new OTPAuth.TOTP({
+                secret: request.state.user.twoFactorAuthenticationSecret!,
+              }).validate({
+                token: request.body.twoFactorAuthenticationCode,
+              }) !== null) ||
+            (typeof request.body.twoFactorAuthenticationRecoveryCode ===
+              "string" &&
+              (
+                await Promise.all(
+                  JSON.parse(
+                    request.state.user
+                      .twoFactorAuthenticationRecoveryCodesHashes!,
+                  ).map((twoFactorAuthenticationRecoveryCode: string) =>
+                    argon2.verify(
+                      twoFactorAuthenticationRecoveryCode,
+                      request.body.twoFactorAuthenticationRecoveryCode!,
+                      application.privateConfiguration.argon2,
+                    ),
+                  ),
+                )
+              ).includes(true))
           : true;
-
-      // if (
-      //   !(await argon2.verify(
-      //     request.state.user?.passwordResetNonceHash ??
-      //       "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
-      //     request.pathname.passwordResetNonce,
-      //     application.privateConfiguration.argon2,
-      //   )) ||
-      //   typeof request.state.user?.passwordResetNonceHash !== "string"
-      // ) {
-      //   response.setFlash!(html`
-      //     <div class="flash--red">
-      //       There’s something wrong with this password reset. Please request a
-      //       new password reset.
-      //     </div>
-      //   `);
-      //   response.redirect!(`/authentication${request.URL.search}`);
-      //   return;
-      // }
-
       if (
+        !deleteMyAccountNonceVerification ||
         !passwordConfirmationVerification ||
         !twoFactorAuthenticationCodeVerification
       ) {
         response.setFlash!(html`
           <div class="flash--red">
-            Invalid “Password
-            confirmation”${
-              Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
-              true
-                ? " or “Two-factor authentication code”"
-                : ""
+            Either there’s something wrong with this request to account
+            deletion, in which case please request a new account deletion, or
+            that was invalid “Password confirmation” or
+            ${
+              typeof request.body.twoFactorAuthenticationCode === "string"
+                ? "“Two-factor authentication code”"
+                : typeof request.body.twoFactorAuthenticationRecoveryCode ===
+                    "string"
+                  ? "“Two-factor authentication recovery code”"
+                  : (() => {
+                      throw new Error();
+                    })()
             }.
           </div>
         `);
-        response.redirect!("/settings");
+        response.redirect!(
+          `/settings/delete-my-account/${request.pathname.deleteMyAccountNonce}`,
+        );
         return;
       }
       application.database.executeTransaction(() => {
