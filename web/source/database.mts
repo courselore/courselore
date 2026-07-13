@@ -4326,6 +4326,15 @@ export default async (application: Application): Promise<void> => {
       alter table "users" add column "deleteMyAccountCreatedAt" text null;
       create index "index_users_deleteMyAccountCreatedAt" on "users" ("deleteMyAccountCreatedAt");
       
+      alter table "users" rename column "emailVerificationCreatedAt" to "emailVerificationNonceCreatedAt";
+      alter table "users" rename column "passwordResetCreatedAt" to "passwordResetNonceCreatedAt";
+      alter table "users" rename column "deleteMyAccountCreatedAt" to "deleteMyAccountNonceCreatedAt";
+      drop index "index_users_emailVerificationCreatedAt";
+      drop index "index_users_passwordResetCreatedAt";
+      drop index "index_users_deleteMyAccountCreatedAt";
+      create index "index_users_emailVerificationNonceCreatedAt" on "users" ("emailVerificationNonceCreatedAt");
+      create index "index_users_passwordResetNonceCreatedAt" on "users" ("passwordResetNonceCreatedAt");
+      create index "index_users_deleteMyAccountNonceCreatedAt" on "users" ("deleteMyAccountNonceCreatedAt");
     `,
   );
 };

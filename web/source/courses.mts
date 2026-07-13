@@ -5148,10 +5148,10 @@ export default async (application: Application): Promise<void> => {
                         "email",
                         "emailVerificationEmail",
                         "emailVerificationNonceHash",
-                        "emailVerificationCreatedAt",
+                        "emailVerificationNonceCreatedAt",
                         "passwordHash",
                         "passwordResetNonceHash",
-                        "passwordResetCreatedAt",
+                        "passwordResetNonceCreatedAt",
                         "twoFactorAuthenticationEnabled",
                         "twoFactorAuthenticationSecret",
                         "twoFactorAuthenticationRecoveryCodesHashes",
@@ -5167,7 +5167,7 @@ export default async (application: Application): Promise<void> => {
                         "userAnonymityPreferred",
                         "mostRecentlyVisitedCourseParticipation",
                         "deleteMyAccountNonceHash",
-                        "deleteMyAccountCreatedAt"
+                        "deleteMyAccountNonceCreatedAt"
                       )
                       values (
                         ${cryptoRandomString({ length: 20, type: "numeric" })},

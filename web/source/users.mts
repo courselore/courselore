@@ -1607,14 +1607,14 @@ export default async (application: Application): Promise<void> => {
         emailVerificationNonce,
         application.privateConfiguration.argon2,
       );
-      request.state.user.emailVerificationCreatedAt = new Date().toISOString();
+      request.state.user.emailVerificationNonceCreatedAt = new Date().toISOString();
       application.database.run(
         sql`
           update "users"
           set
             "emailVerificationEmail" = ${request.state.user.emailVerificationEmail},
             "emailVerificationNonceHash" = ${request.state.user.emailVerificationNonceHash},
-            "emailVerificationCreatedAt" = ${request.state.user.emailVerificationCreatedAt}
+            "emailVerificationNonceCreatedAt" = ${request.state.user.emailVerificationNonceCreatedAt}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -2434,18 +2434,18 @@ export default async (application: Application): Promise<void> => {
   //     );
   //     if (
   //       request.state.user !== undefined &&
-  //       (request.state.user.deleteMyAccountCreatedAt === null ||
-  //         request.state.user.deleteMyAccountCreatedAt <
+  //       (request.state.user.deleteMyAccountNonceCreatedAt === null ||
+  //         request.state.user.deleteMyAccountNonceCreatedAt <
   //           new Date(Date.now() - 5 * 60 * 1000).toISOString())
   //     ) {
   //       request.state.user.deleteMyAccountNonceHash = deleteMyAccountNonceHash;
-  //       request.state.user.deleteMyAccountCreatedAt = new Date().toISOString();
+  //       request.state.user.deleteMyAccountNonceCreatedAt = new Date().toISOString();
   //       application.database.run(
   //         sql`
   //           update "users"
   //           set
   //             "deleteMyAccountNonceHash" = ${request.state.user.deleteMyAccountNonceHash},
-  //             "deleteMyAccountCreatedAt" = ${request.state.user.deleteMyAccountCreatedAt}
+  //             "deleteMyAccountNonceCreatedAt" = ${request.state.user.deleteMyAccountNonceCreatedAt}
   //           where "id" = ${request.state.user.id};
   //         `,
   //       );
@@ -2535,8 +2535,8 @@ export default async (application: Application): Promise<void> => {
   //           update "users"
   //           set
   //             "passwordResetNonceHash" = null,
-  //             "passwordResetCreatedAt" = null
-  //           where "passwordResetCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
+  //             "passwordResetNonceCreatedAt" = null
+  //           where "passwordResetNonceCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
   //         `,
   //     );
   //   });
