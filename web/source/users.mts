@@ -2680,38 +2680,44 @@ export default async (application: Application): Promise<void> => {
                     />
                   </div>
                 </label>
-                <label>
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--3);
-                      line-height: var(--font-size--3--line-height);
-                      font-weight: 600;
-                      color: light-dark(
-                        var(--color--slate--500),
-                        var(--color--slate--500)
-                      );
-                    `}"
-                  >
-                    Password confirmation
-                  </div>
-                  <div
-                    css="${css`
-                      display: flex;
-                    `}"
-                  >
-                    <input
-                      type="password"
-                      name="passwordConfirmation"
-                      required
-                      minlength="8"
-                      maxlength="2000"
-                      class="input--text"
-                      css="${css`
-                        flex: 1;
-                      `}"
-                    />
-                  </div>
-                </label>
+                $${
+                  typeof request.state.user.passwordHash === "string"
+                    ? html`
+                        <label>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
+                          >
+                            Password confirmation
+                          </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                            `}"
+                          >
+                            <input
+                              type="password"
+                              name="passwordConfirmation"
+                              required
+                              minlength="8"
+                              maxlength="2000"
+                              class="input--text"
+                              css="${css`
+                                flex: 1;
+                              `}"
+                            />
+                          </div>
+                        </label>
+                      `
+                    : html``
+                }
                 $${
                   Boolean(request.state.user.twoFactorAuthenticationEnabled)
                     ? html`
@@ -2771,167 +2777,198 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  // application.server?.push({
-  //   method: "DELETE",
-  //   pathname: "/settings/delete-my-account",
-  //   handler: async (
-  //     request: serverTypes.Request<
-  //       {},
-  //       {},
-  //       {},
-  //       {
-  //         passwordConfirmation: string;
-  //         twoFactorAuthenticationConfirmation: string;
-  //       },
-  //       Application["types"]["states"]["Authentication"]
-  //     >,
-  //     response,
-  //   ) => {
-  //     if (request.state.user === undefined) return;
-  //     if (
-  //       typeof request.body.passwordConfirmation !== "string" ||
-  //       request.body.passwordConfirmation.length < 8 ||
-  //       (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-  //         (typeof request.body.twoFactorAuthenticationConfirmation !==
-  //           "string" ||
-  //           request.body.twoFactorAuthenticationConfirmation.length < 6))
-  //     )
-  //       throw "validation";
-  //     const passwordConfirmationVerify = await argon2.verify(
-  //       request.state.user.passwordHash!,
-  //       request.body.passwordConfirmation,
-  //       application.privateConfiguration.argon2,
-  //     );
-  //     const twoFactorAuthenticationValidate =
-  //       Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-  //       typeof request.state.user.twoFactorAuthenticationSecret === "string" &&
-  //       typeof request.body.twoFactorAuthenticationConfirmation === "string"
-  //         ? new OTPAuth.TOTP({
-  //             secret: request.state.user.twoFactorAuthenticationSecret,
-  //           }).validate({
-  //             token: request.body.twoFactorAuthenticationConfirmation,
-  //           }) !== null
-  //         : true;
-  //     if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
-  //       response.setFlash!(html`
-  //         <div class="flash--red">
-  //           Invalid “Password
-  //           confirmation”${
-  //             Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
-  //             true
-  //               ? " or “Two-factor authentication code”"
-  //               : ""
-  //           }.
-  //         </div>
-  //       `);
-  //       response.redirect!("/settings");
-  //       return;
-  //     }
-  //     application.database.executeTransaction(() => {
-  //       application.database.run(
-  //         sql`
-  //           update "users"
-  //           set "mostRecentlyVisitedCourseParticipation" = null
-  //           where "id" = ${request.state.user!.id};
-  //         `,
-  //       );
-  //       for (const courseParticipation of application.database.all<{
-  //         id: number;
-  //       }>(
-  //         sql`
-  //           select "id"
-  //           from "courseParticipations"
-  //           where "user" = ${request.state.user!.id}
-  //           order by "id" asc;
-  //         `,
-  //       )) {
-  //         application.database.run(
-  //           sql`
-  //             delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
-  //           `,
-  //         );
-  //         application.database.run(
-  //           sql`
-  //             delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
-  //           `,
-  //         );
-  //         application.database.run(
-  //           sql`
-  //             update "courseConversationMessages"
-  //             set "createdByCourseParticipation" = null
-  //             where "createdByCourseParticipation" = ${courseParticipation.id};
-  //           `,
-  //         );
-  //         application.database.run(
-  //           sql`
-  //             update "courseConversationMessageViews"
-  //             set "courseParticipation" = null
-  //             where "courseParticipation" = ${courseParticipation.id};
-  //           `,
-  //         );
-  //         application.database.run(
-  //           sql`
-  //             update "courseConversationMessageLikes"
-  //             set "courseParticipation" = null
-  //             where "courseParticipation" = ${courseParticipation.id};
-  //           `,
-  //         );
-  //         application.database.run(
-  //           sql`
-  //             delete from "courseParticipations" where "id" = ${courseParticipation.id};
-  //           `,
-  //         );
-  //       }
-  //       application.database.run(
-  //         sql`
-  //           delete from "userSessions" where "user" = ${request.state.user!.id};
-  //         `,
-  //       );
-  //       application.database.run(
-  //         sql`
-  //           delete from "users" where "id" = ${request.state.user!.id};
-  //         `,
-  //       );
-  //       application.database.backgroundJob({
-  //         type: "email",
-  //         parameters: {
-  //           from: `"Courselore" <${application.configuration.email.from}>`,
-  //           to: request.state.user!.email,
-  //           subject: "Account deleted",
-  //           html: html`
-  //             <p>
-  //               Someone deleted the account on Courselore with the following
-  //               email address:
-  //               <code>${request.state.user!.email}</code>
-  //             </p>
-  //             <p>
-  //               If it was not you, please report the issue to
-  //               <a
-  //                 href="mailto:${
-  //                   application.configuration.systemAdministratorEmail ??
-  //                   "system-administrator@courselore.org"
-  //                 }?${new URLSearchParams({
-  //                   subject: "Potential impersonation",
-  //                   body: `Email: ${request.state.user!.email}`,
-  //                 })
-  //                   .toString()
-  //                   .replaceAll("+", "%20")}"
-  //                 >${
-  //                   application.configuration.systemAdministratorEmail ??
-  //                   "system-administrator@courselore.org"
-  //                 }</a
-  //               >
-  //             </p>
-  //           `,
-  //         },
-  //       });
-  //     });
-  //     response.setFlash!(html`
-  //       <div class="flash--green">Account deleted.</div>
-  //     `);
-  //     response.redirect!("/");
-  //   },
-  // });
+  application.server?.push({
+    method: "DELETE",
+    pathname: new RegExp(
+      "^/users/delete-my-account/(?<deleteMyAccountNonce>[0-9]+)$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        { deleteMyAccountNonce: string },
+        {},
+        {},
+        {
+          passwordConfirmation: string;
+          twoFactorAuthenticationConfirmation: string;
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.deleteMyAccountNonce !== "string" ||
+        request.state.user === undefined
+      )
+        return;
+      if (
+        (typeof request.state.user.passwordHash === "string" &&
+          (typeof request.body.passwordConfirmation !== "string" ||
+            request.body.passwordConfirmation.length < 8)) ||
+        (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
+          (typeof request.body.twoFactorAuthenticationConfirmation !==
+            "string" ||
+            request.body.twoFactorAuthenticationConfirmation.length < 6))
+      )
+        throw "validation";
+      const passwordConfirmationVerification =
+        typeof request.state.user.passwordHash === "string"
+          ? await argon2.verify(
+              request.state.user.passwordHash,
+              request.body.passwordConfirmation!,
+              application.privateConfiguration.argon2,
+            )
+          : true;
+      const twoFactorAuthenticationCodeVerification =
+        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
+          ? new OTPAuth.TOTP({
+              secret: request.state.user.twoFactorAuthenticationSecret!,
+            }).validate({
+              token: request.body.twoFactorAuthenticationConfirmation!,
+            }) !== null
+          : true;
+
+      if (
+        !(await argon2.verify(
+          request.state.user?.passwordResetNonceHash ??
+            "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+          request.pathname.passwordResetNonce,
+          application.privateConfiguration.argon2,
+        )) ||
+        typeof request.state.user?.passwordResetNonceHash !== "string"
+      ) {
+        response.setFlash!(html`
+          <div class="flash--red">
+            There’s something wrong with this password reset. Please request a
+            new password reset.
+          </div>
+        `);
+        response.redirect!(`/authentication${request.URL.search}`);
+        return;
+      }
+
+      if (
+        !passwordConfirmationVerification ||
+        !twoFactorAuthenticationCodeVerification
+      ) {
+        response.setFlash!(html`
+          <div class="flash--red">
+            Invalid “Password
+            confirmation”${
+              Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
+              true
+                ? " or “Two-factor authentication code”"
+                : ""
+            }.
+          </div>
+        `);
+        response.redirect!("/settings");
+        return;
+      }
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            update "users"
+            set "mostRecentlyVisitedCourseParticipation" = null
+            where "id" = ${request.state.user!.id};
+          `,
+        );
+        for (const courseParticipation of application.database.all<{
+          id: number;
+        }>(
+          sql`
+            select "id"
+            from "courseParticipations"
+            where "user" = ${request.state.user!.id}
+            order by "id" asc;
+          `,
+        )) {
+          application.database.run(
+            sql`
+              delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessages"
+              set "createdByCourseParticipation" = null
+              where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessageViews"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseConversationMessageLikes"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseParticipations" where "id" = ${courseParticipation.id};
+            `,
+          );
+        }
+        application.database.run(
+          sql`
+            delete from "userSessions" where "user" = ${request.state.user!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "users" where "id" = ${request.state.user!.id};
+          `,
+        );
+        application.database.backgroundJob({
+          type: "email",
+          parameters: {
+            from: `"Courselore" <${application.configuration.email.from}>`,
+            to: request.state.user!.email,
+            subject: "Account deleted",
+            html: html`
+              <p>
+                Someone deleted the account on Courselore with the following
+                email address:
+                <code>${request.state.user!.email}</code>
+              </p>
+              <p>
+                If it was not you, please report the issue to
+                <a
+                  href="mailto:${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }?${new URLSearchParams({
+                    subject: "Potential impersonation",
+                    body: `Email: ${request.state.user!.email}`,
+                  })
+                    .toString()
+                    .replaceAll("+", "%20")}"
+                  >${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }</a
+                >
+              </p>
+            `,
+          },
+        });
+      });
+      response.setFlash!(html`
+        <div class="flash--green">Account deleted.</div>
+      `);
+      response.redirect!("/");
+    },
+  });
 
   application.partials.userAvatar = ({
     user,
