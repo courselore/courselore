@@ -2402,335 +2402,306 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       response.setFlash!(html`
-        <div class="flash--green">Email notifications updated successfully.</div>
+        <div class="flash--green">
+          Email notifications updated successfully.
+        </div>
       `);
       response.redirect!("/settings");
     },
   });
 
-  application.server?.push({
-    method: "DELETE",
-    pathname: "/settings/delete-my-account",
-    handler: async (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {
-          passwordConfirmation: string;
-          twoFactorAuthenticationConfirmation: string;
-        },
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (request.state.user === undefined) return;
-      if (
-        typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.length < 8 ||
-        (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-          (typeof request.body.twoFactorAuthenticationConfirmation !==
-            "string" ||
-            request.body.twoFactorAuthenticationConfirmation.length < 6))
-      )
-        throw "validation";
-      const passwordConfirmationVerify = await argon2.verify(
-        request.state.user.passwordHash!,
-        request.body.passwordConfirmation,
-        application.privateConfiguration.argon2,
-      );
-      const twoFactorAuthenticationValidate =
-        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-        typeof request.state.user.twoFactorAuthenticationSecret === "string" &&
-        typeof request.body.twoFactorAuthenticationConfirmation === "string"
-          ? new OTPAuth.TOTP({
-              secret: request.state.user.twoFactorAuthenticationSecret,
-            }).validate({
-              token: request.body.twoFactorAuthenticationConfirmation,
-            }) !== null
-          : true;
-      if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
-        response.setFlash!(html`
-          <div class="flash--red">
-            Invalid “Password
-            confirmation”${
-              Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
-              true
-                ? " or “Two-factor authentication code”"
-                : ""
-            }.
-          </div>
-        `);
-        response.redirect!("/settings");
-        return;
-      }
-      application.database.executeTransaction(() => {
-        application.database.run(
-          sql`
-            update "users"
-            set "mostRecentlyVisitedCourseParticipation" = null
-            where "id" = ${request.state.user!.id};
-          `,
-        );
-        for (const courseParticipation of application.database.all<{
-          id: number;
-        }>(
-          sql`
-            select "id"
-            from "courseParticipations"
-            where "user" = ${request.state.user!.id}
-            order by "id" asc;
-          `,
-        )) {
-          application.database.run(
-            sql`
-              delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseConversationMessages"
-              set "createdByCourseParticipation" = null
-              where "createdByCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseConversationMessageViews"
-              set "courseParticipation" = null
-              where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseConversationMessageLikes"
-              set "courseParticipation" = null
-              where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseParticipations" where "id" = ${courseParticipation.id};
-            `,
-          );
-        }
-        application.database.run(
-          sql`
-            delete from "userSessions" where "user" = ${request.state.user!.id};
-          `,
-        );
-        application.database.run(
-          sql`
-            delete from "users" where "id" = ${request.state.user!.id};
-          `,
-        );
-        application.database.backgroundJob({
-          type: "email",
-          parameters: {
-            from: `"Courselore" <${application.configuration.email.from}>`,
-            to: request.state.user!.email,
-            subject: "Account deleted",
-            html: html`
-              <p>
-                Someone deleted the account on Courselore with the following
-                email address:
-                <code>${request.state.user!.email}</code>
-              </p>
-              <p>
-                If it was not you, please report the issue to
-                <a
-                  href="mailto:${
-                    application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"
-                  }?${new URLSearchParams({
-                    subject: "Potential impersonation",
-                    body: `Email: ${request.state.user!.email}`,
-                  })
-                    .toString()
-                    .replaceAll("+", "%20")}"
-                  >${
-                    application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"
-                  }</a
-                >
-              </p>
-            `,
-          },
-        });
-      });
-      response.setFlash!(html`
-        <div class="flash--green">Account deleted.</div>
-      `);
-      response.redirect!("/");
-    },
-  });
+  // application.server?.push({
+  //   method: "DELETE",
+  //   pathname: "/settings/delete-my-account",
+  //   handler: async (
+  //     request: serverTypes.Request<
+  //       {},
+  //       {},
+  //       {},
+  //       {},
+  //       Application["types"]["states"]["Authentication"]
+  //     >,
+  //     response,
+  //   ) => {
+  //     if (request.state.user === undefined) return;
+  //     const deleteMyAccountNonce = cryptoRandomString({
+  //       length: 100,
+  //       type: "numeric",
+  //     });
+  //     const deleteMyAccountNonceHash = await argon2.hash(
+  //       deleteMyAccountNonce,
+  //       application.privateConfiguration.argon2,
+  //     );
+  //     if (
+  //       request.state.user !== undefined &&
+  //       (request.state.user.deleteMyAccountCreatedAt === null ||
+  //         request.state.user.deleteMyAccountCreatedAt <
+  //           new Date(Date.now() - 5 * 60 * 1000).toISOString())
+  //     ) {
+  //       request.state.user.deleteMyAccountNonceHash = deleteMyAccountNonceHash;
+  //       request.state.user.deleteMyAccountCreatedAt = new Date().toISOString();
+  //       application.database.run(
+  //         sql`
+  //           update "users"
+  //           set
+  //             "deleteMyAccountNonceHash" = ${request.state.user.deleteMyAccountNonceHash},
+  //             "deleteMyAccountCreatedAt" = ${request.state.user.deleteMyAccountCreatedAt}
+  //           where "id" = ${request.state.user.id};
+  //         `,
+  //       );
+  //       application.database.backgroundJob({
+  //         type: "email",
+  //         parameters: {
+  //           from: `"Courselore" <${application.configuration.email.from}>`,
+  //           to: request.state.user.email,
+  //           subject: "Reset password",
+  //           html: html`
+  //             <p>
+  //               Someone is trying to reset the password for an account on
+  //               Courselore with the following email address:
+  //               <code>${request.state.user.email}</code>
+  //             </p>
+  //             <p>
+  //               If it was you, please reset your password:
+  //               <a
+  //                 href="https://${
+  //                   application.configuration.hostname
+  //                 }/authentication/reset-password/${
+  //                   request.state.user.publicId
+  //                 }/${deleteMyAccountNonce}${request.URL.search}"
+  //                 >https://${
+  //                   application.configuration.hostname
+  //                 }/authentication/reset-password/${
+  //                   request.state.user.publicId
+  //                 }/${deleteMyAccountNonce}${request.URL.search}</a
+  //               >
+  //             </p>
+  //             <p>
+  //               If it was not you, please report the issue to
+  //               <a
+  //                 href="mailto:${
+  //                   application.configuration.systemAdministratorEmail ??
+  //                   "system-administrator@courselore.org"
+  //                 }?${new URLSearchParams({
+  //                   subject: "Potential impersonation",
+  //                   body: `Email: ${request.state.user.emailVerificationEmail}`,
+  //                 })
+  //                   .toString()
+  //                   .replaceAll("+", "%20")}"
+  //                 >${
+  //                   application.configuration.systemAdministratorEmail ??
+  //                   "system-administrator@courselore.org"
+  //                 }</a
+  //               >
+  //             </p>
+  //           `,
+  //         },
+  //       });
+  //     }
+  //     response.send(
+  //       application.layouts.main({
+  //         request,
+  //         response,
+  //         head: html`<title>Password reset · Courselore</title>`,
+  //         body: html`
+  //           <div
+  //             css="${css`
+  //               display: flex;
+  //               flex-direction: column;
+  //               gap: var(--size--2);
+  //             `}"
+  //           >
+  //             <div
+  //               css="${css`
+  //                 font-size: var(--font-size--4);
+  //                 line-height: var(--font-size--4--line-height);
+  //                 font-weight: 800;
+  //               `}"
+  //             >
+  //               Password reset
+  //             </div>
+  //             <p>To continue please check your email.</p>
+  //           </div>
+  //         `,
+  //       }),
+  //     );
+  //   },
+  // });
 
-  application.server?.push({
-    method: "DELETE",
-    pathname: "/settings/delete-my-account",
-    handler: async (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {
-          passwordConfirmation: string;
-          twoFactorAuthenticationConfirmation: string;
-        },
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (request.state.user === undefined) return;
-      if (
-        typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.length < 8 ||
-        (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-          (typeof request.body.twoFactorAuthenticationConfirmation !==
-            "string" ||
-            request.body.twoFactorAuthenticationConfirmation.length < 6))
-      )
-        throw "validation";
-      const passwordConfirmationVerify = await argon2.verify(
-        request.state.user.passwordHash!,
-        request.body.passwordConfirmation,
-        application.privateConfiguration.argon2,
-      );
-      const twoFactorAuthenticationValidate =
-        Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-        typeof request.state.user.twoFactorAuthenticationSecret === "string" &&
-        typeof request.body.twoFactorAuthenticationConfirmation === "string"
-          ? new OTPAuth.TOTP({
-              secret: request.state.user.twoFactorAuthenticationSecret,
-            }).validate({
-              token: request.body.twoFactorAuthenticationConfirmation,
-            }) !== null
-          : true;
-      if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
-        response.setFlash!(html`
-          <div class="flash--red">
-            Invalid “Password
-            confirmation”${
-              Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
-              true
-                ? " or “Two-factor authentication code”"
-                : ""
-            }.
-          </div>
-        `);
-        response.redirect!("/settings");
-        return;
-      }
-      application.database.executeTransaction(() => {
-        application.database.run(
-          sql`
-            update "users"
-            set "mostRecentlyVisitedCourseParticipation" = null
-            where "id" = ${request.state.user!.id};
-          `,
-        );
-        for (const courseParticipation of application.database.all<{
-          id: number;
-        }>(
-          sql`
-            select "id"
-            from "courseParticipations"
-            where "user" = ${request.state.user!.id}
-            order by "id" asc;
-          `,
-        )) {
-          application.database.run(
-            sql`
-              delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseConversationMessages"
-              set "createdByCourseParticipation" = null
-              where "createdByCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseConversationMessageViews"
-              set "courseParticipation" = null
-              where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseConversationMessageLikes"
-              set "courseParticipation" = null
-              where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseParticipations" where "id" = ${courseParticipation.id};
-            `,
-          );
-        }
-        application.database.run(
-          sql`
-            delete from "userSessions" where "user" = ${request.state.user!.id};
-          `,
-        );
-        application.database.run(
-          sql`
-            delete from "users" where "id" = ${request.state.user!.id};
-          `,
-        );
-        application.database.backgroundJob({
-          type: "email",
-          parameters: {
-            from: `"Courselore" <${application.configuration.email.from}>`,
-            to: request.state.user!.email,
-            subject: "Account deleted",
-            html: html`
-              <p>
-                Someone deleted the account on Courselore with the following
-                email address:
-                <code>${request.state.user!.email}</code>
-              </p>
-              <p>
-                If it was not you, please report the issue to
-                <a
-                  href="mailto:${
-                    application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"
-                  }?${new URLSearchParams({
-                    subject: "Potential impersonation",
-                    body: `Email: ${request.state.user!.email}`,
-                  })
-                    .toString()
-                    .replaceAll("+", "%20")}"
-                  >${
-                    application.configuration.systemAdministratorEmail ??
-                    "system-administrator@courselore.org"
-                  }</a
-                >
-              </p>
-            `,
-          },
-        });
-      });
-      response.setFlash!(html`
-        <div class="flash--green">Account deleted.</div>
-      `);
-      response.redirect!("/");
-    },
-  });
+  // if (application.commandLineArguments.values.type === "backgroundJobWorker")
+  //   node.setInterval({ duration: 60 * 1000 }, () => {
+  //     application.database.run(
+  //       sql`
+  //           update "users"
+  //           set
+  //             "passwordResetNonceHash" = null,
+  //             "passwordResetCreatedAt" = null
+  //           where "passwordResetCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
+  //         `,
+  //     );
+  //   });
+
+  // application.server?.push({
+  //   method: "DELETE",
+  //   pathname: "/settings/delete-my-account",
+  //   handler: async (
+  //     request: serverTypes.Request<
+  //       {},
+  //       {},
+  //       {},
+  //       {
+  //         passwordConfirmation: string;
+  //         twoFactorAuthenticationConfirmation: string;
+  //       },
+  //       Application["types"]["states"]["Authentication"]
+  //     >,
+  //     response,
+  //   ) => {
+  //     if (request.state.user === undefined) return;
+  //     if (
+  //       typeof request.body.passwordConfirmation !== "string" ||
+  //       request.body.passwordConfirmation.length < 8 ||
+  //       (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
+  //         (typeof request.body.twoFactorAuthenticationConfirmation !==
+  //           "string" ||
+  //           request.body.twoFactorAuthenticationConfirmation.length < 6))
+  //     )
+  //       throw "validation";
+  //     const passwordConfirmationVerify = await argon2.verify(
+  //       request.state.user.passwordHash!,
+  //       request.body.passwordConfirmation,
+  //       application.privateConfiguration.argon2,
+  //     );
+  //     const twoFactorAuthenticationValidate =
+  //       Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
+  //       typeof request.state.user.twoFactorAuthenticationSecret === "string" &&
+  //       typeof request.body.twoFactorAuthenticationConfirmation === "string"
+  //         ? new OTPAuth.TOTP({
+  //             secret: request.state.user.twoFactorAuthenticationSecret,
+  //           }).validate({
+  //             token: request.body.twoFactorAuthenticationConfirmation,
+  //           }) !== null
+  //         : true;
+  //     if (!passwordConfirmationVerify || !twoFactorAuthenticationValidate) {
+  //       response.setFlash!(html`
+  //         <div class="flash--red">
+  //           Invalid “Password
+  //           confirmation”${
+  //             Boolean(request.state.user.twoFactorAuthenticationEnabled) ===
+  //             true
+  //               ? " or “Two-factor authentication code”"
+  //               : ""
+  //           }.
+  //         </div>
+  //       `);
+  //       response.redirect!("/settings");
+  //       return;
+  //     }
+  //     application.database.executeTransaction(() => {
+  //       application.database.run(
+  //         sql`
+  //           update "users"
+  //           set "mostRecentlyVisitedCourseParticipation" = null
+  //           where "id" = ${request.state.user!.id};
+  //         `,
+  //       );
+  //       for (const courseParticipation of application.database.all<{
+  //         id: number;
+  //       }>(
+  //         sql`
+  //           select "id"
+  //           from "courseParticipations"
+  //           where "user" = ${request.state.user!.id}
+  //           order by "id" asc;
+  //         `,
+  //       )) {
+  //         application.database.run(
+  //           sql`
+  //             delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+  //           `,
+  //         );
+  //         application.database.run(
+  //           sql`
+  //             delete from "courseConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+  //           `,
+  //         );
+  //         application.database.run(
+  //           sql`
+  //             update "courseConversationMessages"
+  //             set "createdByCourseParticipation" = null
+  //             where "createdByCourseParticipation" = ${courseParticipation.id};
+  //           `,
+  //         );
+  //         application.database.run(
+  //           sql`
+  //             update "courseConversationMessageViews"
+  //             set "courseParticipation" = null
+  //             where "courseParticipation" = ${courseParticipation.id};
+  //           `,
+  //         );
+  //         application.database.run(
+  //           sql`
+  //             update "courseConversationMessageLikes"
+  //             set "courseParticipation" = null
+  //             where "courseParticipation" = ${courseParticipation.id};
+  //           `,
+  //         );
+  //         application.database.run(
+  //           sql`
+  //             delete from "courseParticipations" where "id" = ${courseParticipation.id};
+  //           `,
+  //         );
+  //       }
+  //       application.database.run(
+  //         sql`
+  //           delete from "userSessions" where "user" = ${request.state.user!.id};
+  //         `,
+  //       );
+  //       application.database.run(
+  //         sql`
+  //           delete from "users" where "id" = ${request.state.user!.id};
+  //         `,
+  //       );
+  //       application.database.backgroundJob({
+  //         type: "email",
+  //         parameters: {
+  //           from: `"Courselore" <${application.configuration.email.from}>`,
+  //           to: request.state.user!.email,
+  //           subject: "Account deleted",
+  //           html: html`
+  //             <p>
+  //               Someone deleted the account on Courselore with the following
+  //               email address:
+  //               <code>${request.state.user!.email}</code>
+  //             </p>
+  //             <p>
+  //               If it was not you, please report the issue to
+  //               <a
+  //                 href="mailto:${
+  //                   application.configuration.systemAdministratorEmail ??
+  //                   "system-administrator@courselore.org"
+  //                 }?${new URLSearchParams({
+  //                   subject: "Potential impersonation",
+  //                   body: `Email: ${request.state.user!.email}`,
+  //                 })
+  //                   .toString()
+  //                   .replaceAll("+", "%20")}"
+  //                 >${
+  //                   application.configuration.systemAdministratorEmail ??
+  //                   "system-administrator@courselore.org"
+  //                 }</a
+  //               >
+  //             </p>
+  //           `,
+  //         },
+  //       });
+  //     });
+  //     response.setFlash!(html`
+  //       <div class="flash--green">Account deleted.</div>
+  //     `);
+  //     response.redirect!("/");
+  //   },
+  // });
 
   application.partials.userAvatar = ({
     user,
