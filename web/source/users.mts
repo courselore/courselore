@@ -2469,14 +2469,10 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${
                     application.configuration.hostname
-                  }/users/delete-my-account/${
-                    request.state.user.publicId
-                  }/${deleteMyAccountNonce}"
+                  }/users/delete-my-account/${deleteMyAccountNonce}"
                   >https://${
                     application.configuration.hostname
-                  }/users/delete-my-account/${
-                    request.state.user.publicId
-                  }/${deleteMyAccountNonce}</a
+                  }/users/delete-my-account/${deleteMyAccountNonce}</a
                 >
               </p>
               <p>
