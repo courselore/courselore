@@ -2540,6 +2540,237 @@ export default async (application: Application): Promise<void> => {
       );
     });
 
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/users/delete-my-account/(?<deleteMyAccountNonce>[0-9]+)$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        { deleteMyAccountNonce: string },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.deleteMyAccountNonce !== "string" ||
+        request.state.user === undefined
+      )
+        return;
+      response.send(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Delete my account · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Delete my account
+              </div>
+              <div
+                type="form"
+                method="DELETE"
+                action="/users/delete-my-account/${request.pathname.deleteMyAccountNonce}"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--4);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    font-weight: 600;
+                    color: light-dark(
+                      var(--color--red--500),
+                      var(--color--red--500)
+                    );
+                  `}"
+                >
+                  <i class="bi bi-exclamation-triangle-fill"></i> This action
+                  cannot be undone. You’ll lose access to all your courses.
+                </div>
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Name confirmation
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="text"
+                      placeholder="${request.state.user.name}"
+                      required
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                      javascript="${javascript`
+                        this.onvalidate = () => {
+                          if (this.value !== ${request.state.user.name})
+                            throw new javascript.ValidationError(${`Incorrect name confirmation: “${request.state.user.name}”`});
+                        };
+                      `}"
+                    />
+                  </div>
+                </label>
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Email confirmation
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="text"
+                      placeholder="${request.state.user.email}"
+                      required
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                      javascript="${javascript`
+                        this.onvalidate = () => {
+                          if (this.value !== ${request.state.user.email})
+                            throw new javascript.ValidationError(${`Incorrect email confirmation: “${request.state.user.email}”`});
+                        };
+                      `}"
+                    />
+                  </div>
+                </label>
+                <label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Password confirmation
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <input
+                      type="password"
+                      name="passwordConfirmation"
+                      required
+                      minlength="8"
+                      maxlength="2000"
+                      class="input--text"
+                      css="${css`
+                        flex: 1;
+                      `}"
+                    />
+                  </div>
+                </label>
+                $${
+                  Boolean(request.state.user.twoFactorAuthenticationEnabled)
+                    ? html`
+                        <label>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
+                          >
+                            Two-factor authentication code
+                          </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                            `}"
+                          >
+                            <input
+                              type="text"
+                              inputmode="numeric"
+                              name="twoFactorAuthenticationConfirmation"
+                              required
+                              minlength="6"
+                              class="input--text"
+                              css="${css`
+                                flex: 1;
+                              `}"
+                            />
+                          </div>
+                        </label>
+                      `
+                    : html``
+                }
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--red"
+                  >
+                    Delete my account
+                  </button>
+                </div>
+              </div>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
   // application.server?.push({
   //   method: "DELETE",
   //   pathname: "/settings/delete-my-account",
