@@ -2976,24 +2976,11 @@ export default async (application: Application): Promise<void> => {
       ) {
         response.setFlash!(html`
           <div class="flash--red">
-            Either there’s something wrong with this request to account
-            deletion, in which case please request a new account deletion, or
-            that was invalid “Password confirmation” or
-            ${
-              typeof request.body.twoFactorAuthenticationCode === "string"
-                ? "“Two-factor authentication code”"
-                : typeof request.body.twoFactorAuthenticationRecoveryCode ===
-                    "string"
-                  ? "“Two-factor authentication recovery code”"
-                  : (() => {
-                      throw new Error();
-                    })()
-            }.
+            There’s something wrong with this request to delete your account.
+            Please start a new request to delete your account.
           </div>
         `);
-        response.redirect!(
-          `/settings/delete-my-account/${request.pathname.deleteMyAccountNonce}`,
-        );
+        response.redirect!("/settings");
         return;
       }
       application.database.executeTransaction(() => {
