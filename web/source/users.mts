@@ -2712,38 +2712,158 @@ export default async (application: Application): Promise<void> => {
                 $${
                   Boolean(request.state.user.twoFactorAuthenticationEnabled)
                     ? html`
-                        <label>
+                        <div
+                          key="twoFactorAuthenticationCode"
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--1);
+                          `}"
+                        >
+                          <label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Two-factor authentication code
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                              `}"
+                            >
+                              <input
+                                type="text"
+                                inputmode="numeric"
+                                name="twoFactorAuthenticationCode"
+                                required
+                                minlength="6"
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                            </div>
+                          </label>
                           <div
                             css="${css`
                               font-size: var(--font-size--3);
                               line-height: var(--font-size--3--line-height);
                               font-weight: 600;
                               color: light-dark(
-                                var(--color--slate--500),
-                                var(--color--slate--500)
+                                var(--color--slate--600),
+                                var(--color--slate--400)
                               );
                             `}"
                           >
-                            Two-factor authentication code
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationCode"]').hidden = true;
+                                  this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationCode"]').disabled = true;
+                                  this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationRecoveryCode"]').hidden = false;
+                                  this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationRecoveryCode"]').disabled = false;
+                                };
+                              `}"
+                            >
+                              Use two-factor authentication recovery code
+                              instead
+                            </button>
+                          </div>
+                        </div>
+                        <div
+                          key="twoFactorAuthenticationRecoveryCode"
+                          hidden
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--1);
+                          `}"
+                        >
+                          <label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Two-factor authentication recovery code
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                              `}"
+                            >
+                              <input
+                                type="text"
+                                inputmode="numeric"
+                                name="twoFactorAuthenticationRecoveryCode"
+                                required
+                                minlength="10"
+                                disabled
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                            </div>
+                          </label>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              color: light-dark(
+                                var(--color--slate--600),
+                                var(--color--slate--400)
+                              );
+                            `}"
+                          >
+                            The recovery codes have been shown to you when you
+                            enabled two-factor authentication. Ten recovery
+                            codes have been shown, and you may use any one of
+                            them above.
                           </div>
                           <div
                             css="${css`
-                              display: flex;
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--600),
+                                var(--color--slate--400)
+                              );
                             `}"
                           >
-                            <input
-                              type="text"
-                              inputmode="numeric"
-                              name="twoFactorAuthenticationConfirmation"
-                              required
-                              minlength="6"
-                              class="input--text"
-                              css="${css`
-                                flex: 1;
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationCode"]').hidden = false;
+                                  this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationCode"]').disabled = false;
+                                  this.closest('[type~="form"]').querySelector('[key~="twoFactorAuthenticationRecoveryCode"]').hidden = true;
+                                  this.closest('[type~="form"]').querySelector('[name="twoFactorAuthenticationRecoveryCode"]').disabled = true;
+                                };
                               `}"
-                            />
+                            >
+                              Use two-factor authentication code instead
+                            </button>
                           </div>
-                        </label>
+                        </div>
                       `
                     : html``
                 }
@@ -2780,7 +2900,8 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           passwordConfirmation: string;
-          twoFactorAuthenticationConfirmation: string;
+          twoFactorAuthenticationCode: string;
+          twoFactorAuthenticationRecoveryCode: string;
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -2796,9 +2917,8 @@ export default async (application: Application): Promise<void> => {
           (typeof request.body.passwordConfirmation !== "string" ||
             request.body.passwordConfirmation.length < 8)) ||
         (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
-          (typeof request.body.twoFactorAuthenticationConfirmation !==
-            "string" ||
-            request.body.twoFactorAuthenticationConfirmation.length < 6))
+          (typeof request.body.twoFactorAuthenticationCode !== "string" ||
+            request.body.twoFactorAuthenticationCode.length < 6))
       )
         throw "validation";
       const passwordConfirmationVerification =
@@ -2814,28 +2934,28 @@ export default async (application: Application): Promise<void> => {
           ? new OTPAuth.TOTP({
               secret: request.state.user.twoFactorAuthenticationSecret!,
             }).validate({
-              token: request.body.twoFactorAuthenticationConfirmation!,
+              token: request.body.twoFactorAuthenticationCode!,
             }) !== null
           : true;
 
-      if (
-        !(await argon2.verify(
-          request.state.user?.passwordResetNonceHash ??
-            "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
-          request.pathname.passwordResetNonce,
-          application.privateConfiguration.argon2,
-        )) ||
-        typeof request.state.user?.passwordResetNonceHash !== "string"
-      ) {
-        response.setFlash!(html`
-          <div class="flash--red">
-            There’s something wrong with this password reset. Please request a
-            new password reset.
-          </div>
-        `);
-        response.redirect!(`/authentication${request.URL.search}`);
-        return;
-      }
+      // if (
+      //   !(await argon2.verify(
+      //     request.state.user?.passwordResetNonceHash ??
+      //       "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+      //     request.pathname.passwordResetNonce,
+      //     application.privateConfiguration.argon2,
+      //   )) ||
+      //   typeof request.state.user?.passwordResetNonceHash !== "string"
+      // ) {
+      //   response.setFlash!(html`
+      //     <div class="flash--red">
+      //       There’s something wrong with this password reset. Please request a
+      //       new password reset.
+      //     </div>
+      //   `);
+      //   response.redirect!(`/authentication${request.URL.search}`);
+      //   return;
+      // }
 
       if (
         !passwordConfirmationVerification ||
