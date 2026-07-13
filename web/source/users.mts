@@ -1487,7 +1487,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   <div
                     type="form"
-                    method="DELETE"
+                    method="POST"
                     action="/settings/delete-my-account"
                     css="${css`
                       font-size: var(--font-size--3);
@@ -2413,7 +2413,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
-    method: "DELETE",
+    method: "POST",
     pathname: "/settings/delete-my-account",
     handler: async (
       request: serverTypes.Request<
@@ -2435,10 +2435,9 @@ export default async (application: Application): Promise<void> => {
         application.privateConfiguration.argon2,
       );
       if (
-        request.state.user !== undefined &&
-        (request.state.user.deleteMyAccountNonceCreatedAt === null ||
-          request.state.user.deleteMyAccountNonceCreatedAt <
-            new Date(Date.now() - 5 * 60 * 1000).toISOString())
+        request.state.user.deleteMyAccountNonceCreatedAt === null ||
+        request.state.user.deleteMyAccountNonceCreatedAt <
+          new Date(Date.now() - 5 * 60 * 1000).toISOString()
       ) {
         request.state.user.deleteMyAccountNonceHash = deleteMyAccountNonceHash;
         request.state.user.deleteMyAccountNonceCreatedAt =
