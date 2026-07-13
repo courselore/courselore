@@ -1,6 +1,7 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 import * as serverTypes from "@radically-straightforward/server";
+import * as node from "@radically-straightforward/node";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
@@ -1607,7 +1608,8 @@ export default async (application: Application): Promise<void> => {
         emailVerificationNonce,
         application.privateConfiguration.argon2,
       );
-      request.state.user.emailVerificationNonceCreatedAt = new Date().toISOString();
+      request.state.user.emailVerificationNonceCreatedAt =
+        new Date().toISOString();
       application.database.run(
         sql`
           update "users"
@@ -2410,136 +2412,137 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  // application.server?.push({
-  //   method: "DELETE",
-  //   pathname: "/settings/delete-my-account",
-  //   handler: async (
-  //     request: serverTypes.Request<
-  //       {},
-  //       {},
-  //       {},
-  //       {},
-  //       Application["types"]["states"]["Authentication"]
-  //     >,
-  //     response,
-  //   ) => {
-  //     if (request.state.user === undefined) return;
-  //     const deleteMyAccountNonce = cryptoRandomString({
-  //       length: 100,
-  //       type: "numeric",
-  //     });
-  //     const deleteMyAccountNonceHash = await argon2.hash(
-  //       deleteMyAccountNonce,
-  //       application.privateConfiguration.argon2,
-  //     );
-  //     if (
-  //       request.state.user !== undefined &&
-  //       (request.state.user.deleteMyAccountNonceCreatedAt === null ||
-  //         request.state.user.deleteMyAccountNonceCreatedAt <
-  //           new Date(Date.now() - 5 * 60 * 1000).toISOString())
-  //     ) {
-  //       request.state.user.deleteMyAccountNonceHash = deleteMyAccountNonceHash;
-  //       request.state.user.deleteMyAccountNonceCreatedAt = new Date().toISOString();
-  //       application.database.run(
-  //         sql`
-  //           update "users"
-  //           set
-  //             "deleteMyAccountNonceHash" = ${request.state.user.deleteMyAccountNonceHash},
-  //             "deleteMyAccountNonceCreatedAt" = ${request.state.user.deleteMyAccountNonceCreatedAt}
-  //           where "id" = ${request.state.user.id};
-  //         `,
-  //       );
-  //       application.database.backgroundJob({
-  //         type: "email",
-  //         parameters: {
-  //           from: `"Courselore" <${application.configuration.email.from}>`,
-  //           to: request.state.user.email,
-  //           subject: "Reset password",
-  //           html: html`
-  //             <p>
-  //               Someone is trying to reset the password for an account on
-  //               Courselore with the following email address:
-  //               <code>${request.state.user.email}</code>
-  //             </p>
-  //             <p>
-  //               If it was you, please reset your password:
-  //               <a
-  //                 href="https://${
-  //                   application.configuration.hostname
-  //                 }/authentication/reset-password/${
-  //                   request.state.user.publicId
-  //                 }/${deleteMyAccountNonce}${request.URL.search}"
-  //                 >https://${
-  //                   application.configuration.hostname
-  //                 }/authentication/reset-password/${
-  //                   request.state.user.publicId
-  //                 }/${deleteMyAccountNonce}${request.URL.search}</a
-  //               >
-  //             </p>
-  //             <p>
-  //               If it was not you, please report the issue to
-  //               <a
-  //                 href="mailto:${
-  //                   application.configuration.systemAdministratorEmail ??
-  //                   "system-administrator@courselore.org"
-  //                 }?${new URLSearchParams({
-  //                   subject: "Potential impersonation",
-  //                   body: `Email: ${request.state.user.emailVerificationEmail}`,
-  //                 })
-  //                   .toString()
-  //                   .replaceAll("+", "%20")}"
-  //                 >${
-  //                   application.configuration.systemAdministratorEmail ??
-  //                   "system-administrator@courselore.org"
-  //                 }</a
-  //               >
-  //             </p>
-  //           `,
-  //         },
-  //       });
-  //     }
-  //     response.send(
-  //       application.layouts.main({
-  //         request,
-  //         response,
-  //         head: html`<title>Password reset · Courselore</title>`,
-  //         body: html`
-  //           <div
-  //             css="${css`
-  //               display: flex;
-  //               flex-direction: column;
-  //               gap: var(--size--2);
-  //             `}"
-  //           >
-  //             <div
-  //               css="${css`
-  //                 font-size: var(--font-size--4);
-  //                 line-height: var(--font-size--4--line-height);
-  //                 font-weight: 800;
-  //               `}"
-  //             >
-  //               Password reset
-  //             </div>
-  //             <p>To continue please check your email.</p>
-  //           </div>
-  //         `,
-  //       }),
-  //     );
-  //   },
-  // });
+  application.server?.push({
+    method: "DELETE",
+    pathname: "/settings/delete-my-account",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      const deleteMyAccountNonce = cryptoRandomString({
+        length: 100,
+        type: "numeric",
+      });
+      const deleteMyAccountNonceHash = await argon2.hash(
+        deleteMyAccountNonce,
+        application.privateConfiguration.argon2,
+      );
+      if (
+        request.state.user !== undefined &&
+        (request.state.user.deleteMyAccountNonceCreatedAt === null ||
+          request.state.user.deleteMyAccountNonceCreatedAt <
+            new Date(Date.now() - 5 * 60 * 1000).toISOString())
+      ) {
+        request.state.user.deleteMyAccountNonceHash = deleteMyAccountNonceHash;
+        request.state.user.deleteMyAccountNonceCreatedAt =
+          new Date().toISOString();
+        application.database.run(
+          sql`
+            update "users"
+            set
+              "deleteMyAccountNonceHash" = ${request.state.user.deleteMyAccountNonceHash},
+              "deleteMyAccountNonceCreatedAt" = ${request.state.user.deleteMyAccountNonceCreatedAt}
+            where "id" = ${request.state.user.id};
+          `,
+        );
+        application.database.backgroundJob({
+          type: "email",
+          parameters: {
+            from: `"Courselore" <${application.configuration.email.from}>`,
+            to: request.state.user.email,
+            subject: "Delete my account",
+            html: html`
+              <p>
+                Someone is trying to delete an account on Courselore with the
+                following email address:
+                <code>${request.state.user.email}</code>
+              </p>
+              <p>
+                If it was you, please delete your account:
+                <a
+                  href="https://${
+                    application.configuration.hostname
+                  }/users/delete-my-account/${
+                    request.state.user.publicId
+                  }/${deleteMyAccountNonce}"
+                  >https://${
+                    application.configuration.hostname
+                  }/users/delete-my-account/${
+                    request.state.user.publicId
+                  }/${deleteMyAccountNonce}</a
+                >
+              </p>
+              <p>
+                If it was not you, please report the issue to
+                <a
+                  href="mailto:${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }?${new URLSearchParams({
+                    subject: "Potential impersonation",
+                    body: `Email: ${request.state.user.emailVerificationEmail}`,
+                  })
+                    .toString()
+                    .replaceAll("+", "%20")}"
+                  >${
+                    application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"
+                  }</a
+                >
+              </p>
+            `,
+          },
+        });
+      }
+      response.send(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Delete my account · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Delete my account
+              </div>
+              <p>To continue please check your email.</p>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
 
-  // if (application.commandLineArguments.values.type === "backgroundJobWorker")
-  //   node.setInterval({ duration: 60 * 1000 }, () => {
-  //     application.database.run(
-  //       sql`
-  //           update "users"
-  //           set
-  //             "passwordResetNonceHash" = null,
-  //             "passwordResetNonceCreatedAt" = null
-  //           where "passwordResetNonceCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
-  //         `,
-  //     );
-  //   });
+  if (application.commandLineArguments.values.type === "backgroundJobWorker")
+    node.setInterval({ duration: 60 * 1000 }, () => {
+      application.database.run(
+        sql`
+            update "users"
+            set
+              "deleteMyAccountNonceHash" = null,
+              "deleteMyAccountNonceCreatedAt" = null
+            where "deleteMyAccountNonceCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
+          `,
+      );
+    });
 
   // application.server?.push({
   //   method: "DELETE",
