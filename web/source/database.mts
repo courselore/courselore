@@ -4321,6 +4321,11 @@ export default async (application: Application): Promise<void> => {
 
       create index "index_users_emailVerificationCreatedAt" on "users" ("emailVerificationCreatedAt");
       create index "index_users_passwordResetCreatedAt" on "users" ("passwordResetCreatedAt");
+
+      alter table "users" add column "deleteMyAccountNonceHash" text null;
+      alter table "users" add column "deleteMyAccountCreatedAt" text null;
+      create index "index_users_deleteMyAccountCreatedAt" on "users" ("deleteMyAccountCreatedAt");
+      
     `,
   );
 };
