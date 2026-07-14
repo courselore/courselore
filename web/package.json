@@ -43,11 +43,11 @@
     "bootstrap-icons": "^1.13.1",
     "cross-env": "^10.1.0",
     "nodemon": "^3.1.14",
-    "prettier": "^3.9.4",
+    "prettier": "^3.9.5",
     "rehype-parse": "^9.0.1",
     "rehype-remark": "^10.0.1",
     "remark-stringify": "^11.0.0",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "allowScripts": {
     "@radically-straightforward/caddy@2.0.12": true,
