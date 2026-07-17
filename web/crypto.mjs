@@ -7,12 +7,12 @@ import crypto from "node:crypto";
 // const key = await util.promisify(crypto.generateKey)("aes", { length: 256 });
 
 // // Export key
-// const exportedKey = key.export().toString("base64url");
+// const exportedKey = key.export().toString("hex");
 // console.log(exportedKey);
 
 // // Import key
-// const importedKey = crypto.createSecretKey(exportedKey, "base64url");
-// console.log(importedKey.export().toString("base64url"));
+// const importedKey = crypto.createSecretKey(exportedKey, "hex");
+// console.log(importedKey.export().toString("hex"));
 
 // // Encrypt
 // const plaintext = "hello world";
@@ -21,9 +21,9 @@ import crypto from "node:crypto";
 // const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()]);
 // const authenticationTag = cipher.getAuthTag();
 // const encryptedData = JSON.stringify({
-//   initializationVector: initializationVector.toString("base64url"),
-//   ciphertext: ciphertext.toString("base64url"),
-//   authenticationTag: authenticationTag.toString("base64url"),
+//   initializationVector: initializationVector.toString("hex"),
+//   ciphertext: ciphertext.toString("base64"),
+//   authenticationTag: authenticationTag.toString("hex"),
 // });
 // console.log(encryptedData);
 
@@ -53,18 +53,21 @@ import crypto from "node:crypto";
 
 // HASHING
 
+// const message = "hello world";
+// console.log(crypto.hash("sha512", message));
+
 // PASSWORD HASHING
 
 // console.log(
 //   (
 //     await util.promisify(crypto.argon2)("argon2id", {
 //       message: "courselore",
-//       nonce: Buffer.from("t1p57l3dqqKIvNlxZLA4Tw", "base64url"),
+//       nonce: Buffer.from("t1p57l3dqqKIvNlxZLA4Tw", "base64"),
 //       parallelism: 1,
 //       tagLength: 32,
 //       memory: 12288,
 //       passes: 3,
 //     })
-//   ).toString("base64url"),
+//   ).toString("base64"),
 // );
 // $argon2id$v=19$m=12288,t=3,p=1$t1p57l3dqqKIvNlxZLA4Tw$JY0kdHMHFWsREM6J5whSMjpArGSCCJXdbJHVSIJXuKI
