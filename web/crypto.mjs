@@ -3,44 +3,58 @@ import crypto from "node:crypto";
 
 // SYMMETRIC ENCRYPTION/DECRYPTION
 
-// Generate key
-const key = await util.promisify(crypto.generateKey)("aes", { length: 256 });
+// // Generate key
+// const key = await util.promisify(crypto.generateKey)("aes", { length: 256 });
 
-// Export key
-const exportedKey = key.export().toString("base64url");
-console.log(exportedKey);
+// // Export key
+// const exportedKey = key.export().toString("base64url");
+// console.log(exportedKey);
 
-// Import key
-const importedKey = crypto.createSecretKey(exportedKey, "base64url");
-console.log(importedKey.export().toString("base64url"));
+// // Import key
+// const importedKey = crypto.createSecretKey(exportedKey, "base64url");
+// console.log(importedKey.export().toString("base64url"));
 
-// Encrypt
-const plaintext = "hello world";
-const initializationVector = crypto.randomBytes(12);
-const cipher = crypto.createCipheriv("aes-256-gcm", key, initializationVector);
-const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()]);
-const authenticationTag = cipher.getAuthTag();
-const encryptedData = JSON.stringify({
-  initializationVector: initializationVector.toString("base64url"),
-  ciphertext: ciphertext.toString("base64url"),
-  authenticationTag: authenticationTag.toString("base64url"),
-});
-console.log(encryptedData);
+// // Encrypt
+// const plaintext = "hello world";
+// const initializationVector = crypto.randomBytes(12);
+// const cipher = crypto.createCipheriv("aes-256-gcm", key, initializationVector);
+// const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()]);
+// const authenticationTag = cipher.getAuthTag();
+// const encryptedData = JSON.stringify({
+//   initializationVector: initializationVector.toString("base64url"),
+//   ciphertext: ciphertext.toString("base64url"),
+//   authenticationTag: authenticationTag.toString("base64url"),
+// });
+// console.log(encryptedData);
 
-// Decrypt
-const decipher = crypto.createDecipheriv(
-  "aes-256-gcm",
-  key,
-  initializationVector,
-);
-decipher.setAuthTag(authenticationTag);
-const decryptedPlaintext = Buffer.concat([
-  decipher.update(ciphertext),
-  decipher.final(),
-]);
-console.log(decryptedPlaintext.toString("utf-8"));
+// // Decrypt
+// const decipher = crypto.createDecipheriv(
+//   "aes-256-gcm",
+//   key,
+//   initializationVector,
+// );
+// decipher.setAuthTag(authenticationTag);
+// const decryptedPlaintext = Buffer.concat([
+//   decipher.update(ciphertext),
+//   decipher.final(),
+// ]);
+// console.log(decryptedPlaintext.toString("utf-8"));
 
-// argon2
+// ASYMMETRIC ENCRYPTION/DECRYPTION
+
+// const keyPair = await util.promisify(crypto.generateKeyPair)("rsa", {
+//   modulusLength: 3072,
+//   publicKeyEncoding: { format: "pem", type: "spki" },
+//   privateKeyEncoding: { format: "pem", type: "pkcs8" },
+// });
+// console.log(keyPair);
+
+// SELF-SIGNED CERTIFICATE
+
+// HASHING
+
+// PASSWORD HASHING
+
 // console.log(
 //   (
 //     await util.promisify(crypto.argon2)("argon2id", {
