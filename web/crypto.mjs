@@ -53,8 +53,17 @@ import crypto from "node:crypto";
 
 // HASHING
 
+// // Hash
 // const message = "hello world";
-// console.log(crypto.hash("sha512", message));
+// const hash = crypto.hash("sha256", message);
+// console.log(hash);
+
+// // Verify
+// const hashVerification = crypto.timingSafeEqual(
+//   Buffer.from(hash, "hex"),
+//   crypto.hash("sha256", message, "buffer"),
+// );
+// console.log(hashVerification);
 
 // PASSWORD HASHING
 
