@@ -8,27 +8,6 @@ import crypto from "node:crypto";
 // const loadedKey = crypto.createSecretKey(keyString, "base64url");
 // console.log(loadedKey.export().toString("base64url"));
 
-// Web Crypto generate key
-// console.log(
-//   await crypto.subtle.importKey(
-//     "jwk",
-//     await crypto.subtle.exportKey(
-//       "jwk",
-//       await crypto.subtle.generateKey(
-//         {
-//           name: "AES-GCM",
-//           length: 256,
-//         },
-//         true,
-//         ["encrypt", "decrypt"],
-//       ),
-//     ),
-//     "AES-GCM",
-//     false,
-//     ["encrypt", "decrypt"],
-//   ),
-// );
-
 // Node.js argon2
 // console.log(
 //   (
