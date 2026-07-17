@@ -1,14 +1,46 @@
 import util from "node:util";
 import crypto from "node:crypto";
 
-// Node.js generate key
-// const key = await util.promisify(crypto.generateKey)("aes", { length: 256 });
-// const keyString = key.export().toString("base64url");
-// console.log(keyString);
-// const loadedKey = crypto.createSecretKey(keyString, "base64url");
-// console.log(loadedKey.export().toString("base64url"));
+// SYMMETRIC ENCRYPTION/DECRYPTION
 
-// Node.js argon2
+// Generate key
+const key = await util.promisify(crypto.generateKey)("aes", { length: 256 });
+
+// Export key
+const exportedKey = key.export().toString("base64url");
+console.log(exportedKey);
+
+// Import key
+const importedKey = crypto.createSecretKey(exportedKey, "base64url");
+console.log(importedKey.export().toString("base64url"));
+
+// Encrypt
+const plaintext = "hello world";
+const initializationVector = crypto.randomBytes(12);
+const cipher = crypto.createCipheriv("aes-256-gcm", key, initializationVector);
+const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()]);
+const authenticationTag = cipher.getAuthTag();
+const encryptedData = JSON.stringify({
+  initializationVector: initializationVector.toString("base64url"),
+  ciphertext: ciphertext.toString("base64url"),
+  authenticationTag: authenticationTag.toString("base64url"),
+});
+console.log(encryptedData);
+
+// Decrypt
+const decipher = crypto.createDecipheriv(
+  "aes-256-gcm",
+  key,
+  initializationVector,
+);
+decipher.setAuthTag(authenticationTag);
+const decryptedPlaintext = Buffer.concat([
+  decipher.update(ciphertext),
+  decipher.final(),
+]);
+console.log(decryptedPlaintext.toString("utf-8"));
+
+// argon2
 // console.log(
 //   (
 //     await util.promisify(crypto.argon2)("argon2id", {
