@@ -1,45 +1,6 @@
 import util from "node:util";
 import crypto from "node:crypto";
 
-// SYMMETRIC ENCRYPTION/DECRYPTION
-
-// // Generate key
-// const key = await util.promisify(crypto.generateKey)("aes", { length: 256 });
-
-// // Export key
-// const exportedKey = key.export().toString("hex");
-// console.log(exportedKey);
-
-// // Import key
-// const importedKey = crypto.createSecretKey(exportedKey, "hex");
-// console.log(importedKey.export().toString("hex"));
-
-// // Encrypt
-// const plainText = "hello world";
-// const initializationVector = crypto.randomBytes(12);
-// const cipher = crypto.createCipheriv("aes-256-gcm", key, initializationVector);
-// const cipherText = Buffer.concat([cipher.update(plainText), cipher.final()]);
-// const authenticationTag = cipher.getAuthTag();
-// const encryptedText = JSON.stringify({
-//   initializationVector: initializationVector.toString("hex"),
-//   cipherText: cipherText.toString("base64"),
-//   authenticationTag: authenticationTag.toString("hex"),
-// });
-// console.log(encryptedText);
-
-// // Decrypt
-// const decipher = crypto.createDecipheriv(
-//   "aes-256-gcm",
-//   key,
-//   initializationVector,
-// );
-// decipher.setAuthTag(authenticationTag);
-// const decryptedPlaintext = Buffer.concat([
-//   decipher.update(cipherText),
-//   decipher.final(),
-// ]).toString("utf-8");
-// console.log(decryptedPlaintext);
-
 // ASYMMETRIC ENCRYPTION/DECRYPTION
 
 // // Generate key
