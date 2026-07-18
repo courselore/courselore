@@ -11,6 +11,7 @@ import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
 import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
+import selfsigned from "selfsigned";
 import database, { ApplicationDatabase } from "./database.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
@@ -97,6 +98,43 @@ application.commandLineArguments = util.parseArgs({
   },
   allowPositionals: true,
 }) as Application["commandLineArguments"];
+
+if (typeof application.commandLineArguments.positionals[0] !== "string") {
+  const secretKey = node.SymmetricEncryption.exportKey(
+    await node.SymmetricEncryption.generateKey(),
+  );
+  const ltiKey = await node.AsymmetricEncryption.generateKeyPair();
+  const samlKey = await selfsigned.generate(
+    [
+      { name: "commonName", value: application.configuration.hostname },
+      { name: "organizationName", value: "Courselore" },
+      { name: "countryName", value: "US" },
+      { name: "stateOrProvinceName", value: "Maryland" },
+      { name: "localityName", value: "Baltimore" },
+    ],
+    {
+      keySize: 3072,
+      algorithm: "sha256",
+      notAfterDate: new Date(Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000),
+    },
+  );
+  console.log(
+    JSON.stringify(
+      {
+        secretKey,
+        ltiPrivateKey: ltiKey.privateKey,
+        ltiPublicKey: ltiKey.publicKey,
+        samlPrivateKey: samlKey.private,
+        samlPublicKey: samlKey.public,
+        samlCertificate: samlKey.cert,
+      },
+      undefined,
+      2,
+    ),
+  );
+  process.exit();
+}
+
 application.configuration = (
   await import(
     url.pathToFileURL(
