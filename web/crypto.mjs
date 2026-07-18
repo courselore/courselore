@@ -3,17 +3,12 @@ import crypto from "node:crypto";
 import * as node from "@radically-straightforward/node";
 import selfsigned from "selfsigned";
 
-// const keyPair = await node.AsymmetricEncryption.generateKeyPair();
-// console.log(keyPair);
 const result = await selfsigned.generate(null, {
   keySize: 3072,
   algorithm: "sha256",
   notAfterDate: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
-  // keyPair,
 });
 console.log(result);
-
-// SELF-SIGNED CERTIFICATE
 
 // PASSWORD HASHING
 
