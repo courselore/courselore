@@ -191,13 +191,13 @@ if (application.commandLineArguments.values.type === undefined) {
               await selfsigned.generate(
                 [
                   {
-                    name: "commonName",
+                    shortName: "CN",
                     value: application.configuration.hostname,
                   },
-                  { name: "organizationName", value: "Courselore" },
-                  { name: "countryName", value: "US" },
-                  { name: "stateOrProvinceName", value: "Maryland" },
-                  { name: "localityName", value: "Baltimore" },
+                  { shortName: "O", value: "Courselore" },
+                  { shortName: "C", value: "US" },
+                  { shortName: "ST", value: "Maryland" },
+                  { shortName: "L", value: "Baltimore" },
                 ],
                 {
                   keyPair: samlKeyPair,
