@@ -14,16 +14,18 @@ export default {
       "-----BEGIN PRIVATE KEY-----\nMIIG/gIBADANBgkqhkiG9w0BAQEFAASCBugwggbkAgEAAoIBgQDZav68Vy6qJcJU\nQpBk+xz274keAfM8qKvU052jSeYN9DfPTxFqg0RAfWSG6zcWkvfwXLwamuQ4jM/v\naDt1gamCBsGUR53hUxsf30OhSfUVp5ytOndwhKCONjcSRHNVXdrmZJ1RFA7RjQhN\nvgBlJ0nzK3k4gsIPpK+IBicuNrUSuanjC93yQUHC5pn1KdGIV0x9l0kBVEiN7YtQ\nsSsHc5Wg+tArV+p0AnoF+tv8Sxv16GYNzLcCF+Hu76aOVgPntgmy/+9SnfMa1f5q\n/9YI2ZGcwJKwfLm5XLLuUGcuNjwWNgLDeqzrHy02Trv+UklsV69G3mfB46HaJepl\nQIo1v8tCw8V6EENa9ZQGWd+2ykG5jzcadw0TF80Diqh6dBVK8EQh3rNXSCps7gK8\nEVZgUcrrxws33HSmySwGke3ez55tMqMRQr8bk3/nyVACam0REeDE+/qUzGUKCcre\nuKyaJX/DSSGGw7Lkla+qbwOGVSWRQWKFujQ5+Z/5NWLc6tZn7bMCAwEAAQKCAYAk\n7AQlhOKyV2Y4e/Ncir6A+u28sFUXzIcdxfAjzkVowjwGEyXggjlBgGnldaVtynib\nk4wIMpymM9eODxPl4Saho7cVENJxdPUKxRYNmmsqCcRUMLUe4Q8JB5Dzo7c4XI9z\nh8ulfLQFhx9NYIJdqz3mM1BLNf1xvaRng6/8q6K1ct00ZwwCe22JBTNJDJh+QGEH\nhP0LYj5OB/ScN/IYOltDMsTOT4hLui3xvQfFwRWW/afzGPxNOTQPqRgOXPId0+5i\nZoE6hTGIEa66WhH8J/9QTVYnfDJXPhMQAhLVVj4l7gn4a4BlIpUg56nYTew3TPEy\n1c6dejc0wjzJzLWNw3WLxsADSLMP12BKVCBfV3gDQ/rDJbAoSAPytjdXYrhPxS78\nwmKqF1WU+vvvYM3Pa0Tf5Ukl8n+uc7qt8ZdQj+1JD5B+0zV12y/cjC6EOIdzr4Fa\ngRCoykDBcGmLh+RKISAwOdjoZHmBH5+fOoaIi+kEpmGU594bmabroMES+GOxylUC\ngcEA/ZAAOZd9MDisf8adPBwS4NHFUKIkwWA/J1zR2Yq/7V6ICFLQ4VQEPAlA1+M6\nLq2K1+KWU0h56+WmVWAB37pUevyXlTQq7+AxljkXGYlJpyHTp3Rty04S0hftZqPP\nlOndXLD76ArBQ1cX1Fd2n9K15NlW6fmYYtbJffiBFuYeJ4SMqKoUg2tJ03N4T8Dg\nRE43kHeBwsn741L+++zdNwa1uNlMtXkxTPSgsoQVt3VF/zYxlpJ6SIbhsX3esCzq\nAUuHAoHBANuCC4cOiHkVZQ4/pKaOssTjfH4DRr2THpCJjE32ime/aQJQFSkQs0nc\n5aNonleeYHlD8RljR7JprgUCO9f+U4ZF8qD0Amp/l8lJFBKl1fpMZy8k6Tt6XYlB\nF2Sv26kttLDKUMEjZzM23Qy4HCxCNldxb3RAAPdUVem943ekLT87P8TCqU4Euctr\nD3Tyc13E+5A3b0oU3mYvG7/78h6fWejmMjkOMpEgzjitHeFnY0FSHL5PzpCsUQ9/\nAeXuaGCPdQKBwFhxANMVttG6AtjyoudTd3Y5VNSCKcXVV1HYe02gqr8VqOcWU8s0\nbeGu7JIgrKuZVoNkgkB8WCJi0LiYqy6pJExdjFW7g3p1vXYDZb4/d5Q3JUcUQjOW\ngNQNCn4xhvcO92ocRVEzZyOg3ivvce3fJhizgjBMIc3f0xoAMq6VB1GLVzCBWnRY\nWMDLVtyijtbkXVcjh/w0TYqF6XBftu05hur5yFrH8d1Aukhp79U0r3yMH5HAd6yS\nd2hcWe8jS1+2QwKBwQDC9QKGBnthh4YEnLQBFlZilmU4inJm52bLGs9ZYzHUKWX7\nnuLcYS/L13zBoKaZzVmD+rsFQG8qX8AmRLCgCwtmA3QWTgJjUkWeieBhG5crwnYW\noiLgJ7Mxt3UugR6IaMbGCjqk/2umSgEUTeT/ziLzkRVbW4lAIlBX1MZVuaRSN65Q\ndE/osjvOFp1Y0gly7AQ+N24JjvVkLkzoO730QrWZK/LJR/nTeh6OqfsS+j9mgaZz\nxPADAHjSWYx3CkL8GA0CgcEArQEvAxcWEHOc7tzBvQFAUEYuiO+qLwU+ak3hO7P7\n7zD3rXDgJqDHXAGQJ3z+fVtnuzySEX3nmfrHsMawN2a53SyOX8jtMkPVayUK7sLg\n9lxwxA6cA/lBbpiCOaDWdurlo+pjc43bVRuGJhREuGNOUFITsPI/O/C7VrayFURA\n+7dPnsHlE2hr6Yd5OyQITJDoHWCg58uhDqfwlPqYb8lwGl4sM2czBjpHQYLS0PbM\nyNvnxr3zbKs6yeIqfmhztbyS\n-----END PRIVATE KEY-----\n",
     publicKey:
       "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA2Wr+vFcuqiXCVEKQZPsc\n9u+JHgHzPKir1NOdo0nmDfQ3z08RaoNEQH1khus3FpL38Fy8GprkOIzP72g7dYGp\nggbBlEed4VMbH99DoUn1FaecrTp3cISgjjY3EkRzVV3a5mSdURQO0Y0ITb4AZSdJ\n8yt5OILCD6SviAYnLja1Ermp4wvd8kFBwuaZ9SnRiFdMfZdJAVRIje2LULErB3OV\noPrQK1fqdAJ6Bfrb/Esb9ehmDcy3Ahfh7u+mjlYD57YJsv/vUp3zGtX+av/WCNmR\nnMCSsHy5uVyy7lBnLjY8FjYCw3qs6x8tNk67/lJJbFevRt5nweOh2iXqZUCKNb/L\nQsPFehBDWvWUBlnftspBuY83GncNExfNA4qoenQVSvBEId6zV0gqbO4CvBFWYFHK\n68cLN9x0psksBpHt3s+ebTKjEUK/G5N/58lQAmptERHgxPv6lMxlCgnK3rismiV/\nw0khhsOy5JWvqm8DhlUlkUFihbo0Ofmf+TVi3OrWZ+2zAgMBAAE=\n-----END PUBLIC KEY-----\n",
-    "courselore-university": {
-      name: "Courselore University",
-      domains: ["uni.ac.uk"],
-      platformID: "https://saltire.lti.app/platform",
-      clientID: "saltire.lti.app",
-      publicKeysetURL:
-        "https://saltire.lti.app/platform/jwks/a7dd58e457ce47339ef86a41f14c1885",
-      authenticationRequestURL: "https://saltire.lti.app/platform/auth",
-      accessTokenURL:
-        "https://saltire.lti.app/platform/token/a7dd58e457ce47339ef86a41f14c1885",
+    platforms: {
+      "courselore-university": {
+        name: "Courselore University",
+        domains: ["uni.ac.uk"],
+        platformID: "https://saltire.lti.app/platform",
+        clientID: "saltire.lti.app",
+        publicKeysetURL:
+          "https://saltire.lti.app/platform/jwks/a7dd58e457ce47339ef86a41f14c1885",
+        authenticationRequestURL: "https://saltire.lti.app/platform/auth",
+        accessTokenURL:
+          "https://saltire.lti.app/platform/token/a7dd58e457ce47339ef86a41f14c1885",
+      },
     },
   },
   saml: {
@@ -33,18 +35,20 @@ export default {
       "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA1fK4Wms7hu0z15LEPPqF\nZZFraI8D2FSD0jcCVp9opM6bDdMEUF4rgFJApwb1445tz5gttJRaBlWlVTvLcIBJ\nZUlkVrYvI1j3pR9cZXEIr1gCAPy2ytBjGOPM1nV+I1aIgO5luQKQ8oVlo5FuUQ46\nbiqZHaEL1KCLCZGkEtPLZ7KGztVu9FeV32CiIw6ueZf9e6T+VYM89wH5dMvApOmQ\nHYpFTQF63ooKkhlvJg0+CiTZjeV3mo8iHwQBsh17GGeanU3PEuSNNlCGtAI1IoIt\n4nWuafyGSuY65qMaEPQi3KoG7ETd8vDKRG2POGnZvX9qhoagxvSHxS5I0druMQi4\n2D+6PHXeL7qEwKtNmUi059FQqYzH14Ue66cqcqcAEbvP7C9xLD9oJGjqJLJEc4eK\nzB4YihOUKGVoRrsWhhb3NbEe4fBizG3i3F2xXHoJvDEi3M5nDixW3KhRmUs1+EEh\n22JuOzja2GVuseEeNAAbc5qtZcckOnI/EMC6J7lyjpa7AgMBAAE=\n-----END PUBLIC KEY-----\n",
     certificate:
       "-----BEGIN CERTIFICATE-----\nMIIEmjCCAwKgAwIBAgIJZ0HM1AXkAS1pMA0GCSqGSIb3DQEBCwUAMF0xEjAQBgNV\nBAMTCWxvY2FsaG9zdDETMBEGA1UEChMKQ291cnNlbG9yZTELMAkGA1UEBhMCVVMx\nETAPBgNVBAgTCE1hcnlsYW5kMRIwEAYDVQQHEwlCYWx0aW1vcmUwIBcNMjYwNzIw\nMTYwNjU2WhgPMzAyNTExMjAxNjA2NTZaMF0xEjAQBgNVBAMTCWxvY2FsaG9zdDET\nMBEGA1UEChMKQ291cnNlbG9yZTELMAkGA1UEBhMCVVMxETAPBgNVBAgTCE1hcnls\nYW5kMRIwEAYDVQQHEwlCYWx0aW1vcmUwggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAw\nggGKAoIBgQDV8rhaazuG7TPXksQ8+oVlkWtojwPYVIPSNwJWn2ikzpsN0wRQXiuA\nUkCnBvXjjm3PmC20lFoGVaVVO8twgEllSWRWti8jWPelH1xlcQivWAIA/LbK0GMY\n48zWdX4jVoiA7mW5ApDyhWWjkW5RDjpuKpkdoQvUoIsJkaQS08tnsobO1W70V5Xf\nYKIjDq55l/17pP5Vgzz3Afl0y8Ck6ZAdikVNAXreigqSGW8mDT4KJNmN5XeajyIf\nBAGyHXsYZ5qdTc8S5I02UIa0AjUigi3ida5p/IZK5jrmoxoQ9CLcqgbsRN3y8MpE\nbY84adm9f2qGhqDG9IfFLkjR2u4xCLjYP7o8dd4vuoTAq02ZSLTn0VCpjMfXhR7r\npypypwARu8/sL3EsP2gkaOokskRzh4rMHhiKE5QoZWhGuxaGFvc1sR7h8GLMbeLc\nXbFcegm8MSLczmcOLFbcqFGZSzX4QSHbYm47ONrYZW6x4R40ABtzmq1lxyQ6cj8Q\nwLonuXKOlrsCAwEAAaNbMFkwDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCBaAw\nHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBoGA1UdEQQTMBGCCWxvY2Fs\naG9zdIcEfwAAATANBgkqhkiG9w0BAQsFAAOCAYEAgkDVSn7bBZHGiWeh0O1qsRFv\nmsmjSGnVZCPvhaVPujgHBIcb0NCH70PkCwLNotXL2s/RIJkrFBJwsbRQAlrdFXV4\nEiuikfPkl8ITTDE10nDRXaqkB+Hc8FCrR2FEttjLM/WYIYilThztwvJUIZEhz/yh\n0Wkr/wifg/+bItaCwwjHfjbQUfchqumJ1DbsaHLPllEnJd7NcF3JI1hKprRVjCyY\nePd3XgHn/zzDJWdAxlQPmloHmHf6f1XPHAmEKaKn/1uP4Kj4jp1h+Ova0f7xV1iq\nX74HLnGSs9Ejv37oxHsS0YJ01ftbz+7zI0qRQVWA1ECRDmkXVZreIx4qre8tJZ3C\nKYYZ4RC73YkJYKfScF3icRekzKg/QZ4dxaNMHHELB6duAeXVUlaq8tHHofC58cLf\newZH7AYsmxCG4GpQExzJRLw86KDywCElUIKSiCEVRfpDwV27Mr50Q912EV+H9KeX\nn9UYJN63WCMupwp81OjIgb6kfHbqlHF/r/6ZGH1X\n-----END CERTIFICATE-----",
-    "courselore-university": {
-      name: "Courselore University",
-      domains: ["example.com"],
-      userData: (profile) => ({
-        email: profile.attributes.email,
-        name: profile.attributes.firstName,
-      }),
-      options: {
-        idpIssuer: "https://saml.example.com/entityid",
-        entryPoint: "https://mocksaml.com/api/saml/sso",
-        idpCert:
-          "MIIC4jCCAcoCCQC33wnybT5QZDANBgkqhkiG9w0BAQsFADAyMQswCQYDVQQGEwJVSzEPMA0GA1UECgwGQm94eUhRMRIwEAYDVQQDDAlNb2NrIFNBTUwwIBcNMjIwMjI4MjE0NjM4WhgPMzAyMTA3MDEyMTQ2MzhaMDIxCzAJBgNVBAYTAlVLMQ8wDQYDVQQKDAZCb3h5SFExEjAQBgNVBAMMCU1vY2sgU0FNTDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALGfYettMsct1T6tVUwTudNJH5Pnb9GGnkXi9Zw/e6x45DD0RuRONbFlJ2T4RjAE/uG+AjXxXQ8o2SZfb9+GgmCHuTJFNgHoZ1nFVXCmb/Hg8Hpd4vOAGXndixaReOiq3EH5XvpMjMkJ3+8+9VYMzMZOjkgQtAqO36eAFFfNKX7dTj3VpwLkvz6/KFCq8OAwY+AUi4eZm5J57D31GzjHwfjH9WTeX0MyndmnNB1qV75qQR3b2/W5sGHRv+9AarggJkF+ptUkXoLtVA51wcfYm6hILptpde5FQC8RWY1YrswBWAEZNfyrR4JeSweElNHg4NVOs4TwGjOPwWGqzTfgTlECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAAYRlYflSXAWoZpFfwNiCQVE5d9zZ0DPzNdWhAybXcTyMf0z5mDf6FWBW5Gyoi9u3EMEDnzLcJNkwJAAc39Apa4I2/tml+Jy29dk8bTyX6m93ngmCgdLh5Za4khuU3AM3L63g7VexCuO7kwkjh/+LqdcIXsVGO6XDfu2QOs1Xpe9zIzLpwm/RNYeXUjbSj5ce/jekpAw7qyVVL4xOyh8AtUW1ek3wIw1MJvEgEPt0d16oshWJpoS1OT8Lr/22SvYEo3EmSGdTVGgk3x3s+A0qWAqTcyjr7Q4s/GKYRFfomGwz0TZ4Iw1ZN99Mm0eo2USlSRTVl7QHRTuiuSThHpLKQQ==",
+    identityProviders: {
+      "courselore-university": {
+        name: "Courselore University",
+        domains: ["example.com"],
+        userData: (profile) => ({
+          email: profile.attributes.email,
+          name: profile.attributes.firstName,
+        }),
+        options: {
+          idpIssuer: "https://saml.example.com/entityid",
+          entryPoint: "https://mocksaml.com/api/saml/sso",
+          idpCert:
+            "MIIC4jCCAcoCCQC33wnybT5QZDANBgkqhkiG9w0BAQsFADAyMQswCQYDVQQGEwJVSzEPMA0GA1UECgwGQm94eUhRMRIwEAYDVQQDDAlNb2NrIFNBTUwwIBcNMjIwMjI4MjE0NjM4WhgPMzAyMTA3MDEyMTQ2MzhaMDIxCzAJBgNVBAYTAlVLMQ8wDQYDVQQKDAZCb3h5SFExEjAQBgNVBAMMCU1vY2sgU0FNTDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALGfYettMsct1T6tVUwTudNJH5Pnb9GGnkXi9Zw/e6x45DD0RuRONbFlJ2T4RjAE/uG+AjXxXQ8o2SZfb9+GgmCHuTJFNgHoZ1nFVXCmb/Hg8Hpd4vOAGXndixaReOiq3EH5XvpMjMkJ3+8+9VYMzMZOjkgQtAqO36eAFFfNKX7dTj3VpwLkvz6/KFCq8OAwY+AUi4eZm5J57D31GzjHwfjH9WTeX0MyndmnNB1qV75qQR3b2/W5sGHRv+9AarggJkF+ptUkXoLtVA51wcfYm6hILptpde5FQC8RWY1YrswBWAEZNfyrR4JeSweElNHg4NVOs4TwGjOPwWGqzTfgTlECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAAYRlYflSXAWoZpFfwNiCQVE5d9zZ0DPzNdWhAybXcTyMf0z5mDf6FWBW5Gyoi9u3EMEDnzLcJNkwJAAc39Apa4I2/tml+Jy29dk8bTyX6m93ngmCgdLh5Za4khuU3AM3L63g7VexCuO7kwkjh/+LqdcIXsVGO6XDfu2QOs1Xpe9zIzLpwm/RNYeXUjbSj5ce/jekpAw7qyVVL4xOyh8AtUW1ek3wIw1MJvEgEPt0d16oshWJpoS1OT8Lr/22SvYEo3EmSGdTVGgk3x3s+A0qWAqTcyjr7Q4s/GKYRFfomGwz0TZ4Iw1ZN99Mm0eo2USlSRTVl7QHRTuiuSThHpLKQQ==",
+        },
       },
     },
   },
