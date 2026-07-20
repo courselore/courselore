@@ -46,6 +46,7 @@ export type Application = {
     hostname: string;
     systemAdministratorEmail: string | undefined;
     email: any;
+    secretKey: string;
     lti?: {
       [identifier: string]: {
         name: string;
@@ -169,46 +170,52 @@ await emails(application);
 await errors(application);
 
 if (application.commandLineArguments.values.type === undefined) {
-  // TODO
-  // if (typeof application.configuration.secretKey !== "string") {
-  //   const secretKey = node.SymmetricEncryption.exportKey(
-  //     await node.SymmetricEncryption.generateKey(),
-  //   );
-  //   const ltiKey = await node.AsymmetricEncryption.generateKeyPair();
-  //   const samlKey = await selfsigned.generate(
-  //     [
-  //       { name: "commonName", value: application.configuration.hostname },
-  //       { name: "organizationName", value: "Courselore" },
-  //       { name: "countryName", value: "US" },
-  //       { name: "stateOrProvinceName", value: "Maryland" },
-  //       { name: "localityName", value: "Baltimore" },
-  //     ],
-  //     {
-  //       keySize: 3072,
-  //       algorithm: "sha256",
-  //       notAfterDate: new Date(Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000),
-  //     },
-  //   );
-  //   console.log(
-  //     JSON.stringify(
-  //       {
-  //         secretKey,
-  //         lti: {
-  //           privateKey: ltiKey.privateKey,
-  //           publicKey: ltiKey.publicKey,
-  //         },
-  //         saml: {
-  //           privateKey: samlKey.private,
-  //           publicKey: samlKey.public,
-  //           certificate: samlKey.cert,
-  //         },
-  //       },
-  //       undefined,
-  //       2,
-  //     ),
-  //   );
-  //   process.exit();
-  // }
+  if (typeof application.configuration.secretKey !== "string") {
+    const secretKey = node.SymmetricEncryption.exportKey(
+      await node.SymmetricEncryption.generateKey(),
+    );
+    const ltiKeyPair = await node.AsymmetricEncryption.generateKeyPair();
+    const samlKeyPair = await node.AsymmetricEncryption.generateKeyPair();
+    console.log(
+      JSON.stringify(
+        {
+          secretKey,
+          lti: {
+            privateKey: ltiKeyPair.privateKey,
+            publicKey: ltiKeyPair.publicKey,
+          },
+          saml: {
+            privateKey: samlKeyPair.privateKey,
+            publicKey: samlKeyPair.publicKey,
+            certificate: (
+              await selfsigned.generate(
+                [
+                  {
+                    name: "commonName",
+                    value: application.configuration.hostname,
+                  },
+                  { name: "organizationName", value: "Courselore" },
+                  { name: "countryName", value: "US" },
+                  { name: "stateOrProvinceName", value: "Maryland" },
+                  { name: "localityName", value: "Baltimore" },
+                ],
+                {
+                  keyPair: samlKeyPair,
+                  algorithm: "sha256",
+                  notAfterDate: new Date(
+                    Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
+                  ),
+                },
+              )
+            ).cert,
+          },
+        },
+        undefined,
+        2,
+      ),
+    );
+    process.exit();
+  }
 
   for (const port of application.privateConfiguration.ports) {
     node.childProcessKeepAlive(() =>
