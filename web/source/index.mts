@@ -76,7 +76,7 @@ export type Application = {
   };
   privateConfiguration: {
     ports: number[];
-    argon2: argon2.Options;
+    argon2: argon2.HashOptions;
     stopWords: Set<string>;
   };
   server: undefined | ReturnType<typeof server>;
