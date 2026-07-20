@@ -13,6 +13,19 @@ export default {
     from: "courselore@example.com",
   },
 
+  // [Optional] The directory in which Courselore stores the database and files.
+  // dataDirectory: "/root/courselore/data/",
+
+  // [Optional] Enable HSTS Preload if you can: https://hstspreload.org/
+  // hstsPreload: true,
+
+  // [Optional] Caddyfile configuration: https://caddyserver.com
+  // extraCaddyfile: `
+  //   www.example.com {
+  //     redir https://example.com{uri}
+  //   }
+  // `,
+
   // [Optional] LTI configuration
   // lti: {
   //   // The following URLs become available:
@@ -194,17 +207,4 @@ export default {
   //   },
   //   // Another SAML configuration...
   // },
-
-  // [Optional] The directory in which Courselore stores the database and files.
-  // dataDirectory: "/root/courselore/data/",
-
-  // [Optional] Enable HSTS Preload if you can: https://hstspreload.org/
-  // hstsPreload: true,
-
-  // [Optional] Caddyfile configuration: https://caddyserver.com
-  // extraCaddyfile: `
-  //   www.example.com {
-  //     redir https://example.com{uri}
-  //   }
-  // `,
 };
