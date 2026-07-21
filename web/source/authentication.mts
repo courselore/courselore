@@ -2932,23 +2932,20 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  const ltiLaunchesInProgress = new Map<
-    string,
-    {
-      stateTokenHash: string;
-      nonceTokenHash: string;
-      createdAt: string;
-    }
-  >();
+  const ltiLaunchesInProgress = new Set<{
+    stateTokenHash: string;
+    nonceTokenHash: string;
+    createdAt: string;
+  }>();
 
   if (application.commandLineArguments.values.type === "server")
     node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
-      for (const ltiLaunchInProgress of ltiLaunchesInProgress.values())
+      for (const ltiLaunchInProgress of ltiLaunchesInProgress)
         if (
           ltiLaunchInProgress.createdAt <
           new Date(Date.now() - 5 * 60 * 1000).toISOString()
         )
-          ltiLaunchesInProgress.delete(ltiLaunchInProgress.stateTokenHash);
+          ltiLaunchesInProgress.delete(ltiLaunchInProgress);
     });
 
   application.server?.push({
@@ -3003,13 +3000,21 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (request.liveConnection) return;
+      if (
+        application.userConfiguration.lti === undefined ||
+        request.liveConnection
+      )
+        return;
       const requestBody =
         request.method === "GET" ? request.search : request.body;
+      const ltiPlatform = application.userConfiguration.lti?.platforms.find(
+        (ltiPlatform) =>
+          requestBody.iss === ltiPlatform.platformID &&
+          (requestBody.client_id === undefined ||
+            requestBody.client_id === ltiPlatform.clientID),
+      );
       if (
-        requestBody.iss !== lti.platformID ||
-        (requestBody.client_id !== undefined &&
-          requestBody.client_id !== lti.clientID) ||
+        ltiPlatform === undefined ||
         requestBody.target_link_uri !==
           `https://${application.userConfiguration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
         typeof requestBody.login_hint !== "string"
@@ -3028,10 +3033,10 @@ export default async (application: Application): Promise<void> => {
       };
       ltiLaunchesInProgress.set(ltiFlow.state, ltiFlow);
       response.redirect!(
-        `${lti.authenticationRequestURL}?${new URLSearchParams({
+        `${ltiPlatform.authenticationRequestURL}?${new URLSearchParams({
           response_type: "id_token",
           scope: "openid",
-          client_id: lti.clientID,
+          client_id: ltiPlatform.clientID,
           redirect_uri: `https://${application.userConfiguration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`,
           login_hint: requestBody.login_hint,
           state: ltiFlow.state,
