@@ -2978,12 +2978,10 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: /^GET|POST$/,
-    pathname: new RegExp(
-      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/initiate$",
-    ),
+    pathname: new RegExp("^/authentication/lti/initiate$"),
     handler: (
       request: serverTypes.Request<
-        { ltiIdentifier: string },
+        {},
         {
           iss: string;
           client_id: string;
@@ -3005,14 +3003,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        request.liveConnection ||
-        typeof request.pathname.ltiIdentifier !== "string"
-      )
-        return;
-      const lti =
-        application.userConfiguration.lti?.[request.pathname.ltiIdentifier];
-      if (lti === undefined) return;
+      if (request.liveConnection) return;
       const requestBody =
         request.method === "GET" ? request.search : request.body;
       if (
