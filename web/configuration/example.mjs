@@ -187,7 +187,7 @@ export default {
 
   // [Optional] SAML configuration
   saml: {
-    // This key pair was generated when generating the `secretKey` above. If necessary comment out `secretKey`, run Courselore, and then uncomment the original `secretKey`.
+    // This key pair and certificate were generated when generating the `secretKey` above. If necessary comment out `secretKey`, run Courselore, and then uncomment the original `secretKey`.
     privateKey: "-----BEGIN PRIVATE KEY-----...-----END PRIVATE KEY-----\n",
     publicKey: "-----BEGIN PUBLIC KEY-----...-----END PUBLIC KEY-----\n",
     certificate: "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----",
@@ -213,8 +213,8 @@ export default {
         // - `privateKey`
         // - `publicCert`
         // - `signMetadata`
-        // - `validateInResponseTo`
         // - `signatureAlgorithm`
+        // - `validateInResponseTo`
       },
     ],
   },
