@@ -8,7 +8,6 @@ import server from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
 import * as caddy from "@radically-straightforward/caddy";
-import * as argon2 from "argon2";
 import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
 import selfsigned from "selfsigned";
