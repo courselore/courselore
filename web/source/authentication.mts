@@ -2954,16 +2954,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp("^/authentication/lti/keyset$"),
-    handler: async (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {},
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
+    handler: async (request, response) => {
       if (application.userConfiguration.lti === undefined) return;
       const publicKey = crypto
         .createPublicKey(application.userConfiguration.lti.publicKey)
