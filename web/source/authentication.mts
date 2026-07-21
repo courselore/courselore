@@ -942,14 +942,10 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      const emailVerificationNonceHash = await argon2.hash(
+      const emailVerificationNonceHash = node.TokenHash.hash(
         emailVerificationNonce,
-        application.applicationConfiguration.argon2,
       );
-      const passwordHash = await argon2.hash(
-        request.body.password,
-        application.applicationConfiguration.argon2,
-      );
+      const passwordHash = await node.PasswordHash.hash(request.body.password);
       application.database.executeTransaction(() => {
         if (
           application.database.get(
@@ -1398,7 +1394,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: "/authentication/email-verification/resend",
-    handler: async (
+    handler: (
       request: serverTypes.Request<
         {},
         {},
@@ -1424,9 +1420,8 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      request.state.user.emailVerificationNonceHash = await argon2.hash(
+      request.state.user.emailVerificationNonceHash = node.TokenHash.hash(
         emailVerificationNonce,
-        application.applicationConfiguration.argon2,
       );
       request.state.user.emailVerificationNonceCreatedAt =
         new Date().toISOString();
@@ -1717,7 +1712,7 @@ export default async (application: Application): Promise<void> => {
     pathname: new RegExp(
       "^/authentication/email-verification/(?<emailVerificationNonce>[0-9]+)$",
     ),
-    handler: async (
+    handler: (
       request: serverTypes.Request<
         { emailVerificationNonce: string },
         { redirect: string },
@@ -1740,12 +1735,11 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (
-        !(await argon2.verify(
+        !node.TokenHash.verify(
           request.state.user.emailVerificationNonceHash ??
-            "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+            "5235aadf13a5b2b37a277d0022fc8d296721219a1bffa22d2f88383cb577c776",
           request.pathname.emailVerificationNonce,
-          application.applicationConfiguration.argon2,
-        )) ||
+        ) ||
         typeof request.state.user.emailVerificationNonceHash !== "string"
       ) {
         response.setFlash!(html`
@@ -1898,11 +1892,10 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (
-        !(await argon2.verify(
+        !(await node.PasswordHash.verify(
           request.state.user?.passwordHash ??
-            "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+            `{"nonce":"c2558b39a310c68706ca4ba4203074ad","hash":"10deb2c5ad9a229066c25697bb81ec4ec1f641cd2155cb4ee6cce7080ee5709b"}`,
           request.body.password,
-          application.applicationConfiguration.argon2,
         )) ||
         typeof request.state.user?.passwordHash !== "string"
       ) {
@@ -2267,10 +2260,9 @@ export default async (application: Application): Promise<void> => {
               JSON.parse(
                 request.state.user.twoFactorAuthenticationRecoveryCodesHashes,
               ).map((twoFactorAuthenticationRecoveryCode: string) =>
-                argon2.verify(
+                node.PasswordHash.verify(
                   twoFactorAuthenticationRecoveryCode,
                   request.body.twoFactorAuthenticationRecoveryCode!,
-                  application.applicationConfiguration.argon2,
                 ),
               ),
             )
@@ -2377,7 +2369,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: "/authentication/reset-password",
-    handler: async (
+    handler: (
       request: serverTypes.Request<
         {},
         {},
@@ -2397,10 +2389,7 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      const passwordResetNonceHash = await argon2.hash(
-        passwordResetNonce,
-        application.applicationConfiguration.argon2,
-      );
+      const passwordResetNonceHash = node.TokenHash.hash(passwordResetNonce);
       request.state.user = application.database.get<{
         id: number;
         publicId: string;
@@ -2784,10 +2773,7 @@ export default async (application: Application): Promise<void> => {
         !request.search.redirect.startsWith("/")
       )
         delete request.search.redirect;
-      const passwordHash = await argon2.hash(
-        request.body.password,
-        application.applicationConfiguration.argon2,
-      );
+      const passwordHash = await node.PasswordHash.hash(request.body.password);
       request.state.user = application.database.get<{
         id: number;
         publicId: string;
@@ -2871,12 +2857,11 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (
-        !(await argon2.verify(
+        !node.TokenHash.verify(
           request.state.user?.passwordResetNonceHash ??
-            "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+            "5235aadf13a5b2b37a277d0022fc8d296721219a1bffa22d2f88383cb577c776",
           request.pathname.passwordResetNonce,
-          application.applicationConfiguration.argon2,
-        )) ||
+        ) ||
         typeof request.state.user?.passwordResetNonceHash !== "string"
       ) {
         response.setFlash!(html`
