@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import * as serverTypes from "@radically-straightforward/server";
 import cryptoRandomString from "crypto-random-string";
 import * as jose from "jose";
@@ -2942,21 +2943,20 @@ export default async (application: Application): Promise<void> => {
 
   if (application.commandLineArguments.values.type === "server")
     node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
-      for (const ltiFlow of ltiLaunchesInProgress.values())
+      for (const ltiLaunchInProgress of ltiLaunchesInProgress.values())
         if (
-          ltiFlow.createdAt < new Date(Date.now() - 5 * 60 * 1000).toISOString()
+          ltiLaunchInProgress.createdAt <
+          new Date(Date.now() - 5 * 60 * 1000).toISOString()
         )
-          ltiLaunchesInProgress.delete(ltiFlow.stateTokenHash);
+          ltiLaunchesInProgress.delete(ltiLaunchInProgress.stateTokenHash);
     });
 
   application.server?.push({
     method: "GET",
-    pathname: new RegExp(
-      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/keyset$",
-    ),
+    pathname: new RegExp("^/authentication/lti/keyset$"),
     handler: async (
       request: serverTypes.Request<
-        { ltiIdentifier: string },
+        {},
         {},
         {},
         {},
@@ -2964,26 +2964,24 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        typeof request.pathname.ltiIdentifier !== "string" ||
-        request.state.systemSettings === undefined
-      )
-        return;
-      const lti =
-        application.userConfiguration.lti?.[request.pathname.ltiIdentifier];
-      if (lti === undefined) return;
-      const key = await jose.exportJWK(
-        await jose.importX509(
-          request.state.systemSettings.certificate,
-          "RS256",
-        ),
-      );
-      key.kid = await jose.calculateJwkThumbprint(key);
-      key.use = "sig";
-      key.alg = "RS256";
+      if (application.userConfiguration.lti === undefined) return;
+      const publicKey = crypto
+        .createPublicKey(application.userConfiguration.lti.publicKey)
+        .export({ format: "jwk" });
       response
         .setHeader("Content-Type", "application/json; charset=utf-8")
-        .send(JSON.stringify({ keys: [key] }));
+        .send(
+          JSON.stringify({
+            keys: [
+              {
+                ...publicKey,
+                kid: await jose.calculateJwkThumbprint(publicKey),
+                use: "sig",
+                alg: "RS256",
+              },
+            ],
+          }),
+        );
     },
   });
 
