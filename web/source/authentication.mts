@@ -3016,10 +3016,11 @@ export default async (application: Application): Promise<void> => {
       if (
         ltiPlatform === undefined ||
         requestBody.target_link_uri !==
-          `https://${application.userConfiguration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
+          `https://${application.userConfiguration.hostname}/authentication/lti/callback` ||
         typeof requestBody.login_hint !== "string"
       )
         throw "validation";
+      // TODO: Stopped here. Should store `iss` and `client_id` in `ltiLaunchesInProgress`
       const ltiFlow = {
         state: cryptoRandomString({
           length: 100,
