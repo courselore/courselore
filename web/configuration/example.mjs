@@ -182,7 +182,6 @@ export default {
           "https://example-lms.edu/authentication-request",
         accessTokenURL: "https://example-lms.edu/access-token",
       },
-      // Another LTI configuration...
     ],
   },
 
@@ -213,6 +212,5 @@ export default {
   //       // - `validateInResponseTo`
   //     },
   //   },
-  //   // Another SAML configuration...
   // },
 };
