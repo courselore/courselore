@@ -2931,22 +2931,22 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  const ltiFlows = new Map<
+  const ltiLaunchesInProgress = new Map<
     string,
     {
-      state: string;
-      nonce: string;
+      stateTokenHash: string;
+      nonceTokenHash: string;
       createdAt: string;
     }
   >();
 
   if (application.commandLineArguments.values.type === "server")
     node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
-      for (const ltiFlow of ltiFlows.values())
+      for (const ltiFlow of ltiLaunchesInProgress.values())
         if (
           ltiFlow.createdAt < new Date(Date.now() - 5 * 60 * 1000).toISOString()
         )
-          ltiFlows.delete(ltiFlow.state);
+          ltiLaunchesInProgress.delete(ltiFlow.stateTokenHash);
     });
 
   application.server?.push({
@@ -3046,7 +3046,7 @@ export default async (application: Application): Promise<void> => {
         }),
         createdAt: new Date().toISOString(),
       };
-      ltiFlows.set(ltiFlow.state, ltiFlow);
+      ltiLaunchesInProgress.set(ltiFlow.state, ltiFlow);
       response.redirect!(
         `${lti.authenticationRequestURL}?${new URLSearchParams({
           response_type: "id_token",
@@ -3093,9 +3093,9 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.state !== "string"
       )
         throw "validation";
-      const ltiFlow = ltiFlows.get(request.body.state);
+      const ltiFlow = ltiLaunchesInProgress.get(request.body.state);
       if (ltiFlow === undefined) throw "validation";
-      ltiFlows.delete(ltiFlow.state);
+      ltiLaunchesInProgress.delete(ltiFlow.stateTokenHash);
       let idToken: jose.JWTPayload;
       try {
         idToken = (
@@ -3113,7 +3113,7 @@ export default async (application: Application): Promise<void> => {
         throw "validation";
       }
       if (
-        idToken.nonce !== ltiFlow.nonce ||
+        idToken.nonce !== ltiFlow.nonceTokenHash ||
         (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
           "LtiResourceLinkRequest" ||
