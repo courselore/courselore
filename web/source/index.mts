@@ -125,12 +125,6 @@ application.applicationConfiguration.ports = Array.from(
   },
   (value, index) => 18000 + index,
 );
-application.applicationConfiguration.argon2 = {
-  type: argon2.argon2id,
-  memoryCost: 12288,
-  timeCost: 3,
-  parallelism: 1,
-};
 application.applicationConfiguration.stopWords = new Set(
   natural.stopwords.map((stopWord) => utilities.normalizeToken(stopWord)),
 );
@@ -138,7 +132,7 @@ if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
     csrfProtectionExceptionPathname: new RegExp(
-      "(?:^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/initiate$)|(?:^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$)|(?:^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/assertion-consumer-service$)",
+      "(?:^/authentication/lti/initiate$)|(?:^/authentication/lti/callback$)|(?:^/authentication/saml/assertion-consumer-service$)",
     ),
   });
 application.layouts = {} as Application["layouts"];
