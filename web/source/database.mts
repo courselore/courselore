@@ -19,7 +19,7 @@ export type ApplicationDatabase = {
 
 export default async (application: Application): Promise<void> => {
   application.database = await new Database(
-    path.join(application.configuration.dataDirectory, "courselore.db"),
+    path.join(application.userConfiguration.dataDirectory, "courselore.db"),
   ).migrate(
     sql`
       CREATE TABLE "flashes" (
@@ -345,7 +345,7 @@ export default async (application: Application): Promise<void> => {
         (text: string): string =>
           text.replace(
             new RegExp(
-              `(?<=https://${application.configuration.hostname.replaceAll(
+              `(?<=https://${application.userConfiguration.hostname.replaceAll(
                 ".",
                 "\\.",
               )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
@@ -470,7 +470,7 @@ export default async (application: Application): Promise<void> => {
       ): string =>
         text.replace(
           new RegExp(
-            `(?<=https://${application.configuration.hostname.replaceAll(
+            `(?<=https://${application.userConfiguration.hostname.replaceAll(
               ".",
               "\\.",
             )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
@@ -1441,14 +1441,14 @@ export default async (application: Application): Promise<void> => {
       )) {
         if (
           !user.avatar.startsWith(
-            `https://${application.configuration.hostname}/files/`,
+            `https://${application.userConfiguration.hostname}/files/`,
           ) ||
           !user.avatar.endsWith(`--avatar${path.extname(user.avatar)}`)
         )
           continue;
 
         const fileURL = user.avatar.slice(
-          `https://${application.configuration.hostname}/files/`.length,
+          `https://${application.userConfiguration.hostname}/files/`.length,
         );
         const directory = path.dirname(fileURL);
         const nameOldAvatar = decodeURIComponent(path.basename(fileURL));
@@ -1458,7 +1458,7 @@ export default async (application: Application): Promise<void> => {
           extension;
         const nameAvatar = `${name.slice(0, -extension.length)}--avatar.webp`;
         const file = path.join(
-          application.configuration.dataDirectory,
+          application.userConfiguration.dataDirectory,
           "files",
           directory,
           name,
@@ -1474,7 +1474,7 @@ export default async (application: Application): Promise<void> => {
             })
             .toFile(
               path.join(
-                application.configuration.dataDirectory,
+                application.userConfiguration.dataDirectory,
                 "files",
                 directory,
                 nameAvatar,
@@ -1493,7 +1493,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             UPDATE "users"
             SET "avatar" = ${`https://${
-              application.configuration.hostname
+              application.userConfiguration.hostname
             }/files/${directory}/${encodeURIComponent(nameAvatar)}`}
             WHERE "id" = ${user.id}
           `,
@@ -2249,7 +2249,7 @@ export default async (application: Application): Promise<void> => {
           Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
         );
         const certificateSubject = [
-          { name: "commonName", value: application.configuration.hostname },
+          { name: "commonName", value: application.userConfiguration.hostname },
           { name: "countryName", value: "US" },
           { name: "stateOrProvinceName", value: "Maryland" },
           { name: "localityName", value: "Baltimore" },
@@ -3349,7 +3349,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
 
-      if (application.configuration.environment === "development") {
+      if (application.userConfiguration.environment === "development") {
         const textExamples = JSON.parse(
           await fs.readFile(
             path.join(
@@ -4223,11 +4223,11 @@ export default async (application: Application): Promise<void> => {
                       Conversation non-existent: #999999
 
                       Conversation existent permanent link turned reference: <https://${
-                        application.configuration.hostname
+                        application.userConfiguration.hostname
                       }/courses/${course.publicId}/conversations/1>
 
                       Conversation non-existent permanent link turned reference: <https://${
-                        application.configuration.hostname
+                        application.userConfiguration.hostname
                       }/courses/${course.publicId}/conversations/999999>
 
                       Message existent: #1/${courseConversationMessageForCourseConversationMessageDraft!.publicId}
@@ -4235,11 +4235,11 @@ export default async (application: Application): Promise<void> => {
                       Message non-existent: #1/999999
 
                       Message existent permanent link turned reference: <https://${
-                        application.configuration.hostname
+                        application.userConfiguration.hostname
                       }/courses/${course.publicId}/conversations/1?message=${courseConversationMessageForCourseConversationMessageDraft!.publicId}>
 
                       Message non-existent permanent link turned reference: <https://${
-                        application.configuration.hostname
+                        application.userConfiguration.hostname
                       }/courses/${course.publicId}/conversations/1?message=999999>
 
                       # Comment

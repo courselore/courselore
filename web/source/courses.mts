@@ -237,7 +237,7 @@ export default async (application: Application): Promise<void> => {
               "string")
         ) ||
         (typeof request.body.ltiIdentifier === "string" &&
-          application.configuration.lti?.[request.body.ltiIdentifier] ===
+          application.userConfiguration.lti?.[request.body.ltiIdentifier] ===
             undefined) ||
         (typeof request.body.ltiContextId === "string" &&
           request.body.ltiContextId.trim() === "") ||
@@ -1569,7 +1569,7 @@ export default async (application: Application): Promise<void> => {
                                   key="invitationLinkToken--hide--input"
                                   type="text"
                                   value="https://${
-                                    application.configuration.hostname
+                                    application.userConfiguration.hostname
                                   }/courses/${
                                     request.state.course.publicId
                                   }/invitations/${"*".repeat(
@@ -1594,7 +1594,7 @@ export default async (application: Application): Promise<void> => {
                                   key="invitationLinkToken--show--input"
                                   type="text"
                                   value="https://${
-                                    application.configuration.hostname
+                                    application.userConfiguration.hostname
                                   }/courses/${
                                     request.state.course.publicId
                                   }/invitations/${
@@ -1640,7 +1640,7 @@ export default async (application: Application): Promise<void> => {
                                     const popover = javascript.popover({ element: this, trigger: "none" });
                                     this.onclick = async () => {
                                       await navigator.clipboard.writeText(${`https://${
-                                        application.configuration.hostname
+                                        application.userConfiguration.hostname
                                       }/courses/${
                                         request.state.course.publicId
                                       }/invitations/${
@@ -1800,7 +1800,7 @@ export default async (application: Application): Promise<void> => {
                                     $${(
                                       await QRCode.toString(
                                         `https://${
-                                          application.configuration.hostname
+                                          application.userConfiguration.hostname
                                         }/courses/${
                                           request.state.course.publicId
                                         }/invitations/${
@@ -1844,7 +1844,7 @@ export default async (application: Application): Promise<void> => {
                                   key="invitationLinkToken--hide--input"
                                   type="text"
                                   value="https://${
-                                    application.configuration.hostname
+                                    application.userConfiguration.hostname
                                   }/courses/${
                                     request.state.course.publicId
                                   }/invitations/${"*".repeat(
@@ -1869,7 +1869,7 @@ export default async (application: Application): Promise<void> => {
                                   key="invitationLinkToken--show--input"
                                   type="text"
                                   value="https://${
-                                    application.configuration.hostname
+                                    application.userConfiguration.hostname
                                   }/courses/${
                                     request.state.course.publicId
                                   }/invitations/${
@@ -1915,7 +1915,7 @@ export default async (application: Application): Promise<void> => {
                                     const popover = javascript.popover({ element: this, trigger: "none" });
                                     this.onclick = async () => {
                                       await navigator.clipboard.writeText(${`https://${
-                                        application.configuration.hostname
+                                        application.userConfiguration.hostname
                                       }/courses/${
                                         request.state.course.publicId
                                       }/invitations/${
@@ -2075,7 +2075,7 @@ export default async (application: Application): Promise<void> => {
                                     $${(
                                       await QRCode.toString(
                                         `https://${
-                                          application.configuration.hostname
+                                          application.userConfiguration.hostname
                                         }/courses/${
                                           request.state.course.publicId
                                         }/invitations/${
@@ -4269,7 +4269,7 @@ export default async (application: Application): Promise<void> => {
           parameters: {
             from: {
               name: `${request.state.course.name} · Courselore`,
-              address: application.configuration.email.from,
+              address: application.userConfiguration.email.from,
             },
             to: userEmail,
             subject: `Invitation`,
@@ -4282,10 +4282,10 @@ export default async (application: Application): Promise<void> => {
               <p>
                 If you wish to join, please follow this invitation link:
                 <a
-                  href="https://${application.configuration.hostname}/courses/${
+                  href="https://${application.userConfiguration.hostname}/courses/${
                     request.state.course.publicId
                   }/invitation-emails/${coursePendingInvitationEmail.publicId}"
-                  >https://${application.configuration.hostname}/courses/${
+                  >https://${application.userConfiguration.hostname}/courses/${
                     request.state.course.publicId
                   }/invitation-emails/${coursePendingInvitationEmail.publicId}</a
                 >
@@ -4295,7 +4295,7 @@ export default async (application: Application): Promise<void> => {
                 to
                 <a
                   href="mailto:${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }?${new URLSearchParams({
                     subject: "Potential invitation issue",
@@ -4304,7 +4304,7 @@ export default async (application: Application): Promise<void> => {
                     .toString()
                     .replaceAll("+", "%20")}"
                   >${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }</a
                 >
@@ -4954,7 +4954,7 @@ export default async (application: Application): Promise<void> => {
         return;
       if (
         typeof request.body.ltiIdentifier !== "string" ||
-        application.configuration.lti?.[request.body.ltiIdentifier] ===
+        application.userConfiguration.lti?.[request.body.ltiIdentifier] ===
           undefined ||
         typeof request.body.ltiContextId !== "string" ||
         request.body.ltiContextId.trim() === "" ||
@@ -5016,7 +5016,7 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       const lti =
-        application.configuration.lti?.[request.state.course.ltiIdentifier];
+        application.userConfiguration.lti?.[request.state.course.ltiIdentifier];
       if (lti === undefined) return;
       let ltiCourseMembers: {
         email: string;

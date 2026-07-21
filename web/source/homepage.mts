@@ -6,7 +6,7 @@ import * as caddy from "@radically-straightforward/caddy";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
-  if (application.configuration.hostname === "courselore.org")
+  if (application.userConfiguration.hostname === "courselore.org")
     application.server?.push({
       method: "GET",
       pathname: "/",

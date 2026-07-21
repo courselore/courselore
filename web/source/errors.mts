@@ -35,7 +35,7 @@ export default async (application: Application): Promise<void> => {
                   target="_blank"
                   class="link"
                   href="mailto:${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }?${new URLSearchParams({
                     subject: "Page not found",
@@ -44,7 +44,7 @@ export default async (application: Application): Promise<void> => {
                     .toString()
                     .replaceAll("+", "%20")}"
                   >${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }</a
                 >
@@ -88,7 +88,7 @@ export default async (application: Application): Promise<void> => {
                   target="_blank"
                   class="link"
                   href="mailto:${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }?${new URLSearchParams({
                     subject: "Server error",
@@ -97,7 +97,7 @@ export default async (application: Application): Promise<void> => {
                     .toString()
                     .replaceAll("+", "%20")}"
                   >${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }</a
                 >

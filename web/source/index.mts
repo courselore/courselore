@@ -42,7 +42,7 @@ export type Application = {
     };
     positionals: string[];
   };
-  configuration: {
+  userConfiguration: {
     hostname: string;
     systemAdministratorEmail: string | undefined;
     email: any;
@@ -102,21 +102,23 @@ application.commandLineArguments = util.parseArgs({
   },
   allowPositionals: true,
 }) as Application["commandLineArguments"];
-application.configuration = (
+application.userConfiguration = (
   await import(
     url.pathToFileURL(
       path.resolve(application.commandLineArguments.positionals[0]),
     ).href
   )
 ).default;
-application.configuration.dataDirectory ??= path.resolve("./data/");
-await fs.mkdir(application.configuration.dataDirectory, { recursive: true });
-application.configuration.environment ??= "production";
+application.userConfiguration.dataDirectory ??= path.resolve("./data/");
+await fs.mkdir(application.userConfiguration.dataDirectory, {
+  recursive: true,
+});
+application.userConfiguration.environment ??= "production";
 application.privateConfiguration = {} as Application["privateConfiguration"];
 application.privateConfiguration.ports = Array.from(
   {
     length:
-      application.configuration.environment === "development"
+      application.userConfiguration.environment === "development"
         ? 1
         : os.availableParallelism(),
   },
@@ -146,7 +148,7 @@ utilities.log(
   application.version,
   "START",
   application.commandLineArguments.values.type ??
-    `https://${application.configuration.hostname}`,
+    `https://${application.userConfiguration.hostname}`,
   application.commandLineArguments.values.port ?? "",
 );
 process.once("beforeExit", () => {
@@ -154,7 +156,7 @@ process.once("beforeExit", () => {
     "COURSELORE",
     "STOP",
     application.commandLineArguments.values.type ??
-      `https://${application.configuration.hostname}`,
+      `https://${application.userConfiguration.hostname}`,
     application.commandLineArguments.values.port ?? "",
   );
 });
@@ -173,7 +175,7 @@ await emails(application);
 await errors(application);
 
 if (application.commandLineArguments.values.type === undefined) {
-  if (typeof application.configuration.secretKey !== "string") {
+  if (typeof application.userConfiguration.secretKey !== "string") {
     const secretKey = node.SymmetricEncryption.exportKey(
       await node.SymmetricEncryption.generateKey(),
     );
@@ -195,7 +197,7 @@ if (application.commandLineArguments.values.type === undefined) {
                 [
                   {
                     shortName: "CN",
-                    value: application.configuration.hostname,
+                    value: application.userConfiguration.hostname,
                   },
                   { shortName: "O", value: "Courselore" },
                   { shortName: "C", value: "US" },
@@ -236,7 +238,7 @@ if (application.commandLineArguments.values.type === undefined) {
         {
           env: {
             ...process.env,
-            NODE_ENV: application.configuration.environment,
+            NODE_ENV: application.userConfiguration.environment,
           },
           stdio: "inherit",
         },
@@ -257,7 +259,7 @@ if (application.commandLineArguments.values.type === undefined) {
         {
           env: {
             ...process.env,
-            NODE_ENV: application.configuration.environment,
+            NODE_ENV: application.userConfiguration.environment,
           },
           stdio: "inherit",
         },
@@ -265,10 +267,10 @@ if (application.commandLineArguments.values.type === undefined) {
     );
   }
   caddy.start({
-    ...application.configuration,
+    ...application.userConfiguration,
     ...application.privateConfiguration,
     untrustedStaticFilesRoots: [
-      `/files/* "${application.configuration.dataDirectory}"`,
+      `/files/* "${application.userConfiguration.dataDirectory}"`,
     ],
   });
 }

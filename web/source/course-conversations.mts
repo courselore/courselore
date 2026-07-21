@@ -3307,7 +3307,7 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               const popover = javascript.popover({ element: this, trigger: "none" });
                               this.onclick = async () => {
-                                await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`});
+                                await navigator.clipboard.writeText(${`https://${application.userConfiguration.hostname}/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`});
                                 popover.showPopover();
                                 await utilities.sleep(1000);
                                 popover.hidePopover();
@@ -5184,7 +5184,7 @@ export default async (application: Application): Promise<void> => {
                                     javascript="${javascript`
                                       const popover = javascript.popover({ element: this, trigger: "none" });
                                       this.onclick = async () => {
-                                        await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
+                                        await navigator.clipboard.writeText(${`https://${application.userConfiguration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
                                         popover.showPopover();
                                         await utilities.sleep(1000);
                                         popover.hidePopover();

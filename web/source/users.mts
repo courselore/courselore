@@ -1548,7 +1548,7 @@ export default async (application: Application): Promise<void> => {
           characters: "abcdefghijklmnopqrstuvwxyz0123456789",
         })}/${path.basename(request.body.avatarImage.path)}`;
         const absolutePath = path.join(
-          application.configuration.dataDirectory,
+          application.userConfiguration.dataDirectory,
           relativePath,
         );
         await fs.mkdir(path.dirname(absolutePath), { recursive: true });
@@ -1623,7 +1623,7 @@ export default async (application: Application): Promise<void> => {
       application.database.backgroundJob({
         type: "email",
         parameters: {
-          from: `"Courselore" <${application.configuration.email.from}>`,
+          from: `"Courselore" <${application.userConfiguration.email.from}>`,
           to: request.state.user.email,
           subject: "Trying to change email address",
           html: html`
@@ -1642,7 +1642,7 @@ export default async (application: Application): Promise<void> => {
               If it was not you, please report the issue to
               <a
                 href="mailto:${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }?${new URLSearchParams({
                   subject: "Potential impersonation",
@@ -1651,7 +1651,7 @@ export default async (application: Application): Promise<void> => {
                   .toString()
                   .replaceAll("+", "%20")}"
                 >${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }</a
               >
@@ -1662,7 +1662,7 @@ export default async (application: Application): Promise<void> => {
       application.database.backgroundJob({
         type: "email",
         parameters: {
-          from: `"Courselore" <${application.configuration.email.from}>`,
+          from: `"Courselore" <${application.userConfiguration.email.from}>`,
           to: request.state.user.emailVerificationEmail,
           subject: "Email verification",
           html: html`
@@ -1676,12 +1676,12 @@ export default async (application: Application): Promise<void> => {
               If it was you, please confirm your email:
               <a
                 href="https://${
-                  application.configuration.hostname
+                  application.userConfiguration.hostname
                 }/authentication/email-verification/${emailVerificationNonce}${
                   request.URL.search
                 }"
                 >https://${
-                  application.configuration.hostname
+                  application.userConfiguration.hostname
                 }/authentication/email-verification/${emailVerificationNonce}${
                   request.URL.search
                 }</a
@@ -1691,7 +1691,7 @@ export default async (application: Application): Promise<void> => {
               If it was not you, please report the issue to
               <a
                 href="mailto:${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }?${new URLSearchParams({
                   subject: "Potential impersonation",
@@ -1700,7 +1700,7 @@ export default async (application: Application): Promise<void> => {
                   .toString()
                   .replaceAll("+", "%20")}"
                 >${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }</a
               >
@@ -1779,7 +1779,7 @@ export default async (application: Application): Promise<void> => {
       application.database.backgroundJob({
         type: "email",
         parameters: {
-          from: `"Courselore" <${application.configuration.email.from}>`,
+          from: `"Courselore" <${application.userConfiguration.email.from}>`,
           to: request.state.user.email,
           subject: "Password changed",
           html: html`
@@ -1792,7 +1792,7 @@ export default async (application: Application): Promise<void> => {
               If it was not you, please report the issue to
               <a
                 href="mailto:${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }?${new URLSearchParams({
                   subject: "Potential impersonation",
@@ -1801,7 +1801,7 @@ export default async (application: Application): Promise<void> => {
                   .toString()
                   .replaceAll("+", "%20")}"
                 >${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }</a
               >
@@ -1924,7 +1924,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
                 $${await (async () => {
                   const otpAuthURL = new OTPAuth.TOTP({
-                    issuer: `Courselore (${application.configuration.hostname})`,
+                    issuer: `Courselore (${application.userConfiguration.hostname})`,
                     label: request.state.user!.email,
                     secret: request.state.user!.twoFactorAuthenticationSecret!,
                   }).toString();
@@ -2181,7 +2181,7 @@ export default async (application: Application): Promise<void> => {
       application.database.backgroundJob({
         type: "email",
         parameters: {
-          from: `"Courselore" <${application.configuration.email.from}>`,
+          from: `"Courselore" <${application.userConfiguration.email.from}>`,
           to: request.state.user.email,
           subject: "Two-factor authentication enabled",
           html: html`
@@ -2194,7 +2194,7 @@ export default async (application: Application): Promise<void> => {
               If it was not you, please report the issue to
               <a
                 href="mailto:${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }?${new URLSearchParams({
                   subject: "Potential impersonation",
@@ -2203,7 +2203,7 @@ export default async (application: Application): Promise<void> => {
                   .toString()
                   .replaceAll("+", "%20")}"
                 >${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }</a
               >
@@ -2334,7 +2334,7 @@ export default async (application: Application): Promise<void> => {
       application.database.backgroundJob({
         type: "email",
         parameters: {
-          from: `"Courselore" <${application.configuration.email.from}>`,
+          from: `"Courselore" <${application.userConfiguration.email.from}>`,
           to: request.state.user.email,
           subject: "Two-factor authentication disabled",
           html: html`
@@ -2347,7 +2347,7 @@ export default async (application: Application): Promise<void> => {
               If it was not you, please report the issue to
               <a
                 href="mailto:${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }?${new URLSearchParams({
                   subject: "Potential impersonation",
@@ -2356,7 +2356,7 @@ export default async (application: Application): Promise<void> => {
                   .toString()
                   .replaceAll("+", "%20")}"
                 >${
-                  application.configuration.systemAdministratorEmail ??
+                  application.userConfiguration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"
                 }</a
               >
@@ -2454,7 +2454,7 @@ export default async (application: Application): Promise<void> => {
         application.database.backgroundJob({
           type: "email",
           parameters: {
-            from: `"Courselore" <${application.configuration.email.from}>`,
+            from: `"Courselore" <${application.userConfiguration.email.from}>`,
             to: request.state.user.email,
             subject: "Delete my account",
             html: html`
@@ -2467,10 +2467,10 @@ export default async (application: Application): Promise<void> => {
                 If it was you, please delete your account:
                 <a
                   href="https://${
-                    application.configuration.hostname
+                    application.userConfiguration.hostname
                   }/settings/delete-my-account/${deleteMyAccountNonce}"
                   >https://${
-                    application.configuration.hostname
+                    application.userConfiguration.hostname
                   }/settings/delete-my-account/${deleteMyAccountNonce}</a
                 >
               </p>
@@ -2478,7 +2478,7 @@ export default async (application: Application): Promise<void> => {
                 If it was not you, please report the issue to
                 <a
                   href="mailto:${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }?${new URLSearchParams({
                     subject: "Potential impersonation",
@@ -2487,7 +2487,7 @@ export default async (application: Application): Promise<void> => {
                     .toString()
                     .replaceAll("+", "%20")}"
                   >${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }</a
                 >
@@ -3051,7 +3051,7 @@ export default async (application: Application): Promise<void> => {
         application.database.backgroundJob({
           type: "email",
           parameters: {
-            from: `"Courselore" <${application.configuration.email.from}>`,
+            from: `"Courselore" <${application.userConfiguration.email.from}>`,
             to: request.state.user!.email,
             subject: "Account deleted",
             html: html`
@@ -3064,7 +3064,7 @@ export default async (application: Application): Promise<void> => {
                 If it was not you, please report the issue to
                 <a
                   href="mailto:${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }?${new URLSearchParams({
                     subject: "Potential impersonation",
@@ -3073,7 +3073,7 @@ export default async (application: Application): Promise<void> => {
                     .toString()
                     .replaceAll("+", "%20")}"
                   >${
-                    application.configuration.systemAdministratorEmail ??
+                    application.userConfiguration.systemAdministratorEmail ??
                     "system-administrator@courselore.org"
                   }</a
                 >

@@ -627,12 +627,12 @@ export default async (application: Application): Promise<void> => {
                     : (courseConversationMessageCreatedByUser?.name ??
                       "Deleted course participant")
                 } · ${course.name}`,
-                address: application.configuration.email.from,
+                address: application.userConfiguration.email.from,
               },
               to: courseConversationMessageEmailNotificationUser.email,
               subject: courseConversation.title,
-              inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
-              references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.configuration.hostname}`,
+              inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
+              references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
               html: html`
                 $${await application.partials.courseConversationMessageContentProcessor(
                   {
@@ -649,7 +649,7 @@ export default async (application: Application): Promise<void> => {
                   <small>
                     <a
                       href="https://${
-                        application.configuration.hostname
+                        application.userConfiguration.hostname
                       }/courses/${course.publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
                         {
                           message: courseConversationMessage.publicId,
@@ -659,7 +659,7 @@ export default async (application: Application): Promise<void> => {
                     > ·
                     <a
                       href="https://${
-                        application.configuration.hostname
+                        application.userConfiguration.hostname
                       }/settings"
                       >Change email notification preferences</a
                     >

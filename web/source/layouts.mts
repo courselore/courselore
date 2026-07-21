@@ -309,7 +309,7 @@ export default async (application: Application): Promise<void> => {
       }"
       javascript="${javascript`
         if (${response.mayStartLiveConnection()})
-          javascript.liveConnection(${request.id}, { reloadOnReconnect: ${application.configuration.environment === "development"} });
+          javascript.liveConnection(${request.id}, { reloadOnReconnect: ${application.userConfiguration.environment === "development"} });
       `}"
     >
       <head>

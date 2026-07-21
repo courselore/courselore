@@ -1059,7 +1059,7 @@ ${courseConversationMessageContent}</textarea>
           characters: "abcdefghijklmnopqrstuvwxyz0123456789",
         })}/${path.basename(attachment.path)}`;
         const absolutePath = path.join(
-          application.configuration.dataDirectory,
+          application.userConfiguration.dataDirectory,
           relativePath,
         );
         await fs.mkdir(path.dirname(absolutePath), { recursive: true });
@@ -2061,7 +2061,7 @@ You may also use the buttons on the message content editor to ${
                       try {
                         const url = new URL(
                           child.getAttribute("href"),
-                          `https://${application.configuration.hostname}`,
+                          `https://${application.userConfiguration.hostname}`,
                         );
                         return (
                           url.protocol !== "https:" &&
@@ -2078,7 +2078,7 @@ You may also use the buttons on the message content editor to ${
                       try {
                         const url = new URL(
                           child.getAttribute("src"),
-                          `https://${application.configuration.hostname}`,
+                          `https://${application.userConfiguration.hostname}`,
                         );
                         return !(
                           url.protocol === "https:" || url.protocol === "http:"
@@ -2205,11 +2205,11 @@ You may also use the buttons on the message content editor to ${
         for (const element of document.querySelectorAll("a")) {
           const url = new URL(
             element.getAttribute("href"),
-            `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
+            `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
           );
           if (
             url.protocol !== "https:" ||
-            url.hostname !== application.configuration.hostname ||
+            url.hostname !== application.userConfiguration.hostname ||
             url.pathname.startsWith("/files/")
           )
             element.setAttribute("target", "_blank");
@@ -2218,16 +2218,16 @@ You may also use the buttons on the message content editor to ${
       for (const element of document.querySelectorAll("img, video, audio")) {
         const url = new URL(
           element.getAttribute("src"),
-          `https://${application.configuration.hostname}`,
+          `https://${application.userConfiguration.hostname}`,
         );
         if (mode === "emailNotification") {
           element.setAttribute("src", url.href);
           continue;
         }
-        if (url.hostname !== application.configuration.hostname)
+        if (url.hostname !== application.userConfiguration.hostname)
           element.setAttribute(
             "src",
-            `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
+            `https://${application.userConfiguration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
           );
       }
       if (mode !== "emailNotification")
@@ -2237,7 +2237,7 @@ You may also use the buttons on the message content editor to ${
         if (mode === "emailNotification")
           element.outerHTML = html`<a
             href="https://${
-              application.configuration.hostname
+              application.userConfiguration.hostname
             }/courses/${course.publicId}/conversations/${
               courseConversation!.publicId
             }?${new URLSearchParams({
@@ -2260,7 +2260,7 @@ You may also use the buttons on the message content editor to ${
         if (mode === "emailNotification")
           element.outerHTML = html`<a
             href="https://${
-              application.configuration.hostname
+              application.userConfiguration.hostname
             }/courses/${course.publicId}/conversations/${
               courseConversation!.publicId
             }?${new URLSearchParams({
@@ -2283,7 +2283,7 @@ You may also use the buttons on the message content editor to ${
             <div>
               <a
                 href="https://${
-                  application.configuration.hostname
+                  application.userConfiguration.hostname
                 }/courses/${course.publicId}/conversations/${
                   courseConversation!.publicId
                 }?${new URLSearchParams({
@@ -2635,7 +2635,7 @@ You may also use the buttons on the message content editor to ${
               <div>
                 <a
                   href="https://${
-                    application.configuration.hostname
+                    application.userConfiguration.hostname
                   }/courses/${course.publicId}/conversations/${
                     courseConversation!.publicId
                   }${new URLSearchParams({
@@ -2648,7 +2648,7 @@ You may also use the buttons on the message content editor to ${
           else
             element.outerHTML = html`<a
               href="https://${
-                application.configuration.hostname
+                application.userConfiguration.hostname
               }/courses/${course.publicId}/conversations/${
                 courseConversation!.publicId
               }${new URLSearchParams({
@@ -2950,7 +2950,7 @@ You may also use the buttons on the message content editor to ${
           .getAttribute("href")
           .match(
             new RegExp(
-              `^https://${RegExp.escape(application.configuration.hostname)}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
+              `^https://${RegExp.escape(application.userConfiguration.hostname)}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
             ),
           );
         if (match === null) continue;
@@ -3025,19 +3025,19 @@ You may also use the buttons on the message content editor to ${
             "href",
             new URL(
               element.getAttribute("href"),
-              `https://${application.configuration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
+              `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
             ).href,
           );
         else if (
           element
             .getAttribute("href")
-            .startsWith(`https://${application.configuration.hostname}/`)
+            .startsWith(`https://${application.userConfiguration.hostname}/`)
         )
           element.setAttribute(
             "href",
             element
               .getAttribute("href")
-              .slice(`https://${application.configuration.hostname}`.length),
+              .slice(`https://${application.userConfiguration.hostname}`.length),
           );
       return mode === "textContent"
         ? document.textContent
