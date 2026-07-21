@@ -1,7 +1,6 @@
 import * as serverTypes from "@radically-straightforward/server";
 import cryptoRandomString from "crypto-random-string";
 import * as jose from "jose";
-import argon2 from "argon2";
 import * as SAML from "@node-saml/node-saml";
 import sql from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
