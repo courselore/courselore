@@ -1,9 +1,9 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 import readline from "node:readline/promises";
-import crypto from "node:crypto";
 import sql, { Database } from "@radically-straightforward/sqlite";
 import * as utilities from "@radically-straightforward/utilities";
+import * as node from "@radically-straightforward/node";
 import { dedent as markdown } from "@radically-straightforward/utilities";
 import * as examples from "@radically-straightforward/examples";
 import cryptoRandomString from "crypto-random-string";
@@ -2158,111 +2158,6 @@ export default async (application: Application): Promise<void> => {
     `,
 
     async (database) => {
-      const shouldPrompt =
-        database.get<{ count: number }>(
-          sql`
-            SELECT COUNT(*) AS "count" FROM "users"
-          `,
-        )!.count > 0;
-
-      if (shouldPrompt && !process.stdin.isTTY)
-        throw new Error(
-          "This update requires that you answer some questions. Please run Courselore interactively (for example, ‘./courselore/courselore ./configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
-        );
-
-      const readlineInterface = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
-
-      let privateKey: string;
-      let certificate: string;
-      if (
-        shouldPrompt &&
-        (await readlineInterface.question(
-          utilities.dedent`
-            This update of Courselore introduces a new system for handling the private key and certificate for SAML and the upcoming LTI support.
-            
-            1. If you haven’t configured SAML yet, then we recommend that you let Courselore generate a new private key and certificate.
-            
-            2. If you have already configured SAML and don’t want to rotate the certificate with the Identity Provider, then you may provide the existing private key and certificate.
-            
-            Choose your option [1/2]:
-          ` + " ",
-        )) === "2"
-      ) {
-        console.log(
-          utilities.dedent`
-            Requirements:
-
-            • The private key must be RSA.
-            • The private key must be at least 2048 bits long.
-            • The certificate must have a *really* long expiration date.
-            • The certificate must include ‘Subject’.
-            • The certificate must be signed with SHA-256.
-            • The private key and the certificate must be provided in PEM format.
-
-            For example, you may use the following command:
-
-            $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/CN=courselore.org/C=US/ST=Maryland/L=Baltimore/O=Courselore" -keyout private-key.pem -out certificate.pem
-          ` + "\n",
-        );
-
-        while (true) {
-          try {
-            privateKey = await fs.readFile(
-              await readlineInterface.question(
-                "Path to the file containing the private key (starts with ‘-----BEGIN PRIVATE KEY-----’): ",
-              ),
-              "utf-8",
-            );
-            forge.pki.privateKeyFromPem(privateKey);
-            break;
-          } catch (error) {
-            console.log(error);
-          }
-        }
-
-        while (true) {
-          try {
-            certificate = await fs.readFile(
-              await readlineInterface.question(
-                "Path to the file containing the certificate (starts with ‘-----BEGIN CERTIFICATE-----’): ",
-              ),
-              "utf-8",
-            );
-            forge.pki.certificateFromPem(certificate);
-            break;
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      } else {
-        const forgeKeyPair = forge.pki.rsa.generateKeyPair();
-        const forgeCertificate = forge.pki.createCertificate();
-        forgeCertificate.publicKey = forgeKeyPair.publicKey;
-        forgeCertificate.serialNumber =
-          "00" + Math.random().toString().slice(2, 12);
-        forgeCertificate.validity.notAfter = new Date(
-          Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
-        );
-        const certificateSubject = [
-          { name: "commonName", value: application.userConfiguration.hostname },
-          { name: "countryName", value: "US" },
-          { name: "stateOrProvinceName", value: "Maryland" },
-          { name: "localityName", value: "Baltimore" },
-          { name: "organizationName", value: "Courselore" },
-        ];
-        forgeCertificate.setIssuer(certificateSubject);
-        forgeCertificate.setSubject(certificateSubject);
-        forgeCertificate.sign(
-          forgeKeyPair.privateKey,
-          forge.md.sha256.create(),
-        );
-        privateKey = forge.pki.privateKeyToPem(forgeKeyPair.privateKey);
-        certificate = forge.pki.certificateToPem(forgeCertificate);
-      }
-
       database.execute(
         sql`
           CREATE TABLE "new_administrationOptions" (
@@ -2299,8 +2194,8 @@ export default async (application: Application): Promise<void> => {
           )
           VALUES (
             ${administrationOptions.latestVersion},
-            ${privateKey},
-            ${certificate},
+            ${"REMOVED IN VERSION 10.2.0"},
+            ${"REMOVED IN VERSION 10.2.0"},
             ${administrationOptions.userSystemRolesWhoMayCreateCourses}
           )
         `,
@@ -2311,7 +2206,6 @@ export default async (application: Application): Promise<void> => {
           ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
         `,
       );
-      readlineInterface.close();
     },
 
     sql`
@@ -2728,18 +2622,8 @@ export default async (application: Application): Promise<void> => {
               ${old_user.name},
               ${old_user.email},
               ${old_user.emailVerifiedAt === null ? old_user.email : null},
-              ${
-                old_user.emailVerifiedAt === null
-                  ? await argon2.hash(
-                      cryptoRandomString({
-                        length: 100,
-                        type: "numeric",
-                      }),
-                      application.applicationConfiguration.argon2,
-                    )
-                  : null
-              },
-              ${old_user.emailVerifiedAt === null ? new Date().toISOString() : null},
+              ${null},
+              ${null},
               ${old_user.password},
               ${null},
               ${null},
@@ -3357,10 +3241,7 @@ export default async (application: Application): Promise<void> => {
             "utf-8",
           ),
         );
-        const userPassword = await argon2.hash(
-          "courselore",
-          application.applicationConfiguration.argon2,
-        );
+        const userPassword = await node.PasswordHash.hash("courselore");
         const [user, ...users] = Array.from(
           { length: 151 },
           (value, userIndex) => {
@@ -4260,21 +4141,8 @@ export default async (application: Application): Promise<void> => {
       alter table "systemOptions" rename to "systemSettings";
     `,
 
-    (database) => {
-      const systemSettings = database.get<{ privateKey: string }>(
-        sql`
-          select "privateKey" from "systemSettings";
-        `,
-      );
-      if (systemSettings === undefined) throw new Error();
-      database.run(
-        sql`
-          update "systemSettings"
-          set "privateKey" = ${crypto
-            .createPrivateKey(systemSettings.privateKey)
-            .export({ format: "pem", type: "pkcs8" })};
-        `,
-      );
+    () => {
+      // Removed in version 10.2.0
     },
 
     sql`
@@ -4334,5 +4202,34 @@ export default async (application: Application): Promise<void> => {
       create index "index_users_passwordResetNonceCreatedAt" on "users" ("passwordResetNonceCreatedAt");
       create index "index_users_deleteMyAccountNonceCreatedAt" on "users" ("deleteMyAccountNonceCreatedAt");
     `,
+
+    (database) => {
+      if (application.userConfiguration.environment === "development") return;
+      for (const user of database.all<{
+        id: number;
+        passwordHash: string | null;
+      }>(
+        sql`
+          select "id", "passwordHash"
+          from "users"
+          order by "id" asc;
+        `,
+      )) {
+        if (typeof user.passwordHash !== "string") continue;
+        const phcStringParts = user.passwordHash.split("$");
+        const nonce = Buffer.from(phcStringParts.at(-2)!, "base64");
+        const hash = Buffer.from(phcStringParts.at(-1)!, "base64");
+        database.run(
+          sql`
+            update "users"
+            set "passwordHash" = ${JSON.stringify({
+              nonce: nonce.toString("hex"),
+              hash: hash.toString("hex"),
+            })}
+            where "id" = ${user.id};
+          `,
+        );
+      }
+    },
   );
 };
