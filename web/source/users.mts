@@ -1606,7 +1606,7 @@ export default async (application: Application): Promise<void> => {
       });
       request.state.user.emailVerificationNonceHash = await argon2.hash(
         emailVerificationNonce,
-        application.privateConfiguration.argon2,
+        application.applicationConfiguration.argon2,
       );
       request.state.user.emailVerificationNonceCreatedAt =
         new Date().toISOString();
@@ -1748,7 +1748,7 @@ export default async (application: Application): Promise<void> => {
         !(await argon2.verify(
           request.state.user.passwordHash,
           request.body.currentPassword,
-          application.privateConfiguration.argon2,
+          application.applicationConfiguration.argon2,
         ))
       ) {
         response.setFlash!(html`
@@ -1759,7 +1759,7 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.user.passwordHash = await argon2.hash(
         request.body.newPassword,
-        application.privateConfiguration.argon2,
+        application.applicationConfiguration.argon2,
       );
       application.database.run(
         sql`
@@ -1848,7 +1848,7 @@ export default async (application: Application): Promise<void> => {
               (twoFactorAuthenticationRecoveryCode: string) =>
                 argon2.hash(
                   twoFactorAuthenticationRecoveryCode,
-                  application.privateConfiguration.argon2,
+                  application.applicationConfiguration.argon2,
                 ),
             ),
           ),
@@ -2142,7 +2142,7 @@ export default async (application: Application): Promise<void> => {
       const passwordConfirmationVerification = await argon2.verify(
         request.state.user.passwordHash,
         request.body.passwordConfirmation,
-        application.privateConfiguration.argon2,
+        application.applicationConfiguration.argon2,
       );
       const twoFactorAuthenticationCodeVerification =
         new OTPAuth.TOTP({
@@ -2265,7 +2265,7 @@ export default async (application: Application): Promise<void> => {
       const passwordConfirmationVerification = await argon2.verify(
         request.state.user.passwordHash,
         request.body.passwordConfirmation,
-        application.privateConfiguration.argon2,
+        application.applicationConfiguration.argon2,
       );
       const twoFactorAuthenticationCodeVerification =
         (typeof request.body.twoFactorAuthenticationCode === "string" &&
@@ -2283,7 +2283,7 @@ export default async (application: Application): Promise<void> => {
                 argon2.verify(
                   twoFactorAuthenticationRecoveryCode,
                   request.body.twoFactorAuthenticationRecoveryCode!,
-                  application.privateConfiguration.argon2,
+                  application.applicationConfiguration.argon2,
                 ),
               ),
             )
@@ -2432,7 +2432,7 @@ export default async (application: Application): Promise<void> => {
       });
       const deleteMyAccountNonceHash = await argon2.hash(
         deleteMyAccountNonce,
-        application.privateConfiguration.argon2,
+        application.applicationConfiguration.argon2,
       );
       if (
         request.state.user.deleteMyAccountNonceCreatedAt === null ||
@@ -2934,14 +2934,14 @@ export default async (application: Application): Promise<void> => {
           request.state.user.deleteMyAccountNonceHash ??
             "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
           request.pathname.deleteMyAccountNonce,
-          application.privateConfiguration.argon2,
+          application.applicationConfiguration.argon2,
         )) && typeof request.state.user.deleteMyAccountNonceHash === "string";
       const passwordConfirmationVerification =
         typeof request.state.user.passwordHash === "string"
           ? await argon2.verify(
               request.state.user.passwordHash,
               request.body.passwordConfirmation!,
-              application.privateConfiguration.argon2,
+              application.applicationConfiguration.argon2,
             )
           : true;
       const twoFactorAuthenticationCodeVerification =
@@ -2963,7 +2963,7 @@ export default async (application: Application): Promise<void> => {
                     argon2.verify(
                       twoFactorAuthenticationRecoveryCode,
                       request.body.twoFactorAuthenticationRecoveryCode!,
-                      application.privateConfiguration.argon2,
+                      application.applicationConfiguration.argon2,
                     ),
                   ),
                 )

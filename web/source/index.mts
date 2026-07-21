@@ -78,7 +78,7 @@ export type Application = {
       } & SAML.SamlConfig & { decryptionCert?: string })[];
     };
   };
-  privateConfiguration: {
+  applicationConfiguration: {
     ports: number[];
     stopWords: Set<string>;
   };
@@ -114,8 +114,9 @@ await fs.mkdir(application.userConfiguration.dataDirectory, {
   recursive: true,
 });
 application.userConfiguration.environment ??= "production";
-application.privateConfiguration = {} as Application["privateConfiguration"];
-application.privateConfiguration.ports = Array.from(
+application.applicationConfiguration =
+  {} as Application["applicationConfiguration"];
+application.applicationConfiguration.ports = Array.from(
   {
     length:
       application.userConfiguration.environment === "development"
@@ -124,13 +125,13 @@ application.privateConfiguration.ports = Array.from(
   },
   (value, index) => 18000 + index,
 );
-application.privateConfiguration.argon2 = {
+application.applicationConfiguration.argon2 = {
   type: argon2.argon2id,
   memoryCost: 12288,
   timeCost: 3,
   parallelism: 1,
 };
-application.privateConfiguration.stopWords = new Set(
+application.applicationConfiguration.stopWords = new Set(
   natural.stopwords.map((stopWord) => utilities.normalizeToken(stopWord)),
 );
 if (application.commandLineArguments.values.type === "server")
@@ -222,7 +223,7 @@ if (application.commandLineArguments.values.type === undefined) {
     process.exit();
   }
 
-  for (const port of application.privateConfiguration.ports) {
+  for (const port of application.applicationConfiguration.ports) {
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
         process.argv[0],
@@ -268,7 +269,7 @@ if (application.commandLineArguments.values.type === undefined) {
   }
   caddy.start({
     ...application.userConfiguration,
-    ...application.privateConfiguration,
+    ...application.applicationConfiguration,
     untrustedStaticFilesRoots: [
       `/files/* "${application.userConfiguration.dataDirectory}"`,
     ],

@@ -2737,7 +2737,7 @@ export default async (application: Application): Promise<void> => {
                         length: 100,
                         type: "numeric",
                       }),
-                      application.privateConfiguration.argon2,
+                      application.applicationConfiguration.argon2,
                     )
                   : null
               },
@@ -3055,7 +3055,7 @@ export default async (application: Application): Promise<void> => {
                 ${old_conversation.title},
                 ${utilities
                   .tokenize(old_conversation.title, {
-                    stopWords: application.privateConfiguration.stopWords,
+                    stopWords: application.applicationConfiguration.stopWords,
                     stem: (token) => natural.PorterStemmer.stem(token),
                   })
                   .map((tokenWithPosition) => tokenWithPosition.token)
@@ -3232,7 +3232,7 @@ export default async (application: Application): Promise<void> => {
                   ${courseConversationMessageContent},
                   ${utilities
                     .tokenize(courseConversationMessageContent, {
-                      stopWords: application.privateConfiguration.stopWords,
+                      stopWords: application.applicationConfiguration.stopWords,
                       stem: (token) => natural.PorterStemmer.stem(token),
                     })
                     .map((tokenWithPosition) => tokenWithPosition.token)
@@ -3361,7 +3361,7 @@ export default async (application: Application): Promise<void> => {
         );
         const userPassword = await argon2.hash(
           "courselore",
-          application.privateConfiguration.argon2,
+          application.applicationConfiguration.argon2,
         );
         const [user, ...users] = Array.from(
           { length: 151 },
@@ -3708,7 +3708,7 @@ export default async (application: Application): Promise<void> => {
                         ${utilities
                           .tokenize(courseConversationTitle, {
                             stopWords:
-                              application.privateConfiguration.stopWords,
+                              application.applicationConfiguration.stopWords,
                             stem: (token) => natural.PorterStemmer.stem(token),
                           })
                           .map((tokenWithPosition) => tokenWithPosition.token)
@@ -3859,7 +3859,7 @@ export default async (application: Application): Promise<void> => {
                           ${utilities
                             .tokenize(courseConversationMessageContent, {
                               stopWords:
-                                application.privateConfiguration.stopWords,
+                                application.applicationConfiguration.stopWords,
                               stem: (token) =>
                                 natural.PorterStemmer.stem(token),
                             })

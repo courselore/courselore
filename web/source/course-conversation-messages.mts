@@ -166,7 +166,7 @@ export default async (application: Application): Promise<void> => {
       });
       response.send();
       if (sendLiveConnectionUpdates)
-        for (const port of application.privateConfiguration.ports)
+        for (const port of application.applicationConfiguration.ports)
           fetch(`http://localhost:${port}/__live-connections`, {
             method: "POST",
             headers: { "CSRF-Protection": "true" },
@@ -329,7 +329,7 @@ export default async (application: Application): Promise<void> => {
                     ${request.body.content},
                     ${utilities
                       .tokenize(contentTextContent, {
-                        stopWords: application.privateConfiguration.stopWords,
+                        stopWords: application.applicationConfiguration.stopWords,
                         stem: (token) => natural.PorterStemmer.stem(token),
                       })
                       .map((tokenWithPosition) => tokenWithPosition.token)
@@ -365,7 +365,7 @@ export default async (application: Application): Promise<void> => {
       response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -1400,7 +1400,7 @@ export default async (application: Application): Promise<void> => {
             "content" = ${request.body.content},
             "contentSearch" = ${utilities
               .tokenize(contentTextContent, {
-                stopWords: application.privateConfiguration.stopWords,
+                stopWords: application.applicationConfiguration.stopWords,
                 stem: (token) => natural.PorterStemmer.stem(token),
               })
               .map((tokenWithPosition) => tokenWithPosition.token)
@@ -1411,7 +1411,7 @@ export default async (application: Application): Promise<void> => {
       response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -1485,7 +1485,7 @@ export default async (application: Application): Promise<void> => {
       response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -1598,7 +1598,7 @@ export default async (application: Application): Promise<void> => {
       response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -1654,7 +1654,7 @@ export default async (application: Application): Promise<void> => {
       response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },

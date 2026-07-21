@@ -3583,7 +3583,7 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">General settings updated successfully.</div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -3722,7 +3722,7 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">Conversation tags updated successfully.</div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -4915,7 +4915,7 @@ export default async (application: Application): Promise<void> => {
         </div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -5455,7 +5455,7 @@ export default async (application: Application): Promise<void> => {
         </div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -5578,7 +5578,7 @@ export default async (application: Application): Promise<void> => {
         </div>
       `);
       response.redirect!("/");
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },

@@ -1245,7 +1245,7 @@ export default async (application: Application): Promise<void> => {
                   ),
                   {
                     prefix: true,
-                    stopWords: application.privateConfiguration.stopWords,
+                    stopWords: application.applicationConfiguration.stopWords,
                     stem: (token) => natural.PorterStemmer.stem(token),
                   },
                 )}</span
@@ -1370,7 +1370,7 @@ export default async (application: Application): Promise<void> => {
                     ),
                     {
                       prefix: true,
-                      stopWords: application.privateConfiguration.stopWords,
+                      stopWords: application.applicationConfiguration.stopWords,
                       stem: (token) => natural.PorterStemmer.stem(token),
                     },
                   )}
@@ -2825,7 +2825,7 @@ export default async (application: Application): Promise<void> => {
                     ${request.body.title},
                     ${utilities
                       .tokenize(request.body.title!, {
-                        stopWords: application.privateConfiguration.stopWords,
+                        stopWords: application.applicationConfiguration.stopWords,
                         stem: (token) => natural.PorterStemmer.stem(token),
                       })
                       .map((tokenWithPosition) => tokenWithPosition.token)
@@ -2930,7 +2930,7 @@ export default async (application: Application): Promise<void> => {
                     ${request.body.content},
                     ${utilities
                       .tokenize(contentTextContent, {
-                        stopWords: application.privateConfiguration.stopWords,
+                        stopWords: application.applicationConfiguration.stopWords,
                         stem: (token) => natural.PorterStemmer.stem(token),
                       })
                       .map((tokenWithPosition) => tokenWithPosition.token)
@@ -2967,7 +2967,7 @@ export default async (application: Application): Promise<void> => {
       response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${courseConversation!.publicId}`,
       );
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -6849,7 +6849,7 @@ export default async (application: Application): Promise<void> => {
       response.redirect!(
         `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
       );
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
@@ -6947,7 +6947,7 @@ export default async (application: Application): Promise<void> => {
         );
       });
       response.redirect!(`/courses/${request.state.course.publicId}`);
-      for (const port of application.privateConfiguration.ports)
+      for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
