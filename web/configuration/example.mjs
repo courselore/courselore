@@ -186,31 +186,36 @@ export default {
   },
 
   // [Optional] SAML configuration
-  // saml: {
-  //   // The metadata for the SAML Service Provider is available at: https://example.com/authentication/saml/metadata
-  //   "example-university": {
-  //     name: "Example University",
-  //     // The domains over which the Identity Provider has authority. It includes subdomains, for example, `computer-science.example-university.edu`.
-  //     domains: ["example-university.edu", "example-university.com"],
-  //     // The `userData` function receives as argument a `SAML.Profile` (https://github.com/node-saml/node-saml/blob/ff2d6756eff082609b203a115a87a1a21e33cfb8/src/types.ts#L234-L249) and must produce an `email` and `name`.
-  //     userData: (profile) => ({
-  //       email: profile.attributes.email,
-  //       name: profile.attributes.name,
-  //     }),
-  //     options: {
-  //       idpIssuer: "https://example-identity-provider.edu/metadata",
-  //       entryPoint: "https://example-identity-provider.edu/saml/sso",
-  //       idpCert: "MIIDszC...93Sa",
-  //       // Node SAML configurations: https://github.com/node-saml/node-saml
-  //       // May include `decryptionCert`.
-  //       // Must not include:
-  //       // - `issuer`
-  //       // - `callbackUrl`
-  //       // - `privateKey`
-  //       // - `publicCert`
-  //       // - `signMetadata`
-  //       // - `validateInResponseTo`
-  //     },
-  //   },
-  // },
+  saml: {
+    // This key pair was generated when generating the `secretKey` above. If necessary comment out `secretKey`, run Courselore, and then uncomment the original `secretKey`.
+    privateKey: "-----BEGIN PRIVATE KEY-----...-----END PRIVATE KEY-----\n",
+    publicKey: "-----BEGIN PUBLIC KEY-----...-----END PUBLIC KEY-----\n",
+    certificate: "-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----",
+    identityProviders: [
+      // The metadata for the SAML Service Provider is available at: https://example.com/authentication/saml/metadata
+      {
+        name: "Example University",
+        // The domains over which the Identity Provider has authority. It includes subdomains, for example, `computer-science.example-university.edu`.
+        domains: ["example-university.edu", "example-university.com"],
+        // The `userData` function receives as argument a `SAML.Profile` (https://github.com/node-saml/node-saml/blob/ff2d6756eff082609b203a115a87a1a21e33cfb8/src/types.ts#L234-L249) and must produce an `email` and `name`.
+        userData: (profile) => ({
+          email: profile.attributes.email,
+          name: profile.attributes.name,
+        }),
+        idpIssuer: "https://example-identity-provider.edu/metadata",
+        entryPoint: "https://example-identity-provider.edu/saml/sso",
+        idpCert: "MIIDszC...93Sa",
+        // Node SAML configurations: https://github.com/node-saml/node-saml
+        // May include `decryptionCert`.
+        // Must not include:
+        // - `issuer`
+        // - `callbackUrl`
+        // - `privateKey`
+        // - `publicCert`
+        // - `signMetadata`
+        // - `validateInResponseTo`
+        // - `signatureAlgorithm`
+      },
+    ],
+  },
 };
