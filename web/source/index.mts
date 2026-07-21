@@ -47,8 +47,14 @@ export type Application = {
     systemAdministratorEmail: string | undefined;
     email: any;
     secretKey: string;
+    dataDirectory: string;
+    environment: "production" | "development";
+    hstsPreload?: boolean;
+    extraCaddyfile?: string;
     lti?: {
-      [identifier: string]: {
+      privateKey: string;
+      publicKey: string;
+      platforms: {
         name: string;
         domains: string[];
         platformID: string;
@@ -56,27 +62,24 @@ export type Application = {
         publicKeysetURL: string;
         authenticationRequestURL: string;
         accessTokenURL: string;
-      };
+      }[];
     };
     saml?: {
-      [identifier: string]: {
+      privateKey: string;
+      publicKey: string;
+      certificate: string;
+      identityProviders: ({
         name: string;
         domains: string[];
         userData: (profile: SAML.Profile) => {
           email: string;
           name: string;
         };
-        options: SAML.SamlConfig & { decryptionCert?: string };
-      };
+      } & SAML.SamlConfig & { decryptionCert?: string })[];
     };
-    dataDirectory: string;
-    environment: "production" | "development";
-    hstsPreload?: boolean;
-    extraCaddyfile?: string;
   };
   privateConfiguration: {
     ports: number[];
-    argon2: argon2.HashOptions;
     stopWords: Set<string>;
   };
   server: undefined | ReturnType<typeof server>;
