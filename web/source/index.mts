@@ -128,6 +128,52 @@ application.applicationConfiguration.ports = Array.from(
 application.applicationConfiguration.stopWords = new Set(
   natural.stopwords.map((stopWord) => utilities.normalizeToken(stopWord)),
 );
+if (typeof application.userConfiguration.secretKey !== "string") {
+  const secretKey = node.SymmetricEncryption.exportKey(
+    await node.SymmetricEncryption.generateKey(),
+  );
+  const ltiKeyPair = await node.AsymmetricEncryption.generateKeyPair();
+  const samlKeyPair = await node.AsymmetricEncryption.generateKeyPair();
+  console.log(
+    JSON.stringify(
+      {
+        secretKey,
+        lti: {
+          privateKey: ltiKeyPair.privateKey,
+          publicKey: ltiKeyPair.publicKey,
+        },
+        saml: {
+          privateKey: samlKeyPair.privateKey,
+          publicKey: samlKeyPair.publicKey,
+          certificate: (
+            await selfsigned.generate(
+              [
+                {
+                  shortName: "CN",
+                  value: application.userConfiguration.hostname,
+                },
+                { shortName: "O", value: "Courselore" },
+                { shortName: "C", value: "US" },
+                { shortName: "ST", value: "Maryland" },
+                { shortName: "L", value: "Baltimore" },
+              ],
+              {
+                keyPair: samlKeyPair,
+                algorithm: "sha256",
+                notAfterDate: new Date(
+                  Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
+                ),
+              },
+            )
+          ).cert,
+        },
+      },
+      undefined,
+      2,
+    ),
+  );
+  process.exit();
+}
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
@@ -170,53 +216,6 @@ await emails(application);
 await errors(application);
 
 if (application.commandLineArguments.values.type === undefined) {
-  if (typeof application.userConfiguration.secretKey !== "string") {
-    const secretKey = node.SymmetricEncryption.exportKey(
-      await node.SymmetricEncryption.generateKey(),
-    );
-    const ltiKeyPair = await node.AsymmetricEncryption.generateKeyPair();
-    const samlKeyPair = await node.AsymmetricEncryption.generateKeyPair();
-    console.log(
-      JSON.stringify(
-        {
-          secretKey,
-          lti: {
-            privateKey: ltiKeyPair.privateKey,
-            publicKey: ltiKeyPair.publicKey,
-          },
-          saml: {
-            privateKey: samlKeyPair.privateKey,
-            publicKey: samlKeyPair.publicKey,
-            certificate: (
-              await selfsigned.generate(
-                [
-                  {
-                    shortName: "CN",
-                    value: application.userConfiguration.hostname,
-                  },
-                  { shortName: "O", value: "Courselore" },
-                  { shortName: "C", value: "US" },
-                  { shortName: "ST", value: "Maryland" },
-                  { shortName: "L", value: "Baltimore" },
-                ],
-                {
-                  keyPair: samlKeyPair,
-                  algorithm: "sha256",
-                  notAfterDate: new Date(
-                    Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
-                  ),
-                },
-              )
-            ).cert,
-          },
-        },
-        undefined,
-        2,
-      ),
-    );
-    process.exit();
-  }
-
   for (const port of application.applicationConfiguration.ports) {
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
