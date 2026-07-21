@@ -3886,6 +3886,7 @@ export default async (application: Application): Promise<void> => {
               publicCert: systemSettings.certificate,
               signMetadata: true,
               validateInResponseTo: SAML.ValidateInResponseTo.always,
+              signatureAlgorithm: "sha256",
             }),
           },
         ],
