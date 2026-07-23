@@ -18,8 +18,6 @@ export type ApplicationAuthentication = {
       Authentication: {
         systemSettings: {
           id: number;
-          privateKey: string;
-          certificate: string;
           userRolesWhoMayCreateCourses:
             "userRoleUser" | "userRoleStaff" | "userRoleSystemAdministrator";
         };
@@ -156,16 +154,12 @@ export default async (application: Application): Promise<void> => {
     ) => {
       request.state.systemSettings = application.database.get<{
         id: number;
-        privateKey: string;
-        certificate: string;
         userRolesWhoMayCreateCourses:
           "userRoleUser" | "userRoleStaff" | "userRoleSystemAdministrator";
       }>(
         sql`
           select
             "id",
-            "privateKey",
-            "certificate",
             "userRolesWhoMayCreateCourses"
           from "systemSettings"
           limit 1;
@@ -3825,16 +3819,12 @@ export default async (application: Application): Promise<void> => {
   const samls = (() => {
     const systemSettings = application.database.get<{
       id: number;
-      privateKey: string;
-      certificate: string;
       userRolesWhoMayCreateCourses:
         "userRoleUser" | "userRoleStaff" | "userRoleSystemAdministrator";
     }>(
       sql`
         select
           "id",
-          "privateKey",
-          "certificate",
           "userRolesWhoMayCreateCourses"
         from "systemSettings"
         limit 1;
