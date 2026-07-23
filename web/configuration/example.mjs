@@ -126,8 +126,8 @@ export default {
   //       // The data that you must fill below looks like the following (change the domain in the URLs and the Client ID which was provided by Canvas):
   //       //
   //       // ```json
-  //       // platformID: "https://example-canvas.com/login/oauth2/token",
-  //       // clientID: "10000000000005",
+  //       // platformId: "https://example-canvas.com/login/oauth2/token",
+  //       // clientId: "10000000000005",
   //       // publicKeysetURL: "https://example-canvas.com/api/lti/security/jwks",
   //       // authenticationRequestURL: "https://example-canvas.com/api/lti/authorize_redirect",
   //       // accessTokenURL: "https://example-canvas.com/login/oauth2/token",
@@ -175,8 +175,8 @@ export default {
   //       // Create the Content, and click on it to open Courselore. Select the Courselore course to connect with the Sakai course.
   //       //
   //       // Click on **Course settings > Course participants > Sync with Learning Management System (LMS)**.
-  //       platformID: "https://example-lms.edu",
-  //       clientID: "example-client-id",
+  //       platformId: "https://example-lms.edu",
+  //       clientId: "example-client-id",
   //       publicKeysetURL: "https://example-lms.edu/public-keyset",
   //       authenticationRequestURL:
   //         "https://example-lms.edu/authentication-request",

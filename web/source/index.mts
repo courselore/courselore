@@ -56,8 +56,8 @@ export type Application = {
       platforms: {
         name: string;
         domains: string[];
-        platformID: string;
-        clientID: string;
+        platformId: string;
+        clientId: string;
         publicKeysetURL: string;
         authenticationRequestURL: string;
         accessTokenURL: string;

@@ -4178,16 +4178,16 @@ export default async (application: Application): Promise<void> => {
       alter table "users" rename column "password" to "passwordHash";
       alter table "users" rename column "passwordResetNonce" to "passwordResetNonceHash";
       alter table "users" rename column "twoFactorAuthenticationRecoveryCodes" to "twoFactorAuthenticationRecoveryCodesHashes";
-
+      
       alter table "userSessions" rename column "createdAt" to "lastUsedAt";
       drop index "index_userSessions_createdAt";
       create index "index_userSessions_lastUsedAt" on "userSessions" ("lastUsedAt");
-
+      
       alter table "users" drop column "lastSeenOnlineAt";
-
+      
       create index "index_users_emailVerificationCreatedAt" on "users" ("emailVerificationCreatedAt");
       create index "index_users_passwordResetCreatedAt" on "users" ("passwordResetCreatedAt");
-
+      
       alter table "users" add column "deleteMyAccountNonceHash" text null;
       alter table "users" add column "deleteMyAccountCreatedAt" text null;
       create index "index_users_deleteMyAccountCreatedAt" on "users" ("deleteMyAccountCreatedAt");
@@ -4266,6 +4266,12 @@ export default async (application: Application): Promise<void> => {
       drop index "index_courses_ltiIdentifier_ltiContextId";
       alter table "courses" drop column "ltiIdentifier";
       alter table "courses" drop column "ltiContextId";
+      alter table "courses" drop column "ltiNamesAndRoleProvisioningServicesURL";
+      
+      alter table "courses" add column "ltiPlatformID" text null;
+      alter table "courses" add column "ltiClientID" text null;
+      alter table "courses" add column "ltiContextID" text null;
+      alter table "courses" add column "ltiNamesAndRoleProvisioningServicesURL" text null;
       create index "index_courses_ltiNamesAndRoleProvisioningServicesURL" on "courses" ("ltiNamesAndRoleProvisioningServicesURL");
     `,
   );

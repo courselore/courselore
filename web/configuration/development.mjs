@@ -19,8 +19,8 @@ export default {
       {
         name: "Courselore University",
         domains: ["uni.ac.uk"],
-        platformID: "https://saltire.lti.app/platform",
-        clientID: "saltire.lti.app",
+        platformId: "https://saltire.lti.app/platform",
+        clientId: "saltire.lti.app",
         publicKeysetURL:
           "https://saltire.lti.app/platform/jwks/a7dd58e457ce47339ef86a41f14c1885",
         authenticationRequestURL: "https://saltire.lti.app/platform/auth",

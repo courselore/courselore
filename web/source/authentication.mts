@@ -2981,9 +2981,9 @@ export default async (application: Application): Promise<void> => {
         request.method === "GET" ? request.search : request.body;
       const platform = application.userConfiguration.lti?.platforms.find(
         (platform) =>
-          requestBody.iss === platform.platformID &&
+          requestBody.iss === platform.platformId &&
           (requestBody.client_id === undefined ||
-            requestBody.client_id === platform.clientID),
+            requestBody.client_id === platform.clientId),
       );
       if (
         platform === undefined ||
@@ -3010,7 +3010,7 @@ export default async (application: Application): Promise<void> => {
         `${platform.authenticationRequestURL}?${new URLSearchParams({
           response_type: "id_token",
           scope: "openid",
-          client_id: platform.clientID,
+          client_id: platform.clientId,
           redirect_uri: `https://${application.userConfiguration.hostname}/authentication/lti/callback`,
           login_hint: requestBody.login_hint,
           state,
@@ -3060,8 +3060,8 @@ export default async (application: Application): Promise<void> => {
             jose.createRemoteJWKSet(new URL(launch.platform.publicKeysetURL)),
             {
               algorithms: ["RS256"],
-              issuer: launch.platform.platformID,
-              audience: launch.platform.clientID,
+              issuer: launch.platform.platformId,
+              audience: launch.platform.clientId,
             },
           )
         ).payload;
@@ -3072,7 +3072,7 @@ export default async (application: Application): Promise<void> => {
         typeof idToken.nonce !== "string" ||
         !node.TokenHash.verify(launch.nonceTokenHash, idToken.nonce) ||
         (idToken.azp !== undefined &&
-          idToken.azp !== launch.platform.clientID) ||
+          idToken.azp !== launch.platform.clientId) ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
           "LtiResourceLinkRequest" ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==

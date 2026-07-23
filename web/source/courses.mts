@@ -5001,9 +5001,9 @@ export default async (application: Application): Promise<void> => {
                   .setJti(
                     cryptoRandomString({ length: 50, type: "alphanumeric" }),
                   )
-                  .setIssuer(lti.clientID)
-                  .setAudience(lti.platformID)
-                  .setSubject(lti.clientID)
+                  .setIssuer(lti.clientId)
+                  .setAudience(lti.platformId)
+                  .setSubject(lti.clientId)
                   .setIssuedAt()
                   .setExpirationTime("5 minutes")
                   .sign(
