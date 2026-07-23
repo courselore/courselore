@@ -4268,11 +4268,11 @@ export default async (application: Application): Promise<void> => {
       alter table "courses" drop column "ltiContextId";
       alter table "courses" drop column "ltiNamesAndRoleProvisioningServicesURL";
       
-      alter table "courses" add column "ltiPlatformID" text null;
-      alter table "courses" add column "ltiClientID" text null;
-      alter table "courses" add column "ltiContextID" text null;
+      alter table "courses" add column "ltiPlatformId" text null;
+      alter table "courses" add column "ltiClientId" text null;
+      alter table "courses" add column "ltiContextId" text null;
       alter table "courses" add column "ltiNamesAndRoleProvisioningServicesURL" text null;
-      create index "index_courses_ltiNamesAndRoleProvisioningServicesURL" on "courses" ("ltiNamesAndRoleProvisioningServicesURL");
+      create unique index "index_courses_ltiPlatformId_ltiClientId_ltiContextId" on "courses" ("ltiPlatformId", "ltiClientId", "ltiContextId");
     `,
   );
 };
