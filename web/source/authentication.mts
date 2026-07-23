@@ -3077,10 +3077,10 @@ export default async (application: Application): Promise<void> => {
         idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
           "1.3.0" ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/target_link_uri"] !==
-          `https://${application.userConfiguration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback` ||
+          `https://${application.userConfiguration.hostname}/authentication/lti/callback` ||
         typeof idToken.email !== "string" ||
         !idToken.email.match(utilities.emailRegExp) ||
-        !lti.domains.some((domain) =>
+        !launch.platform.domains.some((domain) =>
           `.${(idToken.email as string).split("@")[1]}`.endsWith(`.${domain}`),
         ) ||
         typeof idToken.name !== "string" ||
