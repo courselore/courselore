@@ -3510,7 +3510,7 @@ export default async (application: Application): Promise<void> => {
                           "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
                         where
                           "courses"."courseState" = 'courseStateActive' and
-                          "courses"."ltiIdentifier" is null
+                          "courses"."ltiNamesAndRoleProvisioningServicesURL" is null
                         order by "courseParticipations"."id" desc;
                       `,
                     );

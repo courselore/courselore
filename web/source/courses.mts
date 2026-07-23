@@ -31,8 +31,6 @@ export type ApplicationCourses = {
           courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
           courseState: "courseStateActive" | "courseStateArchived";
           courseConversationsNextPublicId: number;
-          ltiIdentifier: string | null;
-          ltiContextId: string | null;
           ltiNamesAndRoleProvisioningServicesURL: string | null;
         };
         courseParticipation: {
