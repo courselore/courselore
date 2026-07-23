@@ -3452,15 +3452,15 @@ export default async (application: Application): Promise<void> => {
             "courseConversationsNextPublicId"
           from "courses"
           where
-          "ltiPlatformId" = ${launch.platform.platformId} and
-          "ltiClientId" = ${launch.platform.clientId} and
-          "ltiContextId" = ${
-            (
-              idToken[
-                "https://purl.imsglobal.org/spec/lti/claim/context"
-              ] as any
-            ).id
-          };
+            "ltiPlatformId" = ${launch.platform.platformId} and
+            "ltiClientId" = ${launch.platform.clientId} and
+            "ltiContextId" = ${
+              (
+                idToken[
+                  "https://purl.imsglobal.org/spec/lti/claim/context"
+                ] as any
+              ).id
+            };
         `,
       );
       if (course === undefined) {
@@ -3513,7 +3513,7 @@ export default async (application: Application): Promise<void> => {
                           "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
                         where
                           "courses"."courseState" = 'courseStateActive' and
-                          "courses"."ltiNamesAndRoleProvisioningServicesURL" is null
+                          "courses"."ltiPlatformId" is null
                         order by "courseParticipations"."id" desc;
                       `,
                     );
@@ -3551,6 +3551,27 @@ export default async (application: Application): Promise<void> => {
                                   method="PATCH"
                                   action="/courses/${course.publicId}/settings/participations/lti"
                                 >
+                                  <input
+                                    type="hidden"
+                                    name="ltiPlatformId"
+                                    value="${launch.platform.platformId}"
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="ltiClientId"
+                                    value="${launch.platform.clientId}"
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="ltiContextId"
+                                    value="${
+                                      (
+                                        idToken[
+                                          "https://purl.imsglobal.org/spec/lti/claim/context"
+                                        ] as any
+                                      ).id
+                                    }"
+                                  />
                                   <input
                                     type="hidden"
                                     name="ltiNamesAndRoleProvisioningServicesURL"
@@ -3617,6 +3638,27 @@ export default async (application: Application): Promise<void> => {
                                         "https://purl.imsglobal.org/spec/lti/claim/context"
                                       ] as any
                                     ).title
+                                  }"
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ltiPlatformId"
+                                  value="${launch.platform.platformId}"
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ltiClientId"
+                                  value="${launch.platform.clientId}"
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ltiContextId"
+                                  value="${
+                                    (
+                                      idToken[
+                                        "https://purl.imsglobal.org/spec/lti/claim/context"
+                                      ] as any
+                                    ).id
                                   }"
                                 />
                                 <input
