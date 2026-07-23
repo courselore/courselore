@@ -2980,62 +2980,57 @@ export default async (application: Application): Promise<void> => {
         return;
       const requestBody =
         request.method === "GET" ? request.search : request.body;
-      const ltiLaunchInProgressPlatform =
-        application.userConfiguration.lti?.platforms.find(
-          (ltiPlatform) => requestBody.iss === ltiPlatform.platformID,
-        );
+      const platform = application.userConfiguration.lti?.platforms.find(
+        (platform) => requestBody.iss === platform.platformID,
+      );
       if (
-        ltiLaunchInProgressPlatform === undefined ||
+        platform === undefined ||
         (requestBody.client_id !== undefined &&
-          requestBody.client_id !== ltiLaunchInProgressPlatform.clientID) ||
+          requestBody.client_id !== platform.clientID) ||
         requestBody.target_link_uri !==
           `https://${application.userConfiguration.hostname}/authentication/lti/callback` ||
         typeof requestBody.login_hint !== "string"
       )
         throw "validation";
-      const ltiLaunchInProgressState = cryptoRandomString({
+      const state = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
-      const ltiLaunchInProgressNonce = cryptoRandomString({
+      const nonce = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
       ltiLaunchesInProgress.add({
-        platform: ltiLaunchInProgressPlatform,
-        stateTokenHash: node.TokenHash.hash(ltiLaunchInProgressState),
-        nonceTokenHash: node.TokenHash.hash(ltiLaunchInProgressNonce),
+        platform,
+        stateTokenHash: node.TokenHash.hash(state),
+        nonceTokenHash: node.TokenHash.hash(nonce),
         createdAt: new Date().toISOString(),
       });
       response.redirect!(
-        `${ltiLaunchInProgressPlatform.authenticationRequestURL}?${new URLSearchParams(
-          {
-            response_type: "id_token",
-            scope: "openid",
-            client_id: ltiLaunchInProgressPlatform.clientID,
-            redirect_uri: `https://${application.userConfiguration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`,
-            login_hint: requestBody.login_hint,
-            state: ltiLaunchInProgressState,
-            response_mode: "form_post",
-            nonce: ltiLaunchInProgressNonce,
-            prompt: "none",
-            ...(typeof requestBody.lti_message_hint === "string"
-              ? { lti_message_hint: requestBody.lti_message_hint }
-              : {}),
-          },
-        ).toString()}`,
+        `${platform.authenticationRequestURL}?${new URLSearchParams({
+          response_type: "id_token",
+          scope: "openid",
+          client_id: platform.clientID,
+          redirect_uri: `https://${application.userConfiguration.hostname}/authentication/lti/callback`,
+          login_hint: requestBody.login_hint,
+          state,
+          response_mode: "form_post",
+          nonce,
+          prompt: "none",
+          ...(typeof requestBody.lti_message_hint === "string"
+            ? { lti_message_hint: requestBody.lti_message_hint }
+            : {}),
+        }).toString()}`,
       );
     },
   });
 
   application.server?.push({
     method: "POST",
-    pathname: new RegExp(
-      "^/authentication/lti/(?<ltiIdentifier>[a-z0-9\\-]+)/callback$",
-    ),
+    pathname: new RegExp("^/authentication/lti/callback$"),
     handler: async (
       request: serverTypes.Request<
-        { ltiIdentifier: string },
+        {},
         {},
         {},
         {
@@ -3046,10 +3041,6 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (typeof request.pathname.ltiIdentifier !== "string") return;
-      const lti =
-        application.userConfiguration.lti?.[request.pathname.ltiIdentifier];
-      if (lti === undefined) return;
       if (
         typeof request.body.id_token !== "string" ||
         typeof request.body.state !== "string"
