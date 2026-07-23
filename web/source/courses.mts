@@ -254,43 +254,43 @@ export default async (application: Application): Promise<void> => {
         ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
-            select * from "courses" where "id" = ${
-              application.database.run(
-                sql`
-                insert into "courses" (
-                  "publicId",
-                  "name",
-                  "information",
-                  "invitationLinkCourseParticipationRoleInstructorsEnabled",
-                  "invitationLinkCourseParticipationRoleInstructorsToken",
-                  "invitationLinkCourseParticipationRoleStudentsEnabled",
-                  "invitationLinkCourseParticipationRoleStudentsToken",
-                  "courseConversationRequiresTagging",
-                  "courseParticipationRoleStudentsAnonymityAllowed",
-                  "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
-                  "courseState",
-                  "courseConversationsNextPublicId",
-                  "ltiNamesAndRoleProvisioningServicesURL"
-                )
-                values (
-                  ${cryptoRandomString({ length: 10, type: "numeric" })},
-                  ${request.body.name},
-                  ${null},
-                  ${Number(true)},
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${Number(true)},
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${Number(true)},
-                  ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
-                  ${Number(true)},
-                  ${"courseStateActive"},
-                  ${1},
-                  ${request.body.ltiNamesAndRoleProvisioningServicesURL}
-                );
-              `,
-              ).lastInsertRowid
-            };
-          `,
+          select * from "courses" where "id" = ${
+            application.database.run(
+              sql`
+              insert into "courses" (
+                "publicId",
+                "name",
+                "information",
+                "invitationLinkCourseParticipationRoleInstructorsEnabled",
+                "invitationLinkCourseParticipationRoleInstructorsToken",
+                "invitationLinkCourseParticipationRoleStudentsEnabled",
+                "invitationLinkCourseParticipationRoleStudentsToken",
+                "courseConversationRequiresTagging",
+                "courseParticipationRoleStudentsAnonymityAllowed",
+                "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+                "courseState",
+                "courseConversationsNextPublicId",
+                "ltiNamesAndRoleProvisioningServicesURL"
+              )
+              values (
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${request.body.name},
+                ${null},
+                ${Number(true)},
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${Number(true)},
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${Number(true)},
+                ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
+                ${Number(true)},
+                ${"courseStateActive"},
+                ${1},
+                ${request.body.ltiNamesAndRoleProvisioningServicesURL}
+              );
+            `,
+            ).lastInsertRowid
+          };
+        `,
       )!;
       request.state.courseParticipation = application.database.get<{
         id: number;
@@ -316,54 +316,54 @@ export default async (application: Application): Promise<void> => {
         mostRecentlyVisitedCourseConversation: number | null;
       }>(
         sql`
-            select * from "courseParticipations" where "id" = ${
-              application.database.run(
-                sql`
-                  insert into "courseParticipations" (
-                    "publicId",
-                    "user",
-                    "course",
-                    "courseParticipationRole",
-                    "decorationColor",
-                    "mostRecentlyVisitedCourseConversation"
-                  )
-                  values (
-                    ${cryptoRandomString({ length: 20, type: "numeric" })},
-                    ${request.state.user.id},
-                    ${request.state.course.id},
-                    ${"courseParticipationRoleInstructor"},
-                    ${
-                      [
-                        "red",
-                        "orange",
-                        "amber",
-                        "yellow",
-                        "lime",
-                        "green",
-                        "emerald",
-                        "teal",
-                        "cyan",
-                        "violet",
-                        "purple",
-                        "fuchsia",
-                        "pink",
-                        "rose",
-                      ][
-                        application.database.get<{ count: number }>(
-                          sql`
-                            select count(*) as "count"
-                            from "courseParticipations"
-                            where "user" = ${request.state.user.id};
-                          `,
-                        )!.count % 14
-                      ]
-                    },
-                    ${null}
-                  );
-                `,
-              ).lastInsertRowid
-            };
-          `,
+          select * from "courseParticipations" where "id" = ${
+            application.database.run(
+              sql`
+                insert into "courseParticipations" (
+                  "publicId",
+                  "user",
+                  "course",
+                  "courseParticipationRole",
+                  "decorationColor",
+                  "mostRecentlyVisitedCourseConversation"
+                )
+                values (
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${request.state.user.id},
+                  ${request.state.course.id},
+                  ${"courseParticipationRoleInstructor"},
+                  ${
+                    [
+                      "red",
+                      "orange",
+                      "amber",
+                      "yellow",
+                      "lime",
+                      "green",
+                      "emerald",
+                      "teal",
+                      "cyan",
+                      "violet",
+                      "purple",
+                      "fuchsia",
+                      "pink",
+                      "rose",
+                    ][
+                      application.database.get<{ count: number }>(
+                        sql`
+                          select count(*) as "count"
+                          from "courseParticipations"
+                          where "user" = ${request.state.user.id};
+                        `,
+                      )!.count % 14
+                    ]
+                  },
+                  ${null}
+                );
+              `,
+            ).lastInsertRowid
+          };
+        `,
       )!;
       response.redirect!(`/courses/${request.state.course.publicId}`);
     },
