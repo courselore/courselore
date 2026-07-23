@@ -1220,32 +1220,8 @@ export default async (application: Application): Promise<void> => {
           },
         });
       });
-      response.send(
-        application.layouts.main({
-          request,
-          response,
-          head: html`<title>Sign up · Courselore</title>`,
-          body: html`
-            <div
-              css="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--size--2);
-              `}"
-            >
-              <div
-                css="${css`
-                  font-size: var(--font-size--4);
-                  line-height: var(--font-size--4--line-height);
-                  font-weight: 800;
-                `}"
-              >
-                Sign up
-              </div>
-              <p>To continue please check your email.</p>
-            </div>
-          `,
-        }),
+      response.redirect!(
+        `/authentication/email-verification${request.URL.search}`,
       );
     },
   });
