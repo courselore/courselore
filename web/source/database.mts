@@ -4239,7 +4239,8 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           select "privateKey", "certificate"
-          from "systemSettings";
+          from "systemSettings"
+          limit 1;
         `,
       );
       if (systemSettings === undefined) throw new Error();
