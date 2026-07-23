@@ -2903,6 +2903,9 @@ export default async (application: Application): Promise<void> => {
   });
 
   const ltiLaunchesInProgress = new Set<{
+    platform: NonNullable<
+      Application["userConfiguration"]["lti"]
+    >["platforms"][number];
     stateTokenHash: string;
     nonceTokenHash: string;
     createdAt: string;
@@ -2977,46 +2980,50 @@ export default async (application: Application): Promise<void> => {
         return;
       const requestBody =
         request.method === "GET" ? request.search : request.body;
-      const ltiPlatform = application.userConfiguration.lti?.platforms.find(
-        (ltiPlatform) => requestBody.iss === ltiPlatform.platformID,
-      );
+      const ltiLaunchInProgressPlatform =
+        application.userConfiguration.lti?.platforms.find(
+          (ltiPlatform) => requestBody.iss === ltiPlatform.platformID,
+        );
       if (
-        ltiPlatform === undefined ||
+        ltiLaunchInProgressPlatform === undefined ||
         (requestBody.client_id !== undefined &&
-          requestBody.client_id !== ltiPlatform.clientID) ||
+          requestBody.client_id !== ltiLaunchInProgressPlatform.clientID) ||
         requestBody.target_link_uri !==
           `https://${application.userConfiguration.hostname}/authentication/lti/callback` ||
         typeof requestBody.login_hint !== "string"
       )
         throw "validation";
-      // TODO: Stopped here. Should store `iss` and `client_id` in `ltiLaunchesInProgress`
-      const ltiFlow = {
-        state: cryptoRandomString({
-          length: 100,
-          type: "numeric",
-        }),
-        nonce: cryptoRandomString({
-          length: 100,
-          type: "numeric",
-        }),
+      const ltiLaunchInProgressState = cryptoRandomString({
+        length: 100,
+        type: "numeric",
+      });
+      const ltiLaunchInProgressNonce = cryptoRandomString({
+        length: 100,
+        type: "numeric",
+      });
+      ltiLaunchesInProgress.add({
+        platform: ltiLaunchInProgressPlatform,
+        stateTokenHash: node.TokenHash.hash(ltiLaunchInProgressState),
+        nonceTokenHash: node.TokenHash.hash(ltiLaunchInProgressNonce),
         createdAt: new Date().toISOString(),
-      };
-      ltiLaunchesInProgress.set(ltiFlow.state, ltiFlow);
+      });
       response.redirect!(
-        `${ltiPlatform.authenticationRequestURL}?${new URLSearchParams({
-          response_type: "id_token",
-          scope: "openid",
-          client_id: ltiPlatform.clientID,
-          redirect_uri: `https://${application.userConfiguration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`,
-          login_hint: requestBody.login_hint,
-          state: ltiFlow.state,
-          response_mode: "form_post",
-          nonce: ltiFlow.nonce,
-          prompt: "none",
-          ...(typeof requestBody.lti_message_hint === "string"
-            ? { lti_message_hint: requestBody.lti_message_hint }
-            : {}),
-        }).toString()}`,
+        `${ltiLaunchInProgressPlatform.authenticationRequestURL}?${new URLSearchParams(
+          {
+            response_type: "id_token",
+            scope: "openid",
+            client_id: ltiLaunchInProgressPlatform.clientID,
+            redirect_uri: `https://${application.userConfiguration.hostname}/authentication/lti/${request.pathname.ltiIdentifier}/callback`,
+            login_hint: requestBody.login_hint,
+            state: ltiLaunchInProgressState,
+            response_mode: "form_post",
+            nonce: ltiLaunchInProgressNonce,
+            prompt: "none",
+            ...(typeof requestBody.lti_message_hint === "string"
+              ? { lti_message_hint: requestBody.lti_message_hint }
+              : {}),
+          },
+        ).toString()}`,
       );
     },
   });
