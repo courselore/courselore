@@ -3045,19 +3045,22 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.state !== "string"
       )
         throw "validation";
-      const ltiFlow = ltiLaunches.get(request.body.state);
-      if (ltiFlow === undefined) throw "validation";
-      ltiLaunches.delete(ltiFlow.stateTokenHash);
+      const stateTokenHash = node.TokenHash.hash(request.body.state);
+      const launch = [...ltiLaunches].find(
+        (launch) => launch.stateTokenHash === stateTokenHash,
+      );
+      if (launch === undefined) throw "validation";
+      ltiLaunches.delete(launch);
       let idToken: jose.JWTPayload;
       try {
         idToken = (
           await jose.jwtVerify(
             request.body.id_token,
-            jose.createRemoteJWKSet(new URL(lti.publicKeysetURL)),
+            jose.createRemoteJWKSet(new URL(launch.platform.publicKeysetURL)),
             {
               algorithms: ["RS256"],
-              issuer: lti.platformID,
-              audience: lti.clientID,
+              issuer: launch.platform.platformID,
+              audience: launch.platform.clientID,
             },
           )
         ).payload;
@@ -3065,7 +3068,8 @@ export default async (application: Application): Promise<void> => {
         throw "validation";
       }
       if (
-        idToken.nonce !== ltiFlow.nonceTokenHash ||
+        typeof idToken.nonce !== "string" ||
+        node.TokenHash.verify(launch.nonceTokenHash, idToken.nonce) ||
         (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
           "LtiResourceLinkRequest" ||
