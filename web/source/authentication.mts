@@ -3451,15 +3451,13 @@ export default async (application: Application): Promise<void> => {
             "courseState",
             "courseConversationsNextPublicId"
           from "courses"
-          where
-            "ltiIdentifier" = ${request.pathname.ltiIdentifier} and
-            "ltiContextId" = ${
-              (
-                idToken[
-                  "https://purl.imsglobal.org/spec/lti/claim/context"
-                ] as any
-              )?.id
-            };
+          where "ltiNamesAndRoleProvisioningServicesURL" = ${
+            (
+              idToken[
+                "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+              ] as any
+            )["context_memberships_url"]
+          };
         `,
       );
       if (course === undefined) {
@@ -3552,22 +3550,6 @@ export default async (application: Application): Promise<void> => {
                                 >
                                   <input
                                     type="hidden"
-                                    name="ltiIdentifier"
-                                    value="${request.pathname.ltiIdentifier!}"
-                                  />
-                                  <input
-                                    type="hidden"
-                                    name="ltiContextId"
-                                    value="${
-                                      (
-                                        idToken[
-                                          "https://purl.imsglobal.org/spec/lti/claim/context"
-                                        ] as any
-                                      )?.id
-                                    }"
-                                  />
-                                  <input
-                                    type="hidden"
                                     name="ltiNamesAndRoleProvisioningServicesURL"
                                     value="${
                                       (
@@ -3632,22 +3614,6 @@ export default async (application: Application): Promise<void> => {
                                         "https://purl.imsglobal.org/spec/lti/claim/context"
                                       ] as any
                                     ).title
-                                  }"
-                                />
-                                <input
-                                  type="hidden"
-                                  name="ltiIdentifier"
-                                  value="${request.pathname.ltiIdentifier!}"
-                                />
-                                <input
-                                  type="hidden"
-                                  name="ltiContextId"
-                                  value="${
-                                    (
-                                      idToken[
-                                        "https://purl.imsglobal.org/spec/lti/claim/context"
-                                      ] as any
-                                    )?.id
                                   }"
                                 />
                                 <input
