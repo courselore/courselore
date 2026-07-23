@@ -3034,16 +3034,16 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
-          id_token: string;
           state: string;
+          id_token: string;
         },
         Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
       if (
-        typeof request.body.id_token !== "string" ||
-        typeof request.body.state !== "string"
+        typeof request.body.state !== "string" ||
+        typeof request.body.id_token !== "string"
       )
         throw "validation";
       const stateTokenHash = node.TokenHash.hash(request.body.state);
