@@ -2902,7 +2902,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  const ltiLaunchesInProgress = new Set<{
+  const ltiLaunches = new Set<{
     platform: NonNullable<
       Application["userConfiguration"]["lti"]
     >["platforms"][number];
@@ -2913,12 +2913,11 @@ export default async (application: Application): Promise<void> => {
 
   if (application.commandLineArguments.values.type === "server")
     node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
-      for (const ltiLaunchInProgress of ltiLaunchesInProgress)
+      for (const launch of ltiLaunches)
         if (
-          ltiLaunchInProgress.createdAt <
-          new Date(Date.now() - 5 * 60 * 1000).toISOString()
+          launch.createdAt < new Date(Date.now() - 5 * 60 * 1000).toISOString()
         )
-          ltiLaunchesInProgress.delete(ltiLaunchInProgress);
+          ltiLaunches.delete(launch);
     });
 
   application.server?.push({
@@ -3000,7 +2999,7 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      ltiLaunchesInProgress.add({
+      ltiLaunches.add({
         platform,
         stateTokenHash: node.TokenHash.hash(state),
         nonceTokenHash: node.TokenHash.hash(nonce),
@@ -3046,9 +3045,9 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.state !== "string"
       )
         throw "validation";
-      const ltiFlow = ltiLaunchesInProgress.get(request.body.state);
+      const ltiFlow = ltiLaunches.get(request.body.state);
       if (ltiFlow === undefined) throw "validation";
-      ltiLaunchesInProgress.delete(ltiFlow.stateTokenHash);
+      ltiLaunches.delete(ltiFlow.stateTokenHash);
       let idToken: jose.JWTPayload;
       try {
         idToken = (
