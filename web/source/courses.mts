@@ -194,8 +194,6 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           name: string;
-          ltiIdentifier: string;
-          ltiContextId: string;
           ltiNamesAndRoleProvisioningServicesURL: string;
         },
         Application["types"]["states"]["Course"]
@@ -224,21 +222,6 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.name !== "string" ||
         request.body.name.trim() === "" ||
-        !(
-          (request.body.ltiIdentifier === undefined &&
-            request.body.ltiContextId === undefined &&
-            request.body.ltiNamesAndRoleProvisioningServicesURL ===
-              undefined) ||
-          (typeof request.body.ltiIdentifier === "string" &&
-            typeof request.body.ltiContextId === "string" &&
-            typeof request.body.ltiNamesAndRoleProvisioningServicesURL ===
-              "string")
-        ) ||
-        (typeof request.body.ltiIdentifier === "string" &&
-          application.userConfiguration.lti?.[request.body.ltiIdentifier] ===
-            undefined) ||
-        (typeof request.body.ltiContextId === "string" &&
-          request.body.ltiContextId.trim() === "") ||
         (typeof request.body.ltiNamesAndRoleProvisioningServicesURL ===
           "string" &&
           (() => {
@@ -268,8 +251,6 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
-        ltiIdentifier: string | null;
-        ltiContextId: string | null;
         ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
@@ -289,8 +270,6 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
                   "courseState",
                   "courseConversationsNextPublicId",
-                  "ltiIdentifier",
-                  "ltiContextId",
                   "ltiNamesAndRoleProvisioningServicesURL"
                 )
                 values (
@@ -306,8 +285,6 @@ export default async (application: Application): Promise<void> => {
                   ${Number(true)},
                   ${"courseStateActive"},
                   ${1},
-                  ${request.body.ltiIdentifier},
-                  ${request.body.ltiContextId},
                   ${request.body.ltiNamesAndRoleProvisioningServicesURL}
                 );
               `,
@@ -422,8 +399,6 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
-        ltiIdentifier: string | null;
-        ltiContextId: string | null;
         ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
@@ -441,8 +416,6 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
             "courseConversationsNextPublicId",
-            "ltiIdentifier",
-            "ltiContextId",
             "ltiNamesAndRoleProvisioningServicesURL"
           from "courses"
           where "publicId" = ${request.pathname.coursePublicId};
@@ -2540,7 +2513,8 @@ export default async (application: Application): Promise<void> => {
                           `}"
                         >
                           $${
-                            request.state.course.ltiIdentifier !== null
+                            request.state.course
+                              .ltiNamesAndRoleProvisioningServicesURL !== null
                               ? html`
                                   <div
                                     css="${css`
@@ -2562,11 +2536,11 @@ export default async (application: Application): Promise<void> => {
                                         request.state.course.publicId
                                       }/settings/participations/lti/sync"
                                       javascript="${javascript`
-                                    this.onsubmit = () => {
-                                      delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
-                                      delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
-                                    };
-                                  `}"
+                                        this.onsubmit = () => {
+                                          delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                          delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                        };
+                                      `}"
                                     >
                                       <button
                                         type="submit"
@@ -2580,8 +2554,8 @@ export default async (application: Application): Promise<void> => {
                                       type="button"
                                       class="button button--rectangle button--red"
                                       javascript="${javascript`
-                                    javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
-                                  `}"
+                                        javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                                      `}"
                                     >
                                       Disconnect from LMS
                                     </button>
@@ -2645,20 +2619,20 @@ export default async (application: Application): Promise<void> => {
                                           | "courseParticipationRoleStudent";
                                       }>(
                                         sql`
-                                      select
-                                        "courseParticipations"."id" as "id",
-                                        "courseParticipations"."publicId" as "publicId",
-                                        "courseParticipations"."user" as "user",
-                                        "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                      from "courseParticipations"
-                                      join "users" on "courseParticipations"."user" = "users"."id"
-                                      where
-                                        "courseParticipations"."course" = ${request.state.course.id} and
-                                        "courseParticipations"."ltiState" = 'ltiStateMissingInLMS'
-                                      order by
-                                        "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                        "users"."name" asc;
-                                    `,
+                                          select
+                                            "courseParticipations"."id" as "id",
+                                            "courseParticipations"."publicId" as "publicId",
+                                            "courseParticipations"."user" as "user",
+                                            "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                          from "courseParticipations"
+                                          join "users" on "courseParticipations"."user" = "users"."id"
+                                          where
+                                            "courseParticipations"."course" = ${request.state.course.id} and
+                                            "courseParticipations"."ltiState" = 'ltiStateMissingInLMS'
+                                          order by
+                                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                            "users"."name" asc;
+                                        `,
                                       );
                                     return 0 < courseParticipations.length
                                       ? html`
@@ -2693,11 +2667,11 @@ export default async (application: Application): Promise<void> => {
                                               gap: var(--size--4);
                                             `}"
                                             javascript="${javascript`
-                                          this.onsubmit = () => {
-                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
-                                            delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
-                                          };
-                                        `}"
+                                              this.onsubmit = () => {
+                                                delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                                delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                              };
+                                            `}"
                                           >
                                             $${courseParticipations.map(
                                               (courseParticipation) => {
@@ -3884,8 +3858,6 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
-        ltiIdentifier: string | null;
-        ltiContextId: string | null;
         ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
@@ -3903,8 +3875,6 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
             "courseConversationsNextPublicId",
-            "ltiIdentifier",
-            "ltiContextId",
             "ltiNamesAndRoleProvisioningServicesURL"
           from "courses"
           where
@@ -4387,8 +4357,6 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
-        ltiIdentifier: string | null;
-        ltiContextId: string | null;
         ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
@@ -4406,8 +4374,6 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
             "courseConversationsNextPublicId",
-            "ltiIdentifier",
-            "ltiContextId",
             "ltiNamesAndRoleProvisioningServicesURL"
           from "courses"
           where "publicId" = ${request.pathname.coursePublicId};
@@ -4935,8 +4901,6 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
-          ltiIdentifier: string;
-          ltiContextId: string;
           ltiNamesAndRoleProvisioningServicesURL: string;
         },
         Application["types"]["states"]["Course"]
@@ -4951,11 +4915,6 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       if (
-        typeof request.body.ltiIdentifier !== "string" ||
-        application.userConfiguration.lti?.[request.body.ltiIdentifier] ===
-          undefined ||
-        typeof request.body.ltiContextId !== "string" ||
-        request.body.ltiContextId.trim() === "" ||
         typeof request.body.ltiNamesAndRoleProvisioningServicesURL !==
           "string" ||
         (() => {
@@ -4971,10 +4930,7 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           update "courses"
-          set
-            "ltiIdentifier" = ${request.body.ltiIdentifier},
-            "ltiContextId" = ${request.body.ltiContextId},
-            "ltiNamesAndRoleProvisioningServicesURL" = ${request.body.ltiNamesAndRoleProvisioningServicesURL}
+          set "ltiNamesAndRoleProvisioningServicesURL" = ${request.body.ltiNamesAndRoleProvisioningServicesURL}
           where "id" = ${request.state.course.id};
         `,
       );
@@ -5005,17 +4961,12 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.systemSettings === undefined ||
         request.state.course === undefined ||
-        request.state.course.ltiIdentifier === null ||
-        request.state.course.ltiContextId === null ||
         request.state.course.ltiNamesAndRoleProvisioningServicesURL === null ||
         request.state.courseParticipation === undefined ||
         request.state.courseParticipation.courseParticipationRole !==
           "courseParticipationRoleInstructor"
       )
         return;
-      const lti =
-        application.userConfiguration.lti?.[request.state.course.ltiIdentifier];
-      if (lti === undefined) return;
       let ltiCourseMembers: {
         email: string;
         name: string;
@@ -5489,10 +5440,7 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           update "courses"
-          set
-            "ltiIdentifier" = null,
-            "ltiContextId" = null,
-            "ltiNamesAndRoleProvisioningServicesURL" = null
+          set "ltiNamesAndRoleProvisioningServicesURL" = null
           where "id" = ${request.state.course.id};
         `,
       );
