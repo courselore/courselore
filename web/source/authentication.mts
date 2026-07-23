@@ -2978,13 +2978,12 @@ export default async (application: Application): Promise<void> => {
       const requestBody =
         request.method === "GET" ? request.search : request.body;
       const ltiPlatform = application.userConfiguration.lti?.platforms.find(
-        (ltiPlatform) =>
-          requestBody.iss === ltiPlatform.platformID &&
-          (requestBody.client_id === undefined ||
-            requestBody.client_id === ltiPlatform.clientID),
+        (ltiPlatform) => requestBody.iss === ltiPlatform.platformID,
       );
       if (
         ltiPlatform === undefined ||
+        (requestBody.client_id !== undefined &&
+          requestBody.client_id !== ltiPlatform.clientID) ||
         requestBody.target_link_uri !==
           `https://${application.userConfiguration.hostname}/authentication/lti/callback` ||
         typeof requestBody.login_hint !== "string"
