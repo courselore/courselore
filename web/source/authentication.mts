@@ -3451,12 +3451,15 @@ export default async (application: Application): Promise<void> => {
             "courseState",
             "courseConversationsNextPublicId"
           from "courses"
-          where "ltiNamesAndRoleProvisioningServicesURL" = ${
+          where
+          "ltiPlatformId" = ${launch.platform.platformId} and
+          "ltiClientId" = ${launch.platform.clientId} and
+          "ltiContextId" = ${
             (
               idToken[
-                "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+                "https://purl.imsglobal.org/spec/lti/claim/context"
               ] as any
-            )["context_memberships_url"]
+            ).id
           };
         `,
       );
