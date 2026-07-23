@@ -3093,19 +3093,19 @@ export default async (application: Application): Promise<void> => {
           idToken[
             "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
           ] as any
-        )?.["context_memberships_url"] !== "string" ||
+        )?.context_memberships_url !== "string" ||
         !Array.isArray(
           (
             idToken[
               "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
             ] as any
-          )?.["service_versions"],
+          )?.service_versions,
         ) ||
         !(
           idToken[
             "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
           ] as any
-        )?.["service_versions"].includes("2.0")
+        )?.service_versions.includes("2.0")
       )
         throw "validation";
       if (request.state.user === undefined) {
@@ -3434,6 +3434,10 @@ export default async (application: Application): Promise<void> => {
         courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
+        ltiPlatformId: string | null;
+        ltiClientId: string | null;
+        ltiContextId: string | null;
+        ltiNamesAndRoleProvisioningServicesURL: string | null;
       }>(
         sql`
           select
@@ -3449,7 +3453,11 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsAnonymityAllowed",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
             "courseState",
-            "courseConversationsNextPublicId"
+            "courseConversationsNextPublicId",
+            "ltiPlatformId",
+            "ltiClientId",
+            "ltiContextId",
+            "ltiNamesAndRoleProvisioningServicesURL"
           from "courses"
           where
             "ltiPlatformId" = ${launch.platform.platformId} and
@@ -3580,7 +3588,7 @@ export default async (application: Application): Promise<void> => {
                                         idToken[
                                           "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
                                         ] as any
-                                      )?.["context_memberships_url"]
+                                      ).context_memberships_url
                                     }"
                                   />
                                   <button
@@ -3669,7 +3677,7 @@ export default async (application: Application): Promise<void> => {
                                       idToken[
                                         "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
                                       ] as any
-                                    )?.["context_memberships_url"]
+                                    ).context_memberships_url
                                   }"
                                 />
                                 <button
@@ -3744,6 +3752,18 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       application.database.executeTransaction(() => {
+        course.ltiNamesAndRoleProvisioningServicesURL = (
+          idToken[
+            "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
+          ] as any
+        ).context_memberships_url;
+        application.database.run(
+          sql`
+            update "courses"
+            set "ltiNamesAndRoleProvisioningServicesURL" = ${course.ltiNamesAndRoleProvisioningServicesURL}
+            where "id" = ${course.id};
+          `,
+        );
         if (
           application.database.get(
             sql`
