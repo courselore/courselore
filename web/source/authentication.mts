@@ -2923,7 +2923,7 @@ export default async (application: Application): Promise<void> => {
     pathname: new RegExp("^/authentication/lti/keyset$"),
     handler: async (request, response) => {
       if (application.userConfiguration.lti === undefined) return;
-      const publicKey = crypto
+      const publicKeyJWK = crypto
         .createPublicKey(application.userConfiguration.lti.publicKey)
         .export({ format: "jwk" });
       response
@@ -2932,8 +2932,8 @@ export default async (application: Application): Promise<void> => {
           JSON.stringify({
             keys: [
               {
-                ...publicKey,
-                kid: await jose.calculateJwkThumbprint(publicKey),
+                ...publicKeyJWK,
+                kid: await jose.calculateJwkThumbprint(publicKeyJWK),
                 use: "sig",
                 alg: "RS256",
               },
