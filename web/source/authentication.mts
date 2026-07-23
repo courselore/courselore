@@ -3069,8 +3069,9 @@ export default async (application: Application): Promise<void> => {
       }
       if (
         typeof idToken.nonce !== "string" ||
-        node.TokenHash.verify(launch.nonceTokenHash, idToken.nonce) ||
-        (idToken.azp !== undefined && idToken.azp !== lti.clientID) ||
+        !node.TokenHash.verify(launch.nonceTokenHash, idToken.nonce) ||
+        (idToken.azp !== undefined &&
+          idToken.azp !== launch.platform.clientID) ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
           "LtiResourceLinkRequest" ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/version"] !==
