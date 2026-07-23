@@ -4231,5 +4231,33 @@ export default async (application: Application): Promise<void> => {
         );
       }
     },
+
+    (database) => {
+      const systemSettings = database.get<{
+        privateKey: string;
+        certificate: string;
+      }>(
+        sql`
+          select "privateKey", "certificate"
+          from "systemSettings";
+        `,
+      );
+      if (systemSettings === undefined) throw new Error();
+      console.log(
+        utilities.dedent`
+          In version 10.2.0 of Courselore the SAML private key and certificate were moved from the database into the configuration file. If you had Identity Providers setup, please copy them over:
+
+          ${systemSettings.privateKey}
+
+          ${systemSettings.certificate}
+        `,
+      );
+      database.execute(
+        sql`
+          alter table "systemSettings" drop column "privateKey";
+          alter table "systemSettings" drop column "certificate";
+        `,
+      );
+    },
   );
 };
