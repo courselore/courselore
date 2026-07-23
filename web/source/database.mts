@@ -4261,5 +4261,12 @@ export default async (application: Application): Promise<void> => {
         `,
       );
     },
+
+    sql`
+      drop index "index_courses_ltiIdentifier_ltiContextId";
+      alter table "courses" drop column "ltiIdentifier";
+      alter table "courses" drop column "ltiContextId";
+      create index "index_courses_ltiNamesAndRoleProvisioningServicesURL" on "courses" ("ltiNamesAndRoleProvisioningServicesURL");
+    `,
   );
 };
