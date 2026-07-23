@@ -2980,12 +2980,13 @@ export default async (application: Application): Promise<void> => {
       const requestBody =
         request.method === "GET" ? request.search : request.body;
       const platform = application.userConfiguration.lti?.platforms.find(
-        (platform) => requestBody.iss === platform.platformID,
+        (platform) =>
+          requestBody.iss === platform.platformID &&
+          (requestBody.client_id === undefined ||
+            requestBody.client_id === platform.clientID),
       );
       if (
         platform === undefined ||
-        (requestBody.client_id !== undefined &&
-          requestBody.client_id !== platform.clientID) ||
         requestBody.target_link_uri !==
           `https://${application.userConfiguration.hostname}/authentication/lti/callback` ||
         typeof requestBody.login_hint !== "string"
