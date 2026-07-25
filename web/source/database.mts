@@ -4281,6 +4281,8 @@ export default async (application: Application): Promise<void> => {
       alter table "users" rename column "passwordResetNonceHash" to "passwordResetNonceTokenHash";
       alter table "users" rename column "twoFactorAuthenticationRecoveryCodesHashes" to "twoFactorAuthenticationRecoveryCodesPasswordHashes";
       alter table "users" rename column "deleteMyAccountNonceHash" to "deleteMyAccountNonceTokenHash";
+      
+      create index "index_users_passwordResetNonceTokenHash" on "users" ("passwordResetNonceTokenHash");
     `,
   );
 };
