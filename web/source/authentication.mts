@@ -37,7 +37,7 @@ export type ApplicationAuthentication = {
           emailVerificationNonceTokenHash: string | null;
           emailVerificationNonceCreatedAt: string | null;
           passwordPasswordHash: string | null;
-          passwordResetNonceHash: string | null;
+          passwordResetNonceTokenHash: string | null;
           passwordResetNonceCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
           twoFactorAuthenticationSecret: string | null;
@@ -216,7 +216,7 @@ export default async (application: Application): Promise<void> => {
         emailVerificationNonceTokenHash: string | null;
         emailVerificationNonceCreatedAt: string | null;
         passwordPasswordHash: string | null;
-        passwordResetNonceHash: string | null;
+        passwordResetNonceTokenHash: string | null;
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
@@ -267,7 +267,7 @@ export default async (application: Application): Promise<void> => {
             "emailVerificationNonceTokenHash",
             "emailVerificationNonceCreatedAt",
             "passwordPasswordHash",
-            "passwordResetNonceHash",
+            "passwordResetNonceTokenHash",
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
@@ -1003,7 +1003,7 @@ export default async (application: Application): Promise<void> => {
           emailVerificationNonceTokenHash: string | null;
           emailVerificationNonceCreatedAt: string | null;
           passwordPasswordHash: string | null;
-          passwordResetNonceHash: string | null;
+          passwordResetNonceTokenHash: string | null;
           passwordResetNonceCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
           twoFactorAuthenticationSecret: string | null;
@@ -1056,7 +1056,7 @@ export default async (application: Application): Promise<void> => {
                     "emailVerificationNonceTokenHash",
                     "emailVerificationNonceCreatedAt",
                     "passwordPasswordHash",
-                    "passwordResetNonceHash",
+                    "passwordResetNonceTokenHash",
                     "passwordResetNonceCreatedAt",
                     "twoFactorAuthenticationEnabled",
                     "twoFactorAuthenticationSecret",
@@ -1785,7 +1785,7 @@ export default async (application: Application): Promise<void> => {
         emailVerificationNonceTokenHash: string | null;
         emailVerificationNonceCreatedAt: string | null;
         passwordPasswordHash: string | null;
-        passwordResetNonceHash: string | null;
+        passwordResetNonceTokenHash: string | null;
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
@@ -1836,7 +1836,7 @@ export default async (application: Application): Promise<void> => {
             "emailVerificationNonceTokenHash",
             "emailVerificationNonceCreatedAt",
             "passwordPasswordHash",
-            "passwordResetNonceHash",
+            "passwordResetNonceTokenHash",
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
@@ -2356,7 +2356,7 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      const passwordResetNonceHash = node.TokenHash.hash(passwordResetNonce);
+      const passwordResetNonceTokenHash = node.TokenHash.hash(passwordResetNonce);
       request.state.user = application.database.get<{
         id: number;
         publicId: string;
@@ -2366,7 +2366,7 @@ export default async (application: Application): Promise<void> => {
         emailVerificationNonceTokenHash: string | null;
         emailVerificationNonceCreatedAt: string | null;
         passwordPasswordHash: string | null;
-        passwordResetNonceHash: string | null;
+        passwordResetNonceTokenHash: string | null;
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
@@ -2417,7 +2417,7 @@ export default async (application: Application): Promise<void> => {
             "emailVerificationNonceTokenHash",
             "emailVerificationNonceCreatedAt",
             "passwordPasswordHash",
-            "passwordResetNonceHash",
+            "passwordResetNonceTokenHash",
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
@@ -2445,14 +2445,14 @@ export default async (application: Application): Promise<void> => {
           request.state.user.passwordResetNonceCreatedAt <
             new Date(Date.now() - 5 * 60 * 1000).toISOString())
       ) {
-        request.state.user.passwordResetNonceHash = passwordResetNonceHash;
+        request.state.user.passwordResetNonceTokenHash = passwordResetNonceTokenHash;
         request.state.user.passwordResetNonceCreatedAt =
           new Date().toISOString();
         application.database.run(
           sql`
             update "users"
             set
-              "passwordResetNonceHash" = ${request.state.user.passwordResetNonceHash},
+              "passwordResetNonceTokenHash" = ${request.state.user.passwordResetNonceTokenHash},
               "passwordResetNonceCreatedAt" = ${request.state.user.passwordResetNonceCreatedAt}
             where "id" = ${request.state.user.id};
           `,
@@ -2542,7 +2542,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           update "users"
           set
-            "passwordResetNonceHash" = null,
+            "passwordResetNonceTokenHash" = null,
             "passwordResetNonceCreatedAt" = null
           where "passwordResetNonceCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
         `,
@@ -2750,7 +2750,7 @@ export default async (application: Application): Promise<void> => {
         emailVerificationNonceTokenHash: string | null;
         emailVerificationNonceCreatedAt: string | null;
         passwordPasswordHash: string | null;
-        passwordResetNonceHash: string | null;
+        passwordResetNonceTokenHash: string | null;
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
@@ -2801,7 +2801,7 @@ export default async (application: Application): Promise<void> => {
             "emailVerificationNonceTokenHash",
             "emailVerificationNonceCreatedAt",
             "passwordPasswordHash",
-            "passwordResetNonceHash",
+            "passwordResetNonceTokenHash",
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
@@ -2825,11 +2825,11 @@ export default async (application: Application): Promise<void> => {
       );
       if (
         !node.TokenHash.verify(
-          request.state.user?.passwordResetNonceHash ??
+          request.state.user?.passwordResetNonceTokenHash ??
             "5235aadf13a5b2b37a277d0022fc8d296721219a1bffa22d2f88383cb577c776",
           request.pathname.passwordResetNonce,
         ) ||
-        typeof request.state.user?.passwordResetNonceHash !== "string"
+        typeof request.state.user?.passwordResetNonceTokenHash !== "string"
       ) {
         response.setFlash!(html`
           <div class="flash--red">
@@ -2841,14 +2841,14 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       request.state.user.passwordPasswordHash = passwordPasswordHash;
-      request.state.user.passwordResetNonceHash = null;
+      request.state.user.passwordResetNonceTokenHash = null;
       request.state.user.passwordResetNonceCreatedAt = null;
       application.database.run(
         sql`
           update "users"
           set
             "passwordPasswordHash" = ${request.state.user.passwordPasswordHash},
-            "passwordResetNonceHash" = ${request.state.user.passwordResetNonceHash},
+            "passwordResetNonceTokenHash" = ${request.state.user.passwordResetNonceTokenHash},
             "passwordResetNonceCreatedAt" = ${request.state.user.passwordResetNonceCreatedAt}
           where "id" = ${request.state.user.id};
         `,
@@ -3116,7 +3116,7 @@ export default async (application: Application): Promise<void> => {
               emailVerificationNonceTokenHash: string | null;
               emailVerificationNonceCreatedAt: string | null;
               passwordPasswordHash: string | null;
-              passwordResetNonceHash: string | null;
+              passwordResetNonceTokenHash: string | null;
               passwordResetNonceCreatedAt: string | null;
               twoFactorAuthenticationEnabled: number;
               twoFactorAuthenticationSecret: string | null;
@@ -3169,7 +3169,7 @@ export default async (application: Application): Promise<void> => {
                   "emailVerificationNonceTokenHash",
                   "emailVerificationNonceCreatedAt",
                   "passwordPasswordHash",
-                  "passwordResetNonceHash",
+                  "passwordResetNonceTokenHash",
                   "passwordResetNonceCreatedAt",
                   "twoFactorAuthenticationEnabled",
                   "twoFactorAuthenticationSecret",
@@ -3200,7 +3200,7 @@ export default async (application: Application): Promise<void> => {
               emailVerificationNonceTokenHash: string | null;
               emailVerificationNonceCreatedAt: string | null;
               passwordPasswordHash: string | null;
-              passwordResetNonceHash: string | null;
+              passwordResetNonceTokenHash: string | null;
               passwordResetNonceCreatedAt: string | null;
               twoFactorAuthenticationEnabled: number;
               twoFactorAuthenticationSecret: string | null;
@@ -3255,7 +3255,7 @@ export default async (application: Application): Promise<void> => {
                         "emailVerificationNonceTokenHash",
                         "emailVerificationNonceCreatedAt",
                         "passwordPasswordHash",
-                        "passwordResetNonceHash",
+                        "passwordResetNonceTokenHash",
                         "passwordResetNonceCreatedAt",
                         "twoFactorAuthenticationEnabled",
                         "twoFactorAuthenticationSecret",
@@ -4000,7 +4000,7 @@ export default async (application: Application): Promise<void> => {
             emailVerificationNonceTokenHash: string | null;
             emailVerificationNonceCreatedAt: string | null;
             passwordPasswordHash: string | null;
-            passwordResetNonceHash: string | null;
+            passwordResetNonceTokenHash: string | null;
             passwordResetNonceCreatedAt: string | null;
             twoFactorAuthenticationEnabled: number;
             twoFactorAuthenticationSecret: string | null;
@@ -4051,7 +4051,7 @@ export default async (application: Application): Promise<void> => {
                 "emailVerificationNonceTokenHash",
                 "emailVerificationNonceCreatedAt",
                 "passwordPasswordHash",
-                "passwordResetNonceHash",
+                "passwordResetNonceTokenHash",
                 "passwordResetNonceCreatedAt",
                 "twoFactorAuthenticationEnabled",
                 "twoFactorAuthenticationSecret",
@@ -4082,7 +4082,7 @@ export default async (application: Application): Promise<void> => {
             emailVerificationNonceTokenHash: string | null;
             emailVerificationNonceCreatedAt: string | null;
             passwordPasswordHash: string | null;
-            passwordResetNonceHash: string | null;
+            passwordResetNonceTokenHash: string | null;
             passwordResetNonceCreatedAt: string | null;
             twoFactorAuthenticationEnabled: number;
             twoFactorAuthenticationSecret: string | null;
@@ -4135,7 +4135,7 @@ export default async (application: Application): Promise<void> => {
                       "emailVerificationNonceTokenHash",
                       "emailVerificationNonceCreatedAt",
                       "passwordPasswordHash",
-                      "passwordResetNonceHash",
+                      "passwordResetNonceTokenHash",
                       "passwordResetNonceCreatedAt",
                       "twoFactorAuthenticationEnabled",
                       "twoFactorAuthenticationSecret",
