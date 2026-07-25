@@ -881,7 +881,7 @@ export default async (application: Application): Promise<void> => {
                                 (identityProvider) => html`
                                   <div>
                                     <a
-                                      href="/authentication/saml/initiate${new URLSearchParams({ idpIssuer: identityProvider.idpIssuer! }).toString()}"
+                                      href="/authentication/saml/initiate?${new URLSearchParams({ ...request.search, idpIssuer: identityProvider.idpIssuer! }).toString()}"
                                       class="link"
                                       >${identityProvider.name}</a
                                     >
@@ -3821,6 +3821,22 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  const samlFlows = new Set<{
+    identityProvider: NonNullable<
+      Application["userConfiguration"]["saml"]
+    >["identityProviders"][number];
+    relayStateTokenHash: string;
+    requestSearch: { [key: string]: string };
+    createdAt: string;
+  }>();
+
+  if (application.commandLineArguments.values.type === "server")
+    node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
+      for (const flow of samlFlows)
+        if (flow.createdAt < new Date(Date.now() - 5 * 60 * 1000).toISOString())
+          samlFlows.delete(flow);
+    });
+
   application.server?.push({
     method: "GET",
     pathname: new RegExp("^/authentication/saml/metadata$"),
@@ -3868,12 +3884,28 @@ export default async (application: Application): Promise<void> => {
             request.search.idpIssuer === identityProvider.idpIssuer,
         );
       if (identityProvider === undefined) throw "validation";
+      const relayState = cryptoRandomString({
+        length: 100,
+        type: "numeric",
+      });
+      samlFlows.add({
+        identityProvider,
+        relayStateTokenHash: node.TokenHash.hash(relayState),
+        requestSearch: request.search,
+        createdAt: new Date().toISOString(),
+      });
       response.redirect!(
-        await new SAML.SAML({}).getAuthorizeUrlAsync(
-          request.URL.search.slice(1),
-          undefined,
-          {},
-        ),
+        await new SAML.SAML({
+          ...identityProvider,
+          issuer: `https://${application.userConfiguration.hostname}/authentication/saml/metadata`,
+          callbackUrl: `https://${application.userConfiguration.hostname}/authentication/saml/assertion-consumer-service`,
+          privateKey: application.userConfiguration.saml.privateKey,
+          publicCert: application.userConfiguration.saml.certificate,
+          decryptionPvk: application.userConfiguration.saml.privateKey,
+          signMetadata: true,
+          signatureAlgorithm: "sha256",
+          digestAlgorithm: "sha256",
+        }).getAuthorizeUrlAsync(relayState, undefined, {}),
       );
     },
   });

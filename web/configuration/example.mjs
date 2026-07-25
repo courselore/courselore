@@ -202,19 +202,10 @@ export default {
   //         email: profile.attributes.email,
   //         name: profile.attributes.name,
   //       }),
-  //       idpIssuer: "https://example-identity-provider.edu/metadata",
-  //       entryPoint: "https://example-identity-provider.edu/saml/sso",
-  //       idpCert: "MIIDszC...93Sa",
   //       // Node SAML configurations: https://github.com/node-saml/node-saml
-  //       // May include `decryptionCert`.
-  //       // Must not include:
-  //       // - `issuer`
-  //       // - `callbackUrl`
-  //       // - `privateKey`
-  //       // - `publicCert`
-  //       // - `signMetadata`
-  //       // - `signatureAlgorithm`
-  //       // - `validateInResponseTo`
+  //       idpIssuer: "https://example-identity-provider.edu/saml/metadata",
+  //       entryPoint: "https://example-identity-provider.edu/saml/single-sign-on",
+  //       idpCert: "MIIDszC...93Sa",
   //     },
   //   ],
   // },
