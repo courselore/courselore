@@ -3937,19 +3937,20 @@ export default async (application: Application): Promise<void> => {
       );
       if (flow === undefined) throw "validation";
       samlFlows.delete(flow);
-      let redirect: string;
+      if (
+        typeof flow.requestSearch.redirect === "string" &&
+        !flow.requestSearch.redirect.startsWith("/")
+      )
+        delete flow.requestSearch.redirect;
+      if (request.state.user !== undefined) {
+        response.redirect!(flow.requestSearch.redirect ?? "/");
+        return;
+      }
       let samlResponse: Awaited<
-        ReturnType<typeof saml.saml.validatePostResponseAsync>
+        ReturnType<typeof flow.identityProvider.validatePostResponseAsync>
       >;
       let userData: { email: string; name: string };
       try {
-        redirect =
-          new URLSearchParams(request.body.RelayState).get("redirect") ?? "/";
-        if (!redirect.startsWith("/")) redirect = "/";
-        if (request.state.user !== undefined) {
-          response.redirect!(redirect);
-          return;
-        }
         samlResponse = await saml.saml.validatePostResponseAsync({
           SAMLResponse: request.body.SAMLResponse,
         });
