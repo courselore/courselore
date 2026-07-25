@@ -1831,7 +1831,7 @@ export default async (application: Application): Promise<void> => {
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
       )
         return;
-      request.state.user.twoFactorAuthenticationSecret =
+      request.state.user.twoFactorAuthenticationSecretEncrypted =
         new OTPAuth.Secret().base32;
       const twoFactorAuthenticationRecoveryCodes = Array.from(
         { length: 10 },
@@ -1850,7 +1850,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           update "users"
           set
-            "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
+            "twoFactorAuthenticationSecretEncrypted" = ${request.state.user.twoFactorAuthenticationSecretEncrypted},
             "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes}
           where "id" = ${request.state.user.id};
         `,
@@ -1919,7 +1919,7 @@ export default async (application: Application): Promise<void> => {
                   const otpAuthURL = new OTPAuth.TOTP({
                     issuer: `Courselore (${application.userConfiguration.hostname})`,
                     label: request.state.user!.email,
-                    secret: request.state.user!.twoFactorAuthenticationSecret!,
+                    secret: request.state.user!.twoFactorAuthenticationSecretEncrypted!,
                   }).toString();
                   return html`
                     <div
@@ -2120,7 +2120,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
-        typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationSecretEncrypted !== "string" ||
         typeof request.state.user
           .twoFactorAuthenticationRecoveryCodesPasswordHashes !== "string"
       )
@@ -2138,7 +2138,7 @@ export default async (application: Application): Promise<void> => {
       );
       const twoFactorAuthenticationCodeVerification =
         new OTPAuth.TOTP({
-          secret: request.state.user.twoFactorAuthenticationSecret,
+          secret: request.state.user.twoFactorAuthenticationSecretEncrypted,
         }).validate({
           token: request.body.twoFactorAuthenticationCode,
         }) !== null;
@@ -2234,7 +2234,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
-        typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationSecretEncrypted !== "string" ||
         typeof request.state.user
           .twoFactorAuthenticationRecoveryCodesPasswordHashes !== "string"
       )
@@ -2261,7 +2261,7 @@ export default async (application: Application): Promise<void> => {
       const twoFactorAuthenticationCodeVerification =
         (typeof request.body.twoFactorAuthenticationCode === "string" &&
           new OTPAuth.TOTP({
-            secret: request.state.user.twoFactorAuthenticationSecret,
+            secret: request.state.user.twoFactorAuthenticationSecretEncrypted,
           }).validate({
             token: request.body.twoFactorAuthenticationCode,
           }) !== null) ||
@@ -2302,7 +2302,7 @@ export default async (application: Application): Promise<void> => {
         return;
       }
       request.state.user.twoFactorAuthenticationEnabled = Number(false);
-      request.state.user.twoFactorAuthenticationSecret = null;
+      request.state.user.twoFactorAuthenticationSecretEncrypted = null;
       request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes =
         null;
       application.database.run(
@@ -2310,7 +2310,7 @@ export default async (application: Application): Promise<void> => {
           update "users"
           set
             "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
-            "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
+            "twoFactorAuthenticationSecretEncrypted" = ${request.state.user.twoFactorAuthenticationSecretEncrypted},
             "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes}
           where "id" = ${request.state.user.id};
         `,
@@ -2938,7 +2938,7 @@ export default async (application: Application): Promise<void> => {
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
           ? (typeof request.body.twoFactorAuthenticationCode === "string" &&
               new OTPAuth.TOTP({
-                secret: request.state.user.twoFactorAuthenticationSecret!,
+                secret: request.state.user.twoFactorAuthenticationSecretEncrypted!,
               }).validate({
                 token: request.body.twoFactorAuthenticationCode,
               }) !== null) ||

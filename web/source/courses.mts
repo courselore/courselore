@@ -5179,7 +5179,7 @@ export default async (application: Application): Promise<void> => {
                         "passwordResetNonceTokenHash",
                         "passwordResetNonceCreatedAt",
                         "twoFactorAuthenticationEnabled",
-                        "twoFactorAuthenticationSecret",
+                        "twoFactorAuthenticationSecretEncrypted",
                         "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                         "avatarColor",
                         "avatarImage",

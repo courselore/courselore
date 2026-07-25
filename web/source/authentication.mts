@@ -40,7 +40,7 @@ export type ApplicationAuthentication = {
           passwordResetNonceTokenHash: string | null;
           passwordResetNonceCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
-          twoFactorAuthenticationSecret: string | null;
+          twoFactorAuthenticationSecretEncrypted: string | null;
           twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
           avatarColor:
             | "red"
@@ -219,7 +219,7 @@ export default async (application: Application): Promise<void> => {
         passwordResetNonceTokenHash: string | null;
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
-        twoFactorAuthenticationSecret: string | null;
+        twoFactorAuthenticationSecretEncrypted: string | null;
         twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
         avatarColor:
           | "red"
@@ -270,7 +270,7 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonceTokenHash",
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
-            "twoFactorAuthenticationSecret",
+            "twoFactorAuthenticationSecretEncrypted",
             "twoFactorAuthenticationRecoveryCodesPasswordHashes",
             "avatarColor",
             "avatarImage",
@@ -1008,7 +1008,7 @@ export default async (application: Application): Promise<void> => {
           passwordResetNonceTokenHash: string | null;
           passwordResetNonceCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
-          twoFactorAuthenticationSecret: string | null;
+          twoFactorAuthenticationSecretEncrypted: string | null;
           twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
           avatarColor:
             | "red"
@@ -1061,7 +1061,7 @@ export default async (application: Application): Promise<void> => {
                     "passwordResetNonceTokenHash",
                     "passwordResetNonceCreatedAt",
                     "twoFactorAuthenticationEnabled",
-                    "twoFactorAuthenticationSecret",
+                    "twoFactorAuthenticationSecretEncrypted",
                     "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                     "avatarColor",
                     "avatarImage",
@@ -1790,7 +1790,7 @@ export default async (application: Application): Promise<void> => {
         passwordResetNonceTokenHash: string | null;
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
-        twoFactorAuthenticationSecret: string | null;
+        twoFactorAuthenticationSecretEncrypted: string | null;
         twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
         avatarColor:
           | "red"
@@ -1841,7 +1841,7 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonceTokenHash",
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
-            "twoFactorAuthenticationSecret",
+            "twoFactorAuthenticationSecretEncrypted",
             "twoFactorAuthenticationRecoveryCodesPasswordHashes",
             "avatarColor",
             "avatarImage",
@@ -2193,7 +2193,7 @@ export default async (application: Application): Promise<void> => {
           false ||
         request.state.user === undefined ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
-        typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationSecretEncrypted !== "string" ||
         typeof request.state.user
           .twoFactorAuthenticationRecoveryCodesPasswordHashes !== "string"
       )
@@ -2219,7 +2219,7 @@ export default async (application: Application): Promise<void> => {
       if (
         (typeof request.body.twoFactorAuthenticationCode === "string" &&
           new OTPAuth.TOTP({
-            secret: request.state.user.twoFactorAuthenticationSecret,
+            secret: request.state.user.twoFactorAuthenticationSecretEncrypted,
           }).validate({
             token: request.body.twoFactorAuthenticationCode,
           }) === null) ||
@@ -2270,7 +2270,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.twoFactorAuthenticationRecoveryCode === "string"
       ) {
         request.state.user.twoFactorAuthenticationEnabled = Number(false);
-        request.state.user.twoFactorAuthenticationSecret = null;
+        request.state.user.twoFactorAuthenticationSecretEncrypted = null;
         request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes =
           null;
         application.database.run(
@@ -2278,7 +2278,7 @@ export default async (application: Application): Promise<void> => {
             update "users"
             set
               "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
-              "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
+              "twoFactorAuthenticationSecretEncrypted" = ${request.state.user.twoFactorAuthenticationSecretEncrypted},
               "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes}
             where "id" = ${request.state.user.id};
           `,
@@ -2374,7 +2374,7 @@ export default async (application: Application): Promise<void> => {
         passwordResetNonceTokenHash: string | null;
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
-        twoFactorAuthenticationSecret: string | null;
+        twoFactorAuthenticationSecretEncrypted: string | null;
         twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
         avatarColor:
           | "red"
@@ -2425,7 +2425,7 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonceTokenHash",
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
-            "twoFactorAuthenticationSecret",
+            "twoFactorAuthenticationSecretEncrypted",
             "twoFactorAuthenticationRecoveryCodesPasswordHashes",
             "avatarColor",
             "avatarImage",
@@ -2761,7 +2761,7 @@ export default async (application: Application): Promise<void> => {
         passwordResetNonceTokenHash: string | null;
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
-        twoFactorAuthenticationSecret: string | null;
+        twoFactorAuthenticationSecretEncrypted: string | null;
         twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
         avatarColor:
           | "red"
@@ -2812,7 +2812,7 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonceTokenHash",
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
-            "twoFactorAuthenticationSecret",
+            "twoFactorAuthenticationSecretEncrypted",
             "twoFactorAuthenticationRecoveryCodesPasswordHashes",
             "avatarColor",
             "avatarImage",
@@ -3127,7 +3127,7 @@ export default async (application: Application): Promise<void> => {
               passwordResetNonceTokenHash: string | null;
               passwordResetNonceCreatedAt: string | null;
               twoFactorAuthenticationEnabled: number;
-              twoFactorAuthenticationSecret: string | null;
+              twoFactorAuthenticationSecretEncrypted: string | null;
               twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
               avatarColor:
                 | "red"
@@ -3180,7 +3180,7 @@ export default async (application: Application): Promise<void> => {
                   "passwordResetNonceTokenHash",
                   "passwordResetNonceCreatedAt",
                   "twoFactorAuthenticationEnabled",
-                  "twoFactorAuthenticationSecret",
+                  "twoFactorAuthenticationSecretEncrypted",
                   "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                   "avatarColor",
                   "avatarImage",
@@ -3211,7 +3211,7 @@ export default async (application: Application): Promise<void> => {
               passwordResetNonceTokenHash: string | null;
               passwordResetNonceCreatedAt: string | null;
               twoFactorAuthenticationEnabled: number;
-              twoFactorAuthenticationSecret: string | null;
+              twoFactorAuthenticationSecretEncrypted: string | null;
               twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
               avatarColor:
                 | "red"
@@ -3266,7 +3266,7 @@ export default async (application: Application): Promise<void> => {
                         "passwordResetNonceTokenHash",
                         "passwordResetNonceCreatedAt",
                         "twoFactorAuthenticationEnabled",
-                        "twoFactorAuthenticationSecret",
+                        "twoFactorAuthenticationSecretEncrypted",
                         "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                         "avatarColor",
                         "avatarImage",
@@ -4011,7 +4011,7 @@ export default async (application: Application): Promise<void> => {
             passwordResetNonceTokenHash: string | null;
             passwordResetNonceCreatedAt: string | null;
             twoFactorAuthenticationEnabled: number;
-            twoFactorAuthenticationSecret: string | null;
+            twoFactorAuthenticationSecretEncrypted: string | null;
             twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
             avatarColor:
               | "red"
@@ -4062,7 +4062,7 @@ export default async (application: Application): Promise<void> => {
                 "passwordResetNonceTokenHash",
                 "passwordResetNonceCreatedAt",
                 "twoFactorAuthenticationEnabled",
-                "twoFactorAuthenticationSecret",
+                "twoFactorAuthenticationSecretEncrypted",
                 "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                 "avatarColor",
                 "avatarImage",
@@ -4093,7 +4093,7 @@ export default async (application: Application): Promise<void> => {
             passwordResetNonceTokenHash: string | null;
             passwordResetNonceCreatedAt: string | null;
             twoFactorAuthenticationEnabled: number;
-            twoFactorAuthenticationSecret: string | null;
+            twoFactorAuthenticationSecretEncrypted: string | null;
             twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
             avatarColor:
               | "red"
@@ -4146,7 +4146,7 @@ export default async (application: Application): Promise<void> => {
                       "passwordResetNonceTokenHash",
                       "passwordResetNonceCreatedAt",
                       "twoFactorAuthenticationEnabled",
-                      "twoFactorAuthenticationSecret",
+                      "twoFactorAuthenticationSecretEncrypted",
                       "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                       "avatarColor",
                       "avatarImage",
