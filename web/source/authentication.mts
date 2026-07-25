@@ -828,7 +828,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   </details>
                   $${
-                    typeof application.userConfiguration.saml === "object"
+                    application.userConfiguration.saml !== undefined
                       ? html`
                           <details>
                             <summary
@@ -877,17 +877,13 @@ export default async (application: Application): Promise<void> => {
                                 gap: var(--size--4);
                               `}"
                             >
-                              $${Object.entries(
-                                application.userConfiguration.saml,
-                              ).map(
-                                ([samlIdentifier, saml]) => html`
+                              $${application.userConfiguration.saml.identityProviders.map(
+                                (identityProvider) => html`
                                   <div>
                                     <a
-                                      href="/authentication/saml/${samlIdentifier}/initiate${
-                                        request.URL.search
-                                      }"
+                                      href="/authentication/saml/initiate${new URLSearchParams({ idpIssuer: identityProvider.idpIssuer! }).toString()}"
                                       class="link"
-                                      >${saml.name}</a
+                                      >${identityProvider.name}</a
                                     >
                                   </div>
                                 `,
@@ -3848,13 +3844,11 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "GET",
-    pathname: new RegExp(
-      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/initiate$",
-    ),
+    pathname: new RegExp("^/authentication/saml/initiate$"),
     handler: async (
       request: serverTypes.Request<
-        { samlIdentifier: string },
         {},
+        { idpIssuer: string },
         {},
         {},
         Application["types"]["states"]["Authentication"]
@@ -3862,15 +3856,20 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
-        request.liveConnection ||
-        typeof request.pathname.samlIdentifier !== "string" ||
-        request.state.user !== undefined
+        application.userConfiguration.saml === undefined ||
+        typeof request.search.idpIssuer !== "string" ||
+        request.state.user !== undefined ||
+        request.liveConnection
       )
         return;
-      const saml = samls[request.pathname.samlIdentifier];
-      if (saml === undefined) return;
+      const identityProvider =
+        application.userConfiguration.saml.identityProviders.find(
+          (identityProvider) =>
+            request.search.idpIssuer === identityProvider.idpIssuer,
+        );
+      if (identityProvider === undefined) throw "validation";
       response.redirect!(
-        await saml.saml.getAuthorizeUrlAsync(
+        await new SAML.SAML({}).getAuthorizeUrlAsync(
           request.URL.search.slice(1),
           undefined,
           {},
