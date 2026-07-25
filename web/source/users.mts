@@ -550,7 +550,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
               </details>
               $${
-                typeof request.state.user.passwordHash === "string"
+                typeof request.state.user.passwordPasswordHash === "string"
                   ? html`
                       <details>
                         <summary
@@ -1589,7 +1589,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
-        typeof request.state.user.passwordHash !== "string"
+        typeof request.state.user.passwordPasswordHash !== "string"
       )
         return;
       if (
@@ -1731,7 +1731,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.userSession === undefined ||
         request.state.user === undefined ||
-        typeof request.state.user.passwordHash !== "string"
+        typeof request.state.user.passwordPasswordHash !== "string"
       )
         return;
       if (
@@ -1744,7 +1744,7 @@ export default async (application: Application): Promise<void> => {
         throw "validation";
       if (
         !(await node.PasswordHash.verify(
-          request.state.user.passwordHash,
+          request.state.user.passwordPasswordHash,
           request.body.currentPassword,
         ))
       ) {
@@ -1754,13 +1754,13 @@ export default async (application: Application): Promise<void> => {
         response.redirect!("/settings");
         return;
       }
-      request.state.user.passwordHash = await node.PasswordHash.hash(
+      request.state.user.passwordPasswordHash = await node.PasswordHash.hash(
         request.body.newPassword,
       );
       application.database.run(
         sql`
           update "users"
-          set "passwordHash" = ${request.state.user.passwordHash}
+          set "passwordPasswordHash" = ${request.state.user.passwordPasswordHash}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -1827,7 +1827,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.user === undefined ||
-        typeof request.state.user.passwordHash !== "string" ||
+        typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
       )
         return;
@@ -2118,7 +2118,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.userSession === undefined ||
         request.state.user === undefined ||
-        typeof request.state.user.passwordHash !== "string" ||
+        typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
         typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
@@ -2133,7 +2133,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const passwordConfirmationVerification = await node.PasswordHash.verify(
-        request.state.user.passwordHash,
+        request.state.user.passwordPasswordHash,
         request.body.passwordConfirmation,
       );
       const twoFactorAuthenticationCodeVerification =
@@ -2232,7 +2232,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.userSession === undefined ||
         request.state.user === undefined ||
-        typeof request.state.user.passwordHash !== "string" ||
+        typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
         typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
@@ -2255,7 +2255,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const passwordConfirmationVerification = await node.PasswordHash.verify(
-        request.state.user.passwordHash,
+        request.state.user.passwordPasswordHash,
         request.body.passwordConfirmation,
       );
       const twoFactorAuthenticationCodeVerification =
@@ -2654,7 +2654,7 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </label>
                 $${
-                  typeof request.state.user.passwordHash === "string"
+                  typeof request.state.user.passwordPasswordHash === "string"
                     ? html`
                         <label>
                           <div
@@ -2900,7 +2900,7 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       if (
-        (typeof request.state.user.passwordHash === "string" &&
+        (typeof request.state.user.passwordPasswordHash === "string" &&
           (typeof request.body.passwordConfirmation !== "string" ||
             request.body.passwordConfirmation.length < 8)) ||
         (Boolean(request.state.user.twoFactorAuthenticationEnabled) === true &&
@@ -2924,9 +2924,9 @@ export default async (application: Application): Promise<void> => {
           request.pathname.deleteMyAccountNonce,
         ) && typeof request.state.user.deleteMyAccountNonceHash === "string";
       const passwordConfirmationVerification =
-        typeof request.state.user.passwordHash === "string"
+        typeof request.state.user.passwordPasswordHash === "string"
           ? await node.PasswordHash.verify(
-              request.state.user.passwordHash,
+              request.state.user.passwordPasswordHash,
               request.body.passwordConfirmation!,
             )
           : true;
