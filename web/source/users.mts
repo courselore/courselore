@@ -1831,8 +1831,12 @@ export default async (application: Application): Promise<void> => {
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
       )
         return;
+      const twoFactorAuthenticationSecret = new OTPAuth.Secret().base32;
       request.state.user.twoFactorAuthenticationSecretEncrypted =
-        new OTPAuth.Secret().base32;
+        node.SymmetricEncryption.encrypt(
+          application.applicationConfiguration.secretKey,
+          twoFactorAuthenticationSecret,
+        );
       const twoFactorAuthenticationRecoveryCodes = Array.from(
         { length: 10 },
         () => cryptoRandomString({ length: 10, type: "numeric" }),
@@ -1919,7 +1923,7 @@ export default async (application: Application): Promise<void> => {
                   const otpAuthURL = new OTPAuth.TOTP({
                     issuer: `Courselore (${application.userConfiguration.hostname})`,
                     label: request.state.user!.email,
-                    secret: request.state.user!.twoFactorAuthenticationSecretEncrypted!,
+                    secret: twoFactorAuthenticationSecret,
                   }).toString();
                   return html`
                     <div
@@ -2120,7 +2124,8 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
-        typeof request.state.user.twoFactorAuthenticationSecretEncrypted !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationSecretEncrypted !==
+          "string" ||
         typeof request.state.user
           .twoFactorAuthenticationRecoveryCodesPasswordHashes !== "string"
       )
@@ -2138,7 +2143,10 @@ export default async (application: Application): Promise<void> => {
       );
       const twoFactorAuthenticationCodeVerification =
         new OTPAuth.TOTP({
-          secret: request.state.user.twoFactorAuthenticationSecretEncrypted,
+          secret: node.SymmetricEncryption.decrypt(
+            application.applicationConfiguration.secretKey,
+            request.state.user.twoFactorAuthenticationSecretEncrypted,
+          ),
         }).validate({
           token: request.body.twoFactorAuthenticationCode,
         }) !== null;
@@ -2234,7 +2242,8 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
-        typeof request.state.user.twoFactorAuthenticationSecretEncrypted !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationSecretEncrypted !==
+          "string" ||
         typeof request.state.user
           .twoFactorAuthenticationRecoveryCodesPasswordHashes !== "string"
       )
@@ -2261,7 +2270,10 @@ export default async (application: Application): Promise<void> => {
       const twoFactorAuthenticationCodeVerification =
         (typeof request.body.twoFactorAuthenticationCode === "string" &&
           new OTPAuth.TOTP({
-            secret: request.state.user.twoFactorAuthenticationSecretEncrypted,
+            secret: node.SymmetricEncryption.decrypt(
+              application.applicationConfiguration.secretKey,
+              request.state.user.twoFactorAuthenticationSecretEncrypted,
+            ),
           }).validate({
             token: request.body.twoFactorAuthenticationCode,
           }) !== null) ||
@@ -2938,7 +2950,10 @@ export default async (application: Application): Promise<void> => {
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
           ? (typeof request.body.twoFactorAuthenticationCode === "string" &&
               new OTPAuth.TOTP({
-                secret: request.state.user.twoFactorAuthenticationSecretEncrypted!,
+                secret: node.SymmetricEncryption.decrypt(
+                  application.applicationConfiguration.secretKey,
+                  request.state.user.twoFactorAuthenticationSecretEncrypted!,
+                ),
               }).validate({
                 token: request.body.twoFactorAuthenticationCode,
               }) !== null) ||

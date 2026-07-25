@@ -2193,7 +2193,8 @@ export default async (application: Application): Promise<void> => {
           false ||
         request.state.user === undefined ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
-        typeof request.state.user.twoFactorAuthenticationSecretEncrypted !== "string" ||
+        typeof request.state.user.twoFactorAuthenticationSecretEncrypted !==
+          "string" ||
         typeof request.state.user
           .twoFactorAuthenticationRecoveryCodesPasswordHashes !== "string"
       )
@@ -2216,10 +2217,14 @@ export default async (application: Application): Promise<void> => {
           request.body.twoFactorAuthenticationRecoveryCode.length < 10)
       )
         throw "validation";
+      const twoFactorAuthenticationSecret = node.SymmetricEncryption.decrypt(
+        application.applicationConfiguration.secretKey,
+        request.state.user.twoFactorAuthenticationSecretEncrypted,
+      );
       if (
         (typeof request.body.twoFactorAuthenticationCode === "string" &&
           new OTPAuth.TOTP({
-            secret: request.state.user.twoFactorAuthenticationSecretEncrypted,
+            secret: twoFactorAuthenticationSecret,
           }).validate({
             token: request.body.twoFactorAuthenticationCode,
           }) === null) ||
