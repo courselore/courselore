@@ -3827,7 +3827,7 @@ export default async (application: Application): Promise<void> => {
     >["identityProviders"][number];
     identityProviderSAML: SAML.SAML;
     relayStateTokenHash: string;
-    requestSearch: { [key: string]: string };
+    requestSearch: { redirect?: string };
     createdAt: string;
   }>();
 
@@ -3904,7 +3904,7 @@ export default async (application: Application): Promise<void> => {
         identityProvider,
         identityProviderSAML,
         relayStateTokenHash: node.TokenHash.hash(relayState),
-        requestSearch: request.search,
+        requestSearch: request.search as any,
         createdAt: new Date().toISOString(),
       });
       response.redirect!(
@@ -3933,12 +3933,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      // TODO: STOPPED HERE
       if (
         typeof request.body.RelayState !== "string" ||
         typeof request.body.SAMLResponse !== "string"
       )
-        throw new Error();
+        throw "validation";
       const relayStateTokenHash = node.TokenHash.hash(request.body.RelayState);
       const flow = [...samlFlows].find(
         (flow) => relayStateTokenHash === flow.relayStateTokenHash,
@@ -3954,26 +3953,24 @@ export default async (application: Application): Promise<void> => {
         response.redirect!(flow.requestSearch.redirect ?? "/");
         return;
       }
-      let samlResponse: Awaited<
-        ReturnType<typeof flow.identityProvider.validatePostResponseAsync>
-      >;
       let userData: { email: string; name: string };
       try {
-        samlResponse = await saml.saml.validatePostResponseAsync({
-          SAMLResponse: request.body.SAMLResponse,
-        });
+        const samlResponse =
+          await flow.identityProviderSAML.validatePostResponseAsync({
+            SAMLResponse: request.body.SAMLResponse,
+          });
         if (
           samlResponse.loggedOut !== false ||
           samlResponse.profile === undefined ||
           samlResponse.profile === null ||
-          samlResponse.profile.issuer !== saml.configuration.options.idpIssuer
+          samlResponse.profile.issuer !== flow.identityProvider.idpIssuer
         )
           throw new Error();
-        userData = saml.configuration.userData(samlResponse.profile);
+        userData = flow.identityProvider.userData(samlResponse.profile);
         if (
           typeof userData.email !== "string" ||
           !userData.email.match(utilities.emailRegExp) ||
-          !saml.configuration.domains.some((domain) =>
+          !flow.identityProvider.domains.some((domain) =>
             `.${userData.email.split("@")[1]}`.endsWith(`.${domain}`),
           ) ||
           typeof userData.name !== "string" ||
@@ -3988,7 +3985,7 @@ export default async (application: Application): Promise<void> => {
           </div>
         `);
         response.redirect!(
-          `/authentication?${typeof request.body.RelayState === "string" && request.body.RelayState.trim() !== "" ? request.body.RelayState : ""}`,
+          `/authentication?${new URLSearchParams(flow.requestSearch).toString()}`,
         );
         return;
       }
@@ -4282,7 +4279,7 @@ export default async (application: Application): Promise<void> => {
           `,
         },
       });
-      response.redirect!(redirect);
+      response.redirect!(flow.requestSearch.redirect ?? "/");
     },
   });
 
