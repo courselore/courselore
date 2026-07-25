@@ -4274,31 +4274,5 @@ export default async (application: Application): Promise<void> => {
       alter table "courses" add column "ltiNamesAndRoleProvisioningServicesURL" text null;
       create unique index "index_courses_ltiPlatformId_ltiClientId_ltiContextId" on "courses" ("ltiPlatformId", "ltiClientId", "ltiContextId");
     `,
-
-    (database) => {
-      for (const user of database.all<{
-        id: number;
-        twoFactorAuthenticationSecret: string;
-      }>(
-        sql`
-          select "id", "twoFactorAuthenticationSecret"
-          from "users"
-          where "twoFactorAuthenticationSecret" is not null
-          order by "id" asc;
-        `,
-      ))
-        database.run(
-          sql`
-            update "users"
-            set "twoFactorAuthenticationSecret" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecret)}
-            where "id" = ${user.id};
-          `,
-        );
-      database.execute(
-        sql`
-          alter table "users" rename column "twoFactorAuthenticationSecret" to "twoFactorAuthenticationSecretEncrypted";
-        `,
-      );
-    },
   );
 };
