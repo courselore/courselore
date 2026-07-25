@@ -3825,74 +3825,24 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  const samls = (() => {
-    const systemSettings = application.database.get<{
-      id: number;
-      userRolesWhoMayCreateCourses:
-        "userRoleUser" | "userRoleStaff" | "userRoleSystemAdministrator";
-    }>(
-      sql`
-        select
-          "id",
-          "userRolesWhoMayCreateCourses"
-        from "systemSettings"
-        limit 1;
-      `,
-    );
-    if (systemSettings === undefined) throw new Error();
-    return Object.fromEntries(
-      Object.entries(application.userConfiguration.saml ?? {}).map(
-        ([identifier, configuration]) => [
-          identifier,
-          {
-            identifier,
-            configuration,
-            saml: new SAML.SAML({
-              ...configuration.options,
-              issuer: `https://${application.userConfiguration.hostname}/authentication/saml/${identifier}/metadata`,
-              callbackUrl: `https://${application.userConfiguration.hostname}/authentication/saml/${identifier}/assertion-consumer-service`,
-              privateKey: systemSettings.privateKey,
-              publicCert: systemSettings.certificate,
-              signMetadata: true,
-              signatureAlgorithm: "sha256",
-              validateInResponseTo: SAML.ValidateInResponseTo.always,
-            }),
-          },
-        ],
-      ),
-    );
-  })();
-
   application.server?.push({
     method: "GET",
-    pathname: new RegExp(
-      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/metadata$",
-    ),
-    handler: (
-      request: serverTypes.Request<
-        { samlIdentifier: string },
-        {},
-        {},
-        {},
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (
-        typeof request.pathname.samlIdentifier !== "string" ||
-        request.state.systemSettings === undefined
-      )
-        return;
-      const saml = samls[request.pathname.samlIdentifier];
-      if (saml === undefined) return;
-      response
-        .setHeader("Content-Type", "application/xml; charset=utf-8")
-        .send(
-          saml.saml.generateServiceProviderMetadata(
-            saml.configuration.options.decryptionCert ?? null,
-            request.state.systemSettings.certificate,
-          ),
-        );
+    pathname: new RegExp("^/authentication/saml/metadata$"),
+    handler: (request, response) => {
+      if (application.userConfiguration.saml === undefined) return;
+      response.setHeader("Content-Type", "application/xml; charset=utf-8").send(
+        SAML.generateServiceProviderMetadata({
+          issuer: `https://${application.userConfiguration.hostname}/authentication/saml/metadata`,
+          callbackUrl: `https://${application.userConfiguration.hostname}/authentication/saml/assertion-consumer-service`,
+          privateKey: application.userConfiguration.saml.privateKey,
+          publicCerts: application.userConfiguration.saml.certificate,
+          decryptionPvk: application.userConfiguration.saml.privateKey,
+          decryptionCert: application.userConfiguration.saml.certificate,
+          signMetadata: true,
+          signatureAlgorithm: "sha256",
+          digestAlgorithm: "sha256",
+        }),
+      );
     },
   });
 
