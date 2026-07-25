@@ -4274,5 +4274,13 @@ export default async (application: Application): Promise<void> => {
       alter table "courses" add column "ltiNamesAndRoleProvisioningServicesURL" text null;
       create unique index "index_courses_ltiPlatformId_ltiClientId_ltiContextId" on "courses" ("ltiPlatformId", "ltiClientId", "ltiContextId");
     `,
+
+    sql`
+      alter table "users" rename column "emailVerificationNonceHash" to "emailVerificationNonceTokenHash";
+      alter table "users" rename column "passwordHash" to "passwordPasswordHash";
+      alter table "users" rename column "passwordResetNonceHash" to "passwordResetNonceTokenHash";
+      alter table "users" rename column "twoFactorAuthenticationRecoveryCodesHashes" to "twoFactorAuthenticationRecoveryCodesPasswordHashes";
+      alter table "users" rename column "deleteMyAccountNonceHash" to "deleteMyAccountNonceTokenHash";
+    `,
   );
 };
