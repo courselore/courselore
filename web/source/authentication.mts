@@ -3825,6 +3825,7 @@ export default async (application: Application): Promise<void> => {
     identityProvider: NonNullable<
       Application["userConfiguration"]["saml"]
     >["identityProviders"][number];
+    identityProviderSAML: SAML.SAML;
     relayStateTokenHash: string;
     requestSearch: { [key: string]: string };
     createdAt: string;
@@ -3884,28 +3885,34 @@ export default async (application: Application): Promise<void> => {
             request.search.idpIssuer === identityProvider.idpIssuer,
         );
       if (identityProvider === undefined) throw "validation";
+      const identityProviderSAML = new SAML.SAML({
+        ...identityProvider,
+        issuer: `https://${application.userConfiguration.hostname}/authentication/saml/metadata`,
+        callbackUrl: `https://${application.userConfiguration.hostname}/authentication/saml/assertion-consumer-service`,
+        privateKey: application.userConfiguration.saml.privateKey,
+        publicCert: application.userConfiguration.saml.certificate,
+        decryptionPvk: application.userConfiguration.saml.privateKey,
+        signMetadata: true,
+        signatureAlgorithm: "sha256",
+        digestAlgorithm: "sha256",
+      });
       const relayState = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
       samlFlows.add({
         identityProvider,
+        identityProviderSAML,
         relayStateTokenHash: node.TokenHash.hash(relayState),
         requestSearch: request.search,
         createdAt: new Date().toISOString(),
       });
       response.redirect!(
-        await new SAML.SAML({
-          ...identityProvider,
-          issuer: `https://${application.userConfiguration.hostname}/authentication/saml/metadata`,
-          callbackUrl: `https://${application.userConfiguration.hostname}/authentication/saml/assertion-consumer-service`,
-          privateKey: application.userConfiguration.saml.privateKey,
-          publicCert: application.userConfiguration.saml.certificate,
-          decryptionPvk: application.userConfiguration.saml.privateKey,
-          signMetadata: true,
-          signatureAlgorithm: "sha256",
-          digestAlgorithm: "sha256",
-        }).getAuthorizeUrlAsync(relayState, undefined, {}),
+        await identityProviderSAML.getAuthorizeUrlAsync(
+          relayState,
+          undefined,
+          {},
+        ),
       );
     },
   });
@@ -3926,6 +3933,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
+      // TODO: STOPPED HERE
       if (
         typeof request.body.RelayState !== "string" ||
         typeof request.body.SAMLResponse !== "string"
