@@ -41,7 +41,7 @@ export type ApplicationAuthentication = {
           passwordResetNonceCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
           twoFactorAuthenticationSecret: string | null;
-          twoFactorAuthenticationRecoveryCodesHashes: string | null;
+          twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
           avatarColor:
             | "red"
             | "orange"
@@ -75,7 +75,7 @@ export type ApplicationAuthentication = {
             | "userAnonymityPreferredCourseParticipationRoleStudents"
             | "userAnonymityPreferredEveryone";
           mostRecentlyVisitedCourseParticipation: number | null;
-          deleteMyAccountNonceHash: string | null;
+          deleteMyAccountNonceTokenHash: string | null;
           deleteMyAccountNonceCreatedAt: string | null;
         };
       };
@@ -220,7 +220,7 @@ export default async (application: Application): Promise<void> => {
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
-        twoFactorAuthenticationRecoveryCodesHashes: string | null;
+        twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
         avatarColor:
           | "red"
           | "orange"
@@ -254,7 +254,7 @@ export default async (application: Application): Promise<void> => {
           | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
-        deleteMyAccountNonceHash: string | null;
+        deleteMyAccountNonceTokenHash: string | null;
         deleteMyAccountNonceCreatedAt: string | null;
       }>(
         sql`
@@ -271,7 +271,7 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
-            "twoFactorAuthenticationRecoveryCodesHashes",
+            "twoFactorAuthenticationRecoveryCodesPasswordHashes",
             "avatarColor",
             "avatarImage",
             "userRole",
@@ -283,7 +283,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation",
-            "deleteMyAccountNonceHash",
+            "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt"
           from "users"
           where "id" = ${request.state.userSession.user};
@@ -1007,7 +1007,7 @@ export default async (application: Application): Promise<void> => {
           passwordResetNonceCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
           twoFactorAuthenticationSecret: string | null;
-          twoFactorAuthenticationRecoveryCodesHashes: string | null;
+          twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
           avatarColor:
             | "red"
             | "orange"
@@ -1041,7 +1041,7 @@ export default async (application: Application): Promise<void> => {
             | "userAnonymityPreferredCourseParticipationRoleStudents"
             | "userAnonymityPreferredEveryone";
           mostRecentlyVisitedCourseParticipation: number | null;
-          deleteMyAccountNonceHash: string | null;
+          deleteMyAccountNonceTokenHash: string | null;
           deleteMyAccountNonceCreatedAt: string | null;
         }>(
           sql`
@@ -1060,7 +1060,7 @@ export default async (application: Application): Promise<void> => {
                     "passwordResetNonceCreatedAt",
                     "twoFactorAuthenticationEnabled",
                     "twoFactorAuthenticationSecret",
-                    "twoFactorAuthenticationRecoveryCodesHashes",
+                    "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                     "avatarColor",
                     "avatarImage",
                     "userRole",
@@ -1072,7 +1072,7 @@ export default async (application: Application): Promise<void> => {
                     "emailNotificationsForMessagesInConversationsThatYouStarted",
                     "userAnonymityPreferred",
                     "mostRecentlyVisitedCourseParticipation",
-                    "deleteMyAccountNonceHash",
+                    "deleteMyAccountNonceTokenHash",
                     "deleteMyAccountNonceCreatedAt"
                   )
                   values (
@@ -1789,7 +1789,7 @@ export default async (application: Application): Promise<void> => {
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
-        twoFactorAuthenticationRecoveryCodesHashes: string | null;
+        twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
         avatarColor:
           | "red"
           | "orange"
@@ -1823,7 +1823,7 @@ export default async (application: Application): Promise<void> => {
           | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
-        deleteMyAccountNonceHash: string | null;
+        deleteMyAccountNonceTokenHash: string | null;
         deleteMyAccountNonceCreatedAt: string | null;
       }>(
         sql`
@@ -1840,7 +1840,7 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
-            "twoFactorAuthenticationRecoveryCodesHashes",
+            "twoFactorAuthenticationRecoveryCodesPasswordHashes",
             "avatarColor",
             "avatarImage",
             "userRole",
@@ -1852,7 +1852,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation",
-            "deleteMyAccountNonceHash",
+            "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt"
           from "users"
           where "email" = ${request.body.email};
@@ -2192,7 +2192,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes !==
           "string"
       )
         return;
@@ -2225,7 +2225,7 @@ export default async (application: Application): Promise<void> => {
           !(
             await Promise.all(
               JSON.parse(
-                request.state.user.twoFactorAuthenticationRecoveryCodesHashes,
+                request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
               ).map((twoFactorAuthenticationRecoveryCode: string) =>
                 node.PasswordHash.verify(
                   twoFactorAuthenticationRecoveryCode,
@@ -2268,14 +2268,14 @@ export default async (application: Application): Promise<void> => {
       ) {
         request.state.user.twoFactorAuthenticationEnabled = Number(false);
         request.state.user.twoFactorAuthenticationSecret = null;
-        request.state.user.twoFactorAuthenticationRecoveryCodesHashes = null;
+        request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes = null;
         application.database.run(
           sql`
             update "users"
             set
               "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
               "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
-              "twoFactorAuthenticationRecoveryCodesHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesHashes}
+              "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes}
             where "id" = ${request.state.user.id};
           `,
         );
@@ -2370,7 +2370,7 @@ export default async (application: Application): Promise<void> => {
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
-        twoFactorAuthenticationRecoveryCodesHashes: string | null;
+        twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
         avatarColor:
           | "red"
           | "orange"
@@ -2404,7 +2404,7 @@ export default async (application: Application): Promise<void> => {
           | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
-        deleteMyAccountNonceHash: string | null;
+        deleteMyAccountNonceTokenHash: string | null;
         deleteMyAccountNonceCreatedAt: string | null;
       }>(
         sql`
@@ -2421,7 +2421,7 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
-            "twoFactorAuthenticationRecoveryCodesHashes",
+            "twoFactorAuthenticationRecoveryCodesPasswordHashes",
             "avatarColor",
             "avatarImage",
             "userRole",
@@ -2433,7 +2433,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation",
-            "deleteMyAccountNonceHash",
+            "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt"
           from "users"
           where "email" = ${request.body.email};
@@ -2754,7 +2754,7 @@ export default async (application: Application): Promise<void> => {
         passwordResetNonceCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string | null;
-        twoFactorAuthenticationRecoveryCodesHashes: string | null;
+        twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
         avatarColor:
           | "red"
           | "orange"
@@ -2788,7 +2788,7 @@ export default async (application: Application): Promise<void> => {
           | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredEveryone";
         mostRecentlyVisitedCourseParticipation: number | null;
-        deleteMyAccountNonceHash: string | null;
+        deleteMyAccountNonceTokenHash: string | null;
         deleteMyAccountNonceCreatedAt: string | null;
       }>(
         sql`
@@ -2805,7 +2805,7 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonceCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
-            "twoFactorAuthenticationRecoveryCodesHashes",
+            "twoFactorAuthenticationRecoveryCodesPasswordHashes",
             "avatarColor",
             "avatarImage",
             "userRole",
@@ -2817,7 +2817,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation",
-            "deleteMyAccountNonceHash",
+            "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt"
           from "users"
           where "publicId" = ${request.pathname.userPublicId};
@@ -3120,7 +3120,7 @@ export default async (application: Application): Promise<void> => {
               passwordResetNonceCreatedAt: string | null;
               twoFactorAuthenticationEnabled: number;
               twoFactorAuthenticationSecret: string | null;
-              twoFactorAuthenticationRecoveryCodesHashes: string | null;
+              twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
               avatarColor:
                 | "red"
                 | "orange"
@@ -3156,7 +3156,7 @@ export default async (application: Application): Promise<void> => {
                 | "userAnonymityPreferredCourseParticipationRoleStudents"
                 | "userAnonymityPreferredEveryone";
               mostRecentlyVisitedCourseParticipation: number | null;
-              deleteMyAccountNonceHash: string | null;
+              deleteMyAccountNonceTokenHash: string | null;
               deleteMyAccountNonceCreatedAt: string | null;
             }>(
               sql`
@@ -3173,7 +3173,7 @@ export default async (application: Application): Promise<void> => {
                   "passwordResetNonceCreatedAt",
                   "twoFactorAuthenticationEnabled",
                   "twoFactorAuthenticationSecret",
-                  "twoFactorAuthenticationRecoveryCodesHashes",
+                  "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                   "avatarColor",
                   "avatarImage",
                   "userRole",
@@ -3185,7 +3185,7 @@ export default async (application: Application): Promise<void> => {
                   "emailNotificationsForMessagesInConversationsThatYouStarted",
                   "userAnonymityPreferred",
                   "mostRecentlyVisitedCourseParticipation",
-                  "deleteMyAccountNonceHash",
+                  "deleteMyAccountNonceTokenHash",
                   "deleteMyAccountNonceCreatedAt"
                 from "users"
                 where "email" = ${idToken.email as string};
@@ -3204,7 +3204,7 @@ export default async (application: Application): Promise<void> => {
               passwordResetNonceCreatedAt: string | null;
               twoFactorAuthenticationEnabled: number;
               twoFactorAuthenticationSecret: string | null;
-              twoFactorAuthenticationRecoveryCodesHashes: string | null;
+              twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
               avatarColor:
                 | "red"
                 | "orange"
@@ -3240,7 +3240,7 @@ export default async (application: Application): Promise<void> => {
                 | "userAnonymityPreferredCourseParticipationRoleStudents"
                 | "userAnonymityPreferredEveryone";
               mostRecentlyVisitedCourseParticipation: number | null;
-              deleteMyAccountNonceHash: string | null;
+              deleteMyAccountNonceTokenHash: string | null;
               deleteMyAccountNonceCreatedAt: string | null;
             }>(
               sql`
@@ -3259,7 +3259,7 @@ export default async (application: Application): Promise<void> => {
                         "passwordResetNonceCreatedAt",
                         "twoFactorAuthenticationEnabled",
                         "twoFactorAuthenticationSecret",
-                        "twoFactorAuthenticationRecoveryCodesHashes",
+                        "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                         "avatarColor",
                         "avatarImage",
                         "userRole",
@@ -3271,7 +3271,7 @@ export default async (application: Application): Promise<void> => {
                         "emailNotificationsForMessagesInConversationsThatYouStarted",
                         "userAnonymityPreferred",
                         "mostRecentlyVisitedCourseParticipation",
-                        "deleteMyAccountNonceHash",
+                        "deleteMyAccountNonceTokenHash",
                         "deleteMyAccountNonceCreatedAt"
                       )
                       values (
@@ -4004,7 +4004,7 @@ export default async (application: Application): Promise<void> => {
             passwordResetNonceCreatedAt: string | null;
             twoFactorAuthenticationEnabled: number;
             twoFactorAuthenticationSecret: string | null;
-            twoFactorAuthenticationRecoveryCodesHashes: string | null;
+            twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
             avatarColor:
               | "red"
               | "orange"
@@ -4038,7 +4038,7 @@ export default async (application: Application): Promise<void> => {
               | "userAnonymityPreferredCourseParticipationRoleStudents"
               | "userAnonymityPreferredEveryone";
             mostRecentlyVisitedCourseParticipation: number | null;
-            deleteMyAccountNonceHash: string | null;
+            deleteMyAccountNonceTokenHash: string | null;
             deleteMyAccountNonceCreatedAt: string | null;
           }>(
             sql`
@@ -4055,7 +4055,7 @@ export default async (application: Application): Promise<void> => {
                 "passwordResetNonceCreatedAt",
                 "twoFactorAuthenticationEnabled",
                 "twoFactorAuthenticationSecret",
-                "twoFactorAuthenticationRecoveryCodesHashes",
+                "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                 "avatarColor",
                 "avatarImage",
                 "userRole",
@@ -4067,7 +4067,7 @@ export default async (application: Application): Promise<void> => {
                 "emailNotificationsForMessagesInConversationsThatYouStarted",
                 "userAnonymityPreferred",
                 "mostRecentlyVisitedCourseParticipation",
-                "deleteMyAccountNonceHash",
+                "deleteMyAccountNonceTokenHash",
                 "deleteMyAccountNonceCreatedAt"
               from "users"
               where "email" = ${userData.email};
@@ -4086,7 +4086,7 @@ export default async (application: Application): Promise<void> => {
             passwordResetNonceCreatedAt: string | null;
             twoFactorAuthenticationEnabled: number;
             twoFactorAuthenticationSecret: string | null;
-            twoFactorAuthenticationRecoveryCodesHashes: string | null;
+            twoFactorAuthenticationRecoveryCodesPasswordHashes: string | null;
             avatarColor:
               | "red"
               | "orange"
@@ -4120,7 +4120,7 @@ export default async (application: Application): Promise<void> => {
               | "userAnonymityPreferredCourseParticipationRoleStudents"
               | "userAnonymityPreferredEveryone";
             mostRecentlyVisitedCourseParticipation: number | null;
-            deleteMyAccountNonceHash: string | null;
+            deleteMyAccountNonceTokenHash: string | null;
             deleteMyAccountNonceCreatedAt: string | null;
           }>(
             sql`
@@ -4139,7 +4139,7 @@ export default async (application: Application): Promise<void> => {
                       "passwordResetNonceCreatedAt",
                       "twoFactorAuthenticationEnabled",
                       "twoFactorAuthenticationSecret",
-                      "twoFactorAuthenticationRecoveryCodesHashes",
+                      "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                       "avatarColor",
                       "avatarImage",
                       "userRole",
@@ -4151,7 +4151,7 @@ export default async (application: Application): Promise<void> => {
                       "emailNotificationsForMessagesInConversationsThatYouStarted",
                       "userAnonymityPreferred",
                       "mostRecentlyVisitedCourseParticipation",
-                      "deleteMyAccountNonceHash",
+                      "deleteMyAccountNonceTokenHash",
                       "deleteMyAccountNonceCreatedAt"
                     )
                     values (

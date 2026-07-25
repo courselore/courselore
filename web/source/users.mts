@@ -1837,7 +1837,7 @@ export default async (application: Application): Promise<void> => {
         { length: 10 },
         () => cryptoRandomString({ length: 10, type: "numeric" }),
       );
-      request.state.user.twoFactorAuthenticationRecoveryCodesHashes =
+      request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes =
         JSON.stringify(
           await Promise.all(
             twoFactorAuthenticationRecoveryCodes.map(
@@ -1851,7 +1851,7 @@ export default async (application: Application): Promise<void> => {
           update "users"
           set
             "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
-            "twoFactorAuthenticationRecoveryCodesHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesHashes}
+            "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -2121,7 +2121,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes !==
           "string"
       )
         return;
@@ -2235,7 +2235,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodesHashes !==
+        typeof request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes !==
           "string"
       )
         return;
@@ -2269,7 +2269,7 @@ export default async (application: Application): Promise<void> => {
           (
             await Promise.all(
               JSON.parse(
-                request.state.user.twoFactorAuthenticationRecoveryCodesHashes,
+                request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
               ).map((twoFactorAuthenticationRecoveryCode: string) =>
                 node.PasswordHash.verify(
                   twoFactorAuthenticationRecoveryCode,
@@ -2302,14 +2302,14 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.user.twoFactorAuthenticationEnabled = Number(false);
       request.state.user.twoFactorAuthenticationSecret = null;
-      request.state.user.twoFactorAuthenticationRecoveryCodesHashes = null;
+      request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes = null;
       application.database.run(
         sql`
           update "users"
           set
             "twoFactorAuthenticationEnabled" = ${request.state.user.twoFactorAuthenticationEnabled},
             "twoFactorAuthenticationSecret" = ${request.state.user.twoFactorAuthenticationSecret},
-            "twoFactorAuthenticationRecoveryCodesHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesHashes}
+            "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes}
           where "id" = ${request.state.user.id};
         `,
       );
@@ -2420,21 +2420,21 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      const deleteMyAccountNonceHash =
+      const deleteMyAccountNonceTokenHash =
         node.TokenHash.hash(deleteMyAccountNonce);
       if (
         request.state.user.deleteMyAccountNonceCreatedAt === null ||
         request.state.user.deleteMyAccountNonceCreatedAt <
           new Date(Date.now() - 5 * 60 * 1000).toISOString()
       ) {
-        request.state.user.deleteMyAccountNonceHash = deleteMyAccountNonceHash;
+        request.state.user.deleteMyAccountNonceTokenHash = deleteMyAccountNonceTokenHash;
         request.state.user.deleteMyAccountNonceCreatedAt =
           new Date().toISOString();
         application.database.run(
           sql`
             update "users"
             set
-              "deleteMyAccountNonceHash" = ${request.state.user.deleteMyAccountNonceHash},
+              "deleteMyAccountNonceTokenHash" = ${request.state.user.deleteMyAccountNonceTokenHash},
               "deleteMyAccountNonceCreatedAt" = ${request.state.user.deleteMyAccountNonceCreatedAt}
             where "id" = ${request.state.user.id};
           `,
@@ -2520,7 +2520,7 @@ export default async (application: Application): Promise<void> => {
         sql`
             update "users"
             set
-              "deleteMyAccountNonceHash" = null,
+              "deleteMyAccountNonceTokenHash" = null,
               "deleteMyAccountNonceCreatedAt" = null
             where "deleteMyAccountNonceCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
           `,
@@ -2919,10 +2919,10 @@ export default async (application: Application): Promise<void> => {
         throw "validation";
       const deleteMyAccountNonceVerification =
         node.TokenHash.verify(
-          request.state.user.deleteMyAccountNonceHash ??
+          request.state.user.deleteMyAccountNonceTokenHash ??
             "5235aadf13a5b2b37a277d0022fc8d296721219a1bffa22d2f88383cb577c776",
           request.pathname.deleteMyAccountNonce,
-        ) && typeof request.state.user.deleteMyAccountNonceHash === "string";
+        ) && typeof request.state.user.deleteMyAccountNonceTokenHash === "string";
       const passwordConfirmationVerification =
         typeof request.state.user.passwordPasswordHash === "string"
           ? await node.PasswordHash.verify(
@@ -2944,7 +2944,7 @@ export default async (application: Application): Promise<void> => {
                 await Promise.all(
                   JSON.parse(
                     request.state.user
-                      .twoFactorAuthenticationRecoveryCodesHashes!,
+                      .twoFactorAuthenticationRecoveryCodesPasswordHashes!,
                   ).map((twoFactorAuthenticationRecoveryCode: string) =>
                     node.PasswordHash.verify(
                       twoFactorAuthenticationRecoveryCode,

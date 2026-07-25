@@ -5180,7 +5180,7 @@ export default async (application: Application): Promise<void> => {
                         "passwordResetNonceCreatedAt",
                         "twoFactorAuthenticationEnabled",
                         "twoFactorAuthenticationSecret",
-                        "twoFactorAuthenticationRecoveryCodesHashes",
+                        "twoFactorAuthenticationRecoveryCodesPasswordHashes",
                         "avatarColor",
                         "avatarImage",
                         "userRole",
@@ -5192,7 +5192,7 @@ export default async (application: Application): Promise<void> => {
                         "emailNotificationsForMessagesInConversationsThatYouStarted",
                         "userAnonymityPreferred",
                         "mostRecentlyVisitedCourseParticipation",
-                        "deleteMyAccountNonceHash",
+                        "deleteMyAccountNonceTokenHash",
                         "deleteMyAccountNonceCreatedAt"
                       )
                       values (
