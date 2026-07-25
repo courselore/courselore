@@ -625,18 +625,18 @@ export default async (application: Application): Promise<void> => {
                               key="course-selector ${course.publicId}"
                               href="/courses/${course.publicId}"
                               class="button button--rectangle button--transparent ${
-                              request.URL.pathname.match(
-                                new RegExp(
-                                  `^/courses/${course.publicId}(?:$|/)`,
-                                ),
-                              )
-                                ? "button--blue"
-                                : ""
-                            } button--dropdown-menu"
+                                request.URL.pathname.match(
+                                  new RegExp(
+                                    `^/courses/${course.publicId}(?:$|/)`,
+                                  ),
+                                )
+                                  ? "button--blue"
+                                  : ""
+                              } button--dropdown-menu"
                               css="${css`
-                              display: flex;
-                              gap: var(--size--2);
-                            `}"
+                                display: flex;
+                                gap: var(--size--2);
+                              `}"
                               javascript="${javascript`
                               this.onclick = () => {
                                 document.querySelector("body").click();
@@ -645,21 +645,21 @@ export default async (application: Application): Promise<void> => {
                             >
                               <div
                                 css="${css`
-                                flex: 1;
-                              `}"
+                                  flex: 1;
+                                `}"
                               >
                                 <div
                                   css="${css`
-                                  font-weight: 500;
-                                `}"
+                                    font-weight: 500;
+                                  `}"
                                 >
                                   ${course.name}
                                 </div>
                                 $${(() => {
-                                const courseInformationHTML = [
-                                  course.courseState === "courseStateArchived"
-                                    ? html`<span
-                                        css="${css`
+                                  const courseInformationHTML = [
+                                    course.courseState === "courseStateArchived"
+                                      ? html`<span
+                                          css="${css`
                                           font-weight: 700;
                                           [key~="course-selector"]:not(
                                               .button--blue
@@ -671,20 +671,20 @@ export default async (application: Application): Promise<void> => {
                                             );
                                           }
                                         `}"
-                                        >Archived</span
-                                      >`
-                                    : html``,
-                                  html`${course.information ?? ""}`,
-                                ]
-                                  .filter(
-                                    (courseInformationPart) =>
-                                      courseInformationPart !== "",
-                                  )
-                                  .join(" · ");
-                                return courseInformationHTML !== html``
-                                  ? html`
-                                      <div
-                                        css="${css`
+                                          >Archived</span
+                                        >`
+                                      : html``,
+                                    html`${course.information ?? ""}`,
+                                  ]
+                                    .filter(
+                                      (courseInformationPart) =>
+                                        courseInformationPart !== "",
+                                    )
+                                    .join(" · ");
+                                  return courseInformationHTML !== html``
+                                    ? html`
+                                        <div
+                                          css="${css`
                                           font-size: var(--font-size--3);
                                           line-height: var(
                                             --font-size--3--line-height
@@ -706,25 +706,27 @@ export default async (application: Application): Promise<void> => {
                                             );
                                           }
                                         `}"
-                                      >
-                                        $${courseInformationHTML}
-                                      </div>
-                                    `
-                                  : html``;
-                              })()}
+                                        >
+                                          $${courseInformationHTML}
+                                        </div>
+                                      `
+                                    : html``;
+                                })()}
                               </div>
                               <div
                                 css="${css`
-                                font-size: var(--size--1-5);
-                                line-height: var(--font-size--3-5--line-height);
-                                color: light-dark(
-                                  var(--color--blue--500),
-                                  var(--color--blue--500)
-                                );
-                              `} ${
-                                request.state.course!.id === course.id ||
-                                application.database.get(
-                                  sql`
+                                  font-size: var(--size--1-5);
+                                  line-height: var(
+                                    --font-size--3-5--line-height
+                                  );
+                                  color: light-dark(
+                                    var(--color--blue--500),
+                                    var(--color--blue--500)
+                                  );
+                                `} ${
+                                  request.state.course!.id === course.id ||
+                                  application.database.get(
+                                    sql`
                                   select true
                                   from "courseConversationMessages"
                                   join "courseConversations" on
@@ -764,12 +766,12 @@ export default async (application: Application): Promise<void> => {
                                     "courseConversationMessageViews"."id" is null
                                   limit 1;
                                 `,
-                                ) === undefined
-                                  ? css`
-                                      visibility: hidden;
-                                    `
-                                  : css``
-                              }"
+                                  ) === undefined
+                                    ? css`
+                                        visibility: hidden;
+                                      `
+                                    : css``
+                                }"
                               >
                                 <i class="bi bi-circle-fill"></i>
                               </div>
