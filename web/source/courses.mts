@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import * as serverTypes from "@radically-straightforward/server";
 import QRCode from "qrcode";
 import cryptoRandomString from "crypto-random-string";
@@ -5027,14 +5028,24 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
-        request.state.systemSettings === undefined ||
+        application.userConfiguration.lti === undefined ||
         request.state.course === undefined ||
-        request.state.course.ltiNamesAndRoleProvisioningServicesURL === null ||
+        typeof request.state.course.ltiPlatformId !== "string" ||
+        typeof request.state.course.ltiClientId !== "string" ||
+        typeof request.state.course.ltiContextId !== "string" ||
+        typeof request.state.course.ltiNamesAndRoleProvisioningServicesURL !==
+          "string" ||
         request.state.courseParticipation === undefined ||
         request.state.courseParticipation.courseParticipationRole !==
           "courseParticipationRoleInstructor"
       )
         return;
+      const platform = application.userConfiguration.lti.platforms.find(
+        (platform) =>
+          request.state.course!.ltiPlatformId === platform.platformId &&
+          request.state.course!.ltiClientId === platform.clientId,
+      );
+      if (platform === undefined) throw "validation";
       let ltiCourseMembers: {
         email: string;
         name: string;
@@ -5045,7 +5056,7 @@ export default async (application: Application): Promise<void> => {
       try {
         const accessToken = (
           await (
-            await fetch(lti.accessTokenURL, {
+            await fetch(platform.accessTokenURL, {
               method: "POST",
               body: new URLSearchParams({
                 grant_type: "client_credentials",
@@ -5058,26 +5069,24 @@ export default async (application: Application): Promise<void> => {
                     typ: "JWT",
                     alg: "RS256",
                     kid: await jose.calculateJwkThumbprint(
-                      await jose.exportJWK(
-                        await jose.importX509(
-                          request.state.systemSettings.certificate,
-                          "RS256",
-                        ),
-                      ),
+                      crypto
+                        .createPublicKey(
+                          application.userConfiguration.lti.publicKey,
+                        )
+                        .export({ format: "jwk" }),
                     ),
                   })
                   .setJti(
                     cryptoRandomString({ length: 50, type: "alphanumeric" }),
                   )
-                  .setIssuer(lti.clientId)
-                  .setAudience(lti.platformId)
-                  .setSubject(lti.clientId)
+                  .setIssuer(platform.clientId)
+                  .setAudience(platform.platformId)
+                  .setSubject(platform.clientId)
                   .setIssuedAt()
                   .setExpirationTime("5 minutes")
                   .sign(
-                    await jose.importPKCS8(
-                      request.state.systemSettings.privateKey,
-                      "RS256",
+                    crypto.createPrivateKey(
+                      application.userConfiguration.lti.privateKey,
                     ),
                   ),
               }),
@@ -5108,7 +5117,7 @@ export default async (application: Application): Promise<void> => {
               ltiCourseMember.status.toLowerCase() === "active" &&
               typeof ltiCourseMember.email === "string" &&
               ltiCourseMember.email.match(utilities.emailRegExp) &&
-              lti.domains.some((domain) =>
+              platform.domains.some((domain) =>
                 `.${(ltiCourseMember.email as string).split("@")[1]}`.endsWith(
                   `.${domain}`,
                 ),
