@@ -4284,5 +4284,31 @@ export default async (application: Application): Promise<void> => {
       
       create index "index_users_passwordResetNonceTokenHash" on "users" ("passwordResetNonceTokenHash");
     `,
+
+    (database) => {
+      for (const user of database.all<{
+        id: number;
+        twoFactorAuthenticationSecret: string;
+      }>(
+        sql`
+          select "id", "twoFactorAuthenticationSecret"
+          from "users"
+          where "twoFactorAuthenticationSecret" is not null
+          order by "id" asc;
+        `,
+      ))
+        database.run(
+          sql`
+            update "users"
+            set "twoFactorAuthenticationSecret" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecret)}
+            where "id" = ${user.id};
+          `,
+        );
+      database.execute(
+        sql`
+          alter table "users" rename column "twoFactorAuthenticationSecret" to "twoFactorAuthenticationSecretEncrypted";
+        `,
+      );
+    },
   );
 };
