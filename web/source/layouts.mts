@@ -442,8 +442,8 @@ export default async (application: Application): Promise<void> => {
             ? html`
                 <div
                   key="courseParticipation--decoration ${
-                  request.state.courseParticipation.decorationColor
-                }"
+                    request.state.courseParticipation.decorationColor
+                  }"
                   style="
                   --background-color--light: var(--color--${
                     request.state.courseParticipation.decorationColor
@@ -459,17 +459,17 @@ export default async (application: Application): Promise<void> => {
                   }--600);
                 "
                   css="${css`
-                  background-color: light-dark(
-                    var(--background-color--light),
-                    var(--background-color--dark)
-                  );
-                  height: var(--size--1);
-                  border-bottom: var(--border-width--1) solid
-                    light-dark(
-                      var(--border-color--light),
-                      var(--border-color--dark)
+                    background-color: light-dark(
+                      var(--background-color--light),
+                      var(--background-color--dark)
                     );
-                `}"
+                    height: var(--size--1);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--border-color--light),
+                        var(--border-color--dark)
+                      );
+                  `}"
                 ></div>
               `
             : html``
@@ -526,21 +526,21 @@ export default async (application: Application): Promise<void> => {
                       type="button"
                       class="button button--rectangle button--transparent"
                       css="${css`
-                      max-width: 100%;
-                      display: flex;
-                      gap: var(--size--1);
-                      align-items: center;
-                    `}"
+                        max-width: 100%;
+                        display: flex;
+                        gap: var(--size--1);
+                        align-items: center;
+                      `}"
                       javascript="${javascript`
                       javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
                     `}"
                     >
                       <div
                         css="${css`
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                      `}"
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                        `}"
                       >
                         ${request.state.course.name}
                       </div>
@@ -549,10 +549,10 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="popover"
                       css="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--size--2);
-                    `}"
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--2);
+                      `}"
                     >
                       <a
                         href="/courses/${request.state.course.publicId}"
@@ -578,14 +578,14 @@ export default async (application: Application): Promise<void> => {
                       </a>
                       <hr class="separator" />
                       $${application.database
-                      .all<{
-                        id: number;
-                        course: number;
-                        courseParticipationRole:
-                          | "courseParticipationRoleInstructor"
-                          | "courseParticipationRoleStudent";
-                      }>(
-                        sql`
+                        .all<{
+                          id: number;
+                          course: number;
+                          courseParticipationRole:
+                            | "courseParticipationRoleInstructor"
+                            | "courseParticipationRoleStudent";
+                        }>(
+                          sql`
                           select
                             "courseParticipations"."id" as "id",
                             "courseParticipations"."course" as "course",
@@ -598,17 +598,17 @@ export default async (application: Application): Promise<void> => {
                             "courses"."courseState" = 'courseStateActive' desc,
                             "courseParticipations"."id" desc;
                         `,
-                      )
-                      .map((courseParticipation) => {
-                        const course = application.database.get<{
-                          id: number;
-                          publicId: string;
-                          name: string;
-                          information: string | null;
-                          courseState:
-                            "courseStateActive" | "courseStateArchived";
-                        }>(
-                          sql`
+                        )
+                        .map((courseParticipation) => {
+                          const course = application.database.get<{
+                            id: number;
+                            publicId: string;
+                            name: string;
+                            information: string | null;
+                            courseState:
+                              "courseStateActive" | "courseStateArchived";
+                          }>(
+                            sql`
                             select
                               "id",
                               "publicId",
@@ -618,13 +618,13 @@ export default async (application: Application): Promise<void> => {
                             from "courses"
                             where "id" = ${courseParticipation.course};
                           `,
-                        );
-                        if (course === undefined) throw new Error();
-                        return html`
-                          <a
-                            key="course-selector ${course.publicId}"
-                            href="/courses/${course.publicId}"
-                            class="button button--rectangle button--transparent ${
+                          );
+                          if (course === undefined) throw new Error();
+                          return html`
+                            <a
+                              key="course-selector ${course.publicId}"
+                              href="/courses/${course.publicId}"
+                              class="button button--rectangle button--transparent ${
                               request.URL.pathname.match(
                                 new RegExp(
                                   `^/courses/${course.publicId}(?:$|/)`,
@@ -633,29 +633,29 @@ export default async (application: Application): Promise<void> => {
                                 ? "button--blue"
                                 : ""
                             } button--dropdown-menu"
-                            css="${css`
+                              css="${css`
                               display: flex;
                               gap: var(--size--2);
                             `}"
-                            javascript="${javascript`
+                              javascript="${javascript`
                               this.onclick = () => {
                                 document.querySelector("body").click();
                               };
                             `}"
-                          >
-                            <div
-                              css="${css`
-                                flex: 1;
-                              `}"
                             >
                               <div
                                 css="${css`
+                                flex: 1;
+                              `}"
+                              >
+                                <div
+                                  css="${css`
                                   font-weight: 500;
                                 `}"
-                              >
-                                ${course.name}
-                              </div>
-                              $${(() => {
+                                >
+                                  ${course.name}
+                                </div>
+                                $${(() => {
                                 const courseInformationHTML = [
                                   course.courseState === "courseStateArchived"
                                     ? html`<span
@@ -712,9 +712,9 @@ export default async (application: Application): Promise<void> => {
                                     `
                                   : html``;
                               })()}
-                            </div>
-                            <div
-                              css="${css`
+                              </div>
+                              <div
+                                css="${css`
                                 font-size: var(--size--1-5);
                                 line-height: var(--font-size--3-5--line-height);
                                 color: light-dark(
@@ -770,45 +770,45 @@ export default async (application: Application): Promise<void> => {
                                     `
                                   : css``
                               }"
-                            >
-                              <i class="bi bi-circle-fill"></i>
-                            </div>
-                          </a>
-                        `;
-                      })}
+                              >
+                                <i class="bi bi-circle-fill"></i>
+                              </div>
+                            </a>
+                          `;
+                        })}
                       <hr class="separator" />
                       $${
-                      request.state.systemSettings !== undefined &&
-                      ((request.state.systemSettings
-                        .userRolesWhoMayCreateCourses === "userRoleUser" &&
-                        (request.state.user.userRole === "userRoleUser" ||
-                          request.state.user.userRole === "userRoleStaff" ||
-                          request.state.user.userRole ===
-                            "userRoleSystemAdministrator")) ||
-                        (request.state.systemSettings
-                          .userRolesWhoMayCreateCourses === "userRoleStaff" &&
-                          (request.state.user.userRole === "userRoleStaff" ||
+                        request.state.systemSettings !== undefined &&
+                        ((request.state.systemSettings
+                          .userRolesWhoMayCreateCourses === "userRoleUser" &&
+                          (request.state.user.userRole === "userRoleUser" ||
+                            request.state.user.userRole === "userRoleStaff" ||
                             request.state.user.userRole ===
                               "userRoleSystemAdministrator")) ||
-                        (request.state.systemSettings
-                          .userRolesWhoMayCreateCourses ===
-                          "userRoleSystemAdministrator" &&
-                          request.state.user.userRole ===
-                            "userRoleSystemAdministrator"))
-                        ? html`
-                            <a
-                              href="/courses/new"
-                              class="button button--rectangle button--transparent button--dropdown-menu"
-                              javascript="${javascript`
+                          (request.state.systemSettings
+                            .userRolesWhoMayCreateCourses === "userRoleStaff" &&
+                            (request.state.user.userRole === "userRoleStaff" ||
+                              request.state.user.userRole ===
+                                "userRoleSystemAdministrator")) ||
+                          (request.state.systemSettings
+                            .userRolesWhoMayCreateCourses ===
+                            "userRoleSystemAdministrator" &&
+                            request.state.user.userRole ===
+                              "userRoleSystemAdministrator"))
+                          ? html`
+                              <a
+                                href="/courses/new"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
                               this.onclick = () => {
                                 document.querySelector("body").click();
                               };
                             `}"
-                              >Create a new course</a
-                            >
-                          `
-                        : html``
-                    }
+                                >Create a new course</a
+                              >
+                            `
+                          : html``
+                      }
                       <div>
                         <button
                           type="button"
@@ -859,48 +859,48 @@ export default async (application: Application): Promise<void> => {
                   `}"
                   >
                     $${application.partials.userAvatar({
-                    user: request.state.user,
-                    onlineIndicator: false,
-                  })}
+                      user: request.state.user,
+                      onlineIndicator: false,
+                    })}
                   </button>
                   <div
                     type="popover"
                     css="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size--2);
-                  `}"
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--2);
+                    `}"
                   >
                     <div
                       css="${css`
-                      display: flex;
-                      gap: var(--size--2);
-                    `}"
+                        display: flex;
+                        gap: var(--size--2);
+                      `}"
                     >
                       <div>
                         $${application.partials.userAvatar({
-                        user: request.state.user,
-                        onlineIndicator: false,
-                        size: 9,
-                      })}
+                          user: request.state.user,
+                          onlineIndicator: false,
+                          size: 9,
+                        })}
                       </div>
                       <div>
                         <div
                           css="${css`
-                          font-weight: 700;
-                        `}"
+                            font-weight: 700;
+                          `}"
                         >
                           ${request.state.user.name}
                         </div>
                         <div
                           css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                          color: light-dark(
-                            var(--color--slate--600),
-                            var(--color--slate--400)
-                          );
-                        `}"
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            color: light-dark(
+                              var(--color--slate--600),
+                              var(--color--slate--400)
+                            );
+                          `}"
                         >
                           ${request.state.user.email}
                         </div>
@@ -908,18 +908,18 @@ export default async (application: Application): Promise<void> => {
                     </div>
                     <hr class="separator" />
                     $${
-                    request.state.user.userRole ===
-                    "userRoleSystemAdministrator"
-                      ? html`
-                          <a
-                            href="/system-settings"
-                            class="button button--rectangle button--transparent button--dropdown-menu"
-                          >
-                            System settings
-                          </a>
-                        `
-                      : html``
-                  }
+                      request.state.user.userRole ===
+                      "userRoleSystemAdministrator"
+                        ? html`
+                            <a
+                              href="/system-settings"
+                              class="button button--rectangle button--transparent button--dropdown-menu"
+                            >
+                              System settings
+                            </a>
+                          `
+                        : html``
+                    }
                     <a
                       href="/settings"
                       class="button button--rectangle button--transparent button--dropdown-menu"

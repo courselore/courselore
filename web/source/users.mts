@@ -2121,8 +2121,8 @@ export default async (application: Application): Promise<void> => {
         typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes !==
-          "string"
+        typeof request.state.user
+          .twoFactorAuthenticationRecoveryCodesPasswordHashes !== "string"
       )
         return;
       if (
@@ -2235,8 +2235,8 @@ export default async (application: Application): Promise<void> => {
         typeof request.state.user.passwordPasswordHash !== "string" ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes !==
-          "string"
+        typeof request.state.user
+          .twoFactorAuthenticationRecoveryCodesPasswordHashes !== "string"
       )
         return;
       if (
@@ -2269,7 +2269,8 @@ export default async (application: Application): Promise<void> => {
           (
             await Promise.all(
               JSON.parse(
-                request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
+                request.state.user
+                  .twoFactorAuthenticationRecoveryCodesPasswordHashes,
               ).map((twoFactorAuthenticationRecoveryCode: string) =>
                 node.PasswordHash.verify(
                   twoFactorAuthenticationRecoveryCode,
@@ -2302,7 +2303,8 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.user.twoFactorAuthenticationEnabled = Number(false);
       request.state.user.twoFactorAuthenticationSecret = null;
-      request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes = null;
+      request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes =
+        null;
       application.database.run(
         sql`
           update "users"
@@ -2427,7 +2429,8 @@ export default async (application: Application): Promise<void> => {
         request.state.user.deleteMyAccountNonceCreatedAt <
           new Date(Date.now() - 5 * 60 * 1000).toISOString()
       ) {
-        request.state.user.deleteMyAccountNonceTokenHash = deleteMyAccountNonceTokenHash;
+        request.state.user.deleteMyAccountNonceTokenHash =
+          deleteMyAccountNonceTokenHash;
         request.state.user.deleteMyAccountNonceCreatedAt =
           new Date().toISOString();
         application.database.run(
@@ -2922,7 +2925,8 @@ export default async (application: Application): Promise<void> => {
           request.state.user.deleteMyAccountNonceTokenHash ??
             "5235aadf13a5b2b37a277d0022fc8d296721219a1bffa22d2f88383cb577c776",
           request.pathname.deleteMyAccountNonce,
-        ) && typeof request.state.user.deleteMyAccountNonceTokenHash === "string";
+        ) &&
+        typeof request.state.user.deleteMyAccountNonceTokenHash === "string";
       const passwordConfirmationVerification =
         typeof request.state.user.passwordPasswordHash === "string"
           ? await node.PasswordHash.verify(

@@ -3037,7 +3037,9 @@ You may also use the buttons on the message content editor to ${
             "href",
             element
               .getAttribute("href")
-              .slice(`https://${application.userConfiguration.hostname}`.length),
+              .slice(
+                `https://${application.userConfiguration.hostname}`.length,
+              ),
           );
       return mode === "textContent"
         ? document.textContent

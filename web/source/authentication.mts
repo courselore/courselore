@@ -936,7 +936,9 @@ export default async (application: Application): Promise<void> => {
       const emailVerificationNonceTokenHash = node.TokenHash.hash(
         emailVerificationNonce,
       );
-      const passwordPasswordHash = await node.PasswordHash.hash(request.body.password);
+      const passwordPasswordHash = await node.PasswordHash.hash(
+        request.body.password,
+      );
       application.database.executeTransaction(() => {
         if (
           application.database.get(
@@ -2192,8 +2194,8 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === false ||
         typeof request.state.user.twoFactorAuthenticationSecret !== "string" ||
-        typeof request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes !==
-          "string"
+        typeof request.state.user
+          .twoFactorAuthenticationRecoveryCodesPasswordHashes !== "string"
       )
         return;
       if (
@@ -2225,7 +2227,8 @@ export default async (application: Application): Promise<void> => {
           !(
             await Promise.all(
               JSON.parse(
-                request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
+                request.state.user
+                  .twoFactorAuthenticationRecoveryCodesPasswordHashes,
               ).map((twoFactorAuthenticationRecoveryCode: string) =>
                 node.PasswordHash.verify(
                   twoFactorAuthenticationRecoveryCode,
@@ -2268,7 +2271,8 @@ export default async (application: Application): Promise<void> => {
       ) {
         request.state.user.twoFactorAuthenticationEnabled = Number(false);
         request.state.user.twoFactorAuthenticationSecret = null;
-        request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes = null;
+        request.state.user.twoFactorAuthenticationRecoveryCodesPasswordHashes =
+          null;
         application.database.run(
           sql`
             update "users"
@@ -2356,7 +2360,8 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      const passwordResetNonceTokenHash = node.TokenHash.hash(passwordResetNonce);
+      const passwordResetNonceTokenHash =
+        node.TokenHash.hash(passwordResetNonce);
       request.state.user = application.database.get<{
         id: number;
         publicId: string;
@@ -2445,7 +2450,8 @@ export default async (application: Application): Promise<void> => {
           request.state.user.passwordResetNonceCreatedAt <
             new Date(Date.now() - 5 * 60 * 1000).toISOString())
       ) {
-        request.state.user.passwordResetNonceTokenHash = passwordResetNonceTokenHash;
+        request.state.user.passwordResetNonceTokenHash =
+          passwordResetNonceTokenHash;
         request.state.user.passwordResetNonceCreatedAt =
           new Date().toISOString();
         application.database.run(
@@ -2740,7 +2746,9 @@ export default async (application: Application): Promise<void> => {
         !request.search.redirect.startsWith("/")
       )
         delete request.search.redirect;
-      const passwordPasswordHash = await node.PasswordHash.hash(request.body.password);
+      const passwordPasswordHash = await node.PasswordHash.hash(
+        request.body.password,
+      );
       request.state.user = application.database.get<{
         id: number;
         publicId: string;

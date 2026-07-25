@@ -2825,7 +2825,8 @@ export default async (application: Application): Promise<void> => {
                     ${request.body.title},
                     ${utilities
                       .tokenize(request.body.title!, {
-                        stopWords: application.applicationConfiguration.stopWords,
+                        stopWords:
+                          application.applicationConfiguration.stopWords,
                         stem: (token) => natural.PorterStemmer.stem(token),
                       })
                       .map((tokenWithPosition) => tokenWithPosition.token)
@@ -2930,7 +2931,8 @@ export default async (application: Application): Promise<void> => {
                     ${request.body.content},
                     ${utilities
                       .tokenize(contentTextContent, {
-                        stopWords: application.applicationConfiguration.stopWords,
+                        stopWords:
+                          application.applicationConfiguration.stopWords,
                         stem: (token) => natural.PorterStemmer.stem(token),
                       })
                       .map((tokenWithPosition) => tokenWithPosition.token)
