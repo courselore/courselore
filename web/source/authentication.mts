@@ -2918,7 +2918,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "GET",
-    pathname: new RegExp("^/authentication/lti/keyset$"),
+    pathname: "/authentication/lti/keyset",
     handler: async (request, response) => {
       if (application.userConfiguration.lti === undefined) return;
       const publicKeyJWK = crypto
@@ -2943,7 +2943,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: /^GET|POST$/,
-    pathname: new RegExp("^/authentication/lti/initiate$"),
+    pathname: "/authentication/lti/initiate",
     handler: (
       request: serverTypes.Request<
         {},
@@ -3023,7 +3023,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "POST",
-    pathname: new RegExp("^/authentication/lti/callback$"),
+    pathname: "/authentication/lti/callback",
     handler: async (
       request: serverTypes.Request<
         {},
@@ -3044,7 +3044,7 @@ export default async (application: Application): Promise<void> => {
         throw "validation";
       const stateTokenHash = node.TokenHash.hash(request.body.state);
       const launch = [...ltiLaunches].find(
-        (launch) => launch.stateTokenHash === stateTokenHash,
+        (launch) => stateTokenHash === launch.stateTokenHash,
       );
       if (launch === undefined) throw "validation";
       ltiLaunches.delete(launch);
@@ -3839,7 +3839,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "GET",
-    pathname: new RegExp("^/authentication/saml/metadata$"),
+    pathname: "/authentication/saml/metadata",
     handler: (request, response) => {
       if (application.userConfiguration.saml === undefined) return;
       response.setHeader("Content-Type", "application/xml; charset=utf-8").send(
@@ -3860,7 +3860,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "GET",
-    pathname: new RegExp("^/authentication/saml/initiate$"),
+    pathname: "/authentication/saml/initiate",
     handler: async (
       request: serverTypes.Request<
         {},
@@ -3912,36 +3912,37 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "POST",
-    pathname: new RegExp(
-      "^/authentication/saml/(?<samlIdentifier>[a-z0-9\\-]+)/assertion-consumer-service$",
-    ),
+    pathname: "/authentication/saml/assertion-consumer-service",
     handler: async (
       request: serverTypes.Request<
-        { samlIdentifier: string },
+        {},
         {},
         {},
         {
-          SAMLResponse: string;
           RelayState: string;
+          SAMLResponse: string;
         },
         Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
-      if (typeof request.pathname.samlIdentifier !== "string") return;
-      const saml = samls[request.pathname.samlIdentifier];
-      if (saml === undefined) return;
+      if (
+        typeof request.body.RelayState !== "string" ||
+        typeof request.body.SAMLResponse !== "string"
+      )
+        throw new Error();
+      const relayStateTokenHash = node.TokenHash.hash(request.body.RelayState);
+      const flow = [...samlFlows].find(
+        (flow) => relayStateTokenHash === flow.relayStateTokenHash,
+      );
+      if (flow === undefined) throw "validation";
+      samlFlows.delete(flow);
       let redirect: string;
       let samlResponse: Awaited<
         ReturnType<typeof saml.saml.validatePostResponseAsync>
       >;
       let userData: { email: string; name: string };
       try {
-        if (
-          typeof request.body.SAMLResponse !== "string" ||
-          typeof request.body.RelayState !== "string"
-        )
-          throw new Error();
         redirect =
           new URLSearchParams(request.body.RelayState).get("redirect") ?? "/";
         if (!redirect.startsWith("/")) redirect = "/";
