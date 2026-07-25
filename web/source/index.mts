@@ -3,6 +3,7 @@ import path from "node:path";
 import os from "node:os";
 import url from "node:url";
 import fs from "node:fs/promises";
+import crypto from "node:crypto";
 import childProcess from "node:child_process";
 import server from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
@@ -80,6 +81,7 @@ export type Application = {
   applicationConfiguration: {
     ports: number[];
     stopWords: Set<string>;
+    secretKey: crypto.KeyObject;
   };
   server: undefined | ReturnType<typeof server>;
   layouts: {};
@@ -173,6 +175,8 @@ if (typeof application.userConfiguration.secretKey !== "string") {
   );
   process.exit();
 }
+application.applicationConfiguration.secretKey =
+  node.SymmetricEncryption.importKey(application.userConfiguration.secretKey);
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
