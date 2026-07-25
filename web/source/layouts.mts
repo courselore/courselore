@@ -660,17 +660,17 @@ export default async (application: Application): Promise<void> => {
                                     course.courseState === "courseStateArchived"
                                       ? html`<span
                                           css="${css`
-                                          font-weight: 700;
-                                          [key~="course-selector"]:not(
-                                              .button--blue
-                                            )
-                                            & {
-                                            color: light-dark(
-                                              var(--color--red--500),
-                                              var(--color--red--500)
-                                            );
-                                          }
-                                        `}"
+                                            font-weight: 700;
+                                            [key~="course-selector"]:not(
+                                                .button--blue
+                                              )
+                                              & {
+                                              color: light-dark(
+                                                var(--color--red--500),
+                                                var(--color--red--500)
+                                              );
+                                            }
+                                          `}"
                                           >Archived</span
                                         >`
                                       : html``,
@@ -685,27 +685,27 @@ export default async (application: Application): Promise<void> => {
                                     ? html`
                                         <div
                                           css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                          [key~="course-selector"]:not(
-                                              .button--blue
-                                            )
-                                            & {
-                                            color: light-dark(
-                                              var(--color--slate--600),
-                                              var(--color--slate--400)
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
                                             );
-                                          }
-                                          [key~="course-selector"].button--blue
-                                            & {
-                                            color: light-dark(
-                                              var(--color--blue--200),
-                                              var(--color--blue--200)
-                                            );
-                                          }
-                                        `}"
+                                            [key~="course-selector"]:not(
+                                                .button--blue
+                                              )
+                                              & {
+                                              color: light-dark(
+                                                var(--color--slate--600),
+                                                var(--color--slate--400)
+                                              );
+                                            }
+                                            [key~="course-selector"].button--blue
+                                              & {
+                                              color: light-dark(
+                                                var(--color--blue--200),
+                                                var(--color--blue--200)
+                                              );
+                                            }
+                                          `}"
                                         >
                                           $${courseInformationHTML}
                                         </div>
