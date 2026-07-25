@@ -5173,7 +5173,7 @@ export default async (application: Application): Promise<void> => {
                         "name",
                         "email",
                         "emailVerificationEmail",
-                        "emailVerificationNonceHash",
+                        "emailVerificationNonceTokenHash",
                         "emailVerificationNonceCreatedAt",
                         "passwordHash",
                         "passwordResetNonceHash",

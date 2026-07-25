@@ -1603,7 +1603,7 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      request.state.user.emailVerificationNonceHash = node.TokenHash.hash(
+      request.state.user.emailVerificationNonceTokenHash = node.TokenHash.hash(
         emailVerificationNonce,
       );
       request.state.user.emailVerificationNonceCreatedAt =
@@ -1613,7 +1613,7 @@ export default async (application: Application): Promise<void> => {
           update "users"
           set
             "emailVerificationEmail" = ${request.state.user.emailVerificationEmail},
-            "emailVerificationNonceHash" = ${request.state.user.emailVerificationNonceHash},
+            "emailVerificationNonceTokenHash" = ${request.state.user.emailVerificationNonceTokenHash},
             "emailVerificationNonceCreatedAt" = ${request.state.user.emailVerificationNonceCreatedAt}
           where "id" = ${request.state.user.id};
         `,

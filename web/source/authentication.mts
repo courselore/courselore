@@ -34,7 +34,7 @@ export type ApplicationAuthentication = {
           name: string;
           email: string;
           emailVerificationEmail: string | null;
-          emailVerificationNonceHash: string | null;
+          emailVerificationNonceTokenHash: string | null;
           emailVerificationNonceCreatedAt: string | null;
           passwordHash: string | null;
           passwordResetNonceHash: string | null;
@@ -213,7 +213,7 @@ export default async (application: Application): Promise<void> => {
         name: string;
         email: string;
         emailVerificationEmail: string | null;
-        emailVerificationNonceHash: string | null;
+        emailVerificationNonceTokenHash: string | null;
         emailVerificationNonceCreatedAt: string | null;
         passwordHash: string | null;
         passwordResetNonceHash: string | null;
@@ -264,7 +264,7 @@ export default async (application: Application): Promise<void> => {
             "name",
             "email",
             "emailVerificationEmail",
-            "emailVerificationNonceHash",
+            "emailVerificationNonceTokenHash",
             "emailVerificationNonceCreatedAt",
             "passwordHash",
             "passwordResetNonceHash",
@@ -933,7 +933,7 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      const emailVerificationNonceHash = node.TokenHash.hash(
+      const emailVerificationNonceTokenHash = node.TokenHash.hash(
         emailVerificationNonce,
       );
       const passwordHash = await node.PasswordHash.hash(request.body.password);
@@ -1000,7 +1000,7 @@ export default async (application: Application): Promise<void> => {
           name: string;
           email: string;
           emailVerificationEmail: string | null;
-          emailVerificationNonceHash: string | null;
+          emailVerificationNonceTokenHash: string | null;
           emailVerificationNonceCreatedAt: string | null;
           passwordHash: string | null;
           passwordResetNonceHash: string | null;
@@ -1053,7 +1053,7 @@ export default async (application: Application): Promise<void> => {
                     "name",
                     "email",
                     "emailVerificationEmail",
-                    "emailVerificationNonceHash",
+                    "emailVerificationNonceTokenHash",
                     "emailVerificationNonceCreatedAt",
                     "passwordHash",
                     "passwordResetNonceHash",
@@ -1080,7 +1080,7 @@ export default async (application: Application): Promise<void> => {
                     ${request.body.name!},
                     ${request.body.email},
                     ${request.body.email},
-                    ${emailVerificationNonceHash},
+                    ${emailVerificationNonceTokenHash},
                     ${new Date().toISOString()},
                     ${passwordHash},
                     ${null},
@@ -1228,7 +1228,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           update "users"
           set
-            "emailVerificationNonceHash" = null,
+            "emailVerificationNonceTokenHash" = null,
             "emailVerificationNonceCreatedAt" = null
           where "emailVerificationNonceCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
         `,
@@ -1387,7 +1387,7 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      request.state.user.emailVerificationNonceHash = node.TokenHash.hash(
+      request.state.user.emailVerificationNonceTokenHash = node.TokenHash.hash(
         emailVerificationNonce,
       );
       request.state.user.emailVerificationNonceCreatedAt =
@@ -1396,7 +1396,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           update "users"
           set
-            "emailVerificationNonceHash" = ${request.state.user.emailVerificationNonceHash},
+            "emailVerificationNonceTokenHash" = ${request.state.user.emailVerificationNonceTokenHash},
             "emailVerificationNonceCreatedAt" = ${request.state.user.emailVerificationNonceCreatedAt}
           where "id" = ${request.state.user.id};
         `,
@@ -1703,11 +1703,11 @@ export default async (application: Application): Promise<void> => {
         delete request.search.redirect;
       if (
         !node.TokenHash.verify(
-          request.state.user.emailVerificationNonceHash ??
+          request.state.user.emailVerificationNonceTokenHash ??
             "5235aadf13a5b2b37a277d0022fc8d296721219a1bffa22d2f88383cb577c776",
           request.pathname.emailVerificationNonce,
         ) ||
-        typeof request.state.user.emailVerificationNonceHash !== "string"
+        typeof request.state.user.emailVerificationNonceTokenHash !== "string"
       ) {
         response.setFlash!(html`
           <div class="flash--red">
@@ -1722,7 +1722,7 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.user.email = request.state.user.emailVerificationEmail;
       request.state.user.emailVerificationEmail = null;
-      request.state.user.emailVerificationNonceHash = null;
+      request.state.user.emailVerificationNonceTokenHash = null;
       request.state.user.emailVerificationNonceCreatedAt = null;
       application.database.run(
         sql`
@@ -1730,7 +1730,7 @@ export default async (application: Application): Promise<void> => {
           set
             "email" = ${request.state.user.email},
             "emailVerificationEmail" = ${request.state.user.emailVerificationEmail},
-            "emailVerificationNonceHash" = ${request.state.user.emailVerificationNonceHash},
+            "emailVerificationNonceTokenHash" = ${request.state.user.emailVerificationNonceTokenHash},
             "emailVerificationNonceCreatedAt" = ${request.state.user.emailVerificationNonceCreatedAt}
           where "id" = ${request.state.user.id};
         `,
@@ -1782,7 +1782,7 @@ export default async (application: Application): Promise<void> => {
         name: string;
         email: string;
         emailVerificationEmail: string | null;
-        emailVerificationNonceHash: string | null;
+        emailVerificationNonceTokenHash: string | null;
         emailVerificationNonceCreatedAt: string | null;
         passwordHash: string | null;
         passwordResetNonceHash: string | null;
@@ -1833,7 +1833,7 @@ export default async (application: Application): Promise<void> => {
             "name",
             "email",
             "emailVerificationEmail",
-            "emailVerificationNonceHash",
+            "emailVerificationNonceTokenHash",
             "emailVerificationNonceCreatedAt",
             "passwordHash",
             "passwordResetNonceHash",
@@ -2363,7 +2363,7 @@ export default async (application: Application): Promise<void> => {
         name: string;
         email: string;
         emailVerificationEmail: string | null;
-        emailVerificationNonceHash: string | null;
+        emailVerificationNonceTokenHash: string | null;
         emailVerificationNonceCreatedAt: string | null;
         passwordHash: string | null;
         passwordResetNonceHash: string | null;
@@ -2414,7 +2414,7 @@ export default async (application: Application): Promise<void> => {
             "name",
             "email",
             "emailVerificationEmail",
-            "emailVerificationNonceHash",
+            "emailVerificationNonceTokenHash",
             "emailVerificationNonceCreatedAt",
             "passwordHash",
             "passwordResetNonceHash",
@@ -2747,7 +2747,7 @@ export default async (application: Application): Promise<void> => {
         name: string;
         email: string;
         emailVerificationEmail: string | null;
-        emailVerificationNonceHash: string | null;
+        emailVerificationNonceTokenHash: string | null;
         emailVerificationNonceCreatedAt: string | null;
         passwordHash: string | null;
         passwordResetNonceHash: string | null;
@@ -2798,7 +2798,7 @@ export default async (application: Application): Promise<void> => {
             "name",
             "email",
             "emailVerificationEmail",
-            "emailVerificationNonceHash",
+            "emailVerificationNonceTokenHash",
             "emailVerificationNonceCreatedAt",
             "passwordHash",
             "passwordResetNonceHash",
@@ -3113,7 +3113,7 @@ export default async (application: Application): Promise<void> => {
               name: string;
               email: string;
               emailVerificationEmail: string | null;
-              emailVerificationNonceHash: string | null;
+              emailVerificationNonceTokenHash: string | null;
               emailVerificationNonceCreatedAt: string | null;
               passwordHash: string | null;
               passwordResetNonceHash: string | null;
@@ -3166,7 +3166,7 @@ export default async (application: Application): Promise<void> => {
                   "name",
                   "email",
                   "emailVerificationEmail",
-                  "emailVerificationNonceHash",
+                  "emailVerificationNonceTokenHash",
                   "emailVerificationNonceCreatedAt",
                   "passwordHash",
                   "passwordResetNonceHash",
@@ -3197,7 +3197,7 @@ export default async (application: Application): Promise<void> => {
               name: string;
               email: string;
               emailVerificationEmail: string | null;
-              emailVerificationNonceHash: string | null;
+              emailVerificationNonceTokenHash: string | null;
               emailVerificationNonceCreatedAt: string | null;
               passwordHash: string | null;
               passwordResetNonceHash: string | null;
@@ -3252,7 +3252,7 @@ export default async (application: Application): Promise<void> => {
                         "name",
                         "email",
                         "emailVerificationEmail",
-                        "emailVerificationNonceHash",
+                        "emailVerificationNonceTokenHash",
                         "emailVerificationNonceCreatedAt",
                         "passwordHash",
                         "passwordResetNonceHash",
@@ -3997,7 +3997,7 @@ export default async (application: Application): Promise<void> => {
             name: string;
             email: string;
             emailVerificationEmail: string | null;
-            emailVerificationNonceHash: string | null;
+            emailVerificationNonceTokenHash: string | null;
             emailVerificationNonceCreatedAt: string | null;
             passwordHash: string | null;
             passwordResetNonceHash: string | null;
@@ -4048,7 +4048,7 @@ export default async (application: Application): Promise<void> => {
                 "name",
                 "email",
                 "emailVerificationEmail",
-                "emailVerificationNonceHash",
+                "emailVerificationNonceTokenHash",
                 "emailVerificationNonceCreatedAt",
                 "passwordHash",
                 "passwordResetNonceHash",
@@ -4079,7 +4079,7 @@ export default async (application: Application): Promise<void> => {
             name: string;
             email: string;
             emailVerificationEmail: string | null;
-            emailVerificationNonceHash: string | null;
+            emailVerificationNonceTokenHash: string | null;
             emailVerificationNonceCreatedAt: string | null;
             passwordHash: string | null;
             passwordResetNonceHash: string | null;
@@ -4132,7 +4132,7 @@ export default async (application: Application): Promise<void> => {
                       "name",
                       "email",
                       "emailVerificationEmail",
-                      "emailVerificationNonceHash",
+                      "emailVerificationNonceTokenHash",
                       "emailVerificationNonceCreatedAt",
                       "passwordHash",
                       "passwordResetNonceHash",
