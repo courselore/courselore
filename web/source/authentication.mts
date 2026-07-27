@@ -2855,6 +2855,38 @@ export default async (application: Application): Promise<void> => {
           delete from "userSessions" where "user" = ${request.state.user.id};
         `,
       );
+      request.state.userSession = application.database.get<{
+        id: number;
+        publicId: string;
+        user: number;
+        lastUsedAt: string;
+        needsTwoFactorAuthentication: number;
+      }>(
+        sql`
+          select * from "userSessions" where "id" = ${
+            application.database.run(
+              sql`
+                insert into "userSessions" (
+                  "publicId",
+                  "user",
+                  "lastUsedAt",
+                  "needsTwoFactorAuthentication"
+                )
+                values (
+                  ${cryptoRandomString({
+                    length: 100,
+                    type: "alphanumeric",
+                  })},
+                  ${request.state.user.id},
+                  ${new Date().toISOString()},
+                  ${request.state.user.twoFactorAuthenticationEnabled}
+                );
+              `,
+            ).lastInsertRowid
+          };
+        `,
+      )!;
+      response.setCookie!("session", request.state.userSession.publicId);
       application.database.backgroundJob({
         type: "email",
         parameters: {
@@ -2891,7 +2923,7 @@ export default async (application: Application): Promise<void> => {
       response.setFlash!(html`
         <div class="flash--green">The password was reset successfully.</div>
       `);
-      response.redirect!(`/authentication${request.URL.search}`);
+      response.redirect!(`/${request.URL.search}`);
     },
   });
 
