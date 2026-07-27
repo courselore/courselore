@@ -4376,5 +4376,30 @@ export default async (application: Application): Promise<void> => {
         `,
         );
     },
+
+    (database) => {
+      database.execute(
+        sql`
+          alter table "userSessions" rename column "publicId" to "publicIdTokenHash";
+        `,
+      );
+      for (const userSession of database.all<{
+        id: number;
+        publicIdTokenHash: string;
+      }>(
+        sql`
+          select "id", "publicIdTokenHash"
+          from "userSessions"
+          order by "id" asc;
+        `,
+      ))
+        database.run(
+          sql`
+            update "userSessions"
+            set "publicIdTokenHash" = ${node.TokenHash.hash(userSession.publicIdTokenHash)}
+            where "id" = ${userSession.id};
+          `,
+        );
+    },
   );
 };
