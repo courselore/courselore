@@ -4146,25 +4146,8 @@ export default async (application: Application): Promise<void> => {
               ${request.state.user!.id},
               ${request.state.invitationCourse!.id},
               ${
-                Boolean(
-                  request.state.invitationCourse!
-                    .invitationLinkCourseParticipationRoleInstructorsEnabled,
-                ) &&
-                request.state.invitationCourse!
-                  .invitationLinkCourseParticipationRoleInstructorsToken ===
-                  request.pathname.invitationLinkToken
-                  ? "courseParticipationRoleInstructor"
-                  : Boolean(
-                        request.state.invitationCourse!
-                          .invitationLinkCourseParticipationRoleStudentsEnabled,
-                      ) &&
-                      request.state.invitationCourse!
-                        .invitationLinkCourseParticipationRoleStudentsToken ===
-                        request.pathname.invitationLinkToken
-                    ? "courseParticipationRoleStudent"
-                    : (() => {
-                        throw new Error();
-                      })()
+                request.state
+                  .invitationCourseParticipationCourseParticipationRole
               },
               ${
                 [
