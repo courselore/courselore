@@ -2726,7 +2726,6 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
-        typeof request.pathname.userPublicId !== "string" ||
         typeof request.pathname.passwordResetNonce !== "string" ||
         request.state.user !== undefined
       )
@@ -2823,17 +2822,12 @@ export default async (application: Application): Promise<void> => {
             "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt"
           from "users"
-          where "publicId" = ${request.pathname.userPublicId};
+          where "passwordResetNonceTokenHash" = ${node.TokenHash.hash(
+            request.pathname.passwordResetNonce,
+          )};
         `,
       );
-      if (
-        !node.TokenHash.verify(
-          request.state.user?.passwordResetNonceTokenHash ??
-            "5235aadf13a5b2b37a277d0022fc8d296721219a1bffa22d2f88383cb577c776",
-          request.pathname.passwordResetNonce,
-        ) ||
-        typeof request.state.user?.passwordResetNonceTokenHash !== "string"
-      ) {
+      if (request.state.user === undefined) {
         response.setFlash!(html`
           <div class="flash--red">
             There’s something wrong with this password reset. Please request a
