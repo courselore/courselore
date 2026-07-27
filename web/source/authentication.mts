@@ -2571,11 +2571,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        typeof request.pathname.userPublicId !== "string" ||
-        typeof request.pathname.passwordResetNonce !== "string"
-      )
-        return;
+      if (typeof request.pathname.passwordResetNonce !== "string") return;
       if (
         typeof request.search.redirect === "string" &&
         !request.search.redirect.startsWith("/")
