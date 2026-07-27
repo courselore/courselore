@@ -4311,19 +4311,23 @@ export default async (application: Application): Promise<void> => {
             update "users"
             set
               "twoFactorAuthenticationSecretEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecretEncrypted)},
-              "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${JSON.parse(
-                user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
-              ).map(
-                (twoFactorAuthenticationRecoveryCodePasswordHash: string) => {
-                  const phcStringParts =
-                    twoFactorAuthenticationRecoveryCodePasswordHash.split("$");
-                  const nonce = Buffer.from(phcStringParts.at(-2)!, "base64");
-                  const hash = Buffer.from(phcStringParts.at(-1)!, "base64");
-                  return JSON.stringify({
-                    nonce: nonce.toString("hex"),
-                    hash: hash.toString("hex"),
-                  });
-                },
+              "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${JSON.stringify(
+                JSON.parse(
+                  user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
+                ).map(
+                  (twoFactorAuthenticationRecoveryCodePasswordHash: string) => {
+                    const phcStringParts =
+                      twoFactorAuthenticationRecoveryCodePasswordHash.split(
+                        "$",
+                      );
+                    const nonce = Buffer.from(phcStringParts.at(-2)!, "base64");
+                    const hash = Buffer.from(phcStringParts.at(-1)!, "base64");
+                    return JSON.stringify({
+                      nonce: nonce.toString("hex"),
+                      hash: hash.toString("hex"),
+                    });
+                  },
+                ),
               )}
             where "id" = ${user.id};
           `,
