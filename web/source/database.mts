@@ -4294,9 +4294,13 @@ export default async (application: Application): Promise<void> => {
       for (const user of database.all<{
         id: number;
         twoFactorAuthenticationSecretEncrypted: string;
+        twoFactorAuthenticationRecoveryCodesPasswordHashes: string;
       }>(
         sql`
-          select "id", "twoFactorAuthenticationSecretEncrypted"
+          select
+            "id",
+            "twoFactorAuthenticationSecretEncrypted",
+            "twoFactorAuthenticationRecoveryCodesPasswordHashes"
           from "users"
           where "twoFactorAuthenticationSecretEncrypted" is not null
           order by "id" asc;
@@ -4305,7 +4309,22 @@ export default async (application: Application): Promise<void> => {
         database.run(
           sql`
             update "users"
-            set "twoFactorAuthenticationSecretEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecretEncrypted)}
+            set
+              "twoFactorAuthenticationSecretEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecretEncrypted)},
+              "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${JSON.parse(
+                user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
+              ).map(
+                (twoFactorAuthenticationRecoveryCodePasswordHash: string) => {
+                  const phcStringParts =
+                    twoFactorAuthenticationRecoveryCodePasswordHash.split("$");
+                  const nonce = Buffer.from(phcStringParts.at(-2)!, "base64");
+                  const hash = Buffer.from(phcStringParts.at(-1)!, "base64");
+                  return JSON.stringify({
+                    nonce: nonce.toString("hex"),
+                    hash: hash.toString("hex"),
+                  });
+                },
+              )}
             where "id" = ${user.id};
           `,
         );
