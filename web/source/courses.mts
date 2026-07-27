@@ -3872,7 +3872,7 @@ export default async (application: Application): Promise<void> => {
           coursePublicId: string;
           invitationLinkToken: string;
         },
-        { redirect: string },
+        {},
         {},
         {},
         StateCourseInvitation
@@ -3884,19 +3884,9 @@ export default async (application: Application): Promise<void> => {
         typeof request.pathname.invitationLinkToken !== "string"
       )
         return;
-      if (
-        typeof request.search.redirect === "string" &&
-        !request.search.redirect.match(
-          new RegExp(`^/courses/${request.pathname.coursePublicId}(?:$|/)`),
-        )
-      )
-        delete request.search.redirect;
       if (request.state.course !== undefined) {
         if (!request.liveConnection)
-          response.redirect!(
-            request.search.redirect ??
-              `/courses/${request.state.course.publicId}`,
-          );
+          response.redirect!(`/courses/${request.state.course.publicId}`);
         return;
       }
       request.state.invitationCourse = application.database.get<{
@@ -4128,7 +4118,7 @@ export default async (application: Application): Promise<void> => {
           coursePublicId: string;
           invitationLinkToken: string;
         },
-        { redirect: string },
+        {},
         {},
         {},
         StateCourseInvitation
@@ -4142,15 +4132,6 @@ export default async (application: Application): Promise<void> => {
         request.state.invitationCourse === undefined
       )
         return;
-      if (
-        typeof request.search.redirect === "string" &&
-        !request.search.redirect.match(
-          new RegExp(
-            `^/courses/${request.state.invitationCourse.publicId}(?:$|/)`,
-          ),
-        )
-      )
-        delete request.search.redirect;
       application.database.executeTransaction(() => {
         application.database.run(
           sql`
@@ -4226,10 +4207,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect!(
-        request.search.redirect ??
-          `/courses/${request.state.invitationCourse.publicId}`,
-      );
+      response.redirect!(`/courses/${request.state.invitationCourse.publicId}`);
     },
   });
 
@@ -4419,7 +4397,7 @@ export default async (application: Application): Promise<void> => {
           coursePublicId: string;
           coursePendingInvitationEmailPublicId: string;
         },
-        { redirect: string },
+        {},
         {},
         {},
         StateCoursePendingInvitationEmail
@@ -4433,19 +4411,9 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined
       )
         return;
-      if (
-        typeof request.search.redirect === "string" &&
-        !request.search.redirect.match(
-          new RegExp(`^/courses/${request.pathname.coursePublicId}(?:$|/)`),
-        )
-      )
-        delete request.search.redirect;
       if (request.state.course !== undefined) {
         if (!request.liveConnection)
-          response.redirect!(
-            request.search.redirect ??
-              `/courses/${request.state.course.publicId}`,
-          );
+          response.redirect!(`/courses/${request.state.course.publicId}`);
         return;
       }
       request.state.invitationCourse = application.database.get<{
@@ -4649,7 +4617,7 @@ export default async (application: Application): Promise<void> => {
           coursePublicId: string;
           coursePendingInvitationEmailPublicId: string;
         },
-        { redirect: string },
+        {},
         {},
         {},
         StateCoursePendingInvitationEmail
@@ -4665,15 +4633,6 @@ export default async (application: Application): Promise<void> => {
         request.state.coursePendingInvitationEmail === undefined
       )
         return;
-      if (
-        typeof request.search.redirect === "string" &&
-        !request.search.redirect.match(
-          new RegExp(
-            `^/courses/${request.state.invitationCourse.publicId}(?:$|/)`,
-          ),
-        )
-      )
-        delete request.search.redirect;
       application.database.executeTransaction(() => {
         application.database.run(
           sql`
@@ -4727,10 +4686,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       });
-      response.redirect!(
-        request.search.redirect ??
-          `/courses/${request.state.invitationCourse.publicId}`,
-      );
+      response.redirect!(`/courses/${request.state.invitationCourse.publicId}`);
     },
   });
 
