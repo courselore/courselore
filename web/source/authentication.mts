@@ -2923,7 +2923,7 @@ export default async (application: Application): Promise<void> => {
       response.setFlash!(html`
         <div class="flash--green">The password was reset successfully.</div>
       `);
-      response.redirect!(`/${request.URL.search}`);
+      response.redirect!(request.search.redirect ?? "/");
     },
   });
 
