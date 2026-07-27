@@ -3939,20 +3939,57 @@ export default async (application: Application): Promise<void> => {
             "ltiContextId",
             "ltiNamesAndRoleProvisioningServicesURL"
           from "courses"
-          where
-            "publicId" = ${request.pathname.coursePublicId} and (
-              (
-                "invitationLinkCourseParticipationRoleInstructorsEnabled" = true and
-                "invitationLinkCourseParticipationRoleInstructorsToken" = ${request.pathname.invitationLinkToken}
-              ) or
-              (
-                "invitationLinkCourseParticipationRoleStudentsEnabled" = true and
-                "invitationLinkCourseParticipationRoleStudentsToken" = ${request.pathname.invitationLinkToken}
-              )
-            );
+          where "publicId" = ${request.pathname.coursePublicId};
         `,
       );
       if (request.state.invitationCourse === undefined) return;
+      if (!(
+        (Boolean(
+          request.state.invitationCourse
+            .invitationLinkCourseParticipationRoleInstructorsEnabled,
+        ) &&
+          (() => {
+            const invitationLinkCourseParticipationRoleInstructorsToken =
+              node.SymmetricEncryption.decrypt(
+                application.applicationConfiguration.secretKey,
+                request.state.invitationCourse
+                  .invitationLinkCourseParticipationRoleInstructorsTokenEncrypted,
+              );
+            return (
+              request.pathname.invitationLinkToken.length ===
+                invitationLinkCourseParticipationRoleInstructorsToken.length &&
+              crypto.timingSafeEqual(
+                Buffer.from(request.pathname.invitationLinkToken),
+                Buffer.from(
+                  invitationLinkCourseParticipationRoleInstructorsToken,
+                ),
+              )
+            );
+          })()) ||
+        (Boolean(
+          request.state.invitationCourse
+            .invitationLinkCourseParticipationRoleStudentsEnabled,
+        ) &&
+          (() => {
+            const invitationLinkCourseParticipationRoleStudentsToken =
+              node.SymmetricEncryption.decrypt(
+                application.applicationConfiguration.secretKey,
+                request.state.invitationCourse
+                  .invitationLinkCourseParticipationRoleStudentsTokenEncrypted,
+              );
+            return (
+              request.pathname.invitationLinkToken.length ===
+                invitationLinkCourseParticipationRoleStudentsToken.length &&
+              crypto.timingSafeEqual(
+                Buffer.from(request.pathname.invitationLinkToken),
+                Buffer.from(invitationLinkCourseParticipationRoleStudentsToken),
+              )
+            );
+          })())
+      )) {
+        delete request.state.invitationCourse;
+        return;
+      }
     },
   });
 
