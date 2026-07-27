@@ -3858,6 +3858,8 @@ export default async (application: Application): Promise<void> => {
 
   type StateCourseInvitation = Application["types"]["states"]["Course"] & {
     invitationCourse: Application["types"]["states"]["Course"]["course"];
+    invitationCourseParticipationCourseParticipationRole:
+      "courseParticipationRoleInstructor" | "courseParticipationRoleStudent";
   };
 
   application.server?.push({
@@ -3943,50 +3945,57 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.invitationCourse === undefined) return;
-      if (!(
-        (Boolean(
+      if (
+        Boolean(
           request.state.invitationCourse
             .invitationLinkCourseParticipationRoleInstructorsEnabled,
         ) &&
-          (() => {
-            const invitationLinkCourseParticipationRoleInstructorsToken =
-              node.SymmetricEncryption.decrypt(
-                application.applicationConfiguration.secretKey,
-                request.state.invitationCourse
-                  .invitationLinkCourseParticipationRoleInstructorsTokenEncrypted,
-              );
-            return (
-              request.pathname.invitationLinkToken.length ===
-                invitationLinkCourseParticipationRoleInstructorsToken.length &&
-              crypto.timingSafeEqual(
-                Buffer.from(request.pathname.invitationLinkToken),
-                Buffer.from(
-                  invitationLinkCourseParticipationRoleInstructorsToken,
-                ),
-              )
+        (() => {
+          const invitationLinkCourseParticipationRoleInstructorsToken =
+            node.SymmetricEncryption.decrypt(
+              application.applicationConfiguration.secretKey,
+              request.state.invitationCourse
+                .invitationLinkCourseParticipationRoleInstructorsTokenEncrypted,
             );
-          })()) ||
-        (Boolean(
+          return (
+            request.pathname.invitationLinkToken.length ===
+              invitationLinkCourseParticipationRoleInstructorsToken.length &&
+            crypto.timingSafeEqual(
+              Buffer.from(request.pathname.invitationLinkToken),
+              Buffer.from(
+                invitationLinkCourseParticipationRoleInstructorsToken,
+              ),
+            )
+          );
+        })()
+      )
+        request.state.invitationCourseParticipationCourseParticipationRole =
+          "courseParticipationRoleInstructor";
+      else if (
+        Boolean(
           request.state.invitationCourse
             .invitationLinkCourseParticipationRoleStudentsEnabled,
         ) &&
-          (() => {
-            const invitationLinkCourseParticipationRoleStudentsToken =
-              node.SymmetricEncryption.decrypt(
-                application.applicationConfiguration.secretKey,
-                request.state.invitationCourse
-                  .invitationLinkCourseParticipationRoleStudentsTokenEncrypted,
-              );
-            return (
-              request.pathname.invitationLinkToken.length ===
-                invitationLinkCourseParticipationRoleStudentsToken.length &&
-              crypto.timingSafeEqual(
-                Buffer.from(request.pathname.invitationLinkToken),
-                Buffer.from(invitationLinkCourseParticipationRoleStudentsToken),
-              )
+        (() => {
+          const invitationLinkCourseParticipationRoleStudentsToken =
+            node.SymmetricEncryption.decrypt(
+              application.applicationConfiguration.secretKey,
+              request.state.invitationCourse
+                .invitationLinkCourseParticipationRoleStudentsTokenEncrypted,
             );
-          })())
-      )) {
+          return (
+            request.pathname.invitationLinkToken.length ===
+              invitationLinkCourseParticipationRoleStudentsToken.length &&
+            crypto.timingSafeEqual(
+              Buffer.from(request.pathname.invitationLinkToken),
+              Buffer.from(invitationLinkCourseParticipationRoleStudentsToken),
+            )
+          );
+        })()
+      )
+        request.state.invitationCourseParticipationCourseParticipationRole =
+          "courseParticipationRoleStudent";
+      else {
         delete request.state.invitationCourse;
         return;
       }
