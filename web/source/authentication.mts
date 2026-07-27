@@ -3432,9 +3432,9 @@ export default async (application: Application): Promise<void> => {
         name: string;
         information: string | null;
         invitationLinkCourseParticipationRoleInstructorsEnabled: number;
-        invitationLinkCourseParticipationRoleInstructorsToken: string;
+        invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
         invitationLinkCourseParticipationRoleStudentsEnabled: number;
-        invitationLinkCourseParticipationRoleStudentsToken: string;
+        invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
         courseConversationRequiresTagging: number;
         courseParticipationRoleStudentsAnonymityAllowed:
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
@@ -3455,9 +3455,9 @@ export default async (application: Application): Promise<void> => {
             "name",
             "information",
             "invitationLinkCourseParticipationRoleInstructorsEnabled",
-            "invitationLinkCourseParticipationRoleInstructorsToken",
+            "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
             "invitationLinkCourseParticipationRoleStudentsEnabled",
-            "invitationLinkCourseParticipationRoleStudentsToken",
+            "invitationLinkCourseParticipationRoleStudentsTokenEncrypted",
             "courseConversationRequiresTagging",
             "courseParticipationRoleStudentsAnonymityAllowed",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
