@@ -4077,9 +4077,7 @@ export default async (application: Application): Promise<void> => {
                 method="POST"
                 action="/courses/${
                   request.pathname.coursePublicId
-                }/invitations/${
-                  request.pathname.invitationLinkToken
-                }${request.URL.search}"
+                }/invitations/${request.pathname.invitationLinkToken}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -4578,7 +4576,7 @@ export default async (application: Application): Promise<void> => {
                   request.pathname.coursePublicId
                 }/invitation-emails/${
                   request.pathname.coursePendingInvitationEmailPublicId
-                }${request.URL.search}"
+                }"
                 css="${css`
                   display: flex;
                   flex-direction: column;
