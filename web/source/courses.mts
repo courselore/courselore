@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import * as serverTypes from "@radically-straightforward/server";
+import * as node from "@radically-straightforward/node";
 import QRCode from "qrcode";
 import cryptoRandomString from "crypto-random-string";
 import emailAddresses from "email-addresses";
@@ -308,9 +309,9 @@ export default async (application: Application): Promise<void> => {
                 ${request.body.name},
                 ${null},
                 ${Number(true)},
-                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))},
                 ${Number(true)},
-                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))},
                 ${Number(true)},
                 ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
                 ${Number(true)},
@@ -3817,7 +3818,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             update "courses"
-            set "invitationLinkCourseParticipationRoleInstructorsToken" = ${cryptoRandomString({ length: 20, type: "numeric" })}
+            set "invitationLinkCourseParticipationRoleInstructorsToken" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
             where "id" = ${request.state.course.id};
           `,
         );
@@ -3828,7 +3829,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             update "courses"
-            set "invitationLinkCourseParticipationRoleStudentsToken" = ${cryptoRandomString({ length: 20, type: "numeric" })}
+            set "invitationLinkCourseParticipationRoleStudentsToken" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
             where "id" = ${request.state.course.id};
           `,
         );
