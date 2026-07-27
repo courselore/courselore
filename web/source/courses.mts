@@ -3834,7 +3834,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             update "courses"
-            set "invitationLinkCourseParticipationRoleInstructorsToken" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
+            set "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
             where "id" = ${request.state.course.id};
           `,
         );
@@ -3845,7 +3845,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             update "courses"
-            set "invitationLinkCourseParticipationRoleStudentsToken" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
+            set "invitationLinkCourseParticipationRoleStudentsTokenEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
             where "id" = ${request.state.course.id};
           `,
         );
