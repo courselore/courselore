@@ -4286,29 +4286,29 @@ export default async (application: Application): Promise<void> => {
     `,
 
     (database) => {
+      database.execute(
+        sql`
+          alter table "users" rename column "twoFactorAuthenticationSecret" to "twoFactorAuthenticationSecretEncrypted";
+        `,
+      );
       for (const user of database.all<{
         id: number;
-        twoFactorAuthenticationSecret: string;
+        twoFactorAuthenticationSecretEncrypted: string;
       }>(
         sql`
-          select "id", "twoFactorAuthenticationSecret"
+          select "id", "twoFactorAuthenticationSecretEncrypted"
           from "users"
-          where "twoFactorAuthenticationSecret" is not null
+          where "twoFactorAuthenticationSecretEncrypted" is not null
           order by "id" asc;
         `,
       ))
         database.run(
           sql`
             update "users"
-            set "twoFactorAuthenticationSecret" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecret)}
+            set "twoFactorAuthenticationSecretEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecretEncrypted)}
             where "id" = ${user.id};
           `,
         );
-      database.execute(
-        sql`
-          alter table "users" rename column "twoFactorAuthenticationSecret" to "twoFactorAuthenticationSecretEncrypted";
-        `,
-      );
     },
   );
 };
