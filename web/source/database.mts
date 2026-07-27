@@ -4329,5 +4329,16 @@ export default async (application: Application): Promise<void> => {
           `,
         );
     },
+
+    sql`
+      update "users"
+      set
+        "emailVerificationNonceTokenHash" = null,
+        "emailVerificationNonceCreatedAt" = null,
+        "passwordResetNonceTokenHash" = null,
+        "passwordResetNonceCreatedAt" = null,
+        "deleteMyAccountNonceTokenHash" = null,
+        "deleteMyAccountNonceCreatedAt" = null;
+    `,
   );
 };
