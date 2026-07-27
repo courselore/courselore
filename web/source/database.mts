@@ -4344,5 +4344,37 @@ export default async (application: Application): Promise<void> => {
         "deleteMyAccountNonceTokenHash" = null,
         "deleteMyAccountNonceCreatedAt" = null;
     `,
+
+    (database) => {
+      database.execute(
+        sql`
+          alter table "courses" rename column "invitationLinkCourseParticipationRoleInstructorsToken" to "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted";
+          alter table "courses" rename column "invitationLinkCourseParticipationRoleStudentsToken" to "invitationLinkCourseParticipationRoleStudentsTokenEncrypted";
+        `,
+      );
+      for (const course of database.all<{
+        id: number;
+        invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
+        invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
+      }>(
+        sql`
+          select
+            "id",
+            "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
+            "invitationLinkCourseParticipationRoleStudentsTokenEncrypted"
+          from "courses"
+          order by "id" asc;
+        `,
+      ))
+        database.run(
+          sql`
+          update "courses"
+          set
+            "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleInstructorsTokenEncrypted)},
+            "invitationLinkCourseParticipationRoleStudentsTokenEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleStudentsTokenEncrypted)}
+          where "id" = ${course.id};
+        `,
+        );
+    },
   );
 };
