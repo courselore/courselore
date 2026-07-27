@@ -2485,14 +2485,10 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${
                     application.userConfiguration.hostname
-                  }/authentication/reset-password/${
-                    request.state.user.publicId
-                  }/${passwordResetNonce}${request.URL.search}"
+                  }/authentication/reset-password/${passwordResetNonce}${request.URL.search}"
                   >https://${
                     application.userConfiguration.hostname
-                  }/authentication/reset-password/${
-                    request.state.user.publicId
-                  }/${passwordResetNonce}${request.URL.search}</a
+                  }/authentication/reset-password/${passwordResetNonce}${request.URL.search}</a
                 >
               </p>
               <p>
@@ -2563,11 +2559,11 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/authentication/reset-password/(?<userPublicId>[0-9]+)/(?<passwordResetNonce>[0-9]+)$",
+      "^/authentication/reset-password/(?<passwordResetNonce>[0-9]+)$",
     ),
     handler: (
       request: serverTypes.Request<
-        { userPublicId: string; passwordResetNonce: string },
+        { passwordResetNonce: string },
         { redirect: string },
         {},
         {},
@@ -2621,9 +2617,7 @@ export default async (application: Application): Promise<void> => {
               <div
                 type="form"
                 method="POST"
-                action="/authentication/reset-password/${
-                  request.pathname.userPublicId
-                }/${request.pathname.passwordResetNonce}${request.URL.search}"
+                action="/authentication/reset-password/${request.pathname.passwordResetNonce}${request.URL.search}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -2723,11 +2717,11 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/authentication/reset-password/(?<userPublicId>[0-9]+)/(?<passwordResetNonce>[0-9]+)$",
+      "^/authentication/reset-password/(?<passwordResetNonce>[0-9]+)$",
     ),
     handler: async (
       request: serverTypes.Request<
-        { userPublicId: string; passwordResetNonce: string },
+        { passwordResetNonce: string },
         { redirect: string },
         {},
         { password: string },
