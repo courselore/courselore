@@ -2266,6 +2266,7 @@ export default async (application: Application): Promise<void> => {
                             const coursePendingInvitationEmails =
                               application.database.all<{
                                 publicId: string;
+                                tokenTokenHash: string;
                                 email: string;
                                 courseParticipationRole:
                                   | "courseParticipationRoleInstructor"
@@ -2274,6 +2275,7 @@ export default async (application: Application): Promise<void> => {
                                 sql`
                                 select
                                   "publicId",
+                                  "tokenTokenHash",
                                   "email",
                                   "courseParticipationRole"
                                 from "coursePendingInvitationEmails"
@@ -4270,35 +4272,28 @@ export default async (application: Application): Promise<void> => {
           ) !== undefined
         )
           continue;
-        const coursePendingInvitationEmail = application.database.get<{
-          id: number;
-          publicId: string;
-          email: string;
-          courseParticipationRole:
-            | "courseParticipationRoleInstructor"
-            | "courseParticipationRoleStudent";
-        }>(
+        const coursePendingInvitationEmailToken = cryptoRandomString({
+          length: 20,
+          type: "numeric",
+        });
+        application.database.run(
           sql`
-            select * from "coursePendingInvitationEmails" where "id" = ${
-              application.database.run(
-                sql`
-                  insert into "coursePendingInvitationEmails" (
-                    "publicId",
-                    "course",
-                    "email",
-                    "courseParticipationRole"
-                  )
-                  values (
-                    ${cryptoRandomString({ length: 20, type: "numeric" })},
-                    ${request.state.course.id},
-                    ${userEmail},
-                    ${request.body.courseParticipationRole}
-                  );
-                `,
-              ).lastInsertRowid
-            };
+            insert into "coursePendingInvitationEmails" (
+              "publicId",
+              "tokenTokenHash",
+              "course",
+              "email",
+              "courseParticipationRole"
+            )
+            values (
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${node.TokenHash.hash(coursePendingInvitationEmailToken)},
+              ${request.state.course.id},
+              ${userEmail},
+              ${request.body.courseParticipationRole}
+            );
           `,
-        )!;
+        );
         application.database.backgroundJob({
           type: "email",
           parameters: {
@@ -4319,10 +4314,10 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.userConfiguration.hostname}/courses/${
                     request.state.course.publicId
-                  }/invitation-emails/${coursePendingInvitationEmail.publicId}"
+                  }/invitation-emails/${coursePendingInvitationEmailToken}"
                   >https://${application.userConfiguration.hostname}/courses/${
                     request.state.course.publicId
-                  }/invitation-emails/${coursePendingInvitationEmail.publicId}</a
+                  }/invitation-emails/${coursePendingInvitationEmailToken}</a
                 >
               </p>
               <p>
@@ -4361,6 +4356,7 @@ export default async (application: Application): Promise<void> => {
       coursePendingInvitationEmail: {
         id: number;
         publicId: string;
+        tokenTokenHash: string;
         email: string;
         courseParticipationRole:
           | "courseParticipationRoleInstructor"
@@ -4370,13 +4366,13 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailPublicId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailToken>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
         {
           coursePublicId: string;
-          coursePendingInvitationEmailPublicId: string;
+          coursePendingInvitationEmailToken: string;
         },
         {},
         {},
@@ -4387,7 +4383,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         typeof request.pathname.coursePublicId !== "string" ||
-        typeof request.pathname.coursePendingInvitationEmailPublicId !==
+        typeof request.pathname.coursePendingInvitationEmailToken !==
           "string" ||
         request.state.user === undefined
       )
@@ -4446,6 +4442,7 @@ export default async (application: Application): Promise<void> => {
       request.state.coursePendingInvitationEmail = application.database.get<{
         id: number;
         publicId: string;
+        tokenTokenHash: string;
         email: string;
         courseParticipationRole:
           | "courseParticipationRoleInstructor"
@@ -4455,11 +4452,12 @@ export default async (application: Application): Promise<void> => {
           select
             "id",
             "publicId",
+            "tokenTokenHash",
             "email",
             "courseParticipationRole"
           from "coursePendingInvitationEmails"
           where
-            "publicId" = ${request.pathname.coursePendingInvitationEmailPublicId} and
+            "tokenTokenHash" = ${node.TokenHash.hash(request.pathname.coursePendingInvitationEmailToken)} and
             "course" = ${request.state.invitationCourse.id} and
             "email" = ${request.state.user.email};
         `,
@@ -4471,13 +4469,13 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailPublicId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailToken>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
         {
           coursePublicId: string;
-          coursePendingInvitationEmailPublicId: string;
+          coursePendingInvitationEmailToken: string;
         },
         {},
         {},
@@ -4488,8 +4486,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         typeof request.pathname.coursePublicId !== "string" ||
-        typeof request.pathname.coursePendingInvitationEmailPublicId !==
-          "string"
+        typeof request.pathname.coursePendingInvitationEmailToken !== "string"
       )
         return;
       if (
@@ -4558,7 +4555,7 @@ export default async (application: Application): Promise<void> => {
                 action="/courses/${
                   request.pathname.coursePublicId
                 }/invitation-emails/${
-                  request.pathname.coursePendingInvitationEmailPublicId
+                  request.pathname.coursePendingInvitationEmailToken
                 }"
                 css="${css`
                   display: flex;
@@ -4590,13 +4587,13 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailPublicId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailToken>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
         {
           coursePublicId: string;
-          coursePendingInvitationEmailPublicId: string;
+          coursePendingInvitationEmailToken: string;
         },
         {},
         {},
@@ -4607,7 +4604,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         typeof request.pathname.coursePublicId !== "string" ||
-        typeof request.pathname.coursePendingInvitationEmailPublicId !==
+        typeof request.pathname.coursePendingInvitationEmailToken !==
           "string" ||
         request.state.user === undefined ||
         request.state.invitationCourse === undefined ||
