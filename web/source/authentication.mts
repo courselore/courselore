@@ -23,7 +23,7 @@ export type ApplicationAuthentication = {
         };
         userSession: {
           id: number;
-          publicIdTokenHash: string;
+          tokenTokenHash: string;
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
@@ -111,7 +111,7 @@ export default async (application: Application): Promise<void> => {
         });
         request.state.userSession = application.database.get<{
           id: number;
-          publicIdTokenHash: string;
+          tokenTokenHash: string;
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
@@ -121,7 +121,7 @@ export default async (application: Application): Promise<void> => {
               application.database.run(
                 sql`
                   insert into "userSessions" (
-                    "publicIdTokenHash",
+                    "tokenTokenHash",
                     "user",
                     "lastUsedAt",
                     "needsTwoFactorAuthentication"
@@ -183,7 +183,7 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.userSession = application.database.get<{
         id: number;
-        publicIdTokenHash: string;
+        tokenTokenHash: string;
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
@@ -191,12 +191,12 @@ export default async (application: Application): Promise<void> => {
         sql`
           select
             "id",
-            "publicIdTokenHash",
+            "tokenTokenHash",
             "user",
             "lastUsedAt",
             "needsTwoFactorAuthentication"
           from "userSessions"
-          where "publicIdTokenHash" = ${node.TokenHash.hash(request.cookies.session)};
+          where "tokenTokenHash" = ${node.TokenHash.hash(request.cookies.session)};
         `,
       );
       if (request.state.userSession === undefined) {
@@ -1144,7 +1144,7 @@ export default async (application: Application): Promise<void> => {
         });
         request.state.userSession = application.database.get<{
           id: number;
-          publicIdTokenHash: string;
+          tokenTokenHash: string;
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
@@ -1154,7 +1154,7 @@ export default async (application: Application): Promise<void> => {
               application.database.run(
                 sql`
                   insert into "userSessions" (
-                    "publicIdTokenHash",
+                    "tokenTokenHash",
                     "user",
                     "lastUsedAt",
                     "needsTwoFactorAuthentication"
@@ -1882,7 +1882,7 @@ export default async (application: Application): Promise<void> => {
       });
       request.state.userSession = application.database.get<{
         id: number;
-        publicIdTokenHash: string;
+        tokenTokenHash: string;
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
@@ -1892,7 +1892,7 @@ export default async (application: Application): Promise<void> => {
             application.database.run(
               sql`
                 insert into "userSessions" (
-                  "publicIdTokenHash",
+                  "tokenTokenHash",
                   "user",
                   "lastUsedAt",
                   "needsTwoFactorAuthentication"
@@ -2864,7 +2864,7 @@ export default async (application: Application): Promise<void> => {
       });
       request.state.userSession = application.database.get<{
         id: number;
-        publicIdTokenHash: string;
+        tokenTokenHash: string;
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
@@ -2874,7 +2874,7 @@ export default async (application: Application): Promise<void> => {
             application.database.run(
               sql`
                 insert into "userSessions" (
-                  "publicIdTokenHash",
+                  "tokenTokenHash",
                   "user",
                   "lastUsedAt",
                   "needsTwoFactorAuthentication"
@@ -3374,7 +3374,7 @@ export default async (application: Application): Promise<void> => {
         });
         request.state.userSession = application.database.get<{
           id: number;
-          publicIdTokenHash: string;
+          tokenTokenHash: string;
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
@@ -3384,7 +3384,7 @@ export default async (application: Application): Promise<void> => {
               application.database.run(
                 sql`
                   insert into "userSessions" (
-                    "publicIdTokenHash",
+                    "tokenTokenHash",
                     "user",
                     "lastUsedAt",
                     "needsTwoFactorAuthentication"
@@ -4255,7 +4255,7 @@ export default async (application: Application): Promise<void> => {
       });
       request.state.userSession = application.database.get<{
         id: number;
-        publicIdTokenHash: string;
+        tokenTokenHash: string;
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
@@ -4265,7 +4265,7 @@ export default async (application: Application): Promise<void> => {
             application.database.run(
               sql`
                 insert into "userSessions" (
-                  "publicIdTokenHash",
+                  "tokenTokenHash",
                   "user",
                   "lastUsedAt",
                   "needsTwoFactorAuthentication"

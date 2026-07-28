@@ -4380,15 +4380,15 @@ export default async (application: Application): Promise<void> => {
     (database) => {
       database.execute(
         sql`
-          alter table "userSessions" rename column "publicId" to "publicIdTokenHash";
+          alter table "userSessions" rename column "publicId" to "tokenTokenHash";
         `,
       );
       for (const userSession of database.all<{
         id: number;
-        publicIdTokenHash: string;
+        tokenTokenHash: string;
       }>(
         sql`
-          select "id", "publicIdTokenHash"
+          select "id", "tokenTokenHash"
           from "userSessions"
           order by "id" asc;
         `,
@@ -4396,32 +4396,7 @@ export default async (application: Application): Promise<void> => {
         database.run(
           sql`
             update "userSessions"
-            set "publicIdTokenHash" = ${node.TokenHash.hash(userSession.publicIdTokenHash)}
-            where "id" = ${userSession.id};
-          `,
-        );
-    },
-
-    (database) => {
-      database.execute(
-        sql`
-          alter table "coursePendingInvitationEmails" rename column "publicId" to "publicIdTokenHash";
-        `,
-      );
-      for (const userSession of database.all<{
-        id: number;
-        publicIdTokenHash: string;
-      }>(
-        sql`
-          select "id", "publicIdTokenHash"
-          from "coursePendingInvitationEmails"
-          order by "id" asc;
-        `,
-      ))
-        database.run(
-          sql`
-            update "coursePendingInvitationEmails"
-            set "publicIdTokenHash" = ${node.TokenHash.hash(userSession.publicIdTokenHash)}
+            set "tokenTokenHash" = ${node.TokenHash.hash(userSession.tokenTokenHash)}
             where "id" = ${userSession.id};
           `,
         );
