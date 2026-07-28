@@ -4401,5 +4401,66 @@ export default async (application: Application): Promise<void> => {
           `,
         );
     },
+
+    (database) => {
+      database.execute(
+        sql`
+          create table "new_coursePendingInvitationEmails" (
+            "id" integer primary key autoincrement,
+            "publicId" text not null,
+            "tokenTokenHash" text not null unique,
+            "course" integer not null references "courses",
+            "email" text not null,
+            "courseParticipationRole" text not null,
+            unique ("publicId", "course"),
+            unique ("course", "email")
+          ) strict;
+        `,
+      );
+      for (const coursePendingInvitationEmail of database.all<{
+        id: number;
+        publicId: string;
+        course: number;
+        email: string;
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "course",
+            "email",
+            "courseParticipationRole"
+          from "coursePendingInvitationEmails"
+          order by "id" asc;
+        `,
+      ))
+        database.run(
+          sql`
+            insert into "new_coursePendingInvitationEmails" (
+              "publicId",
+              "tokenTokenHash",
+              "course",
+              "email",
+              "courseParticipationRole"
+            )
+            values (
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${node.TokenHash.hash(coursePendingInvitationEmail.publicId)},
+              ${coursePendingInvitationEmail.course},
+              ${coursePendingInvitationEmail.email},
+              ${coursePendingInvitationEmail.courseParticipationRole}
+            );
+          `,
+        );
+      database.execute(
+        sql`
+          drop table "coursePendingInvitationEmails";
+          alter table "new_coursePendingInvitationEmails" rename to "coursePendingInvitationEmails";
+        `,
+      );
+    },
   );
 };
