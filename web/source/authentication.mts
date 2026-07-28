@@ -23,7 +23,7 @@ export type ApplicationAuthentication = {
         };
         userSession: {
           id: number;
-          publicId: string;
+          publicIdTokenHash: string;
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
@@ -105,9 +105,13 @@ export default async (application: Application): Promise<void> => {
           request.liveConnection
         )
           return;
+        const userSessionPublicId = cryptoRandomString({
+          length: 100,
+          type: "alphanumeric",
+        });
         request.state.userSession = application.database.get<{
           id: number;
-          publicId: string;
+          publicIdTokenHash: string;
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
@@ -117,16 +121,13 @@ export default async (application: Application): Promise<void> => {
               application.database.run(
                 sql`
                   insert into "userSessions" (
-                    "publicId",
+                    "publicIdTokenHash",
                     "user",
                     "lastUsedAt",
                     "needsTwoFactorAuthentication"
                   )
                   values (
-                    ${cryptoRandomString({
-                      length: 100,
-                      type: "alphanumeric",
-                    })},
+                    ${node.TokenHash.hash(userSessionPublicId)},
                     ${1},
                     ${new Date().toISOString()},
                     ${Number(false)}
@@ -136,7 +137,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        response.setCookie!("session", request.state.userSession.publicId);
+        response.setCookie!("session", userSessionPublicId);
         response.redirect!("/");
       },
     });
@@ -182,7 +183,7 @@ export default async (application: Application): Promise<void> => {
       }
       request.state.userSession = application.database.get<{
         id: number;
-        publicId: string;
+        publicIdTokenHash: string;
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
@@ -190,12 +191,12 @@ export default async (application: Application): Promise<void> => {
         sql`
           select
             "id",
-            "publicId",
+            "publicIdTokenHash",
             "user",
             "lastUsedAt",
             "needsTwoFactorAuthentication"
           from "userSessions"
-          where "publicId" = ${request.cookies.session};
+          where "publicIdTokenHash" = ${node.TokenHash.hash(request.cookies.session)};
         `,
       );
       if (request.state.userSession === undefined) {
@@ -1137,9 +1138,13 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
+        const userSessionPublicId = cryptoRandomString({
+          length: 100,
+          type: "alphanumeric",
+        });
         request.state.userSession = application.database.get<{
           id: number;
-          publicId: string;
+          publicIdTokenHash: string;
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
@@ -1149,16 +1154,13 @@ export default async (application: Application): Promise<void> => {
               application.database.run(
                 sql`
                   insert into "userSessions" (
-                    "publicId",
+                    "publicIdTokenHash",
                     "user",
                     "lastUsedAt",
                     "needsTwoFactorAuthentication"
                   )
                   values (
-                    ${cryptoRandomString({
-                      length: 100,
-                      type: "alphanumeric",
-                    })},
+                    ${node.TokenHash.hash(userSessionPublicId)},
                     ${request.state.user.id},
                     ${new Date().toISOString()},
                     ${Number(false)}
@@ -1168,7 +1170,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        response.setCookie!("session", request.state.userSession.publicId);
+        response.setCookie!("session", userSessionPublicId);
         application.database.backgroundJob({
           type: "email",
           parameters: {
@@ -1874,9 +1876,13 @@ export default async (application: Application): Promise<void> => {
         response.redirect!(`/authentication${request.URL.search}`);
         return;
       }
+      const userSessionPublicId = cryptoRandomString({
+        length: 100,
+        type: "alphanumeric",
+      });
       request.state.userSession = application.database.get<{
         id: number;
-        publicId: string;
+        publicIdTokenHash: string;
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
@@ -1886,16 +1892,13 @@ export default async (application: Application): Promise<void> => {
             application.database.run(
               sql`
                 insert into "userSessions" (
-                  "publicId",
+                  "publicIdTokenHash",
                   "user",
                   "lastUsedAt",
                   "needsTwoFactorAuthentication"
                 )
                 values (
-                  ${cryptoRandomString({
-                    length: 100,
-                    type: "alphanumeric",
-                  })},
+                  ${node.TokenHash.hash(userSessionPublicId)},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
                   ${request.state.user.twoFactorAuthenticationEnabled}
@@ -1905,7 +1908,7 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       )!;
-      response.setCookie!("session", request.state.userSession.publicId);
+      response.setCookie!("session", userSessionPublicId);
       application.database.backgroundJob({
         type: "email",
         parameters: {
@@ -2855,9 +2858,13 @@ export default async (application: Application): Promise<void> => {
           delete from "userSessions" where "user" = ${request.state.user.id};
         `,
       );
+      const userSessionPublicId = cryptoRandomString({
+        length: 100,
+        type: "alphanumeric",
+      });
       request.state.userSession = application.database.get<{
         id: number;
-        publicId: string;
+        publicIdTokenHash: string;
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
@@ -2867,16 +2874,13 @@ export default async (application: Application): Promise<void> => {
             application.database.run(
               sql`
                 insert into "userSessions" (
-                  "publicId",
+                  "publicIdTokenHash",
                   "user",
                   "lastUsedAt",
                   "needsTwoFactorAuthentication"
                 )
                 values (
-                  ${cryptoRandomString({
-                    length: 100,
-                    type: "alphanumeric",
-                  })},
+                  ${node.TokenHash.hash(userSessionPublicId)},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
                   ${request.state.user.twoFactorAuthenticationEnabled}
@@ -2886,7 +2890,7 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       )!;
-      response.setCookie!("session", request.state.userSession.publicId);
+      response.setCookie!("session", userSessionPublicId);
       application.database.backgroundJob({
         type: "email",
         parameters: {
@@ -3364,9 +3368,13 @@ export default async (application: Application): Promise<void> => {
               `,
             )!;
         });
+        const userSessionPublicId = cryptoRandomString({
+          length: 100,
+          type: "alphanumeric",
+        });
         request.state.userSession = application.database.get<{
           id: number;
-          publicId: string;
+          publicIdTokenHash: string;
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
@@ -3376,16 +3384,13 @@ export default async (application: Application): Promise<void> => {
               application.database.run(
                 sql`
                   insert into "userSessions" (
-                    "publicId",
+                    "publicIdTokenHash",
                     "user",
                     "lastUsedAt",
                     "needsTwoFactorAuthentication"
                   )
                   values (
-                    ${cryptoRandomString({
-                      length: 100,
-                      type: "alphanumeric",
-                    })},
+                    ${node.TokenHash.hash(userSessionPublicId)},
                     ${request.state.user!.id},
                     ${new Date().toISOString()},
                     ${Number(false)}
@@ -3395,7 +3400,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        response.setCookie!("session", request.state.userSession.publicId);
+        response.setCookie!("session", userSessionPublicId);
         application.database.backgroundJob({
           type: "email",
           parameters: {
@@ -4244,9 +4249,13 @@ export default async (application: Application): Promise<void> => {
             `,
           )!;
       });
+      const userSessionPublicId = cryptoRandomString({
+        length: 100,
+        type: "alphanumeric",
+      });
       request.state.userSession = application.database.get<{
         id: number;
-        publicId: string;
+        publicIdTokenHash: string;
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
@@ -4256,16 +4265,13 @@ export default async (application: Application): Promise<void> => {
             application.database.run(
               sql`
                 insert into "userSessions" (
-                  "publicId",
+                  "publicIdTokenHash",
                   "user",
                   "lastUsedAt",
                   "needsTwoFactorAuthentication"
                 )
                 values (
-                  ${cryptoRandomString({
-                    length: 100,
-                    type: "alphanumeric",
-                  })},
+                  ${node.TokenHash.hash(userSessionPublicId)},
                   ${request.state.user!.id},
                   ${new Date().toISOString()},
                   ${Number(false)}
@@ -4275,7 +4281,7 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       )!;
-      response.setCookie!("session", request.state.userSession.publicId);
+      response.setCookie!("session", userSessionPublicId);
       application.database.backgroundJob({
         type: "email",
         parameters: {
