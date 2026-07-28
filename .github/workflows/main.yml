@@ -1,6 +1,6 @@
 on: push
 jobs:
-  web--build:
+  build:
     strategy:
       fail-fast: false
       matrix:
@@ -15,12 +15,9 @@ jobs:
         with:
           node-version: latest
       - run: |
-          mv web/ courselore/
-          cd courselore/
           npm install-ci-test
           npx package
-          cd ..
-          mv ./courselore.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }} ./courselore--${{ matrix.os }}--${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || github.sha }}.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }}
+          mv ../courselore.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }} ../courselore--${{ matrix.os }}--${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || github.sha }}.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }}
       - uses: actions/upload-artifact@main
         with:
           path: ./courselore--${{ matrix.os }}--${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || github.sha }}.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }}
@@ -59,9 +56,9 @@ jobs:
             systemctl enable courselore
             rm -rf /root/courselore--deploy/
           EOF
-  web--release:
+  release:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-    needs: web--build
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@main
