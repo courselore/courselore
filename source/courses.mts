@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import * as serverTypes from "@radically-straightforward/server";
-import * as node from "@radically-straightforward/node";
+import * as cryptography from "@radically-straightforward/cryptography";
 import QRCode from "qrcode";
 import cryptoRandomString from "crypto-random-string";
 import emailAddresses from "email-addresses";
@@ -309,9 +309,9 @@ export default async (application: Application): Promise<void> => {
                 ${request.body.name},
                 ${null},
                 ${Number(true)},
-                ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))},
+                ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))},
                 ${Number(true)},
-                ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))},
+                ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))},
                 ${Number(true)},
                 ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
                 ${Number(true)},
@@ -1554,7 +1554,7 @@ export default async (application: Application): Promise<void> => {
                             >
                               $${await (async () => {
                                 const invitationLinkCourseParticipationRoleInstructorsToken =
-                                  node.SymmetricEncryption.decrypt(
+                                  cryptography.SymmetricEncryption.decrypt(
                                     application.applicationConfiguration
                                       .secretKey,
                                     request.state.course!
@@ -1837,7 +1837,7 @@ export default async (application: Application): Promise<void> => {
                               })()}
                               $${await (async () => {
                                 const invitationLinkCourseParticipationRoleStudentsToken =
-                                  node.SymmetricEncryption.decrypt(
+                                  cryptography.SymmetricEncryption.decrypt(
                                     application.applicationConfiguration
                                       .secretKey,
                                     request.state.course!
@@ -3836,7 +3836,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             update "courses"
-            set "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
+            set "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
             where "id" = ${request.state.course.id};
           `,
         );
@@ -3847,7 +3847,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             update "courses"
-            set "invitationLinkCourseParticipationRoleStudentsTokenEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
+            set "invitationLinkCourseParticipationRoleStudentsTokenEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, cryptoRandomString({ length: 20, type: "numeric" }))}
             where "id" = ${request.state.course.id};
           `,
         );
@@ -3944,7 +3944,7 @@ export default async (application: Application): Promise<void> => {
         ) &&
         (() => {
           const invitationLinkCourseParticipationRoleInstructorsToken =
-            node.SymmetricEncryption.decrypt(
+            cryptography.SymmetricEncryption.decrypt(
               application.applicationConfiguration.secretKey,
               request.state.invitationCourse
                 .invitationLinkCourseParticipationRoleInstructorsTokenEncrypted,
@@ -3970,7 +3970,7 @@ export default async (application: Application): Promise<void> => {
         ) &&
         (() => {
           const invitationLinkCourseParticipationRoleStudentsToken =
-            node.SymmetricEncryption.decrypt(
+            cryptography.SymmetricEncryption.decrypt(
               application.applicationConfiguration.secretKey,
               request.state.invitationCourse
                 .invitationLinkCourseParticipationRoleStudentsTokenEncrypted,
@@ -4287,7 +4287,7 @@ export default async (application: Application): Promise<void> => {
             )
             values (
               ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${node.TokenHash.hash(coursePendingInvitationEmailToken)},
+              ${cryptography.TokenHash.hash(coursePendingInvitationEmailToken)},
               ${request.state.course.id},
               ${userEmail},
               ${request.body.courseParticipationRole}
@@ -4457,7 +4457,7 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRole"
           from "coursePendingInvitationEmails"
           where
-            "tokenTokenHash" = ${node.TokenHash.hash(request.pathname.coursePendingInvitationEmailToken)} and
+            "tokenTokenHash" = ${cryptography.TokenHash.hash(request.pathname.coursePendingInvitationEmailToken)} and
             "course" = ${request.state.invitationCourse.id} and
             "email" = ${request.state.user.email};
         `,

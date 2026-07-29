@@ -9,6 +9,7 @@ import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
+import * as cryptography from "@radically-straightforward/cryptography";
 import * as OTPAuth from "otpauth";
 import { Application } from "./index.mjs";
 
@@ -127,7 +128,7 @@ export default async (application: Application): Promise<void> => {
                     "needsTwoFactorAuthentication"
                   )
                   values (
-                    ${node.TokenHash.hash(userSessionPublicId)},
+                    ${cryptography.TokenHash.hash(userSessionPublicId)},
                     ${1},
                     ${new Date().toISOString()},
                     ${Number(false)}
@@ -196,7 +197,7 @@ export default async (application: Application): Promise<void> => {
             "lastUsedAt",
             "needsTwoFactorAuthentication"
           from "userSessions"
-          where "tokenTokenHash" = ${node.TokenHash.hash(request.cookies.session)};
+          where "tokenTokenHash" = ${cryptography.TokenHash.hash(request.cookies.session)};
         `,
       );
       if (request.state.userSession === undefined) {
@@ -934,10 +935,10 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      const emailVerificationNonceTokenHash = node.TokenHash.hash(
+      const emailVerificationNonceTokenHash = cryptography.TokenHash.hash(
         emailVerificationNonce,
       );
-      const passwordPasswordHash = await node.PasswordHash.hash(
+      const passwordPasswordHash = await cryptography.PasswordHash.hash(
         request.body.password,
       );
       application.database.executeTransaction(() => {
@@ -1160,7 +1161,7 @@ export default async (application: Application): Promise<void> => {
                     "needsTwoFactorAuthentication"
                   )
                   values (
-                    ${node.TokenHash.hash(userSessionPublicId)},
+                    ${cryptography.TokenHash.hash(userSessionPublicId)},
                     ${request.state.user.id},
                     ${new Date().toISOString()},
                     ${Number(false)}
@@ -1391,7 +1392,7 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      request.state.user.emailVerificationNonceTokenHash = node.TokenHash.hash(
+      request.state.user.emailVerificationNonceTokenHash = cryptography.TokenHash.hash(
         emailVerificationNonce,
       );
       request.state.user.emailVerificationNonceCreatedAt =
@@ -1706,7 +1707,7 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (
-        !node.TokenHash.verify(
+        !cryptography.TokenHash.verify(
           request.state.user.emailVerificationNonceTokenHash ??
             "5235aadf13a5b2b37a277d0022fc8d296721219a1bffa22d2f88383cb577c776",
           request.pathname.emailVerificationNonce,
@@ -1863,7 +1864,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (
-        !(await node.PasswordHash.verify(
+        !(await cryptography.PasswordHash.verify(
           request.state.user?.passwordPasswordHash ??
             `{"nonce":"c2558b39a310c68706ca4ba4203074ad","hash":"10deb2c5ad9a229066c25697bb81ec4ec1f641cd2155cb4ee6cce7080ee5709b"}`,
           request.body.password,
@@ -1898,7 +1899,7 @@ export default async (application: Application): Promise<void> => {
                   "needsTwoFactorAuthentication"
                 )
                 values (
-                  ${node.TokenHash.hash(userSessionPublicId)},
+                  ${cryptography.TokenHash.hash(userSessionPublicId)},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
                   ${request.state.user.twoFactorAuthenticationEnabled}
@@ -2220,7 +2221,7 @@ export default async (application: Application): Promise<void> => {
           request.body.twoFactorAuthenticationRecoveryCode.length < 10)
       )
         throw "validation";
-      const twoFactorAuthenticationSecret = node.SymmetricEncryption.decrypt(
+      const twoFactorAuthenticationSecret = cryptography.SymmetricEncryption.decrypt(
         application.applicationConfiguration.secretKey,
         request.state.user.twoFactorAuthenticationSecretEncrypted,
       );
@@ -2238,7 +2239,7 @@ export default async (application: Application): Promise<void> => {
                 request.state.user
                   .twoFactorAuthenticationRecoveryCodesPasswordHashes,
               ).map((twoFactorAuthenticationRecoveryCode: string) =>
-                node.PasswordHash.verify(
+                cryptography.PasswordHash.verify(
                   twoFactorAuthenticationRecoveryCode,
                   request.body.twoFactorAuthenticationRecoveryCode!,
                 ),
@@ -2369,7 +2370,7 @@ export default async (application: Application): Promise<void> => {
         type: "numeric",
       });
       const passwordResetNonceTokenHash =
-        node.TokenHash.hash(passwordResetNonce);
+        cryptography.TokenHash.hash(passwordResetNonce);
       request.state.user = application.database.get<{
         id: number;
         publicId: string;
@@ -2743,7 +2744,7 @@ export default async (application: Application): Promise<void> => {
         !request.search.redirect.startsWith("/")
       )
         delete request.search.redirect;
-      const passwordPasswordHash = await node.PasswordHash.hash(
+      const passwordPasswordHash = await cryptography.PasswordHash.hash(
         request.body.password,
       );
       request.state.user = application.database.get<{
@@ -2825,7 +2826,7 @@ export default async (application: Application): Promise<void> => {
             "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt"
           from "users"
-          where "passwordResetNonceTokenHash" = ${node.TokenHash.hash(
+          where "passwordResetNonceTokenHash" = ${cryptography.TokenHash.hash(
             request.pathname.passwordResetNonce,
           )};
         `,
@@ -2880,7 +2881,7 @@ export default async (application: Application): Promise<void> => {
                   "needsTwoFactorAuthentication"
                 )
                 values (
-                  ${node.TokenHash.hash(userSessionPublicId)},
+                  ${cryptography.TokenHash.hash(userSessionPublicId)},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
                   ${request.state.user.twoFactorAuthenticationEnabled}
@@ -3031,8 +3032,8 @@ export default async (application: Application): Promise<void> => {
       });
       ltiLaunches.add({
         platform,
-        stateTokenHash: node.TokenHash.hash(state),
-        nonceTokenHash: node.TokenHash.hash(nonce),
+        stateTokenHash: cryptography.TokenHash.hash(state),
+        nonceTokenHash: cryptography.TokenHash.hash(nonce),
         createdAt: new Date().toISOString(),
       });
       response.redirect!(
@@ -3075,7 +3076,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.id_token !== "string"
       )
         throw "validation";
-      const stateTokenHash = node.TokenHash.hash(request.body.state);
+      const stateTokenHash = cryptography.TokenHash.hash(request.body.state);
       const launch = [...ltiLaunches].find(
         (launch) => stateTokenHash === launch.stateTokenHash,
       );
@@ -3099,7 +3100,7 @@ export default async (application: Application): Promise<void> => {
       }
       if (
         typeof idToken.nonce !== "string" ||
-        !node.TokenHash.verify(launch.nonceTokenHash, idToken.nonce) ||
+        !cryptography.TokenHash.verify(launch.nonceTokenHash, idToken.nonce) ||
         (idToken.azp !== undefined &&
           idToken.azp !== launch.platform.clientId) ||
         idToken["https://purl.imsglobal.org/spec/lti/claim/message_type"] !==
@@ -3390,7 +3391,7 @@ export default async (application: Application): Promise<void> => {
                     "needsTwoFactorAuthentication"
                   )
                   values (
-                    ${node.TokenHash.hash(userSessionPublicId)},
+                    ${cryptography.TokenHash.hash(userSessionPublicId)},
                     ${request.state.user!.id},
                     ${new Date().toISOString()},
                     ${Number(false)}
@@ -3937,7 +3938,7 @@ export default async (application: Application): Promise<void> => {
       samlFlows.add({
         identityProvider,
         identityProviderSAML,
-        relayStateTokenHash: node.TokenHash.hash(relayState),
+        relayStateTokenHash: cryptography.TokenHash.hash(relayState),
         requestSearch: request.search as any,
         createdAt: new Date().toISOString(),
       });
@@ -3972,7 +3973,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.SAMLResponse !== "string"
       )
         throw "validation";
-      const relayStateTokenHash = node.TokenHash.hash(request.body.RelayState);
+      const relayStateTokenHash = cryptography.TokenHash.hash(request.body.RelayState);
       const flow = [...samlFlows].find(
         (flow) => relayStateTokenHash === flow.relayStateTokenHash,
       );
@@ -4271,7 +4272,7 @@ export default async (application: Application): Promise<void> => {
                   "needsTwoFactorAuthentication"
                 )
                 values (
-                  ${node.TokenHash.hash(userSessionPublicId)},
+                  ${cryptography.TokenHash.hash(userSessionPublicId)},
                   ${request.state.user!.id},
                   ${new Date().toISOString()},
                   ${Number(false)}

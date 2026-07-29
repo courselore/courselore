@@ -8,6 +8,7 @@ import childProcess from "node:child_process";
 import server from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
+import * as cryptography from "@radically-straightforward/cryptography";
 import * as caddy from "@radically-straightforward/caddy";
 import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
@@ -130,11 +131,11 @@ application.applicationConfiguration.stopWords = new Set(
   natural.stopwords.map((stopWord) => utilities.normalizeToken(stopWord)),
 );
 if (typeof application.userConfiguration.secretKey !== "string") {
-  const secretKey = node.SymmetricEncryption.exportKey(
-    await node.SymmetricEncryption.generateKey(),
+  const secretKey = cryptography.SymmetricEncryption.exportKey(
+    await cryptography.SymmetricEncryption.generateKey(),
   );
-  const ltiKeyPair = await node.AsymmetricEncryption.generateKeyPair();
-  const samlKeyPair = await node.AsymmetricEncryption.generateKeyPair();
+  const ltiKeyPair = await cryptography.AsymmetricEncryption.generateKeyPair();
+  const samlKeyPair = await cryptography.AsymmetricEncryption.generateKeyPair();
   console.log(
     JSON.stringify(
       {
@@ -176,7 +177,9 @@ if (typeof application.userConfiguration.secretKey !== "string") {
   process.exit();
 }
 application.applicationConfiguration.secretKey =
-  node.SymmetricEncryption.importKey(application.userConfiguration.secretKey);
+  cryptography.SymmetricEncryption.importKey(
+    application.userConfiguration.secretKey,
+  );
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),

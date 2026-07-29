@@ -2,6 +2,7 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import * as serverTypes from "@radically-straightforward/server";
 import * as node from "@radically-straightforward/node";
+import * as cryptography from "@radically-straightforward/cryptography";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
@@ -1603,9 +1604,8 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      request.state.user.emailVerificationNonceTokenHash = node.TokenHash.hash(
-        emailVerificationNonce,
-      );
+      request.state.user.emailVerificationNonceTokenHash =
+        cryptography.TokenHash.hash(emailVerificationNonce);
       request.state.user.emailVerificationNonceCreatedAt =
         new Date().toISOString();
       application.database.run(
@@ -1743,7 +1743,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       if (
-        !(await node.PasswordHash.verify(
+        !(await cryptography.PasswordHash.verify(
           request.state.user.passwordPasswordHash,
           request.body.currentPassword,
         ))
@@ -1754,9 +1754,8 @@ export default async (application: Application): Promise<void> => {
         response.redirect!("/settings");
         return;
       }
-      request.state.user.passwordPasswordHash = await node.PasswordHash.hash(
-        request.body.newPassword,
-      );
+      request.state.user.passwordPasswordHash =
+        await cryptography.PasswordHash.hash(request.body.newPassword);
       application.database.run(
         sql`
           update "users"
@@ -1833,7 +1832,7 @@ export default async (application: Application): Promise<void> => {
         return;
       const twoFactorAuthenticationSecret = new OTPAuth.Secret().base32;
       request.state.user.twoFactorAuthenticationSecretEncrypted =
-        node.SymmetricEncryption.encrypt(
+        cryptography.SymmetricEncryption.encrypt(
           application.applicationConfiguration.secretKey,
           twoFactorAuthenticationSecret,
         );
@@ -1846,7 +1845,9 @@ export default async (application: Application): Promise<void> => {
           await Promise.all(
             twoFactorAuthenticationRecoveryCodes.map(
               (twoFactorAuthenticationRecoveryCode: string) =>
-                node.PasswordHash.hash(twoFactorAuthenticationRecoveryCode),
+                cryptography.PasswordHash.hash(
+                  twoFactorAuthenticationRecoveryCode,
+                ),
             ),
           ),
         );
@@ -2137,13 +2138,14 @@ export default async (application: Application): Promise<void> => {
         request.body.twoFactorAuthenticationCode.length < 6
       )
         throw "validation";
-      const passwordConfirmationVerification = await node.PasswordHash.verify(
-        request.state.user.passwordPasswordHash,
-        request.body.passwordConfirmation,
-      );
+      const passwordConfirmationVerification =
+        await cryptography.PasswordHash.verify(
+          request.state.user.passwordPasswordHash,
+          request.body.passwordConfirmation,
+        );
       const twoFactorAuthenticationCodeVerification =
         new OTPAuth.TOTP({
-          secret: node.SymmetricEncryption.decrypt(
+          secret: cryptography.SymmetricEncryption.decrypt(
             application.applicationConfiguration.secretKey,
             request.state.user.twoFactorAuthenticationSecretEncrypted,
           ),
@@ -2263,14 +2265,15 @@ export default async (application: Application): Promise<void> => {
           request.body.twoFactorAuthenticationRecoveryCode.length < 10)
       )
         throw "validation";
-      const passwordConfirmationVerification = await node.PasswordHash.verify(
-        request.state.user.passwordPasswordHash,
-        request.body.passwordConfirmation,
-      );
+      const passwordConfirmationVerification =
+        await cryptography.PasswordHash.verify(
+          request.state.user.passwordPasswordHash,
+          request.body.passwordConfirmation,
+        );
       const twoFactorAuthenticationCodeVerification =
         (typeof request.body.twoFactorAuthenticationCode === "string" &&
           new OTPAuth.TOTP({
-            secret: node.SymmetricEncryption.decrypt(
+            secret: cryptography.SymmetricEncryption.decrypt(
               application.applicationConfiguration.secretKey,
               request.state.user.twoFactorAuthenticationSecretEncrypted,
             ),
@@ -2284,7 +2287,7 @@ export default async (application: Application): Promise<void> => {
                 request.state.user
                   .twoFactorAuthenticationRecoveryCodesPasswordHashes,
               ).map((twoFactorAuthenticationRecoveryCode: string) =>
-                node.PasswordHash.verify(
+                cryptography.PasswordHash.verify(
                   twoFactorAuthenticationRecoveryCode,
                   request.body.twoFactorAuthenticationRecoveryCode!,
                 ),
@@ -2435,7 +2438,7 @@ export default async (application: Application): Promise<void> => {
         type: "numeric",
       });
       const deleteMyAccountNonceTokenHash =
-        node.TokenHash.hash(deleteMyAccountNonce);
+        cryptography.TokenHash.hash(deleteMyAccountNonce);
       if (
         request.state.user.deleteMyAccountNonceCreatedAt === null ||
         request.state.user.deleteMyAccountNonceCreatedAt <
@@ -2933,7 +2936,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const deleteMyAccountNonceVerification =
-        node.TokenHash.verify(
+        cryptography.TokenHash.verify(
           request.state.user.deleteMyAccountNonceTokenHash ??
             "5235aadf13a5b2b37a277d0022fc8d296721219a1bffa22d2f88383cb577c776",
           request.pathname.deleteMyAccountNonce,
@@ -2941,7 +2944,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.state.user.deleteMyAccountNonceTokenHash === "string";
       const passwordConfirmationVerification =
         typeof request.state.user.passwordPasswordHash === "string"
-          ? await node.PasswordHash.verify(
+          ? await cryptography.PasswordHash.verify(
               request.state.user.passwordPasswordHash,
               request.body.passwordConfirmation!,
             )
@@ -2950,7 +2953,7 @@ export default async (application: Application): Promise<void> => {
         Boolean(request.state.user.twoFactorAuthenticationEnabled) === true
           ? (typeof request.body.twoFactorAuthenticationCode === "string" &&
               new OTPAuth.TOTP({
-                secret: node.SymmetricEncryption.decrypt(
+                secret: cryptography.SymmetricEncryption.decrypt(
                   application.applicationConfiguration.secretKey,
                   request.state.user.twoFactorAuthenticationSecretEncrypted!,
                 ),
@@ -2965,7 +2968,7 @@ export default async (application: Application): Promise<void> => {
                     request.state.user
                       .twoFactorAuthenticationRecoveryCodesPasswordHashes!,
                   ).map((twoFactorAuthenticationRecoveryCode: string) =>
-                    node.PasswordHash.verify(
+                    cryptography.PasswordHash.verify(
                       twoFactorAuthenticationRecoveryCode,
                       request.body.twoFactorAuthenticationRecoveryCode!,
                     ),

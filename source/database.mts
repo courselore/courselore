@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import readline from "node:readline/promises";
 import sql, { Database } from "@radically-straightforward/sqlite";
 import * as utilities from "@radically-straightforward/utilities";
-import * as node from "@radically-straightforward/node";
+import * as cryptography from "@radically-straightforward/cryptography";
 import { dedent as markdown } from "@radically-straightforward/utilities";
 import * as examples from "@radically-straightforward/examples";
 import cryptoRandomString from "crypto-random-string";
@@ -3241,7 +3241,7 @@ export default async (application: Application): Promise<void> => {
             "utf-8",
           ),
         );
-        const userPassword = await node.PasswordHash.hash("courselore");
+        const userPassword = await cryptography.PasswordHash.hash("courselore");
         const [user, ...users] = Array.from(
           { length: 151 },
           (value, userIndex) => {
@@ -4310,7 +4310,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             update "users"
             set
-              "twoFactorAuthenticationSecretEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecretEncrypted)},
+              "twoFactorAuthenticationSecretEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecretEncrypted)},
               "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${JSON.stringify(
                 JSON.parse(
                   user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
@@ -4370,8 +4370,8 @@ export default async (application: Application): Promise<void> => {
           sql`
           update "courses"
           set
-            "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleInstructorsTokenEncrypted)},
-            "invitationLinkCourseParticipationRoleStudentsTokenEncrypted" = ${node.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleStudentsTokenEncrypted)}
+            "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleInstructorsTokenEncrypted)},
+            "invitationLinkCourseParticipationRoleStudentsTokenEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleStudentsTokenEncrypted)}
           where "id" = ${course.id};
         `,
         );
@@ -4396,7 +4396,7 @@ export default async (application: Application): Promise<void> => {
         database.run(
           sql`
             update "userSessions"
-            set "tokenTokenHash" = ${node.TokenHash.hash(userSession.tokenTokenHash)}
+            set "tokenTokenHash" = ${cryptography.TokenHash.hash(userSession.tokenTokenHash)}
             where "id" = ${userSession.id};
           `,
         );
@@ -4448,7 +4448,7 @@ export default async (application: Application): Promise<void> => {
             )
             values (
               ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${node.TokenHash.hash(coursePendingInvitationEmail.publicId)},
+              ${cryptography.TokenHash.hash(coursePendingInvitationEmail.publicId)},
               ${coursePendingInvitationEmail.course},
               ${coursePendingInvitationEmail.email},
               ${coursePendingInvitationEmail.courseParticipationRole}
