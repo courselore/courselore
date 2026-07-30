@@ -735,7 +735,7 @@ export default async (application: Application): Promise<void> => {
               "courseConversation" = ${request.state.courseConversation.id} and
               "publicId" = ${request.pathname.courseConversationMessagePublicId} and (
                 "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone'
-                $${
+                ${
                   request.state.courseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor"
                     ? sql`
@@ -1397,9 +1397,9 @@ export default async (application: Application): Promise<void> => {
           update "courseConversationMessages"
           set
             "updatedAt" = ${new Date().toISOString()},
-            $${typeof request.body.courseConversationMessageType === "string" ? sql`"courseConversationMessageType" = ${request.body.courseConversationMessageType},` : sql``}
-            $${typeof request.body.courseConversationMessageVisibility === "string" ? sql`"courseConversationMessageVisibility" = ${request.body.courseConversationMessageVisibility},` : sql``}
-            $${typeof request.body.courseConversationMessageAnonymity === "string" ? sql`"courseConversationMessageAnonymity" = ${request.body.courseConversationMessageAnonymity},` : sql``}
+            ${typeof request.body.courseConversationMessageType === "string" ? sql`"courseConversationMessageType" = ${request.body.courseConversationMessageType},` : sql``}
+            ${typeof request.body.courseConversationMessageVisibility === "string" ? sql`"courseConversationMessageVisibility" = ${request.body.courseConversationMessageVisibility},` : sql``}
+            ${typeof request.body.courseConversationMessageAnonymity === "string" ? sql`"courseConversationMessageAnonymity" = ${request.body.courseConversationMessageAnonymity},` : sql``}
             "content" = ${request.body.content},
             "contentSearch" = ${utilities
               .tokenize(contentTextContent, {

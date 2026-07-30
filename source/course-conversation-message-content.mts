@@ -500,7 +500,7 @@ export default async (application: Application): Promise<void> => {
                     join "users" on "courseParticipations"."user" = "users"."id"
                     where
                       "courseParticipations"."course" = ${course.id} and
-                      "courseParticipations"."id" != ${courseParticipation.id} $${
+                      "courseParticipations"."id" != ${courseParticipation.id} ${
                         courseConversation === undefined
                           ? sql``
                           : courseConversation.courseConversationVisibility ===
@@ -2863,7 +2863,7 @@ You may also use the buttons on the message content editor to ${
                         "publicId" = ${courseConversationPublicId} and
                         "course" = ${course.id} and (
                           "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                          $${
+                          ${
                             courseParticipation !== undefined &&
                             courseParticipation.courseParticipationRole ===
                               "courseParticipationRoleInstructor"
@@ -2873,7 +2873,7 @@ You may also use the buttons on the message content editor to ${
                                 `
                               : sql``
                           }
-                          $${
+                          ${
                             courseParticipation !== undefined
                               ? sql`
                                   or (
@@ -2906,7 +2906,7 @@ You may also use the buttons on the message content editor to ${
                         from "courseConversationMessages"
                         where
                           "publicId" = ${courseConversationMessagePublicId} and
-                          "courseConversation" = ${mentionCourseConversation.id} $${
+                          "courseConversation" = ${mentionCourseConversation.id} ${
                             courseParticipation === undefined ||
                             courseParticipation.courseParticipationRole ===
                               "courseParticipationRoleStudent"
@@ -2965,7 +2965,7 @@ You may also use the buttons on the message content editor to ${
               "publicId" = ${match.groups.courseConversationPublicId} and
               "course" = ${course.id} and (
                 "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                $${
+                ${
                   courseParticipation !== undefined &&
                   courseParticipation.courseParticipationRole ===
                     "courseParticipationRoleInstructor"
@@ -2975,7 +2975,7 @@ You may also use the buttons on the message content editor to ${
                       `
                     : sql``
                 }
-                $${
+                ${
                   courseParticipation !== undefined
                     ? sql`
                         or (
@@ -3004,7 +3004,7 @@ You may also use the buttons on the message content editor to ${
             from "courseConversationMessages"
             where
               "publicId" = ${match.groups.courseConversationMessagePublicId} and
-              "courseConversation" = ${mentionCourseConversation.id} $${
+              "courseConversation" = ${mentionCourseConversation.id} ${
                 courseParticipation === undefined ||
                 courseParticipation.courseParticipationRole ===
                   "courseParticipationRoleStudent"

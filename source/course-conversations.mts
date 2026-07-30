@@ -288,7 +288,7 @@ export default async (application: Application): Promise<void> => {
                         where
                           "course" = ${request.state.course.id} and (
                             "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                            $${
+                            ${
                               request.state.courseParticipation
                                 .courseParticipationRole ===
                               "courseParticipationRoleInstructor"
@@ -502,7 +502,7 @@ export default async (application: Application): Promise<void> => {
                                     "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
                                     "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
                                   where
-                                    "courseConversationMessages"."courseConversation" = ${courseConversation.id} $${
+                                    "courseConversationMessages"."courseConversation" = ${courseConversation.id} ${
                                       request.state.courseParticipation!
                                         .courseParticipationRole !==
                                       "courseParticipationRoleInstructor"
@@ -1195,7 +1195,7 @@ export default async (application: Application): Promise<void> => {
             where
               "courseConversations"."course" = ${request.state.course.id} and (
                 "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                $${
+                ${
                   request.state.courseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor"
                     ? sql`
@@ -1275,7 +1275,7 @@ export default async (application: Application): Promise<void> => {
                 "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
                 "courseConversations"."course" = ${request.state.course.id} and (
                   "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                  $${
+                  ${
                     request.state.courseParticipation
                       .courseParticipationRole ===
                     "courseParticipationRoleInstructor"
@@ -1293,7 +1293,7 @@ export default async (application: Application): Promise<void> => {
                       "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                   )
                 )
-              $${
+              ${
                 request.state.courseParticipation!.courseParticipationRole !==
                 "courseParticipationRoleInstructor"
                   ? sql`
@@ -1553,7 +1553,7 @@ export default async (application: Application): Promise<void> => {
                     "publicId" = ${request.search["reuse.courseConversation"]} and
                     "course" = ${course.id} and (
                       "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                      $${
+                      ${
                         courseParticipation.courseParticipationRole ===
                         "courseParticipationRoleInstructor"
                           ? sql`
@@ -1612,7 +1612,7 @@ export default async (application: Application): Promise<void> => {
             where
               "course" = ${request.state.course.id} and (
                 "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                $${
+                ${
                   request.state.courseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor"
                     ? sql`
@@ -3027,7 +3027,7 @@ export default async (application: Application): Promise<void> => {
             "course" = ${request.state.course.id} and
             "publicId" = ${request.pathname.courseConversationPublicId} and (
               "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-              $${
+              ${
                 request.state.courseParticipation.courseParticipationRole ===
                 "courseParticipationRoleInstructor"
                   ? sql`
@@ -4771,7 +4771,7 @@ export default async (application: Application): Promise<void> => {
                           "content"
                         from "courseConversationMessages"
                         where
-                          "courseConversation" = ${request.state.courseConversation!.id} $${
+                          "courseConversation" = ${request.state.courseConversation!.id} ${
                             request.state.courseParticipation!
                               .courseParticipationRole !==
                             "courseParticipationRoleInstructor"
