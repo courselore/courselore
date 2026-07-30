@@ -967,7 +967,7 @@ export default async (application: Application): Promise<void> => {
             sql`
               update "users"
               set "userRole" = ${
-                request.body[`users[${user.publicId}].userRole`]
+                request.body[`users[${user.publicId}].userRole`]!
               }
               where "id" = ${user.id};
             `,

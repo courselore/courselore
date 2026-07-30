@@ -947,7 +947,7 @@ export default async (application: Application): Promise<void> => {
             sql`
               select true
               from "users"
-              where "email" = ${request.body.email};
+              where "email" = ${request.body.email!};
             `,
           ) !== undefined
         ) {
@@ -1082,8 +1082,8 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
                     ${request.body.name!},
-                    ${request.body.email},
-                    ${request.body.email},
+                    ${request.body.email!},
+                    ${request.body.email!},
                     ${emailVerificationNonceTokenHash},
                     ${new Date().toISOString()},
                     ${passwordPasswordHash},
@@ -1392,9 +1392,8 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      request.state.user.emailVerificationNonceTokenHash = cryptography.TokenHash.hash(
-        emailVerificationNonce,
-      );
+      request.state.user.emailVerificationNonceTokenHash =
+        cryptography.TokenHash.hash(emailVerificationNonce);
       request.state.user.emailVerificationNonceCreatedAt =
         new Date().toISOString();
       application.database.run(
@@ -2221,10 +2220,11 @@ export default async (application: Application): Promise<void> => {
           request.body.twoFactorAuthenticationRecoveryCode.length < 10)
       )
         throw "validation";
-      const twoFactorAuthenticationSecret = cryptography.SymmetricEncryption.decrypt(
-        application.applicationConfiguration.secretKey,
-        request.state.user.twoFactorAuthenticationSecretEncrypted,
-      );
+      const twoFactorAuthenticationSecret =
+        cryptography.SymmetricEncryption.decrypt(
+          application.applicationConfiguration.secretKey,
+          request.state.user.twoFactorAuthenticationSecretEncrypted,
+        );
       if (
         (typeof request.body.twoFactorAuthenticationCode === "string" &&
           new OTPAuth.TOTP({
@@ -3973,7 +3973,9 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.SAMLResponse !== "string"
       )
         throw "validation";
-      const relayStateTokenHash = cryptography.TokenHash.hash(request.body.RelayState);
+      const relayStateTokenHash = cryptography.TokenHash.hash(
+        request.body.RelayState,
+      );
       const flow = [...samlFlows].find(
         (flow) => relayStateTokenHash === flow.relayStateTokenHash,
       );

@@ -317,10 +317,10 @@ export default async (application: Application): Promise<void> => {
                 ${Number(true)},
                 ${"courseStateActive"},
                 ${1},
-                ${request.body.ltiPlatformId},
-                ${request.body.ltiClientId},
-                ${request.body.ltiContextId},
-                ${request.body.ltiNamesAndRoleProvisioningServicesURL}
+                ${request.body.ltiPlatformId ?? null},
+                ${request.body.ltiClientId ?? null},
+                ${request.body.ltiContextId ?? null},
+                ${request.body.ltiNamesAndRoleProvisioningServicesURL ?? null}
               );
             `,
             ).lastInsertRowid
@@ -416,7 +416,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (request.state.user === undefined) return;
+      if (
+        typeof request.pathname.coursePublicId !== "string" ||
+        request.state.user === undefined
+      )
+        return;
       request.state.course = application.database.get<{
         id: number;
         publicId: string;
@@ -3710,7 +3714,7 @@ export default async (application: Application): Promise<void> => {
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
                   ${request.state.course!.id},
                   ${order},
-                  ${request.body[`courseConversationsTags[${courseConversationsTagPublicId}].name`]},
+                  ${request.body[`courseConversationsTags[${courseConversationsTagPublicId}].name`]!},
                   ${Number(request.body[`courseConversationsTags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
                 );
               `,
@@ -3721,7 +3725,7 @@ export default async (application: Application): Promise<void> => {
                 update "courseConversationsTags"
                 set
                   "order" = ${order},
-                  "name" = ${request.body[`courseConversationsTags[${courseConversationsTagPublicId}].name`]},
+                  "name" = ${request.body[`courseConversationsTags[${courseConversationsTagPublicId}].name`]!},
                   "privateToCourseParticipationRoleInstructors" = ${Number(request.body[`courseConversationsTags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
                 where "id" = ${courseConversationsTag.id};
               `,
@@ -4149,7 +4153,7 @@ export default async (application: Application): Promise<void> => {
               ${request.state.invitationCourse!.id},
               ${
                 request.state
-                  .invitationCourseParticipationCourseParticipationRole
+                  .invitationCourseParticipationCourseParticipationRole!
               },
               ${
                 [
@@ -4745,7 +4749,7 @@ export default async (application: Application): Promise<void> => {
               set "courseParticipationRole" = ${
                 request.body[
                   `coursePendingInvitationEmails[${coursePendingInvitationEmail.publicId}].courseParticipationRole`
-                ]
+                ]!
               }
               where "id" = ${coursePendingInvitationEmail.id};
             `,
@@ -4856,7 +4860,7 @@ export default async (application: Application): Promise<void> => {
               set "courseParticipationRole" = ${
                 request.body[
                   `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
-                ]
+                ]!
               }
               where "id" = ${courseParticipation.id};
             `,

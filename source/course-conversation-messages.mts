@@ -159,7 +159,7 @@ export default async (application: Application): Promise<void> => {
               ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
               ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
               ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
-              ${request.body.content}
+              ${request.body.content!}
             );
           `,
         );
@@ -326,7 +326,7 @@ export default async (application: Application): Promise<void> => {
                     ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
                     ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
                     ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
-                    ${request.body.content},
+                    ${request.body.content!},
                     ${utilities
                       .tokenize(contentTextContent, {
                         stopWords:
@@ -694,6 +694,8 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        typeof request.pathname.courseConversationMessagePublicId !==
+          "string" ||
         request.state.courseParticipation === undefined ||
         request.state.courseConversation === undefined
       )
