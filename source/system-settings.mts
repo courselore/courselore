@@ -950,7 +950,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         throw "validation";
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         for (const userPublicId of request.body.usersPublicIds!) {
           const user = application.database.get<{
             id: number;

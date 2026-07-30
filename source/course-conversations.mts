@@ -2787,7 +2787,7 @@ export default async (application: Application): Promise<void> => {
           courseConversationMessageContent: request.body.content,
           mode: "textContent",
         });
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         courseConversation = application.database.get<{
           id: number;
           publicId: string;
@@ -6758,7 +6758,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         throw "validation";
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         application.database.run(
           sql`
             update "courseConversations"
@@ -6886,7 +6886,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversation === undefined
       )
         return;
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         application.database.run(
           sql`
             update "courseParticipations"

@@ -115,7 +115,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       let sendLiveConnectionUpdates = false;
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         const previousCourseConversationMessageDraft =
           application.database.get<{ content: string }>(
             sql`
@@ -262,7 +262,7 @@ export default async (application: Application): Promise<void> => {
           courseConversationMessageContent: request.body.content,
           mode: "textContent",
         });
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         application.database.run(
           sql`
             delete from "courseConversationMessageDrafts"
@@ -669,7 +669,7 @@ export default async (application: Application): Promise<void> => {
               `,
             });
         }
-        application.database.executeTransaction(() => {
+        application.database.transaction(() => {
           for (const courseConversationMessageEmailNotification of courseConversationMessageEmailNotifications)
             application.database.backgroundJob({
               type: "email",
@@ -1463,7 +1463,7 @@ export default async (application: Application): Promise<void> => {
           ).id
       )
         return;
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         application.database.run(
           sql`
             delete from "courseConversationMessageViews"
@@ -1517,7 +1517,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversationMessage === undefined
       )
         return;
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         if (
           application.database.get(
             sql`
@@ -1571,7 +1571,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversationMessage === undefined
       )
         return;
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         if (
           application.database.get(
             sql`
@@ -1633,7 +1633,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversationMessage === undefined
       )
         return;
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         const courseConversationMessageLike = application.database.get<{
           id: number;
         }>(

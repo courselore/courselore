@@ -2990,7 +2990,7 @@ export default async (application: Application): Promise<void> => {
         response.redirect!("/settings");
         return;
       }
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         application.database.run(
           sql`
             update "users"

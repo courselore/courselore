@@ -3678,7 +3678,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         throw "validation";
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         application.database.run(
           sql`
             update "courses"
@@ -4132,7 +4132,7 @@ export default async (application: Application): Promise<void> => {
         request.state.invitationCourse === undefined
       )
         return;
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         application.database.run(
           sql`
             insert into "courseParticipations" (
@@ -4611,7 +4611,7 @@ export default async (application: Application): Promise<void> => {
         request.state.coursePendingInvitationEmail === undefined
       )
         return;
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         application.database.run(
           sql`
             insert into "courseParticipations" (
@@ -4723,7 +4723,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         throw "validation";
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         for (const coursePendingInvitationEmailPublicId of request.body
           .coursePendingInvitationEmailsPublicIds!) {
           const coursePendingInvitationEmail = application.database.get<{
@@ -4834,7 +4834,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         throw "validation";
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         for (const courseParticipationPublicId of request.body
           .courseParticipationsPublicIds!) {
           const courseParticipation = application.database.get<{
@@ -5148,7 +5148,7 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         for (const ltiCourseMember of ltiCourseMembers) {
           const user =
             application.database.get<{ id: number }>(
@@ -5393,7 +5393,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         throw "validation";
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         for (const courseParticipationPublicId of request.body
           .courseParticipationsPublicIds!) {
           const courseParticipation = application.database.get<{
@@ -5555,7 +5555,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseParticipation === undefined
       )
         return;
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         application.database.run(
           sql`
             update "users"

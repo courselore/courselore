@@ -941,7 +941,7 @@ export default async (application: Application): Promise<void> => {
       const passwordPasswordHash = await cryptography.PasswordHash.hash(
         request.body.password,
       );
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         if (
           application.database.get(
             sql`
@@ -3139,7 +3139,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       if (request.state.user === undefined) {
-        application.database.executeTransaction(() => {
+        application.database.transaction(() => {
           request.state.user =
             application.database.get<{
               id: number;
@@ -3782,7 +3782,7 @@ export default async (application: Application): Promise<void> => {
           );
         return;
       }
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         course.ltiNamesAndRoleProvisioningServicesURL = (
           idToken[
             "https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"
@@ -4024,7 +4024,7 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
-      application.database.executeTransaction(() => {
+      application.database.transaction(() => {
         request.state.user =
           application.database.get<{
             id: number;
