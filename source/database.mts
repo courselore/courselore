@@ -1591,42 +1591,49 @@ export default async (application: Application): Promise<void> => {
       );
     },
 
-    sql`
-      CREATE TABLE "messagePolls" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "multipleChoicesAt" TEXT NULL,
-        "closesAt" TEXT NULL,
-        UNIQUE ("course", "reference")
+    (database) => {
+      database.execute(
+        sql`
+          CREATE TABLE "messagePolls" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL,
+            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+            "multipleChoicesAt" TEXT NULL,
+            "closesAt" TEXT NULL,
+            UNIQUE ("course", "reference")
+          );
+
+          CREATE TABLE "messagePollOptions" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL,
+            "messagePoll" INTEGER NOT NULL REFERENCES "messagePolls" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "order" INTEGER NOT NULL,
+            "contentSource" TEXT NOT NULL,
+            "contentPreprocessed" TEXT NOT NULL,
+            UNIQUE ("messagePoll", "reference")
+          );
+
+          CREATE TABLE "messagePollVotes" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL,
+            "messagePollOption" INTEGER NOT NULL REFERENCES "messagePollOptions" ON DELETE CASCADE,
+            "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+            UNIQUE ("messagePollOption", "enrollment")
+          );
+
+          ALTER TABLE "courses" ADD COLUMN "studentsMayCreatePollsAt" TEXT NULL;
+        `,
       );
-
-      CREATE TABLE "messagePollOptions" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "messagePoll" INTEGER NOT NULL REFERENCES "messagePolls" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "order" INTEGER NOT NULL,
-        "contentSource" TEXT NOT NULL,
-        "contentPreprocessed" TEXT NOT NULL,
-        UNIQUE ("messagePoll", "reference")
+      database.run(
+        sql`
+          UPDATE "courses"
+          SET "studentsMayCreatePollsAt" = ${new Date().toISOString()};
+        `,
       );
-
-      CREATE TABLE "messagePollVotes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "messagePollOption" INTEGER NOT NULL REFERENCES "messagePollOptions" ON DELETE CASCADE,
-        "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        UNIQUE ("messagePollOption", "enrollment")
-      );
-
-      ALTER TABLE "courses" ADD COLUMN "studentsMayCreatePollsAt" TEXT NULL;
-
-      UPDATE "courses"
-      SET "studentsMayCreatePollsAt" = ${new Date().toISOString()};
-    `,
+    },
 
     (database) => {
       database.execute(
