@@ -734,7 +734,7 @@ export default async (application: Application): Promise<void> => {
                                     "courseConversations"."course" = ${course.id}
                                     and (
                                       "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                                      $${
+                                      ${
                                         courseParticipation.courseParticipationRole ===
                                         "courseParticipationRoleInstructor"
                                           ? sql`
@@ -755,7 +755,7 @@ export default async (application: Application): Promise<void> => {
                                     "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
                                     "courseConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
                                   where
-                                    $${
+                                    ${
                                       courseParticipation.courseParticipationRole !==
                                       "courseParticipationRoleInstructor"
                                         ? sql`

@@ -79,7 +79,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           select "course"
           from "courseParticipations"
-          $${
+          ${
             typeof request.state.user.mostRecentlyVisitedCourseParticipation ===
             "number"
               ? sql`
@@ -1563,7 +1563,7 @@ export default async (application: Application): Promise<void> => {
           update "users"
           set
             "name" = ${request.body.name},
-            $${typeof avatarImage === "string" ? sql`"avatarImage" = ${avatarImage},` : request.body["avatarImage--remove"] === "on" ? sql`"avatarImage" = null,` : sql``}
+            ${typeof avatarImage === "string" ? sql`"avatarImage" = ${avatarImage},` : request.body["avatarImage--remove"] === "on" ? sql`"avatarImage" = null,` : sql``}
             "darkMode" = ${request.body.darkMode}
           where "id" = ${request.state.user.id};
         `,
