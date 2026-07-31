@@ -8,7 +8,7 @@ import { Application } from "./index.mjs";
 export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
-    pathname: "/",
+    pathname: new RegExp("^/(?:homepage)?$"),
     handler: (
       request: serverTypes.Request<
         {},
