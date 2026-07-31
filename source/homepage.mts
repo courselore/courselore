@@ -443,8 +443,10 @@ export default async (application: Application): Promise<void> => {
                       >
                         Easy onboarding:
                       </span>
-                      Comprehensive and simple invitation system. Single sign-on
-                      with SAML.
+                      Comprehensive and simple invitation system. Connect with a
+                      Learning Management System (LMS) (for example, Moodle,
+                      Canvas, and so forth) with Learning Tools Interoperability
+                      (LTI). Single sign-on with SAML.
                     </div>
                   </div>
                   <div>
