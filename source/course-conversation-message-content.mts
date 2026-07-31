@@ -705,7 +705,7 @@ export default async (application: Application): Promise<void> => {
                     where
                       "course" = ${course.id} and (
                         "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                        $${
+                        ${
                           courseParticipation.courseParticipationRole ===
                           "courseParticipationRoleInstructor"
                             ? sql`
