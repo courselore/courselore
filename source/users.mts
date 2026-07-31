@@ -3092,7 +3092,7 @@ export default async (application: Application): Promise<void> => {
       response.setFlash!(html`
         <div class="flash--green">Account deleted.</div>
       `);
-      response.redirect!("/");
+      response.redirect!("/", "live-navigation");
     },
   });
 

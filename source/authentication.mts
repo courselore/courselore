@@ -1225,6 +1225,7 @@ export default async (application: Application): Promise<void> => {
       });
       response.redirect!(
         `/authentication/email-verification${request.URL.search}`,
+        "live-navigation",
       );
     },
   });
@@ -2930,7 +2931,7 @@ export default async (application: Application): Promise<void> => {
       response.setFlash!(html`
         <div class="flash--green">The password was reset successfully.</div>
       `);
-      response.redirect!(request.search.redirect ?? "/");
+      response.redirect!(request.search.redirect ?? "/", "live-navigation");
     },
   });
 
