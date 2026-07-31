@@ -174,7 +174,9 @@ export default async (application: Application): Promise<void> => {
             application.userConfiguration.hostname === "courselore.org" &&
             request.URL.pathname === "/"
           ) &&
-          !request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")) &&
+          !request.URL.pathname.match(
+            new RegExp("(?:^/authentication(?:$|/))|(?:^/homepage$)"),
+          ) &&
           !request.liveConnection
         )
           response.redirect!(
