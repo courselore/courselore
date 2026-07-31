@@ -1,11 +1,8 @@
 export default {
   hostname: process.env.HOSTNAME ?? "localhost",
   email: {
-    host: "smtp.ethereal.email",
-    auth: {
-      user: "corine.rosenbaum14@ethereal.email",
-      pass: "ndbDu86SBNVRMYsud2",
-    },
+    host: "localhost",
+    port: 17001,
     from: "courselore@courselore.org",
   },
   secretKey: "c3499fa3806312af850b7009c680725b01300fc1ee7806f455effb3213d20cf9",

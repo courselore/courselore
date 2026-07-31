@@ -273,4 +273,19 @@ if (application.commandLineArguments.values.type === undefined) {
       `/files/* "${application.userConfiguration.dataDirectory}"`,
     ],
   });
+  if (application.userConfiguration.environment === "development")
+    node.childProcessKeepAlive(() =>
+      childProcess.spawn(
+        path.join(import.meta.dirname, "../node_modules/.bin/maildev"),
+        [
+          "--web",
+          "17000",
+          "--smtp",
+          "17001",
+          "--mail-directory",
+          path.join(application.userConfiguration.dataDirectory, "emails"),
+        ],
+        { stdio: "ignore" },
+      ),
+    );
 }
