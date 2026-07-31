@@ -106,7 +106,7 @@ export default async (application: Application): Promise<void> => {
           request.liveConnection
         )
           return;
-        const userSessionPublicId = cryptoRandomString({
+        const userSessionToken = cryptoRandomString({
           length: 100,
           type: "alphanumeric",
         });
@@ -128,7 +128,7 @@ export default async (application: Application): Promise<void> => {
                     "needsTwoFactorAuthentication"
                   )
                   values (
-                    ${cryptography.TokenHash.hash(userSessionPublicId)},
+                    ${cryptography.TokenHash.hash(userSessionToken)},
                     ${1},
                     ${new Date().toISOString()},
                     ${Number(false)}
@@ -138,7 +138,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        response.setCookie!("session", userSessionPublicId);
+        response.setCookie!("session", userSessionToken);
         response.redirect!("/");
       },
     });
@@ -1139,7 +1139,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        const userSessionPublicId = cryptoRandomString({
+        const userSessionToken = cryptoRandomString({
           length: 100,
           type: "alphanumeric",
         });
@@ -1161,7 +1161,7 @@ export default async (application: Application): Promise<void> => {
                     "needsTwoFactorAuthentication"
                   )
                   values (
-                    ${cryptography.TokenHash.hash(userSessionPublicId)},
+                    ${cryptography.TokenHash.hash(userSessionToken)},
                     ${request.state.user.id},
                     ${new Date().toISOString()},
                     ${Number(false)}
@@ -1171,7 +1171,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        response.setCookie!("session", userSessionPublicId);
+        response.setCookie!("session", userSessionToken);
         application.database.backgroundJob({
           type: "email",
           parameters: {
@@ -1876,7 +1876,7 @@ export default async (application: Application): Promise<void> => {
         response.redirect!(`/authentication${request.URL.search}`);
         return;
       }
-      const userSessionPublicId = cryptoRandomString({
+      const userSessionToken = cryptoRandomString({
         length: 100,
         type: "alphanumeric",
       });
@@ -1898,7 +1898,7 @@ export default async (application: Application): Promise<void> => {
                   "needsTwoFactorAuthentication"
                 )
                 values (
-                  ${cryptography.TokenHash.hash(userSessionPublicId)},
+                  ${cryptography.TokenHash.hash(userSessionToken)},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
                   ${request.state.user.twoFactorAuthenticationEnabled}
@@ -1908,7 +1908,7 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       )!;
-      response.setCookie!("session", userSessionPublicId);
+      response.setCookie!("session", userSessionToken);
       application.database.backgroundJob({
         type: "email",
         parameters: {
@@ -2859,7 +2859,7 @@ export default async (application: Application): Promise<void> => {
           delete from "userSessions" where "user" = ${request.state.user.id};
         `,
       );
-      const userSessionPublicId = cryptoRandomString({
+      const userSessionToken = cryptoRandomString({
         length: 100,
         type: "alphanumeric",
       });
@@ -2881,7 +2881,7 @@ export default async (application: Application): Promise<void> => {
                   "needsTwoFactorAuthentication"
                 )
                 values (
-                  ${cryptography.TokenHash.hash(userSessionPublicId)},
+                  ${cryptography.TokenHash.hash(userSessionToken)},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
                   ${request.state.user.twoFactorAuthenticationEnabled}
@@ -2891,7 +2891,7 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       )!;
-      response.setCookie!("session", userSessionPublicId);
+      response.setCookie!("session", userSessionToken);
       application.database.backgroundJob({
         type: "email",
         parameters: {
@@ -3369,7 +3369,7 @@ export default async (application: Application): Promise<void> => {
               `,
             )!;
         });
-        const userSessionPublicId = cryptoRandomString({
+        const userSessionToken = cryptoRandomString({
           length: 100,
           type: "alphanumeric",
         });
@@ -3391,7 +3391,7 @@ export default async (application: Application): Promise<void> => {
                     "needsTwoFactorAuthentication"
                   )
                   values (
-                    ${cryptography.TokenHash.hash(userSessionPublicId)},
+                    ${cryptography.TokenHash.hash(userSessionToken)},
                     ${request.state.user!.id},
                     ${new Date().toISOString()},
                     ${Number(false)}
@@ -3401,7 +3401,7 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        response.setCookie!("session", userSessionPublicId);
+        response.setCookie!("session", userSessionToken);
         application.database.backgroundJob({
           type: "email",
           parameters: {
@@ -4252,7 +4252,7 @@ export default async (application: Application): Promise<void> => {
             `,
           )!;
       });
-      const userSessionPublicId = cryptoRandomString({
+      const userSessionToken = cryptoRandomString({
         length: 100,
         type: "alphanumeric",
       });
@@ -4274,7 +4274,7 @@ export default async (application: Application): Promise<void> => {
                   "needsTwoFactorAuthentication"
                 )
                 values (
-                  ${cryptography.TokenHash.hash(userSessionPublicId)},
+                  ${cryptography.TokenHash.hash(userSessionToken)},
                   ${request.state.user!.id},
                   ${new Date().toISOString()},
                   ${Number(false)}
@@ -4284,7 +4284,7 @@ export default async (application: Application): Promise<void> => {
           };
         `,
       )!;
-      response.setCookie!("session", userSessionPublicId);
+      response.setCookie!("session", userSessionToken);
       application.database.backgroundJob({
         type: "email",
         parameters: {
