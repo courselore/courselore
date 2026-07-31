@@ -528,7 +528,7 @@ export default async (application: Application): Promise<void> => {
             "privateToCourseParticipationRoleInstructors"
           from "courseConversationsTags"
           where
-            "course" = ${request.state.course.id} $${
+            "course" = ${request.state.course.id} ${
               request.state.courseParticipation.courseParticipationRole !==
               "courseParticipationRoleInstructor"
                 ? sql`
@@ -576,7 +576,7 @@ export default async (application: Application): Promise<void> => {
                     .mostRecentlyVisitedCourseConversation
                 } and (
                   "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                  $${
+                  ${
                     request.state.courseParticipation
                       .courseParticipationRole ===
                     "courseParticipationRoleInstructor"
@@ -606,7 +606,7 @@ export default async (application: Application): Promise<void> => {
             where
               "course" = ${request.state.course.id} and (
                 "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                $${
+                ${
                   request.state.courseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor"
                     ? sql`
