@@ -17,10 +17,10 @@ jobs:
       - run: |
           npm install-ci-test
           npx package
-          mv ../courselore.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }} ../courselore--${{ matrix.os }}--${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || github.sha }}.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }}
+          mv ../courselore.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }} ./courselore--${{ matrix.os }}--${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || github.sha }}.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }}
       - uses: actions/upload-artifact@main
         with:
-          path: ../courselore--${{ matrix.os }}--${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || github.sha }}.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }}
+          path: ./courselore--${{ matrix.os }}--${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || github.sha }}.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }}
           name: courselore--${{ matrix.os }}--${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || github.sha }}.${{ matrix.os == 'windows' && 'zip' || 'tar.gz' }}
       - if: ${{ matrix.os == 'ubuntu' && startsWith(github.ref, 'refs/tags/v') }}
         uses: webfactory/ssh-agent@master
@@ -39,7 +39,7 @@ jobs:
             # courselore.org:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
             # courselore.org:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
           EOF
-          rsync -a ../courselore--ubuntu--${{ github.ref_name }}.tar.gz root@courselore.org:/root/courselore--ubuntu--${{ github.ref_name }}.tar.gz
+          rsync -a ./courselore--ubuntu--${{ github.ref_name }}.tar.gz root@courselore.org:/root/courselore--ubuntu--${{ github.ref_name }}.tar.gz
           ssh root@courselore.org << "EOF"
             mkdir -p /root/courselore/
             rm -rf /root/courselore--deploy/
