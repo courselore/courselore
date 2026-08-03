@@ -1,6 +1,9 @@
 # Changelog
 
+## 10.2.0 · 2026-08-03
+
 - Added support for connecting Courselore to LMSs (for example, Moodle and Canvas) via LTI. With this connection, instructors may sync the course participants.
+- **Breaking change:** The format of the SAML configuration changed. Please refer to [`configuration/example.mjs`](configuration/example.mjs). If you need to keep the key pair of your current configuration, because it’s setup in Identity Providers, please refer to your console output when running Courselore for the first time, because it’ll give you the keys you need to configure.
 
 ## 10.1.0 · 2026-04-28
 
