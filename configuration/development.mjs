@@ -5,7 +5,7 @@ export default {
     port: 17001,
     from: "courselore@courselore.org",
   },
-  // secretKey: "c3499fa3806312af850b7009c680725b01300fc1ee7806f455effb3213d20cf9",
+  secretKey: "c3499fa3806312af850b7009c680725b01300fc1ee7806f455effb3213d20cf9",
   environment: "development",
   lti: {
     privateKey:
