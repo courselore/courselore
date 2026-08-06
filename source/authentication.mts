@@ -3079,6 +3079,56 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.id_token !== "string"
       )
         throw "validation";
+      if (request.headers["sec-fetch-dest"] === "iframe") {
+        response
+          .setHeader(
+            "Content-Security-Policy",
+            "default-src 'none'; manifest-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; worker-src 'self'; connect-src 'self'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors *",
+          )
+          .setHeader("X-Frame-Options", "ALLOW")
+          .send(
+            application.layouts.main({
+              request,
+              response,
+              head: html`
+                <title>Open Courselore on a new tab · Courselore</title>
+              `,
+              body: html`
+                <div
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--2);
+                  `}"
+                >
+                  <form
+                    method="POST"
+                    action="/authentication/lti/callback"
+                    target="_blank"
+                  >
+                    <input
+                      type="hidden"
+                      name="state"
+                      value="${request.body.state}"
+                    />
+                    <input
+                      type="hidden"
+                      name="id_token"
+                      value="${request.body.id_token}"
+                    />
+                    <button
+                      type="submit"
+                      class="button button--rectangle button--blue"
+                    >
+                      Open Courselore on a new tab
+                    </button>
+                  </form>
+                </div>
+              `,
+            }),
+          );
+        return;
+      }
       const stateTokenHash = cryptography.TokenHash.hash(request.body.state);
       const launch = [...ltiLaunches].find(
         (launch) => stateTokenHash === launch.stateTokenHash,
