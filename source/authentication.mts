@@ -3039,8 +3039,8 @@ export default async (application: Application): Promise<void> => {
         nonceTokenHash: cryptography.TokenHash.hash(nonce),
         createdAt: new Date().toISOString(),
       });
-      response.redirect!(
-        `${platform.authenticationRequestURL}?${new URLSearchParams({
+      const redirect = `${platform.authenticationRequestURL}?${new URLSearchParams(
+        {
           response_type: "id_token",
           scope: "openid",
           client_id: platform.clientId,
@@ -3053,8 +3053,28 @@ export default async (application: Application): Promise<void> => {
           ...(typeof requestBody.lti_message_hint === "string"
             ? { lti_message_hint: requestBody.lti_message_hint }
             : {}),
-        }).toString()}`,
-      );
+        },
+      ).toString()}`;
+      if (request.headers["sec-fetch-dest"] === "iframe") {
+        response
+          .setHeader(
+            "Content-Security-Policy",
+            "default-src 'none'; manifest-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; worker-src 'self'; connect-src 'self'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors *",
+          )
+          .setHeader("X-Frame-Options", "ALLOW")
+          .send(html`
+            <!doctype html>
+            <html>
+              <body>
+                <a href="${redirect}" target="_blank"
+                  >Open Courselore in a new tab</a
+                >
+              </body>
+            </html>
+          `);
+        return;
+      }
+      response.redirect!(redirect);
     },
   });
 
@@ -3079,39 +3099,6 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.id_token !== "string"
       )
         throw "validation";
-      if (request.headers["sec-fetch-dest"] === "iframe") {
-        response
-          .setHeader(
-            "Content-Security-Policy",
-            "default-src 'none'; manifest-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; worker-src 'self'; connect-src 'self'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors *",
-          )
-          .setHeader("X-Frame-Options", "ALLOW")
-          .send(html`
-            <!doctype html>
-            <html>
-              <body>
-                <form
-                  method="POST"
-                  action="/authentication/lti/callback"
-                  target="_blank"
-                >
-                  <input
-                    type="hidden"
-                    name="state"
-                    value="${request.body.state}"
-                  />
-                  <input
-                    type="hidden"
-                    name="id_token"
-                    value="${request.body.id_token}"
-                  />
-                  <button type="submit">Open Courselore in a new tab</button>
-                </form>
-              </body>
-            </html>
-          `);
-        return;
-      }
       const stateTokenHash = cryptography.TokenHash.hash(request.body.state);
       const launch = [...ltiLaunches].find(
         (launch) => stateTokenHash === launch.stateTokenHash,
