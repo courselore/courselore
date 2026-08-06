@@ -3086,47 +3086,30 @@ export default async (application: Application): Promise<void> => {
             "default-src 'none'; manifest-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; worker-src 'self'; connect-src 'self'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors *",
           )
           .setHeader("X-Frame-Options", "ALLOW")
-          .send(
-            application.layouts.main({
-              request,
-              response,
-              head: html`
-                <title>Open Courselore on a new tab · Courselore</title>
-              `,
-              body: html`
-                <div
-                  css="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size--2);
-                  `}"
+          .send(html`
+            <!doctype html>
+            <html>
+              <body>
+                <form
+                  method="POST"
+                  action="/authentication/lti/callback"
+                  target="_blank"
                 >
-                  <form
-                    method="POST"
-                    action="/authentication/lti/callback"
-                    target="_blank"
-                  >
-                    <input
-                      type="hidden"
-                      name="state"
-                      value="${request.body.state}"
-                    />
-                    <input
-                      type="hidden"
-                      name="id_token"
-                      value="${request.body.id_token}"
-                    />
-                    <button
-                      type="submit"
-                      class="button button--rectangle button--blue"
-                    >
-                      Open Courselore on a new tab
-                    </button>
-                  </form>
-                </div>
-              `,
-            }),
-          );
+                  <input
+                    type="hidden"
+                    name="state"
+                    value="${request.body.state}"
+                  />
+                  <input
+                    type="hidden"
+                    name="id_token"
+                    value="${request.body.id_token}"
+                  />
+                  <button type="submit">Open Courselore in a new tab</button>
+                </form>
+              </body>
+            </html>
+          `);
         return;
       }
       const stateTokenHash = cryptography.TokenHash.hash(request.body.state);
