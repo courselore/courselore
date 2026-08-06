@@ -1,5 +1,7 @@
 # Changelog
 
+## 10.2.2 · 2026-08-06
+
 - In LTI, added support for being loaded in an iFrame.
 
 ## 10.2.0 · 2026-08-03
