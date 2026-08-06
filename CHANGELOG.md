@@ -1,5 +1,7 @@
 # Changelog
 
+- In LTI, added support for being loaded in an iFrame.
+
 ## 10.2.0 · 2026-08-03
 
 - Added support for connecting Courselore to LMSs (for example, Moodle and Canvas) via LTI. With this connection, instructors may sync the course participants.
