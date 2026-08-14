@@ -53,7 +53,6 @@ jobs:
             mv /root/courselore/courselore/ /root/courselore--deploy/courselore--old/ || true
             mv /root/courselore--deploy/courselore/ /root/courselore/courselore/
             systemctl start courselore
-            systemctl enable courselore
             rm -rf /root/courselore--deploy/
           EOF
   release:
