@@ -54,9 +54,9 @@ database.run(
   `,
 );
 console.log(
-  database.all(
+  database.all<{ rowid: number; distance: number }>(
     sql`
-      select "rowid", "coordinates", "distance"
+      select "rowid", "distance"
       from "vectors"
       where "coordinates" match ${JSON.stringify([3, 0])}
       order by distance asc
