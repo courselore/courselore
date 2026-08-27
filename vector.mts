@@ -5,28 +5,30 @@ const database = await new Database(":memory:")
   .loadExtension(sqliteVec.getLoadablePath())
   .migrate(
     sql`
-      create virtual table "vectors" using vec0(
-        id integer primary key autoincrement,
-        coordinates float[2] distance_metric = cosine
-      );
+      create table "messages" (
+        "id" integer primary key autoincrement,
+        "content" text not null,
+        "contentVectorEmbedding" blob check(vec_length("contentVectorEmbedding") == 2) not null
+      ) strict;
     `,
   );
 database.run(
   sql`
-    insert into "vectors" ("coordinates")
+    insert into "messages" ("content", "contentVectorEmbedding")
     values
-      (${JSON.stringify([0, 0])}),
-      (${JSON.stringify([0, 4])});
+      (${"Hello"}, vec_f32(${JSON.stringify([1, 0])})),
+      (${"World"}, vec_f32(${JSON.stringify([0, 100])}));
   `,
 );
 console.log(
-  database.all<{ id: number; distance: number }>(
+  database.all<{ id: number; content: string; distance: number }>(
     sql`
-      select "id", "distance"
-      from "vectors"
-      where "coordinates" match ${JSON.stringify([3, 0])}
-      order by distance asc
-      limit 10;
+      select
+        "id",
+        "content",
+        vec_distance_cosine("contentVectorEmbedding", ${JSON.stringify([3, 0])}) as "distance"
+      from "messages"
+      order by "distance" asc;
     `,
   ),
 );
