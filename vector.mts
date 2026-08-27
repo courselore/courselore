@@ -26,6 +26,7 @@ console.log(
       select
         "id",
         "content",
+        vec_to_json("contentVectorEmbedding") as "contentVectorEmbedding",
         vec_distance_cosine("contentVectorEmbedding", ${JSON.stringify([3, 0])}) as "distance"
       from "messages"
       order by "distance" asc;
