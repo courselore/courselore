@@ -17,7 +17,7 @@ database.run(
     insert into "messages" ("content", "contentVectorEmbedding")
     values
       (${"Hello"}, vec_f32(${JSON.stringify([1, 0])})),
-      (${"World"}, vec_f32(${JSON.stringify([0, 100])}));
+      (${"World"}, vec_f32(${JSON.stringify([0, 4])}));
   `,
 );
 console.log(
