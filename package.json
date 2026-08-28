@@ -6,6 +6,7 @@
     "backup": "rsync -av --delete --progress root@courselore.org:/root/courselore/data/ /Volumes/leafac--hd/backups/courselore/"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "@node-saml/node-saml": "^5.1.0",
     "@radically-straightforward/ffmpeg": "^1.0.2",
     "@radically-straightforward/production": "^1.0.75",
@@ -55,7 +56,10 @@
     "@radically-straightforward/typescript@1.0.5": true,
     "esbuild@0.28.0": true,
     "xxhash-addon@2.1.0": true,
-    "fsevents@2.3.3": true
+    "fsevents@2.3.3": true,
+    "onnxruntime-node@1.24.3": true,
+    "sharp@0.34.5": true,
+    "protobufjs@7.6.6": true
   },
   "prettier": {}
 }
