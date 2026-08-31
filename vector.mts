@@ -1,8 +1,8 @@
 import sql, { Database } from "@radically-straightforward/sqlite";
 import * as sqliteVec from "sqlite-vec";
-import { pipeline } from "@huggingface/transformers";
+import * as transformers from "@huggingface/transformers";
 
-const extractor = await pipeline(
+const extractor = await transformers.pipeline(
   "feature-extraction",
   "Xenova/all-MiniLM-L6-v2",
 );
@@ -19,7 +19,8 @@ const database = await new Database(":memory:")
       create table "messages" (
         "id" integer primary key autoincrement,
         "content" text not null,
-        "contentVectorEmbedding" blob check(vec_length("contentVectorEmbedding") == 384) not null
+        -- "contentVectorEmbedding" blob check(vec_length("contentVectorEmbedding") == 384) not null
+        "contentVectorEmbedding" blob not null
       ) strict;
     `,
   );
