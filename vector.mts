@@ -2,9 +2,10 @@ import sql, { Database } from "@radically-straightforward/sqlite";
 import * as sqliteVec from "sqlite-vec";
 import { pipeline } from "@huggingface/transformers";
 
-// Xenova/all-MiniLM-L6-v2
-// bge-small-en-v1.5
-const extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+const extractor = await pipeline(
+  "feature-extraction",
+  "Xenova/all-MiniLM-L6-v2",
+);
 
 const embed = async (text: string) => {
   const output = await extractor(text, { pooling: "mean", normalize: true });
