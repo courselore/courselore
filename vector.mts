@@ -41,7 +41,7 @@ console.log(
         "id",
         "content",
         vec_to_json("contentVectorEmbedding") as "contentVectorEmbedding",
-        vec_distance_cosine("contentVectorEmbedding", ${JSON.stringify(await embed("Hi"))}) as "distance"
+        vec_distance_L2("contentVectorEmbedding", ${JSON.stringify(await embed("Hi"))}) as "distance"
       from "messages"
       order by "distance" asc;
     `,
