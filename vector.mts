@@ -4,7 +4,7 @@ import * as transformers from "@huggingface/transformers";
 
 const extractor = await transformers.pipeline(
   "feature-extraction",
-  "Xenova/all-MiniLM-L6-v2",
+  "nomic-ai/nomic-embed-text-v1.5",
 );
 
 const embed = async (text: string) => {
