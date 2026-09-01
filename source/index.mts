@@ -276,7 +276,10 @@ if (application.commandLineArguments.values.type === undefined) {
   if (application.userConfiguration.environment === "development")
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
-        path.join(import.meta.dirname, "../node_modules/.bin/maildev"),
+        path.join(
+          import.meta.dirname,
+          `../node_modules/.bin/maildev${process.platform === "win32" ? ".cmd" : ""}`,
+        ),
         [
           "--web",
           "17000",
@@ -285,7 +288,10 @@ if (application.commandLineArguments.values.type === undefined) {
           "--mail-directory",
           path.join(application.userConfiguration.dataDirectory, "emails"),
         ],
-        { stdio: "ignore" },
+        {
+          stdio: "ignore",
+          ...(process.platform === "win32" ? { shell: true } : {}),
+        },
       ),
     );
 }
