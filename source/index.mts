@@ -13,6 +13,7 @@ import * as caddy from "@radically-straightforward/caddy";
 import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
 import selfsigned from "selfsigned";
+import * as transformers from "@huggingface/transformers";
 import database, { ApplicationDatabase } from "./database.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
@@ -83,6 +84,7 @@ export type Application = {
     ports: number[];
     stopWords: Set<string>;
     secretKey: crypto.KeyObject;
+    semanticSearchEmbedder: transformers.FeatureExtractionPipeline;
   };
   server: undefined | ReturnType<typeof server>;
   layouts: {};
@@ -179,6 +181,11 @@ if (typeof application.userConfiguration.secretKey !== "string") {
 application.applicationConfiguration.secretKey =
   cryptography.SymmetricEncryption.importKey(
     application.userConfiguration.secretKey,
+  );
+application.applicationConfiguration.semanticSearchEmbedder =
+  await transformers.pipeline(
+    "feature-extraction",
+    "nomic-ai/nomic-embed-text-v1.5",
   );
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
