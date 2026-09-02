@@ -4494,5 +4494,99 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       },
+
+      (database) => {
+        database.execute(
+          sql`
+            drop trigger "search_courseConversations_titleSearch_insert";
+            drop trigger "search_courseConversations_titleSearch_update";
+            drop trigger "search_courseConversations_titleSearch_delete";
+            drop table "search_courseConversations_titleSearch";
+            alter table "courseConversations" rename column "titleSearch" to "titleLexicalSearch";
+            create virtual table "lexicalSearch_courseConversations_titleLexicalSearch" using fts5(
+              "titleLexicalSearch",
+              content = "courseConversations",
+              content_rowid = "id",
+              prefix = '1 2 3'
+            );
+            create trigger "lexicalSearch_courseConversations_titleLexicalSearch_insert" after insert on "courseConversations" begin
+              insert into "lexicalSearch_courseConversations_titleLexicalSearch" ("rowid", "titleLexicalSearch") values ("new"."id", "new"."titleLexicalSearch");
+            end;
+            create trigger "lexicalSearch_courseConversations_titleLexicalSearch_update" after update on "courseConversations" begin
+              update "lexicalSearch_courseConversations_titleLexicalSearch" set "titleLexicalSearch" = "new"."titleLexicalSearch" where "rowid" = "old"."id";
+            end;
+            create trigger "lexicalSearch_courseConversations_titleLexicalSearch_delete" after delete on "courseConversations" begin
+              delete from "lexicalSearch_courseConversations_titleLexicalSearch" where "rowid" = "old"."id";
+            end;
+            
+            drop trigger "search_courseConversationMessages_contentSearch_insert";
+            drop trigger "search_courseConversationMessages_contentSearch_update";
+            drop trigger "search_courseConversationMessages_contentSearch_delete";
+            drop table "search_courseConversationMessages_contentSearch";
+            alter table "courseConversationMessages" rename column "contentSearch" to "contentLexicalSearch";
+            create virtual table "lexicalSearch_courseConversationMessages_contentLexicalSearch" using fts5(
+              "contentLexicalSearch",
+              content = "courseConversationMessages",
+              content_rowid = "id",
+              prefix = '1 2 3'
+            );
+            create trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_insert" after insert on "courseConversationMessages" begin
+              insert into "lexicalSearch_courseConversationMessages_contentLexicalSearch" ("rowid", "contentLexicalSearch") values ("new"."id", "new"."contentLexicalSearch");
+            end;
+            create trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_update" after update on "courseConversationMessages" begin
+              update "lexicalSearch_courseConversationMessages_contentLexicalSearch" set "contentLexicalSearch" = "new"."contentLexicalSearch" where "rowid" = "old"."id";
+            end;
+            create trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_delete" after delete on "courseConversationMessages" begin
+              delete from "lexicalSearch_courseConversationMessages_contentLexicalSearch" where "rowid" = "old"."id";
+            end;
+          `,
+        );
+
+        for (const courseConversation of database.all<{
+          id: number;
+          titleLexicalSearch: string;
+        }>(
+          sql`
+            select "id", "titleLexicalSearch"
+            from "courseConversations"
+            order by "id" asc;
+          `,
+        ))
+          database.run(
+            sql`
+              insert into "lexicalSearch_courseConversations_titleLexicalSearch" (
+                "rowid",
+                "titleLexicalSearch"
+              )
+              values (
+                ${courseConversation.id},
+                ${courseConversation.titleLexicalSearch}
+              );
+            `,
+          );
+
+        for (const courseConversationMessage of database.all<{
+          id: number;
+          contentLexicalSearch: string;
+        }>(
+          sql`
+            select "id", "contentLexicalSearch"
+            from "courseConversationMessages"
+            order by "id" asc;
+          `,
+        ))
+          database.run(
+            sql`
+              insert into "lexicalSearch_courseConversationMessages_contentLexicalSearch" (
+                "rowid",
+                "contentLexicalSearch"
+              )
+              values (
+                ${courseConversationMessage.id},
+                ${courseConversationMessage.contentLexicalSearch}
+              );
+            `,
+          );
+      },
     );
 };
