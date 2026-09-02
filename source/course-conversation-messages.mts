@@ -262,6 +262,16 @@ export default async (application: Application): Promise<void> => {
           courseConversationMessageContent: request.body.content,
           mode: "textContent",
         });
+      const contentSemanticSearch = JSON.stringify(
+        Array.from(
+          (
+            await application.applicationConfiguration.semanticSearchEmbedder(
+              `search_document: ${contentTextContent}`,
+              { pooling: "mean", normalize: true },
+            )
+          ).data,
+        ),
+      );
       application.database.transaction(() => {
         application.database.run(
           sql`
@@ -315,7 +325,8 @@ export default async (application: Application): Promise<void> => {
                     "courseConversationMessageVisibility",
                     "courseConversationMessageAnonymity",
                     "content",
-                    "contentLexicalSearch"
+                    "contentLexicalSearch",
+                    "contentSemanticSearch"
                   )
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -334,7 +345,8 @@ export default async (application: Application): Promise<void> => {
                         stem: (token) => natural.PorterStemmer.stem(token),
                       })
                       .map((tokenWithPosition) => tokenWithPosition.token)
-                      .join(" ")}
+                      .join(" ")},
+                    vec_f32(${contentSemanticSearch})
                   );
                 `,
               ).lastInsertRowid
@@ -1392,6 +1404,16 @@ export default async (application: Application): Promise<void> => {
           courseConversationMessageContent: request.body.content,
           mode: "textContent",
         });
+      const contentSemanticSearch = JSON.stringify(
+        Array.from(
+          (
+            await application.applicationConfiguration.semanticSearchEmbedder(
+              `search_document: ${contentTextContent}`,
+              { pooling: "mean", normalize: true },
+            )
+          ).data,
+        ),
+      );
       application.database.run(
         sql`
           update "courseConversationMessages"
@@ -1407,7 +1429,8 @@ export default async (application: Application): Promise<void> => {
                 stem: (token) => natural.PorterStemmer.stem(token),
               })
               .map((tokenWithPosition) => tokenWithPosition.token)
-              .join(" ")}
+              .join(" ")},
+            "contentSemanticSearch" = vec_f32(${contentSemanticSearch})
           where "id" = ${request.state.courseConversationMessage.id};
         `,
       );

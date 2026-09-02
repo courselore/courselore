@@ -3163,6 +3163,23 @@ You may also use the buttons on the message content editor to ${
           html`<votes>${JSON.stringify([...votes])}</votes>` +
           request.state.courseConversationMessage.content.slice(position.end);
       }
+      const contentTextContent =
+        await application.partials.courseConversationMessageContentProcessor({
+          course: request.state.course,
+          courseConversationMessageContent:
+            request.state.courseConversationMessage.content,
+          mode: "textContent",
+        });
+      const contentSemanticSearch = JSON.stringify(
+        Array.from(
+          (
+            await application.applicationConfiguration.semanticSearchEmbedder(
+              `search_document: ${contentTextContent}`,
+              { pooling: "mean", normalize: true },
+            )
+          ).data,
+        ),
+      );
       application.database.run(
         sql`
           update "courseConversationMessages"
@@ -3170,22 +3187,13 @@ You may also use the buttons on the message content editor to ${
             "updatedAt" = ${new Date().toISOString()},
             "content" = ${request.state.courseConversationMessage.content},
             "contentLexicalSearch" = ${utilities
-              .tokenize(
-                await application.partials.courseConversationMessageContentProcessor(
-                  {
-                    course: request.state.course,
-                    courseConversationMessageContent:
-                      request.state.courseConversationMessage.content,
-                    mode: "textContent",
-                  },
-                ),
-                {
-                  stopWords: application.applicationConfiguration.stopWords,
-                  stem: (token) => natural.PorterStemmer.stem(token),
-                },
-              )
+              .tokenize(contentTextContent, {
+                stopWords: application.applicationConfiguration.stopWords,
+                stem: (token) => natural.PorterStemmer.stem(token),
+              })
               .map((tokenWithPosition) => tokenWithPosition.token)
-              .join(" ")}
+              .join(" ")},
+            "contentSemanticSearch" = vec_f32(${contentSemanticSearch})
           where "id" = ${request.state.courseConversationMessage.id};
         `,
       );
