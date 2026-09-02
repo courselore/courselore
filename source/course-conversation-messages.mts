@@ -315,7 +315,7 @@ export default async (application: Application): Promise<void> => {
                     "courseConversationMessageVisibility",
                     "courseConversationMessageAnonymity",
                     "content",
-                    "contentSearch"
+                    "contentLexicalSearch"
                   )
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -1401,7 +1401,7 @@ export default async (application: Application): Promise<void> => {
             ${typeof request.body.courseConversationMessageVisibility === "string" ? sql`"courseConversationMessageVisibility" = ${request.body.courseConversationMessageVisibility},` : sql``}
             ${typeof request.body.courseConversationMessageAnonymity === "string" ? sql`"courseConversationMessageAnonymity" = ${request.body.courseConversationMessageAnonymity},` : sql``}
             "content" = ${request.body.content},
-            "contentSearch" = ${utilities
+            "contentLexicalSearch" = ${utilities
               .tokenize(contentTextContent, {
                 stopWords: application.applicationConfiguration.stopWords,
                 stem: (token) => natural.PorterStemmer.stem(token),

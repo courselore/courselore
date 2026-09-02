@@ -3169,7 +3169,7 @@ You may also use the buttons on the message content editor to ${
           set
             "updatedAt" = ${new Date().toISOString()},
             "content" = ${request.state.courseConversationMessage.content},
-            "contentSearch" = ${utilities
+            "contentLexicalSearch" = ${utilities
               .tokenize(
                 await application.partials.courseConversationMessageContentProcessor(
                   {
