@@ -4608,7 +4608,7 @@ export default async (application: Application): Promise<void> => {
           database.run(
             sql`
               update "courseConversations"
-              set "titleSemanticSearch" = ${JSON.stringify(
+              set "titleSemanticSearch" = vec_f32(${JSON.stringify(
                 Array.from(
                   (
                     await application.applicationConfiguration.semanticSearchEmbedder(
@@ -4617,7 +4617,7 @@ export default async (application: Application): Promise<void> => {
                     )
                   ).data,
                 ),
-              )}
+              )})
               where "id" = ${courseConversation.id};
             `,
           );
@@ -4645,7 +4645,7 @@ export default async (application: Application): Promise<void> => {
           database.run(
             sql`
               update "courseConversationMessages"
-              set "contentSemanticSearch" = ${JSON.stringify(
+              set "contentSemanticSearch" = vec_f32(${JSON.stringify(
                 Array.from(
                   (
                     await application.applicationConfiguration.semanticSearchEmbedder(
@@ -4654,7 +4654,7 @@ export default async (application: Application): Promise<void> => {
                     )
                   ).data,
                 ),
-              )}
+              )})
               where "id" = ${courseConversationMessage.id};
             `,
           );
