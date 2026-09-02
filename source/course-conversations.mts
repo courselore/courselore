@@ -1189,9 +1189,9 @@ export default async (application: Application): Promise<void> => {
               "courseConversations"."publicId" as "publicId",
               "courseConversations"."title" as "title"
             from "courseConversations"
-            join "search_courseConversations_titleSearch" on
-              "courseConversations"."id" = "search_courseConversations_titleSearch"."rowid" and
-              "search_courseConversations_titleSearch" match ${searchString}
+            join "lexicalSearch_courseConversations_titleSearch" on
+              "courseConversations"."id" = "lexicalSearch_courseConversations_titleSearch"."rowid" and
+              "lexicalSearch_courseConversations_titleSearch" match ${searchString}
             where
               "courseConversations"."course" = ${request.state.course.id} and (
                 "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
@@ -1212,7 +1212,7 @@ export default async (application: Application): Promise<void> => {
                     "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                 )
               )
-            order by "search_courseConversations_titleSearch"."rank" asc
+            order by "lexicalSearch_courseConversations_titleSearch"."rank" asc
             limit 5;
           `,
         ))
@@ -1268,9 +1268,9 @@ export default async (application: Application): Promise<void> => {
                 "courseConversationMessages"."updatedAt" as "updatedAt",
                 "courseConversationMessages"."content" as "content"
               from "courseConversationMessages"
-              join "search_courseConversationMessages_contentSearch" on
-                "courseConversationMessages"."id" = "search_courseConversationMessages_contentSearch"."rowid" and
-                "search_courseConversationMessages_contentSearch" match ${searchString}
+              join "lexicalSearch_courseConversationMessages_contentSearch" on
+                "courseConversationMessages"."id" = "lexicalSearch_courseConversationMessages_contentSearch"."rowid" and
+                "lexicalSearch_courseConversationMessages_contentSearch" match ${searchString}
               join "courseConversations" on
                 "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
                 "courseConversations"."course" = ${request.state.course.id} and (
@@ -1302,7 +1302,7 @@ export default async (application: Application): Promise<void> => {
                     `
                   : sql``
               }
-              order by "search_courseConversationMessages_contentSearch"."rank" asc
+              order by "lexicalSearch_courseConversationMessages_contentSearch"."rank" asc
               limit ${5 - results.length};
             `,
           )) {
