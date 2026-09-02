@@ -1,6 +1,6 @@
+import * as transformers from "@huggingface/transformers";
 import sql, { Database } from "@radically-straightforward/sqlite";
 import * as sqliteVec from "sqlite-vec";
-import * as transformers from "@huggingface/transformers";
 
 const extractor = await transformers.pipeline(
   "feature-extraction",
