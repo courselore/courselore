@@ -2768,6 +2768,16 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"))))
       )
         throw "validation";
+      const titleSemanticSearch = JSON.stringify(
+        Array.from(
+          (
+            await application.applicationConfiguration.semanticSearchEmbedder(
+              `search_document: ${request.body.title}`,
+              { pooling: "mean", normalize: true },
+            )
+          ).data,
+        ),
+      );
       let courseConversation: {
         id: number;
         publicId: string;
@@ -2813,7 +2823,8 @@ export default async (application: Application): Promise<void> => {
                     "courseConversationVisibility",
                     "pinned",
                     "title",
-                    "titleLexicalSearch"
+                    "titleLexicalSearch",
+                    "titleSemanticSearch"
                   )
                   values (
                     ${String(request.state.course!.courseConversationsNextPublicId)},
@@ -2830,7 +2841,8 @@ export default async (application: Application): Promise<void> => {
                         stem: (token) => natural.PorterStemmer.stem(token),
                       })
                       .map((tokenWithPosition) => tokenWithPosition.token)
-                      .join(" ")}
+                      .join(" ")},
+                    vec_f32(${titleSemanticSearch})
                   );
                 `,
               ).lastInsertRowid
