@@ -6684,7 +6684,7 @@ export default async (application: Application): Promise<void> => {
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)$",
     ),
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {},
@@ -6771,6 +6771,16 @@ export default async (application: Application): Promise<void> => {
         )
       )
         throw "validation";
+      const titleSemanticSearch = JSON.stringify(
+        Array.from(
+          (
+            await application.applicationConfiguration.semanticSearchEmbedder(
+              `search_document: ${request.body.title}`,
+              { pooling: "mean", normalize: true },
+            )
+          ).data,
+        ),
+      );
       application.database.transaction(() => {
         application.database.run(
           sql`
@@ -6789,7 +6799,8 @@ export default async (application: Application): Promise<void> => {
               "titleLexicalSearch" = ${utilities
                 .tokenize(request.body.title!)
                 .map((tokenWithPosition) => tokenWithPosition.token)
-                .join(" ")}
+                .join(" ")},
+              "titleSemanticSearch" = vec_f32(${titleSemanticSearch})
             where "id" = ${request.state.courseConversation!.id};
           `,
         );
