@@ -4592,6 +4592,43 @@ export default async (application: Application): Promise<void> => {
       async (database) => {
         database.execute(
           sql`
+            alter table "courseConversations" add column "titleSemanticSearch" blob null;
+          `,
+        );
+        for (const courseConversation of database.all<{
+          id: number;
+          title: string;
+        }>(
+          sql`
+            select "id", "title"
+            from "courseConversations"
+            order by "id" asc;
+          `,
+        ))
+          database.run(
+            sql`
+              update "courseConversations"
+              set "titleSemanticSearch" = ${JSON.stringify(
+                Array.from(
+                  (
+                    await application.applicationConfiguration.semanticSearchEmbedder(
+                      `search_document: ${courseConversation.title}`,
+                      { pooling: "mean", normalize: true },
+                    )
+                  ).data,
+                ),
+              )}
+              where "id" = ${courseConversation.id};
+            `,
+          );
+        database.execute(
+          sql`
+            alter table "courseConversations" alter column "titleSemanticSearch" set not null;
+          `,
+        );
+
+        database.execute(
+          sql`
             alter table "courseConversationMessages" add column "contentSemanticSearch" blob null;
           `,
         );
