@@ -6,6 +6,7 @@ import * as utilities from "@radically-straightforward/utilities";
 import * as cryptography from "@radically-straightforward/cryptography";
 import { dedent as markdown } from "@radically-straightforward/utilities";
 import * as examples from "@radically-straightforward/examples";
+import * as sqliteVec from "sqlite-vec";
 import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
 import natural from "natural";
@@ -18,600 +19,696 @@ export type ApplicationDatabase = {
 export default async (application: Application): Promise<void> => {
   application.database = await new Database(
     path.join(application.userConfiguration.dataDirectory, "courselore.db"),
-  ).migrate(
-    sql`
-      CREATE TABLE "flashes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "content" TEXT NOT NULL
-      );
-      CREATE INDEX "flashesCreatedAtIndex" ON "flashes" (datetime("createdAt"));
+  )
+    .loadExtension(sqliteVec.getLoadablePath())
+    .migrate(
+      sql`
+        CREATE TABLE "flashes" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "nonce" TEXT NOT NULL UNIQUE,
+          "content" TEXT NOT NULL
+        );
+        CREATE INDEX "flashesCreatedAtIndex" ON "flashes" (datetime("createdAt"));
 
-      CREATE TABLE "users" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "lastSeenOnlineAt" TEXT NOT NULL,
-        "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
-        "password" TEXT NOT NULL,
-        "emailConfirmedAt" TEXT NULL,
-        "name" TEXT NOT NULL,
-        "nameSearch" TEXT NOT NULL,
-        "avatar" TEXT NULL,
-        "avatarlessBackgroundColor" TEXT NOT NULL,
-        "biographySource" TEXT NULL,
-        "biographyPreprocessed" TEXT NULL,
-        "emailNotifications" TEXT NOT NULL
-      );
-      CREATE VIRTUAL TABLE "usersNameSearchIndex" USING fts5(
-        content = "users",
-        content_rowid = "id",
-        "nameSearch",
-        tokenize = 'porter'
-      );
-      CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
-        INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-      END;
-      CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
-        INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-        INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-      END;
-      CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
-        INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-      END;
+        CREATE TABLE "users" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "lastSeenOnlineAt" TEXT NOT NULL,
+          "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
+          "password" TEXT NOT NULL,
+          "emailConfirmedAt" TEXT NULL,
+          "name" TEXT NOT NULL,
+          "nameSearch" TEXT NOT NULL,
+          "avatar" TEXT NULL,
+          "avatarlessBackgroundColor" TEXT NOT NULL,
+          "biographySource" TEXT NULL,
+          "biographyPreprocessed" TEXT NULL,
+          "emailNotifications" TEXT NOT NULL
+        );
+        CREATE VIRTUAL TABLE "usersNameSearchIndex" USING fts5(
+          content = "users",
+          content_rowid = "id",
+          "nameSearch",
+          tokenize = 'porter'
+        );
+        CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+          INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+        END;
+        CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+          INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+          INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+        END;
+        CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+          INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+        END;
 
-      CREATE TABLE "emailConfirmations" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
-      );
-      CREATE INDEX "emailConfirmationsCreatedAtIndex" ON "emailConfirmations" (datetime("createdAt"));
+        CREATE TABLE "emailConfirmations" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "nonce" TEXT NOT NULL UNIQUE,
+          "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
+        );
+        CREATE INDEX "emailConfirmationsCreatedAtIndex" ON "emailConfirmations" (datetime("createdAt"));
 
-      CREATE TABLE "passwordResets" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
-      );
-      CREATE INDEX "passwordResetsCreatedAtIndex" ON "passwordResets" (datetime("createdAt"));
+        CREATE TABLE "passwordResets" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "nonce" TEXT NOT NULL UNIQUE,
+          "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
+        );
+        CREATE INDEX "passwordResetsCreatedAtIndex" ON "passwordResets" (datetime("createdAt"));
 
-      CREATE TABLE "sessions" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "token" TEXT NOT NULL UNIQUE,
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
-      );
-      CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" (datetime("createdAt"));
+        CREATE TABLE "sessions" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "token" TEXT NOT NULL UNIQUE,
+          "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
+        );
+        CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" (datetime("createdAt"));
 
-      CREATE TABLE "courses" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "reference" TEXT NOT NULL UNIQUE,
-        "name" TEXT NOT NULL,
-        "year" TEXT NULL,
-        "term" TEXT NULL,
-        "institution" TEXT NULL,
-        "code" TEXT NULL,
-        "nextConversationReference" INTEGER NOT NULL
-      );
+        CREATE TABLE "courses" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "reference" TEXT NOT NULL UNIQUE,
+          "name" TEXT NOT NULL,
+          "year" TEXT NULL,
+          "term" TEXT NULL,
+          "institution" TEXT NULL,
+          "code" TEXT NULL,
+          "nextConversationReference" INTEGER NOT NULL
+        );
 
-      CREATE TABLE "invitations" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "expiresAt" TEXT NULL,
-        "usedAt" TEXT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "email" TEXT NULL,
-        "name" TEXT NULL,
-        "role" TEXT NOT NULL,
-        UNIQUE ("course", "reference")
-      );
-      CREATE INDEX "invitationsCourseIndex" ON "invitations" ("course");
-      CREATE INDEX "invitationsEmailIndex" ON "invitations" ("email");
+        CREATE TABLE "invitations" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "expiresAt" TEXT NULL,
+          "usedAt" TEXT NULL,
+          "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+          "reference" TEXT NOT NULL,
+          "email" TEXT NULL,
+          "name" TEXT NULL,
+          "role" TEXT NOT NULL,
+          UNIQUE ("course", "reference")
+        );
+        CREATE INDEX "invitationsCourseIndex" ON "invitations" ("course");
+        CREATE INDEX "invitationsEmailIndex" ON "invitations" ("email");
 
-      CREATE TABLE "enrollments" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "role" TEXT NOT NULL,
-        "accentColor" TEXT NOT NULL,
-        UNIQUE ("user", "course"),
-        UNIQUE ("course", "reference")
-      );
-      CREATE INDEX "enrollmentsUserIndex" ON "enrollments" ("user");
-      CREATE INDEX "enrollmentsCourseIndex" ON "enrollments" ("course");
+        CREATE TABLE "enrollments" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
+          "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+          "reference" TEXT NOT NULL,
+          "role" TEXT NOT NULL,
+          "accentColor" TEXT NOT NULL,
+          UNIQUE ("user", "course"),
+          UNIQUE ("course", "reference")
+        );
+        CREATE INDEX "enrollmentsUserIndex" ON "enrollments" ("user");
+        CREATE INDEX "enrollmentsCourseIndex" ON "enrollments" ("course");
 
-      CREATE TABLE "tags" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "name" TEXT NOT NULL,
-        "staffOnlyAt" TEXT NULL,
-        UNIQUE ("course", "reference")
-      );
-      CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
+        CREATE TABLE "tags" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+          "reference" TEXT NOT NULL,
+          "name" TEXT NOT NULL,
+          "staffOnlyAt" TEXT NULL,
+          UNIQUE ("course", "reference")
+        );
+        CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
 
-      CREATE TABLE "conversations" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "updatedAt" TEXT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "anonymousAt" TEXT NULL,
-        "type" TEXT NOT NULL,
-        "pinnedAt" TEXT NULL,
-        "staffOnlyAt" TEXT NULL,
-        "title" TEXT NOT NULL,
-        "titleSearch" TEXT NOT NULL,
-        "nextMessageReference" INTEGER NOT NULL,
-        UNIQUE ("course", "reference")
-      );
-      CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
-      CREATE VIRTUAL TABLE "conversationsReferenceIndex" USING fts5(
-        content = "conversations",
-        content_rowid = "id",
-        "reference",
-        tokenize = 'porter'
-      );
-      CREATE TRIGGER "conversationsReferenceIndexInsert" AFTER INSERT ON "conversations" BEGIN
-        INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-      END;
-      CREATE TRIGGER "conversationsReferenceIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
-        INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-        INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-      END;
-      CREATE TRIGGER "conversationsReferenceIndexDelete" AFTER DELETE ON "conversations" BEGIN
-        INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-      END;
-      CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
-      CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
-      CREATE INDEX "conversationsStaffOnlyAtIndex" ON "conversations" ("staffOnlyAt");
-      CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
-        content = "conversations",
-        content_rowid = "id",
-        "titleSearch",
-        tokenize = 'porter'
-      );
-      CREATE TRIGGER "conversationsTitleSearchIndexInsert" AFTER INSERT ON "conversations" BEGIN
-        INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
-      END;
-      CREATE TRIGGER "conversationsTitleSearchIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
-        INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
-        INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
-      END;
-      CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
-        INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
-      END;
+        CREATE TABLE "conversations" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "updatedAt" TEXT NULL,
+          "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+          "reference" TEXT NOT NULL,
+          "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+          "anonymousAt" TEXT NULL,
+          "type" TEXT NOT NULL,
+          "pinnedAt" TEXT NULL,
+          "staffOnlyAt" TEXT NULL,
+          "title" TEXT NOT NULL,
+          "titleSearch" TEXT NOT NULL,
+          "nextMessageReference" INTEGER NOT NULL,
+          UNIQUE ("course", "reference")
+        );
+        CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
+        CREATE VIRTUAL TABLE "conversationsReferenceIndex" USING fts5(
+          content = "conversations",
+          content_rowid = "id",
+          "reference",
+          tokenize = 'porter'
+        );
+        CREATE TRIGGER "conversationsReferenceIndexInsert" AFTER INSERT ON "conversations" BEGIN
+          INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+        END;
+        CREATE TRIGGER "conversationsReferenceIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
+          INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+          INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+        END;
+        CREATE TRIGGER "conversationsReferenceIndexDelete" AFTER DELETE ON "conversations" BEGIN
+          INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+        END;
+        CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
+        CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
+        CREATE INDEX "conversationsStaffOnlyAtIndex" ON "conversations" ("staffOnlyAt");
+        CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
+          content = "conversations",
+          content_rowid = "id",
+          "titleSearch",
+          tokenize = 'porter'
+        );
+        CREATE TRIGGER "conversationsTitleSearchIndexInsert" AFTER INSERT ON "conversations" BEGIN
+          INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
+        END;
+        CREATE TRIGGER "conversationsTitleSearchIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
+          INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
+          INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
+        END;
+        CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
+          INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
+        END;
 
-      CREATE TABLE "taggings" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-        "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
-        UNIQUE ("conversation", "tag")
-      );
-      CREATE INDEX "taggingsConversationIndex" ON "taggings" ("conversation");
-      CREATE INDEX "taggingsTagIndex" ON "taggings" ("tag");
+        CREATE TABLE "taggings" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+          "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
+          UNIQUE ("conversation", "tag")
+        );
+        CREATE INDEX "taggingsConversationIndex" ON "taggings" ("conversation");
+        CREATE INDEX "taggingsTagIndex" ON "taggings" ("tag");
 
-      CREATE TABLE "messages" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "updatedAt" TEXT NULL,
-        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "anonymousAt" TEXT NULL,
-        "answerAt" TEXT NULL,
-        "contentSource" TEXT NOT NULL,
-        "contentPreprocessed" TEXT NOT NULL,
-        "contentSearch" TEXT NOT NULL,
-        UNIQUE ("conversation", "reference")
-      );
-      CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
-      CREATE VIRTUAL TABLE "messagesReferenceIndex" USING fts5(
-        content = "messages",
-        content_rowid = "id",
-        "reference",
-        tokenize = 'porter'
-      );
-      CREATE TRIGGER "messagesReferenceIndexInsert" AFTER INSERT ON "messages" BEGIN
-        INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-      END;
-      CREATE TRIGGER "messagesReferenceIndexUpdate" AFTER UPDATE ON "messages" BEGIN
-        INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-        INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-      END;
-      CREATE TRIGGER "messagesReferenceIndexDelete" AFTER DELETE ON "messages" BEGIN
-        INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-      END;
-      CREATE INDEX "messagesAnswerAtIndex" ON "messages" ("answerAt");
-      CREATE VIRTUAL TABLE "messagesContentSearchIndex" USING fts5(
-        content = "messages",
-        content_rowid = "id",
-        "contentSearch",
-        tokenize = 'porter'
-      );
-      CREATE TRIGGER "messagesContentSearchIndexInsert" AFTER INSERT ON "messages" BEGIN
-        INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
-      END;
-      CREATE TRIGGER "messagesContentSearchIndexUpdate" AFTER UPDATE ON "messages" BEGIN
-        INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
-        INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
-      END;
-      CREATE TRIGGER "messagesContentSearchIndexDelete" AFTER DELETE ON "messages" BEGIN
-        INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
-      END;
+        CREATE TABLE "messages" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "updatedAt" TEXT NULL,
+          "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+          "reference" TEXT NOT NULL,
+          "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+          "anonymousAt" TEXT NULL,
+          "answerAt" TEXT NULL,
+          "contentSource" TEXT NOT NULL,
+          "contentPreprocessed" TEXT NOT NULL,
+          "contentSearch" TEXT NOT NULL,
+          UNIQUE ("conversation", "reference")
+        );
+        CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
+        CREATE VIRTUAL TABLE "messagesReferenceIndex" USING fts5(
+          content = "messages",
+          content_rowid = "id",
+          "reference",
+          tokenize = 'porter'
+        );
+        CREATE TRIGGER "messagesReferenceIndexInsert" AFTER INSERT ON "messages" BEGIN
+          INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+        END;
+        CREATE TRIGGER "messagesReferenceIndexUpdate" AFTER UPDATE ON "messages" BEGIN
+          INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+          INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+        END;
+        CREATE TRIGGER "messagesReferenceIndexDelete" AFTER DELETE ON "messages" BEGIN
+          INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+        END;
+        CREATE INDEX "messagesAnswerAtIndex" ON "messages" ("answerAt");
+        CREATE VIRTUAL TABLE "messagesContentSearchIndex" USING fts5(
+          content = "messages",
+          content_rowid = "id",
+          "contentSearch",
+          tokenize = 'porter'
+        );
+        CREATE TRIGGER "messagesContentSearchIndexInsert" AFTER INSERT ON "messages" BEGIN
+          INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
+        END;
+        CREATE TRIGGER "messagesContentSearchIndexUpdate" AFTER UPDATE ON "messages" BEGIN
+          INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
+          INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
+        END;
+        CREATE TRIGGER "messagesContentSearchIndexDelete" AFTER DELETE ON "messages" BEGIN
+          INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
+        END;
 
-      CREATE TABLE "readings" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-        UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
-      );
+        CREATE TABLE "readings" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
+          "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
+          UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
+        );
 
-      CREATE TABLE "notificationDeliveries" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-        UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
-      );
+        CREATE TABLE "notificationDeliveries" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
+          "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
+          UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
+        );
 
-      CREATE TABLE "endorsements" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        UNIQUE ("message", "enrollment")
-      );
-      CREATE INDEX "endorsementsMessageIndex" ON "endorsements" ("message");
+        CREATE TABLE "endorsements" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
+          "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+          UNIQUE ("message", "enrollment")
+        );
+        CREATE INDEX "endorsementsMessageIndex" ON "endorsements" ("message");
 
-      CREATE TABLE "likes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        UNIQUE ("message", "enrollment")
-      );
-      CREATE INDEX "likesMessageIndex" ON "likes" ("message");
-    `,
+        CREATE TABLE "likes" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
+          "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+          UNIQUE ("message", "enrollment")
+        );
+        CREATE INDEX "likesMessageIndex" ON "likes" ("message");
+      `,
 
-    sql`
-      CREATE TABLE "sendEmailJobs" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "startAt" TEXT NOT NULL,
-        "startedAt" TEXT NULL,
-        "expiresAt" TEXT NOT NULL,
-        "mailOptions" TEXT NOT NULL
-      );
-      CREATE INDEX "sendEmailJobsStartAtIndex" ON "sendEmailJobs" ("startAt");
-      CREATE INDEX "sendEmailJobsStartedAtIndex" ON "sendEmailJobs" ("startedAt");
-      CREATE INDEX "sendEmailJobsExpiresAtIndex" ON "sendEmailJobs" ("expiresAt");
+      sql`
+        CREATE TABLE "sendEmailJobs" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "startAt" TEXT NOT NULL,
+          "startedAt" TEXT NULL,
+          "expiresAt" TEXT NOT NULL,
+          "mailOptions" TEXT NOT NULL
+        );
+        CREATE INDEX "sendEmailJobsStartAtIndex" ON "sendEmailJobs" ("startAt");
+        CREATE INDEX "sendEmailJobsStartedAtIndex" ON "sendEmailJobs" ("startedAt");
+        CREATE INDEX "sendEmailJobsExpiresAtIndex" ON "sendEmailJobs" ("expiresAt");
 
-      DROP INDEX "flashesCreatedAtIndex";
-      CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
+        DROP INDEX "flashesCreatedAtIndex";
+        CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
 
-      DROP INDEX "emailConfirmationsCreatedAtIndex";
-      CREATE INDEX "emailConfirmationsCreatedAtIndex" ON "emailConfirmations" ("createdAt");
+        DROP INDEX "emailConfirmationsCreatedAtIndex";
+        CREATE INDEX "emailConfirmationsCreatedAtIndex" ON "emailConfirmations" ("createdAt");
 
-      DROP INDEX "passwordResetsCreatedAtIndex";
-      CREATE INDEX "passwordResetsCreatedAtIndex" ON "passwordResets" ("createdAt");
+        DROP INDEX "passwordResetsCreatedAtIndex";
+        CREATE INDEX "passwordResetsCreatedAtIndex" ON "passwordResets" ("createdAt");
 
-      DROP INDEX "sessionsCreatedAtIndex";
-      CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" ("createdAt");
-    `,
+        DROP INDEX "sessionsCreatedAtIndex";
+        CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" ("createdAt");
+      `,
 
-    sql`
-      ALTER TABLE "conversations" ADD COLUMN "resolvedAt" TEXT NULL;
-    `,
+      sql`
+        ALTER TABLE "conversations" ADD COLUMN "resolvedAt" TEXT NULL;
+      `,
 
-    sql`
-      CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
-    `,
+      sql`
+        CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
+      `,
 
-    sql`
-      DELETE FROM "readings" WHERE "id" IN (
-        SELECT "readings"."id"
-        FROM "readings"
-        JOIN "enrollments" ON
-          "readings"."enrollment" = "enrollments"."id" AND
-          "enrollments"."role" = 'student'
-        JOIN "messages" ON "readings"."message" = "messages"."id"
-        JOIN "conversations" ON
-          "messages"."conversation" = "conversations"."id" AND
-          "conversations"."staffOnlyAt" IS NOT NULL AND
-          NOT EXISTS(
-            SELECT TRUE
-            FROM "messages"
-            WHERE
-              "enrollments"."id" = "messages"."authorEnrollment" AND
-              "conversations"."id" = "messages"."conversation"
+      sql`
+        DELETE FROM "readings" WHERE "id" IN (
+          SELECT "readings"."id"
+          FROM "readings"
+          JOIN "enrollments" ON
+            "readings"."enrollment" = "enrollments"."id" AND
+            "enrollments"."role" = 'student'
+          JOIN "messages" ON "readings"."message" = "messages"."id"
+          JOIN "conversations" ON
+            "messages"."conversation" = "conversations"."id" AND
+            "conversations"."staffOnlyAt" IS NOT NULL AND
+            NOT EXISTS(
+              SELECT TRUE
+              FROM "messages"
+              WHERE
+                "enrollments"."id" = "messages"."authorEnrollment" AND
+                "conversations"."id" = "messages"."conversation"
+            )
+        );
+      `,
+
+      (database) => {
+        const makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork =
+          (text: string): string =>
+            text.replace(
+              new RegExp(
+                `(?<=https://${application.userConfiguration.hostname.replaceAll(
+                  ".",
+                  "\\.",
+                )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
+                "gi",
+              ),
+              "?messageReference=",
+            );
+        for (const user of database.all<{
+          id: number;
+          biographySource: string | null;
+          biographyPreprocessed: string | null;
+        }>(
+          sql`
+            SELECT "id", "biographySource", "biographyPreprocessed"
+            FROM "users"
+            ORDER BY "id"
+          `,
+        ))
+          if (
+            user.biographySource !== null &&
+            user.biographyPreprocessed !== null
           )
-      );
-    `,
+            database.run(
+              sql`
+                UPDATE "users"
+                SET
+                  "biographySource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                    user.biographySource,
+                  )},
+                  "biographyPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                    user.biographyPreprocessed,
+                  )}
+                WHERE "id" = ${user.id}
+              `,
+            );
+        for (const message of database.all<{
+          id: number;
+          contentSource: string;
+          contentPreprocessed: string;
+          contentSearch: string;
+        }>(
+          sql`
+            SELECT "id", "contentSource", "contentPreprocessed", "contentSearch"
+            FROM "messages"
+            ORDER BY "id"
+          `,
+        ))
+          database.run(
+            sql`
+              UPDATE "messages"
+              SET
+                "contentSource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                  message.contentSource,
+                )},
+                "contentPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                  message.contentPreprocessed,
+                )},
+                "contentSearch" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                  message.contentSearch,
+                )}
+              WHERE "id" = ${message.id}
+            `,
+          );
+      },
 
-    (database) => {
-      const makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork =
-        (text: string): string =>
+      sql`
+        DROP TABLE "flashes";
+        CREATE TABLE "flashes" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "nonce" TEXT NOT NULL UNIQUE,
+          "theme" TEXT NOT NULL,
+          "content" TEXT NOT NULL
+        );
+        CREATE INDEX "flashesCreatedAtIndex" ON "flashes" (datetime("createdAt"));
+      `,
+
+      sql`
+        DROP INDEX "flashesCreatedAtIndex";
+        CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
+      `,
+
+      sql`
+        CREATE TABLE "conversationDrafts" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+          "reference" TEXT NOT NULL,
+          "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+          "type" TEXT NULL,
+          "isPinned" TEXT NULL,
+          "isStaffOnly" TEXT NULL,
+          "title" TEXT NULL,
+          "content" TEXT NULL,
+          "tagsReferences" TEXT NULL,
+          UNIQUE ("course", "reference")
+        );
+      `,
+
+      sql`
+        DROP TABLE "conversationDrafts";
+        CREATE TABLE "conversationDrafts" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "updatedAt" TEXT NULL,
+          "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+          "reference" TEXT NOT NULL,
+          "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+          "type" TEXT NULL,
+          "isPinned" TEXT NULL,
+          "isStaffOnly" TEXT NULL,
+          "title" TEXT NULL,
+          "content" TEXT NULL,
+          "tagsReferences" TEXT NULL,
+          UNIQUE ("course", "reference")
+        );
+      `,
+
+      (database) => {
+        const changeMessageReferencePermanentLinkQueryParameter = (
+          text: string,
+        ): string =>
           text.replace(
             new RegExp(
               `(?<=https://${application.userConfiguration.hostname.replaceAll(
                 ".",
                 "\\.",
-              )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
+              )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
               "gi",
             ),
-            "?messageReference=",
+            "?messages%5BmessageReference%5D=",
           );
-      for (const user of database.all<{
-        id: number;
-        biographySource: string | null;
-        biographyPreprocessed: string | null;
-      }>(
-        sql`
-          SELECT "id", "biographySource", "biographyPreprocessed"
-          FROM "users"
-          ORDER BY "id"
-        `,
-      ))
-        if (
-          user.biographySource !== null &&
-          user.biographyPreprocessed !== null
-        )
+        for (const user of database.all<{
+          id: number;
+          biographySource: string | null;
+          biographyPreprocessed: string | null;
+        }>(
+          sql`
+            SELECT "id", "biographySource", "biographyPreprocessed"
+            FROM "users"
+            ORDER BY "id"
+          `,
+        ))
+          if (
+            user.biographySource !== null &&
+            user.biographyPreprocessed !== null
+          )
+            database.run(
+              sql`
+                UPDATE "users"
+                SET
+                  "biographySource" = ${changeMessageReferencePermanentLinkQueryParameter(
+                    user.biographySource,
+                  )},
+                  "biographyPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
+                    user.biographyPreprocessed,
+                  )}
+                WHERE "id" = ${user.id}
+              `,
+            );
+        for (const message of database.all<{
+          id: number;
+          contentSource: string;
+          contentPreprocessed: string;
+          contentSearch: string;
+        }>(
+          sql`
+            SELECT "id", "contentSource", "contentPreprocessed", "contentSearch"
+            FROM "messages"
+            ORDER BY "id"
+          `,
+        ))
           database.run(
             sql`
-              UPDATE "users"
+              UPDATE "messages"
               SET
-                "biographySource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                  user.biographySource,
+                "contentSource" = ${changeMessageReferencePermanentLinkQueryParameter(
+                  message.contentSource,
                 )},
-                "biographyPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                  user.biographyPreprocessed,
+                "contentPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
+                  message.contentPreprocessed,
+                )},
+                "contentSearch" = ${changeMessageReferencePermanentLinkQueryParameter(
+                  message.contentSearch,
                 )}
-              WHERE "id" = ${user.id}
+              WHERE "id" = ${message.id}
             `,
           );
-      for (const message of database.all<{
-        id: number;
-        contentSource: string;
-        contentPreprocessed: string;
-        contentSearch: string;
-      }>(
-        sql`
-          SELECT "id", "contentSource", "contentPreprocessed", "contentSearch"
-          FROM "messages"
-          ORDER BY "id"
-        `,
-      ))
-        database.run(
+      },
+
+      sql`
+        ALTER TABLE "courses" ADD COLUMN "archivedAt" TEXT NULL;
+      `,
+
+      sql`
+        UPDATE "users"
+        SET "emailNotifications" = 'mentions'
+        WHERE "emailNotifications" = 'staff-announcements-and-mentions';
+
+        UPDATE "conversations"
+        SET "type" = 'note'
+        WHERE "type" = 'announcement';
+      `,
+
+      sql`
+        DROP INDEX "emailConfirmationsCreatedAtIndex";
+        ALTER TABLE "emailConfirmations" RENAME TO "emailVerifications";
+        CREATE INDEX "emailVerificationsCreatedAtIndex" ON "emailVerifications" ("createdAt");
+        ALTER TABLE "users" RENAME COLUMN "emailConfirmedAt" TO "emailVerifiedAt";
+      `,
+
+      (database) => {
+        database.execute(
           sql`
-            UPDATE "messages"
-            SET
-              "contentSource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                message.contentSource,
-              )},
-              "contentPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                message.contentPreprocessed,
-              )},
-              "contentSearch" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                message.contentSearch,
-              )}
-            WHERE "id" = ${message.id}
+            CREATE TABLE "new_users" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "lastSeenOnlineAt" TEXT NOT NULL,
+              "reference" TEXT NOT NULL UNIQUE,
+              "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
+              "password" TEXT NOT NULL,
+              "emailVerifiedAt" TEXT NULL,
+              "name" TEXT NOT NULL,
+              "nameSearch" TEXT NOT NULL,
+              "avatar" TEXT NULL,
+              "avatarlessBackgroundColor" TEXT NOT NULL,
+              "biographySource" TEXT NULL,
+              "biographyPreprocessed" TEXT NULL,
+              "emailNotifications" TEXT NOT NULL
+            );
           `,
         );
-    },
-
-    sql`
-      DROP TABLE "flashes";
-      CREATE TABLE "flashes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "theme" TEXT NOT NULL,
-        "content" TEXT NOT NULL
-      );
-      CREATE INDEX "flashesCreatedAtIndex" ON "flashes" (datetime("createdAt"));
-    `,
-
-    sql`
-      DROP INDEX "flashesCreatedAtIndex";
-      CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
-    `,
-
-    sql`
-      CREATE TABLE "conversationDrafts" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "type" TEXT NULL,
-        "isPinned" TEXT NULL,
-        "isStaffOnly" TEXT NULL,
-        "title" TEXT NULL,
-        "content" TEXT NULL,
-        "tagsReferences" TEXT NULL,
-        UNIQUE ("course", "reference")
-      );
-    `,
-
-    sql`
-      DROP TABLE "conversationDrafts";
-      CREATE TABLE "conversationDrafts" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "updatedAt" TEXT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "type" TEXT NULL,
-        "isPinned" TEXT NULL,
-        "isStaffOnly" TEXT NULL,
-        "title" TEXT NULL,
-        "content" TEXT NULL,
-        "tagsReferences" TEXT NULL,
-        UNIQUE ("course", "reference")
-      );
-    `,
-
-    (database) => {
-      const changeMessageReferencePermanentLinkQueryParameter = (
-        text: string,
-      ): string =>
-        text.replace(
-          new RegExp(
-            `(?<=https://${application.userConfiguration.hostname.replaceAll(
-              ".",
-              "\\.",
-            )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
-            "gi",
-          ),
-          "?messages%5BmessageReference%5D=",
-        );
-      for (const user of database.all<{
-        id: number;
-        biographySource: string | null;
-        biographyPreprocessed: string | null;
-      }>(
-        sql`
-          SELECT "id", "biographySource", "biographyPreprocessed"
-          FROM "users"
-          ORDER BY "id"
-        `,
-      ))
-        if (
-          user.biographySource !== null &&
-          user.biographyPreprocessed !== null
-        )
+        for (const user of database.all<{
+          id: number;
+          createdAt: string;
+          lastSeenOnlineAt: string;
+          email: string;
+          password: string;
+          emailVerifiedAt: string | null;
+          name: string;
+          nameSearch: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: string;
+          biographySource: string | null;
+          biographyPreprocessed: string | null;
+          emailNotifications: string;
+        }>(
+          sql`
+            SELECT
+              "id",
+              "createdAt",
+              "lastSeenOnlineAt",
+              "email",
+              "password",
+              "emailVerifiedAt",
+              "name",
+              "nameSearch",
+              "avatar",
+              "avatarlessBackgroundColor",
+              "biographySource",
+              "biographyPreprocessed",
+              "emailNotifications"
+            FROM "users"
+          `,
+        ))
           database.run(
             sql`
-              UPDATE "users"
-              SET
-                "biographySource" = ${changeMessageReferencePermanentLinkQueryParameter(
-                  user.biographySource,
-                )},
-                "biographyPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
-                  user.biographyPreprocessed,
-                )}
-              WHERE "id" = ${user.id}
+              INSERT INTO "new_users" (
+                "id",
+                "createdAt",
+                "lastSeenOnlineAt",
+                "reference",
+                "email",
+                "password",
+                "emailVerifiedAt",
+                "name",
+                "nameSearch",
+                "avatar",
+                "avatarlessBackgroundColor",
+                "biographySource",
+                "biographyPreprocessed",
+                "emailNotifications"
+              )
+              VALUES (
+                ${user.id},
+                ${user.createdAt},
+                ${user.lastSeenOnlineAt},
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${user.email},
+                ${user.password},
+                ${user.emailVerifiedAt},
+                ${user.name},
+                ${user.nameSearch},
+                ${user.avatar},
+                ${user.avatarlessBackgroundColor},
+                ${user.biographySource},
+                ${user.biographyPreprocessed},
+                ${user.emailNotifications}
+              )
             `,
           );
-      for (const message of database.all<{
-        id: number;
-        contentSource: string;
-        contentPreprocessed: string;
-        contentSearch: string;
-      }>(
-        sql`
-          SELECT "id", "contentSource", "contentPreprocessed", "contentSearch"
-          FROM "messages"
-          ORDER BY "id"
-        `,
-      ))
-        database.run(
+        database.execute(
           sql`
-            UPDATE "messages"
-            SET
-              "contentSource" = ${changeMessageReferencePermanentLinkQueryParameter(
-                message.contentSource,
-              )},
-              "contentPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
-                message.contentPreprocessed,
-              )},
-              "contentSearch" = ${changeMessageReferencePermanentLinkQueryParameter(
-                message.contentSearch,
-              )}
-            WHERE "id" = ${message.id}
+            DROP TABLE "users";
+            ALTER TABLE "new_users" RENAME TO "users";
+            CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+            END;
           `,
         );
-    },
+      },
 
-    sql`
-      ALTER TABLE "courses" ADD COLUMN "archivedAt" TEXT NULL;
-    `,
-
-    sql`
-      UPDATE "users"
-      SET "emailNotifications" = 'mentions'
-      WHERE "emailNotifications" = 'staff-announcements-and-mentions';
-
-      UPDATE "conversations"
-      SET "type" = 'note'
-      WHERE "type" = 'announcement';
-    `,
-
-    sql`
-      DROP INDEX "emailConfirmationsCreatedAtIndex";
-      ALTER TABLE "emailConfirmations" RENAME TO "emailVerifications";
-      CREATE INDEX "emailVerificationsCreatedAtIndex" ON "emailVerifications" ("createdAt");
-      ALTER TABLE "users" RENAME COLUMN "emailConfirmedAt" TO "emailVerifiedAt";
-    `,
-
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_users" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "lastSeenOnlineAt" TEXT NOT NULL,
-            "reference" TEXT NOT NULL UNIQUE,
-            "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
-            "password" TEXT NOT NULL,
-            "emailVerifiedAt" TEXT NULL,
-            "name" TEXT NOT NULL,
-            "nameSearch" TEXT NOT NULL,
-            "avatar" TEXT NULL,
-            "avatarlessBackgroundColor" TEXT NOT NULL,
-            "biographySource" TEXT NULL,
-            "biographyPreprocessed" TEXT NULL,
-            "emailNotifications" TEXT NOT NULL
-          );
-        `,
-      );
-      for (const user of database.all<{
-        id: number;
-        createdAt: string;
-        lastSeenOnlineAt: string;
-        email: string;
-        password: string;
-        emailVerifiedAt: string | null;
-        name: string;
-        nameSearch: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: string;
-        biographySource: string | null;
-        biographyPreprocessed: string | null;
-        emailNotifications: string;
-      }>(
-        sql`
-          SELECT
-            "id",
-            "createdAt",
-            "lastSeenOnlineAt",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "nameSearch",
-            "avatar",
-            "avatarlessBackgroundColor",
-            "biographySource",
-            "biographyPreprocessed",
-            "emailNotifications"
-          FROM "users"
-        `,
-      ))
-        database.run(
+      (database) => {
+        database.execute(
           sql`
-            INSERT INTO "new_users" (
+            CREATE TABLE "new_users" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "lastSeenOnlineAt" TEXT NOT NULL,
+              "reference" TEXT NOT NULL UNIQUE,
+              "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
+              "password" TEXT NOT NULL,
+              "emailVerifiedAt" TEXT NULL,
+              "name" TEXT NOT NULL,
+              "nameSearch" TEXT NOT NULL,
+              "avatar" TEXT NULL,
+              "avatarlessBackgroundColor" TEXT NOT NULL,
+              "biographySource" TEXT NULL,
+              "biographyPreprocessed" TEXT NULL,
+              "emailNotificationsForAllMessagesAt" TEXT NULL,
+              "emailNotificationsForMentionsAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
+              "emailNotificationsDigestsFrequency" TEXT NULL
+            );
+          `,
+        );
+        for (const user of database.all<{
+          id: number;
+          createdAt: string;
+          lastSeenOnlineAt: string;
+          reference: string;
+          email: string;
+          password: string;
+          emailVerifiedAt: string | null;
+          name: string;
+          nameSearch: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: string;
+          biographySource: string | null;
+          biographyPreprocessed: string | null;
+          emailNotifications: "all-messages" | "mentions" | "none";
+        }>(
+          sql`
+            SELECT
               "id",
               "createdAt",
               "lastSeenOnlineAt",
@@ -626,449 +723,332 @@ export default async (application: Application): Promise<void> => {
               "biographySource",
               "biographyPreprocessed",
               "emailNotifications"
-            )
-            VALUES (
-              ${user.id},
-              ${user.createdAt},
-              ${user.lastSeenOnlineAt},
-              ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${user.email},
-              ${user.password},
-              ${user.emailVerifiedAt},
-              ${user.name},
-              ${user.nameSearch},
-              ${user.avatar},
-              ${user.avatarlessBackgroundColor},
-              ${user.biographySource},
-              ${user.biographyPreprocessed},
-              ${user.emailNotifications}
-            )
+            FROM "users"
           `,
-        );
-      database.execute(
-        sql`
-          DROP TABLE "users";
-          ALTER TABLE "new_users" RENAME TO "users";
-          CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-          END;
-        `,
-      );
-    },
-
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_users" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "lastSeenOnlineAt" TEXT NOT NULL,
-            "reference" TEXT NOT NULL UNIQUE,
-            "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
-            "password" TEXT NOT NULL,
-            "emailVerifiedAt" TEXT NULL,
-            "name" TEXT NOT NULL,
-            "nameSearch" TEXT NOT NULL,
-            "avatar" TEXT NULL,
-            "avatarlessBackgroundColor" TEXT NOT NULL,
-            "biographySource" TEXT NULL,
-            "biographyPreprocessed" TEXT NULL,
-            "emailNotificationsForAllMessagesAt" TEXT NULL,
-            "emailNotificationsForMentionsAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
-            "emailNotificationsDigestsFrequency" TEXT NULL
+        ))
+          database.run(
+            sql`
+              INSERT INTO "new_users" (
+                "id",
+                "createdAt",
+                "lastSeenOnlineAt",
+                "reference",
+                "email",
+                "password",
+                "emailVerifiedAt",
+                "name",
+                "nameSearch",
+                "avatar",
+                "avatarlessBackgroundColor",
+                "biographySource",
+                "biographyPreprocessed",
+                "emailNotificationsForAllMessagesAt",
+                "emailNotificationsForMentionsAt",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                "emailNotificationsForMessagesInConversationsYouStartedAt",
+                "emailNotificationsDigestsFrequency"
+              )
+              VALUES (
+                ${user.id},
+                ${user.createdAt},
+                ${user.lastSeenOnlineAt},
+                ${user.reference},
+                ${user.email},
+                ${user.password},
+                ${user.emailVerifiedAt},
+                ${user.name},
+                ${user.nameSearch},
+                ${user.avatar},
+                ${user.avatarlessBackgroundColor},
+                ${user.biographySource},
+                ${user.biographyPreprocessed},
+                ${
+                  user.emailNotifications === "all-messages"
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  user.emailNotifications !== "none"
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  user.emailNotifications !== "none"
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  user.emailNotifications !== "none"
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${user.emailNotifications === "mentions" ? "daily" : null}
+              )
+            `,
           );
-        `,
-      );
-      for (const user of database.all<{
-        id: number;
-        createdAt: string;
-        lastSeenOnlineAt: string;
-        reference: string;
-        email: string;
-        password: string;
-        emailVerifiedAt: string | null;
-        name: string;
-        nameSearch: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: string;
-        biographySource: string | null;
-        biographyPreprocessed: string | null;
-        emailNotifications: "all-messages" | "mentions" | "none";
-      }>(
-        sql`
-          SELECT
-            "id",
-            "createdAt",
-            "lastSeenOnlineAt",
-            "reference",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "nameSearch",
-            "avatar",
-            "avatarlessBackgroundColor",
-            "biographySource",
-            "biographyPreprocessed",
-            "emailNotifications"
-          FROM "users"
-        `,
-      ))
-        database.run(
+        database.execute(
           sql`
-            INSERT INTO "new_users" (
-              "id",
-              "createdAt",
-              "lastSeenOnlineAt",
-              "reference",
-              "email",
-              "password",
-              "emailVerifiedAt",
-              "name",
-              "nameSearch",
-              "avatar",
-              "avatarlessBackgroundColor",
-              "biographySource",
-              "biographyPreprocessed",
-              "emailNotificationsForAllMessagesAt",
-              "emailNotificationsForMentionsAt",
-              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-              "emailNotificationsForMessagesInConversationsYouStartedAt",
-              "emailNotificationsDigestsFrequency"
-            )
-            VALUES (
-              ${user.id},
-              ${user.createdAt},
-              ${user.lastSeenOnlineAt},
-              ${user.reference},
-              ${user.email},
-              ${user.password},
-              ${user.emailVerifiedAt},
-              ${user.name},
-              ${user.nameSearch},
-              ${user.avatar},
-              ${user.avatarlessBackgroundColor},
-              ${user.biographySource},
-              ${user.biographyPreprocessed},
-              ${
-                user.emailNotifications === "all-messages"
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${
-                user.emailNotifications !== "none"
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${
-                user.emailNotifications !== "none"
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${
-                user.emailNotifications !== "none"
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${user.emailNotifications === "mentions" ? "daily" : null}
-            )
+            DROP TABLE "users";
+            ALTER TABLE "new_users" RENAME TO "users";
+            CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+            END;
           `,
         );
-      database.execute(
-        sql`
-          DROP TABLE "users";
-          ALTER TABLE "new_users" RENAME TO "users";
-          CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-          END;
-        `,
-      );
-    },
+      },
 
-    sql`
-      ALTER TABLE "invitations" RENAME COLUMN "role" TO "courseRole";
-      ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
-    `,
+      sql`
+        ALTER TABLE "invitations" RENAME COLUMN "role" TO "courseRole";
+        ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
+      `,
 
-    sql`
-      CREATE TABLE "administrationOptions" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
-        "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
-      );
+      sql`
+        CREATE TABLE "administrationOptions" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
+          "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
+        );
 
-      INSERT INTO "administrationOptions" ("userSystemRolesWhoMayCreateCourses") VALUES ('all');
-    `,
+        INSERT INTO "administrationOptions" ("userSystemRolesWhoMayCreateCourses") VALUES ('all');
+      `,
 
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_users" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "lastSeenOnlineAt" TEXT NOT NULL,
-            "reference" TEXT NOT NULL UNIQUE,
-            "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
-            "password" TEXT NOT NULL,
-            "emailVerifiedAt" TEXT NULL,
-            "name" TEXT NOT NULL,
-            "nameSearch" TEXT NOT NULL,
-            "avatar" TEXT NULL,
-            "avatarlessBackgroundColor" TEXT NOT NULL,
-            "biographySource" TEXT NULL,
-            "biographyPreprocessed" TEXT NULL,
-            "systemRole" TEXT NOT NULL,
-            "emailNotificationsForAllMessagesAt" TEXT NULL,
-            "emailNotificationsForMentionsAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
-            "emailNotificationsDigestsFrequency" TEXT NULL
-          );
-        `,
-      );
-      for (const user of database.all<{
-        id: number;
-        createdAt: string;
-        lastSeenOnlineAt: string;
-        reference: string;
-        email: string;
-        password: string;
-        emailVerifiedAt: string | null;
-        name: string;
-        nameSearch: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: string;
-        biographySource: string | null;
-        biographyPreprocessed: string | null;
-        emailNotificationsForAllMessagesAt: string | null;
-        emailNotificationsForMentionsAt: string | null;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          string | null;
-        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-        emailNotificationsDigestsFrequency: "hourly" | "daily" | null;
-      }>(
-        sql`
-          SELECT
-            "id",
-            "createdAt",
-            "lastSeenOnlineAt",
-            "reference",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "nameSearch",
-            "avatar",
-            "avatarlessBackgroundColor",
-            "biographySource",
-            "biographyPreprocessed",
-            "emailNotificationsForAllMessagesAt",
-            "emailNotificationsForMentionsAt",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt",
-            "emailNotificationsDigestsFrequency"
-          FROM "users"
-        `,
-      ))
-        database.run(
+      (database) => {
+        database.execute(
           sql`
-            INSERT INTO "new_users" (
-              "id",
-              "createdAt",
-              "lastSeenOnlineAt",
-              "reference",
-              "email",
-              "password",
-              "emailVerifiedAt",
-              "name",
-              "nameSearch",
-              "avatar",
-              "avatarlessBackgroundColor",
-              "biographySource",
-              "biographyPreprocessed",
-              "systemRole",
-              "emailNotificationsForAllMessagesAt",
-              "emailNotificationsForMentionsAt",
-              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-              "emailNotificationsForMessagesInConversationsYouStartedAt",
-              "emailNotificationsDigestsFrequency"
-            )
-            VALUES (
-              ${user.id},
-              ${user.createdAt},
-              ${user.lastSeenOnlineAt},
-              ${user.reference},
-              ${user.email},
-              ${user.password},
-              ${user.emailVerifiedAt},
-              ${user.name},
-              ${user.nameSearch},
-              ${user.avatar},
-              ${user.avatarlessBackgroundColor},
-              ${user.biographySource},
-              ${user.biographyPreprocessed},
-              ${"none"},
-              ${user.emailNotificationsForAllMessagesAt},
-              ${user.emailNotificationsForMentionsAt},
-              ${user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt},
-              ${user.emailNotificationsForMessagesInConversationsYouStartedAt},
-              ${user.emailNotificationsDigestsFrequency}
-            )
+            CREATE TABLE "new_users" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "lastSeenOnlineAt" TEXT NOT NULL,
+              "reference" TEXT NOT NULL UNIQUE,
+              "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
+              "password" TEXT NOT NULL,
+              "emailVerifiedAt" TEXT NULL,
+              "name" TEXT NOT NULL,
+              "nameSearch" TEXT NOT NULL,
+              "avatar" TEXT NULL,
+              "avatarlessBackgroundColor" TEXT NOT NULL,
+              "biographySource" TEXT NULL,
+              "biographyPreprocessed" TEXT NULL,
+              "systemRole" TEXT NOT NULL,
+              "emailNotificationsForAllMessagesAt" TEXT NULL,
+              "emailNotificationsForMentionsAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
+              "emailNotificationsDigestsFrequency" TEXT NULL
+            );
           `,
         );
-      database.execute(
-        sql`
-          DROP TABLE "users";
-          ALTER TABLE "new_users" RENAME TO "users";
-          CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-          END;
-        `,
-      );
-    },
-
-    async (database) => {
-      if (
-        database.get<{ count: number }>(
-          sql`
-            SELECT COUNT(*) AS "count" FROM "users"
-          `,
-        )!.count === 0
-      )
-        return;
-      if (!process.stdin.isTTY)
-        throw new Error(
-          "This update requires that you answer some questions. Please run Courselore interactively (for example, ‘./courselore/courselore ./configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
-        );
-      const readlineInterface = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
-      while (true) {
-        const user = database.get<{
+        for (const user of database.all<{
           id: number;
+          createdAt: string;
+          lastSeenOnlineAt: string;
+          reference: string;
+          email: string;
+          password: string;
+          emailVerifiedAt: string | null;
+          name: string;
+          nameSearch: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: string;
+          biographySource: string | null;
+          biographyPreprocessed: string | null;
+          emailNotificationsForAllMessagesAt: string | null;
+          emailNotificationsForMentionsAt: string | null;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+            string | null;
+          emailNotificationsForMessagesInConversationsYouStartedAt:
+            string | null;
+          emailNotificationsDigestsFrequency: "hourly" | "daily" | null;
         }>(
           sql`
-            SELECT "id"
+            SELECT
+              "id",
+              "createdAt",
+              "lastSeenOnlineAt",
+              "reference",
+              "email",
+              "password",
+              "emailVerifiedAt",
+              "name",
+              "nameSearch",
+              "avatar",
+              "avatarlessBackgroundColor",
+              "biographySource",
+              "biographyPreprocessed",
+              "emailNotificationsForAllMessagesAt",
+              "emailNotificationsForMentionsAt",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+              "emailNotificationsForMessagesInConversationsYouStartedAt",
+              "emailNotificationsDigestsFrequency"
             FROM "users"
-            WHERE "email" = ${await readlineInterface.question("Courselore 4.0.0 introduces an administration interface and the role of system administrators. Please enter the email of an existing user to become a system administrator: ")}
           `,
-        );
-        if (user === undefined) {
-          console.log("User not found.");
-          continue;
-        }
-        database.run(
-          sql`
-            UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${user.id}
-          `,
-        );
-        break;
-      }
-      readlineInterface.close();
-    },
-
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_users" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "lastSeenOnlineAt" TEXT NOT NULL,
-            "reference" TEXT NOT NULL UNIQUE,
-            "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
-            "password" TEXT NOT NULL,
-            "emailVerifiedAt" TEXT NULL,
-            "name" TEXT NOT NULL,
-            "nameSearch" TEXT NOT NULL,
-            "avatar" TEXT NULL,
-            "avatarlessBackgroundColor" TEXT NOT NULL,
-            "biographySource" TEXT NULL,
-            "biographyPreprocessed" TEXT NULL,
-            "systemRole" TEXT NOT NULL,
-            "emailNotificationsForAllMessages" TEXT NOT NULL,
-            "emailNotificationsForAllMessagesDigestDeliveredAt" TEXT NULL,
-            "emailNotificationsForMentionsAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL
+        ))
+          database.run(
+            sql`
+              INSERT INTO "new_users" (
+                "id",
+                "createdAt",
+                "lastSeenOnlineAt",
+                "reference",
+                "email",
+                "password",
+                "emailVerifiedAt",
+                "name",
+                "nameSearch",
+                "avatar",
+                "avatarlessBackgroundColor",
+                "biographySource",
+                "biographyPreprocessed",
+                "systemRole",
+                "emailNotificationsForAllMessagesAt",
+                "emailNotificationsForMentionsAt",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                "emailNotificationsForMessagesInConversationsYouStartedAt",
+                "emailNotificationsDigestsFrequency"
+              )
+              VALUES (
+                ${user.id},
+                ${user.createdAt},
+                ${user.lastSeenOnlineAt},
+                ${user.reference},
+                ${user.email},
+                ${user.password},
+                ${user.emailVerifiedAt},
+                ${user.name},
+                ${user.nameSearch},
+                ${user.avatar},
+                ${user.avatarlessBackgroundColor},
+                ${user.biographySource},
+                ${user.biographyPreprocessed},
+                ${"none"},
+                ${user.emailNotificationsForAllMessagesAt},
+                ${user.emailNotificationsForMentionsAt},
+                ${user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt},
+                ${user.emailNotificationsForMessagesInConversationsYouStartedAt},
+                ${user.emailNotificationsDigestsFrequency}
+              )
+            `,
           );
-        `,
-      );
-      const hour = new Date();
-      hour.setUTCMinutes(0, 0, 0);
-      const day = new Date();
-      day.setUTCHours(0, 0, 0, 0);
-      for (const user of database.all<{
-        id: number;
-        createdAt: string;
-        lastSeenOnlineAt: string;
-        reference: string;
-        email: string;
-        password: string;
-        emailVerifiedAt: string | null;
-        name: string;
-        nameSearch: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: string;
-        biographySource: string | null;
-        biographyPreprocessed: string | null;
-        systemRole: "none" | "staff" | "administrator";
-        emailNotificationsForAllMessagesAt: string | null;
-        emailNotificationsForMentionsAt: string | null;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          string | null;
-        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-        emailNotificationsDigestsFrequency: "hourly" | "daily" | null;
-      }>(
-        sql`
-          SELECT
-            "id",
-            "createdAt",
-            "lastSeenOnlineAt",
-            "reference",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "nameSearch",
-            "avatar",
-            "avatarlessBackgroundColor",
-            "biographySource",
-            "biographyPreprocessed",
-            "systemRole",
-            "emailNotificationsForAllMessagesAt",
-            "emailNotificationsForMentionsAt",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt",
-            "emailNotificationsDigestsFrequency"
-          FROM "users"
-        `,
-      ))
-        database.run(
+        database.execute(
           sql`
-            INSERT INTO "new_users" (
+            DROP TABLE "users";
+            ALTER TABLE "new_users" RENAME TO "users";
+            CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+            END;
+          `,
+        );
+      },
+
+      async (database) => {
+        if (
+          database.get<{ count: number }>(
+            sql`
+              SELECT COUNT(*) AS "count" FROM "users"
+            `,
+          )!.count === 0
+        )
+          return;
+        if (!process.stdin.isTTY)
+          throw new Error(
+            "This update requires that you answer some questions. Please run Courselore interactively (for example, ‘./courselore/courselore ./configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
+          );
+        const readlineInterface = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout,
+        });
+        while (true) {
+          const user = database.get<{
+            id: number;
+          }>(
+            sql`
+              SELECT "id"
+              FROM "users"
+              WHERE "email" = ${await readlineInterface.question("Courselore 4.0.0 introduces an administration interface and the role of system administrators. Please enter the email of an existing user to become a system administrator: ")}
+            `,
+          );
+          if (user === undefined) {
+            console.log("User not found.");
+            continue;
+          }
+          database.run(
+            sql`
+              UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${user.id}
+            `,
+          );
+          break;
+        }
+        readlineInterface.close();
+      },
+
+      (database) => {
+        database.execute(
+          sql`
+            CREATE TABLE "new_users" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "lastSeenOnlineAt" TEXT NOT NULL,
+              "reference" TEXT NOT NULL UNIQUE,
+              "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
+              "password" TEXT NOT NULL,
+              "emailVerifiedAt" TEXT NULL,
+              "name" TEXT NOT NULL,
+              "nameSearch" TEXT NOT NULL,
+              "avatar" TEXT NULL,
+              "avatarlessBackgroundColor" TEXT NOT NULL,
+              "biographySource" TEXT NULL,
+              "biographyPreprocessed" TEXT NULL,
+              "systemRole" TEXT NOT NULL,
+              "emailNotificationsForAllMessages" TEXT NOT NULL,
+              "emailNotificationsForAllMessagesDigestDeliveredAt" TEXT NULL,
+              "emailNotificationsForMentionsAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL
+            );
+          `,
+        );
+        const hour = new Date();
+        hour.setUTCMinutes(0, 0, 0);
+        const day = new Date();
+        day.setUTCHours(0, 0, 0, 0);
+        for (const user of database.all<{
+          id: number;
+          createdAt: string;
+          lastSeenOnlineAt: string;
+          reference: string;
+          email: string;
+          password: string;
+          emailVerifiedAt: string | null;
+          name: string;
+          nameSearch: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: string;
+          biographySource: string | null;
+          biographyPreprocessed: string | null;
+          systemRole: "none" | "staff" | "administrator";
+          emailNotificationsForAllMessagesAt: string | null;
+          emailNotificationsForMentionsAt: string | null;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+            string | null;
+          emailNotificationsForMessagesInConversationsYouStartedAt:
+            string | null;
+          emailNotificationsDigestsFrequency: "hourly" | "daily" | null;
+        }>(
+          sql`
+            SELECT
               "id",
               "createdAt",
               "lastSeenOnlineAt",
@@ -1083,644 +1063,816 @@ export default async (application: Application): Promise<void> => {
               "biographySource",
               "biographyPreprocessed",
               "systemRole",
-              "emailNotificationsForAllMessages",
-              "emailNotificationsForAllMessagesDigestDeliveredAt",
+              "emailNotificationsForAllMessagesAt",
               "emailNotificationsForMentionsAt",
               "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-              "emailNotificationsForMessagesInConversationsYouStartedAt"
-            )
-            VALUES (
-              ${user.id},
-              ${user.createdAt},
-              ${user.lastSeenOnlineAt},
-              ${user.reference},
-              ${user.email},
-              ${user.password},
-              ${user.emailVerifiedAt},
-              ${user.name},
-              ${user.nameSearch},
-              ${user.avatar},
-              ${user.avatarlessBackgroundColor},
-              ${user.biographySource},
-              ${user.biographyPreprocessed},
-              ${user.systemRole},
-              ${
-                user.emailNotificationsForAllMessagesAt === null
-                  ? "none"
-                  : user.emailNotificationsDigestsFrequency === null
-                    ? "instant"
-                    : user.emailNotificationsDigestsFrequency === "hourly"
-                      ? "hourly-digests"
-                      : user.emailNotificationsDigestsFrequency === "daily"
-                        ? "daily-digests"
-                        : null
-              },
-              ${
-                user.emailNotificationsForAllMessagesAt === null
-                  ? null
-                  : user.emailNotificationsDigestsFrequency === null
+              "emailNotificationsForMessagesInConversationsYouStartedAt",
+              "emailNotificationsDigestsFrequency"
+            FROM "users"
+          `,
+        ))
+          database.run(
+            sql`
+              INSERT INTO "new_users" (
+                "id",
+                "createdAt",
+                "lastSeenOnlineAt",
+                "reference",
+                "email",
+                "password",
+                "emailVerifiedAt",
+                "name",
+                "nameSearch",
+                "avatar",
+                "avatarlessBackgroundColor",
+                "biographySource",
+                "biographyPreprocessed",
+                "systemRole",
+                "emailNotificationsForAllMessages",
+                "emailNotificationsForAllMessagesDigestDeliveredAt",
+                "emailNotificationsForMentionsAt",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                "emailNotificationsForMessagesInConversationsYouStartedAt"
+              )
+              VALUES (
+                ${user.id},
+                ${user.createdAt},
+                ${user.lastSeenOnlineAt},
+                ${user.reference},
+                ${user.email},
+                ${user.password},
+                ${user.emailVerifiedAt},
+                ${user.name},
+                ${user.nameSearch},
+                ${user.avatar},
+                ${user.avatarlessBackgroundColor},
+                ${user.biographySource},
+                ${user.biographyPreprocessed},
+                ${user.systemRole},
+                ${
+                  user.emailNotificationsForAllMessagesAt === null
+                    ? "none"
+                    : user.emailNotificationsDigestsFrequency === null
+                      ? "instant"
+                      : user.emailNotificationsDigestsFrequency === "hourly"
+                        ? "hourly-digests"
+                        : user.emailNotificationsDigestsFrequency === "daily"
+                          ? "daily-digests"
+                          : null
+                },
+                ${
+                  user.emailNotificationsForAllMessagesAt === null
                     ? null
-                    : user.emailNotificationsDigestsFrequency === "hourly"
-                      ? hour.toISOString()
-                      : user.emailNotificationsDigestsFrequency === "daily"
-                        ? day.toISOString()
-                        : null
-              },
-              ${user.emailNotificationsForMentionsAt},
-              ${
-                user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt
-              },
-              ${user.emailNotificationsForMessagesInConversationsYouStartedAt}
-            )
+                    : user.emailNotificationsDigestsFrequency === null
+                      ? null
+                      : user.emailNotificationsDigestsFrequency === "hourly"
+                        ? hour.toISOString()
+                        : user.emailNotificationsDigestsFrequency === "daily"
+                          ? day.toISOString()
+                          : null
+                },
+                ${user.emailNotificationsForMentionsAt},
+                ${
+                  user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt
+                },
+                ${user.emailNotificationsForMessagesInConversationsYouStartedAt}
+              )
+            `,
+          );
+        database.execute(
+          sql`
+            DROP TABLE "users";
+            ALTER TABLE "new_users" RENAME TO "users";
+            CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+            END;
           `,
         );
-      database.execute(
-        sql`
-          DROP TABLE "users";
-          ALTER TABLE "new_users" RENAME TO "users";
-          CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-          END;
-        `,
-      );
-    },
+      },
 
-    sql`
-      ALTER TABLE "notificationDeliveries" RENAME TO "emailNotificationDeliveries";
+      sql`
+        ALTER TABLE "notificationDeliveries" RENAME TO "emailNotificationDeliveries";
 
-      CREATE TABLE "emailNotificationMessageJobs" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "startAt" TEXT NOT NULL,
-        "startedAt" TEXT NULL,
-        "expiresAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE
-      );
-      CREATE INDEX "emailNotificationMessageJobsStartAtIndex" ON "emailNotificationMessageJobs" ("startAt");
-      CREATE INDEX "emailNotificationMessageJobsStartedAtIndex" ON "emailNotificationMessageJobs" ("startedAt");
-      CREATE INDEX "emailNotificationMessageJobsExpiresAtIndex" ON "emailNotificationMessageJobs" ("expiresAt");
+        CREATE TABLE "emailNotificationMessageJobs" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "startAt" TEXT NOT NULL,
+          "startedAt" TEXT NULL,
+          "expiresAt" TEXT NOT NULL,
+          "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE
+        );
+        CREATE INDEX "emailNotificationMessageJobsStartAtIndex" ON "emailNotificationMessageJobs" ("startAt");
+        CREATE INDEX "emailNotificationMessageJobsStartedAtIndex" ON "emailNotificationMessageJobs" ("startedAt");
+        CREATE INDEX "emailNotificationMessageJobsExpiresAtIndex" ON "emailNotificationMessageJobs" ("expiresAt");
 
-      CREATE TABLE "emailNotificationDigestMessages" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-        UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
-      );
-      CREATE INDEX "emailNotificationDigestMessagesEnrollmentIndex" ON "emailNotificationDigestMessages" ("enrollment");
+        CREATE TABLE "emailNotificationDigestMessages" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
+          "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
+          UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
+        );
+        CREATE INDEX "emailNotificationDigestMessagesEnrollmentIndex" ON "emailNotificationDigestMessages" ("enrollment");
 
-      CREATE TABLE "emailNotificationDigestJobs" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "startedAt" TEXT NOT NULL,
-        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
-      );
-      CREATE INDEX "emailNotificationDigestJobsStartedAtIndex" ON "emailNotificationDigestJobs" ("startedAt");
-      CREATE INDEX "emailNotificationDigestJobsUserIndex" ON "emailNotificationDigestJobs" ("user");
-    `,
+        CREATE TABLE "emailNotificationDigestJobs" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "startedAt" TEXT NOT NULL,
+          "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
+        );
+        CREATE INDEX "emailNotificationDigestJobsStartedAtIndex" ON "emailNotificationDigestJobs" ("startedAt");
+        CREATE INDEX "emailNotificationDigestJobsUserIndex" ON "emailNotificationDigestJobs" ("user");
+      `,
 
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_conversations" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "updatedAt" TEXT NULL,
-            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-            "reference" TEXT NOT NULL,
-            "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-            "participants" TEXT NOT NULL,
-            "anonymousAt" TEXT NULL,
-            "type" TEXT NOT NULL,
-            "pinnedAt" TEXT NULL,
-            "resolvedAt" TEXT NULL,
-            "title" TEXT NOT NULL,
-            "titleSearch" TEXT NOT NULL,
-            "nextMessageReference" INTEGER NOT NULL,
-            UNIQUE ("course", "reference")
-          );
-
-          CREATE TABLE "conversationSelectedParticipants" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-            "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-            UNIQUE ("conversation", "enrollment") ON CONFLICT IGNORE
-          );
-
-          CREATE INDEX "conversationSelectedParticipantsConversationIndex" ON "conversationSelectedParticipants" ("conversation");
-          CREATE INDEX "conversationSelectedParticipantsEnrollmentIndex" ON "conversationSelectedParticipants" ("enrollment");
-        `,
-      );
-
-      for (const conversation of database.all<{
-        id: number;
-        createdAt: string;
-        updatedAt: string | null;
-        course: number;
-        reference: string;
-        authorEnrollment: number | null;
-        anonymousAt: string | null;
-        type: string;
-        pinnedAt: string | null;
-        staffOnlyAt: string | null;
-        title: string;
-        titleSearch: string;
-        nextMessageReference: number;
-        resolvedAt: string | null;
-      }>(
-        sql`
-          SELECT
-            "id",
-            "createdAt",
-            "updatedAt",
-            "course",
-            "reference",
-            "authorEnrollment",
-            "anonymousAt",
-            "type",
-            "pinnedAt",
-            "staffOnlyAt",
-            "title",
-            "titleSearch",
-            "nextMessageReference",
-            "resolvedAt"
-          FROM "conversations"
-        `,
-      )) {
-        database.run(
+      (database) => {
+        database.execute(
           sql`
-            INSERT INTO "new_conversations" (
+            CREATE TABLE "new_conversations" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "updatedAt" TEXT NULL,
+              "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+              "reference" TEXT NOT NULL,
+              "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+              "participants" TEXT NOT NULL,
+              "anonymousAt" TEXT NULL,
+              "type" TEXT NOT NULL,
+              "pinnedAt" TEXT NULL,
+              "resolvedAt" TEXT NULL,
+              "title" TEXT NOT NULL,
+              "titleSearch" TEXT NOT NULL,
+              "nextMessageReference" INTEGER NOT NULL,
+              UNIQUE ("course", "reference")
+            );
+
+            CREATE TABLE "conversationSelectedParticipants" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+              "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
+              UNIQUE ("conversation", "enrollment") ON CONFLICT IGNORE
+            );
+
+            CREATE INDEX "conversationSelectedParticipantsConversationIndex" ON "conversationSelectedParticipants" ("conversation");
+            CREATE INDEX "conversationSelectedParticipantsEnrollmentIndex" ON "conversationSelectedParticipants" ("enrollment");
+          `,
+        );
+
+        for (const conversation of database.all<{
+          id: number;
+          createdAt: string;
+          updatedAt: string | null;
+          course: number;
+          reference: string;
+          authorEnrollment: number | null;
+          anonymousAt: string | null;
+          type: string;
+          pinnedAt: string | null;
+          staffOnlyAt: string | null;
+          title: string;
+          titleSearch: string;
+          nextMessageReference: number;
+          resolvedAt: string | null;
+        }>(
+          sql`
+            SELECT
               "id",
               "createdAt",
               "updatedAt",
               "course",
               "reference",
               "authorEnrollment",
-              "participants",
               "anonymousAt",
               "type",
               "pinnedAt",
-              "resolvedAt",
+              "staffOnlyAt",
               "title",
               "titleSearch",
-              "nextMessageReference"
-            ) VALUES (
-              ${conversation.id},
-              ${conversation.createdAt},
-              ${conversation.updatedAt},
-              ${conversation.course},
-              ${conversation.reference},
-              ${conversation.authorEnrollment},
-              ${conversation.staffOnlyAt === null ? "everyone" : "staff"},
-              ${conversation.anonymousAt},
-              ${conversation.type},
-              ${conversation.pinnedAt},
-              ${conversation.resolvedAt},
-              ${conversation.title},
-              ${conversation.titleSearch},
-              ${conversation.nextMessageReference}
-            )
+              "nextMessageReference",
+              "resolvedAt"
+            FROM "conversations"
           `,
-        );
-        if (conversation.staffOnlyAt !== null)
-          for (const enrollment of database.all<{
-            id: number;
-          }>(
+        )) {
+          database.run(
             sql`
-              SELECT "enrollments"."id"
-              FROM "enrollments"
-              LEFT JOIN "conversations" ON
-                "enrollments"."id" = "conversations"."authorEnrollment" AND
-                "conversations"."id" = ${conversation.id}
-              LEFT JOIN "messages" ON
-                "enrollments"."id" = "messages"."authorEnrollment" AND
-                "messages"."conversation" = ${conversation.id}
-              WHERE
-                "enrollments"."courseRole" = 'student' AND (
-                  "conversations"."id" IS NOT NULL OR
-                  "messages"."id" IS NOT NULL
-                )
-              GROUP BY "enrollments"."id"
+              INSERT INTO "new_conversations" (
+                "id",
+                "createdAt",
+                "updatedAt",
+                "course",
+                "reference",
+                "authorEnrollment",
+                "participants",
+                "anonymousAt",
+                "type",
+                "pinnedAt",
+                "resolvedAt",
+                "title",
+                "titleSearch",
+                "nextMessageReference"
+              ) VALUES (
+                ${conversation.id},
+                ${conversation.createdAt},
+                ${conversation.updatedAt},
+                ${conversation.course},
+                ${conversation.reference},
+                ${conversation.authorEnrollment},
+                ${conversation.staffOnlyAt === null ? "everyone" : "staff"},
+                ${conversation.anonymousAt},
+                ${conversation.type},
+                ${conversation.pinnedAt},
+                ${conversation.resolvedAt},
+                ${conversation.title},
+                ${conversation.titleSearch},
+                ${conversation.nextMessageReference}
+              )
             `,
-          ))
-            database.run(
+          );
+          if (conversation.staffOnlyAt !== null)
+            for (const enrollment of database.all<{
+              id: number;
+            }>(
               sql`
-                INSERT INTO "conversationSelectedParticipants" (
-                  "createdAt",
-                  "conversation",
-                  "enrollment"
-                )
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${conversation.id},
-                  ${enrollment.id}
-                )
+                SELECT "enrollments"."id"
+                FROM "enrollments"
+                LEFT JOIN "conversations" ON
+                  "enrollments"."id" = "conversations"."authorEnrollment" AND
+                  "conversations"."id" = ${conversation.id}
+                LEFT JOIN "messages" ON
+                  "enrollments"."id" = "messages"."authorEnrollment" AND
+                  "messages"."conversation" = ${conversation.id}
+                WHERE
+                  "enrollments"."courseRole" = 'student' AND (
+                    "conversations"."id" IS NOT NULL OR
+                    "messages"."id" IS NOT NULL
+                  )
+                GROUP BY "enrollments"."id"
               `,
-            );
-      }
-
-      database.execute(
-        sql`
-          DROP TABLE "conversations";
-          ALTER TABLE "new_conversations" RENAME TO "conversations";
-          CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
-          CREATE TRIGGER "conversationsReferenceIndexInsert" AFTER INSERT ON "conversations" BEGIN
-            INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-          END;
-          CREATE TRIGGER "conversationsReferenceIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
-            INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-            INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-          END;
-          CREATE TRIGGER "conversationsReferenceIndexDelete" AFTER DELETE ON "conversations" BEGIN
-            INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-          END;
-          CREATE INDEX "conversationsParticipantsIndex" ON "conversations" ("participants");
-          CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
-          CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
-          CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
-          CREATE TRIGGER "conversationsTitleSearchIndexInsert" AFTER INSERT ON "conversations" BEGIN
-            INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
-          END;
-          CREATE TRIGGER "conversationsTitleSearchIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
-            INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
-            INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
-          END;
-          CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
-            INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
-          END;
-        `,
-      );
-    },
-
-    sql`
-      ALTER TABLE "conversations" ADD COLUMN "announcementAt" TEXT NULL;
-    `,
-
-    sql`
-      DELETE FROM "sessions";
-    `,
-
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_administrationOptions" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
-            "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL,
-            "latestVersion" TEXT NOT NULL
-          );
-        `,
-      );
-      const administrationOptions = database.get<{
-        userSystemRolesWhoMayCreateCourses: string;
-      }>(
-        sql`
-          SELECT "userSystemRolesWhoMayCreateCourses" FROM "administrationOptions"
-        `,
-      );
-      if (administrationOptions === undefined)
-        throw new Error("Failed to find ‘administrationOptions’");
-      database.run(
-        sql`
-          INSERT INTO "new_administrationOptions" (
-            "userSystemRolesWhoMayCreateCourses",
-            "latestVersion"
-          )
-          VALUES (
-            ${administrationOptions.userSystemRolesWhoMayCreateCourses},
-            ${"THIS IS NO LONGER SUPPORTED SINCE 9.0.0"}
-        )
-      `,
-      );
-      database.execute(
-        sql`
-          DROP TABLE "administrationOptions";
-          ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
-        `,
-      );
-    },
-
-    sql`
-      CREATE TABLE "liveConnectionsMetadata" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "expiresAt" TEXT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "url" TEXT NOT NULL,
-        "processNumber" INTEGER NULL,
-        "liveUpdateAt" TEXT NULL
-      );
-      CREATE INDEX "liveConnectionsMetadataExpiresAtIndex" ON "liveConnectionsMetadata" ("expiresAt");
-      CREATE INDEX "liveConnectionsMetadataNonceIndex" ON "liveConnectionsMetadata" ("nonce");
-      CREATE INDEX "liveConnectionsMetadataURLIndex" ON "liveConnectionsMetadata" ("url");
-      CREATE INDEX "liveConnectionsMetadataProcessNumberIndex" ON "liveConnectionsMetadata" ("processNumber");
-      CREATE INDEX "liveConnectionsMetadataLiveUpdateAtIndex" ON "liveConnectionsMetadata" ("liveUpdateAt");
-    `,
-
-    sql`
-      CREATE INDEX "sessionsTokenIndex" ON "sessions" ("token");
-      CREATE INDEX "sessionsUserIndex" ON "sessions" ("user");
-    `,
-
-    async (database) => {
-      for (const user of database.all<{
-        id: number;
-        avatar: string;
-      }>(
-        sql`
-          SELECT "id", "avatar"
-          FROM "users"
-          WHERE "avatar" IS NOT NULL
-        `,
-      )) {
-        if (
-          !user.avatar.startsWith(
-            `https://${application.userConfiguration.hostname}/files/`,
-          ) ||
-          !user.avatar.endsWith(`--avatar${path.extname(user.avatar)}`)
-        )
-          continue;
-
-        const fileURL = user.avatar.slice(
-          `https://${application.userConfiguration.hostname}/files/`.length,
-        );
-        const directory = path.dirname(fileURL);
-        const nameOldAvatar = decodeURIComponent(path.basename(fileURL));
-        const extension = path.extname(nameOldAvatar);
-        const name =
-          nameOldAvatar.slice(0, -"--avatar".length - extension.length) +
-          extension;
-        const nameAvatar = `${name.slice(0, -extension.length)}--avatar.webp`;
-        const file = path.join(
-          application.userConfiguration.dataDirectory,
-          "files",
-          directory,
-          name,
-        );
-
-        try {
-          await sharp(file)
-            .rotate()
-            .resize({
-              width: 256 /* var(--space--64) */,
-              height: 256 /* var(--space--64) */,
-              position: sharp.strategy.attention,
-            })
-            .toFile(
-              path.join(
-                application.userConfiguration.dataDirectory,
-                "files",
-                directory,
-                nameAvatar,
-              ),
-            );
-        } catch (error: any) {
-          utilities.log(
-            "DATABASE MIGRATION ERROR: FAILED TO CONVERT AVATAR TO WEBP",
-            String(error),
-            error?.stack,
-          );
-          continue;
+            ))
+              database.run(
+                sql`
+                  INSERT INTO "conversationSelectedParticipants" (
+                    "createdAt",
+                    "conversation",
+                    "enrollment"
+                  )
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${conversation.id},
+                    ${enrollment.id}
+                  )
+                `,
+              );
         }
 
-        database.run(
+        database.execute(
           sql`
-            UPDATE "users"
-            SET "avatar" = ${`https://${
-              application.userConfiguration.hostname
-            }/files/${directory}/${encodeURIComponent(nameAvatar)}`}
-            WHERE "id" = ${user.id}
+            DROP TABLE "conversations";
+            ALTER TABLE "new_conversations" RENAME TO "conversations";
+            CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
+            CREATE TRIGGER "conversationsReferenceIndexInsert" AFTER INSERT ON "conversations" BEGIN
+              INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+            END;
+            CREATE TRIGGER "conversationsReferenceIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
+              INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+              INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+            END;
+            CREATE TRIGGER "conversationsReferenceIndexDelete" AFTER DELETE ON "conversations" BEGIN
+              INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+            END;
+            CREATE INDEX "conversationsParticipantsIndex" ON "conversations" ("participants");
+            CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
+            CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
+            CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
+            CREATE TRIGGER "conversationsTitleSearchIndexInsert" AFTER INSERT ON "conversations" BEGIN
+              INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
+            END;
+            CREATE TRIGGER "conversationsTitleSearchIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
+              INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
+              INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
+            END;
+            CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
+              INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
+            END;
           `,
         );
-      }
-    },
+      },
 
-    sql`
-      ALTER TABLE "users" ADD COLUMN "preferContentEditorProgrammerModeAt" TEXT NULL;
-      ALTER TABLE "users" ADD COLUMN "preferContentEditorToolbarInCompactAt" TEXT NULL;
-      ALTER TABLE "users" ADD COLUMN "preferAnonymousAt" TEXT NULL;
+      sql`
+        ALTER TABLE "conversations" ADD COLUMN "announcementAt" TEXT NULL;
+      `,
 
-      CREATE TABLE "messageDrafts" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-        "authorEnrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-        "answerAt" TEXT NULL,
-        "contentSource" TEXT NOT NULL,
-        UNIQUE ("conversation", "authorEnrollment") ON CONFLICT REPLACE
-      );
-    `,
+      sql`
+        DELETE FROM "sessions";
+      `,
 
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_tags" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-            "reference" TEXT NOT NULL,
-            "order" INTEGER NOT NULL,
-            "name" TEXT NOT NULL,
-            "staffOnlyAt" TEXT NULL,
-            UNIQUE ("course", "reference")
-          );
-        `,
-      );
-
-      let previousCourse = -1;
-      let order = -1;
-      for (const tag of database.all<{
-        id: number;
-        createdAt: string;
-        course: number;
-        reference: string;
-        name: string;
-        staffOnlyAt: string | null;
-      }>(
-        sql`
-          SELECT
-            "id",
-            "createdAt",
-            "course",
-            "reference",
-            "name",
-            "staffOnlyAt"
-          FROM "tags"
-          ORDER BY
-            "course" ASC,
-            "id" ASC
-        `,
-      )) {
-        if (previousCourse !== tag.course) order = 0;
+      (database) => {
+        database.execute(
+          sql`
+            CREATE TABLE "new_administrationOptions" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
+              "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL,
+              "latestVersion" TEXT NOT NULL
+            );
+          `,
+        );
+        const administrationOptions = database.get<{
+          userSystemRolesWhoMayCreateCourses: string;
+        }>(
+          sql`
+            SELECT "userSystemRolesWhoMayCreateCourses" FROM "administrationOptions"
+          `,
+        );
+        if (administrationOptions === undefined)
+          throw new Error("Failed to find ‘administrationOptions’");
         database.run(
           sql`
-            INSERT INTO "new_tags" (
+            INSERT INTO "new_administrationOptions" (
+              "userSystemRolesWhoMayCreateCourses",
+              "latestVersion"
+            )
+            VALUES (
+              ${administrationOptions.userSystemRolesWhoMayCreateCourses},
+              ${"THIS IS NO LONGER SUPPORTED SINCE 9.0.0"}
+          )
+        `,
+        );
+        database.execute(
+          sql`
+            DROP TABLE "administrationOptions";
+            ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
+          `,
+        );
+      },
+
+      sql`
+        CREATE TABLE "liveConnectionsMetadata" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "expiresAt" TEXT NULL,
+          "nonce" TEXT NOT NULL UNIQUE,
+          "url" TEXT NOT NULL,
+          "processNumber" INTEGER NULL,
+          "liveUpdateAt" TEXT NULL
+        );
+        CREATE INDEX "liveConnectionsMetadataExpiresAtIndex" ON "liveConnectionsMetadata" ("expiresAt");
+        CREATE INDEX "liveConnectionsMetadataNonceIndex" ON "liveConnectionsMetadata" ("nonce");
+        CREATE INDEX "liveConnectionsMetadataURLIndex" ON "liveConnectionsMetadata" ("url");
+        CREATE INDEX "liveConnectionsMetadataProcessNumberIndex" ON "liveConnectionsMetadata" ("processNumber");
+        CREATE INDEX "liveConnectionsMetadataLiveUpdateAtIndex" ON "liveConnectionsMetadata" ("liveUpdateAt");
+      `,
+
+      sql`
+        CREATE INDEX "sessionsTokenIndex" ON "sessions" ("token");
+        CREATE INDEX "sessionsUserIndex" ON "sessions" ("user");
+      `,
+
+      async (database) => {
+        for (const user of database.all<{
+          id: number;
+          avatar: string;
+        }>(
+          sql`
+            SELECT "id", "avatar"
+            FROM "users"
+            WHERE "avatar" IS NOT NULL
+          `,
+        )) {
+          if (
+            !user.avatar.startsWith(
+              `https://${application.userConfiguration.hostname}/files/`,
+            ) ||
+            !user.avatar.endsWith(`--avatar${path.extname(user.avatar)}`)
+          )
+            continue;
+
+          const fileURL = user.avatar.slice(
+            `https://${application.userConfiguration.hostname}/files/`.length,
+          );
+          const directory = path.dirname(fileURL);
+          const nameOldAvatar = decodeURIComponent(path.basename(fileURL));
+          const extension = path.extname(nameOldAvatar);
+          const name =
+            nameOldAvatar.slice(0, -"--avatar".length - extension.length) +
+            extension;
+          const nameAvatar = `${name.slice(0, -extension.length)}--avatar.webp`;
+          const file = path.join(
+            application.userConfiguration.dataDirectory,
+            "files",
+            directory,
+            name,
+          );
+
+          try {
+            await sharp(file)
+              .rotate()
+              .resize({
+                width: 256 /* var(--space--64) */,
+                height: 256 /* var(--space--64) */,
+                position: sharp.strategy.attention,
+              })
+              .toFile(
+                path.join(
+                  application.userConfiguration.dataDirectory,
+                  "files",
+                  directory,
+                  nameAvatar,
+                ),
+              );
+          } catch (error: any) {
+            utilities.log(
+              "DATABASE MIGRATION ERROR: FAILED TO CONVERT AVATAR TO WEBP",
+              String(error),
+              error?.stack,
+            );
+            continue;
+          }
+
+          database.run(
+            sql`
+              UPDATE "users"
+              SET "avatar" = ${`https://${
+                application.userConfiguration.hostname
+              }/files/${directory}/${encodeURIComponent(nameAvatar)}`}
+              WHERE "id" = ${user.id}
+            `,
+          );
+        }
+      },
+
+      sql`
+        ALTER TABLE "users" ADD COLUMN "preferContentEditorProgrammerModeAt" TEXT NULL;
+        ALTER TABLE "users" ADD COLUMN "preferContentEditorToolbarInCompactAt" TEXT NULL;
+        ALTER TABLE "users" ADD COLUMN "preferAnonymousAt" TEXT NULL;
+
+        CREATE TABLE "messageDrafts" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+          "authorEnrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
+          "answerAt" TEXT NULL,
+          "contentSource" TEXT NOT NULL,
+          UNIQUE ("conversation", "authorEnrollment") ON CONFLICT REPLACE
+        );
+      `,
+
+      (database) => {
+        database.execute(
+          sql`
+            CREATE TABLE "new_tags" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+              "reference" TEXT NOT NULL,
+              "order" INTEGER NOT NULL,
+              "name" TEXT NOT NULL,
+              "staffOnlyAt" TEXT NULL,
+              UNIQUE ("course", "reference")
+            );
+          `,
+        );
+
+        let previousCourse = -1;
+        let order = -1;
+        for (const tag of database.all<{
+          id: number;
+          createdAt: string;
+          course: number;
+          reference: string;
+          name: string;
+          staffOnlyAt: string | null;
+        }>(
+          sql`
+            SELECT
               "id",
               "createdAt",
               "course",
               "reference",
-              "order",
               "name",
               "staffOnlyAt"
-            )
-            VALUES (
-              ${tag.id},
-              ${tag.createdAt},
-              ${tag.course},
-              ${tag.reference},
-              ${order},
-              ${tag.name},
-              ${tag.staffOnlyAt}
-            )
+            FROM "tags"
+            ORDER BY
+              "course" ASC,
+              "id" ASC
+          `,
+        )) {
+          if (previousCourse !== tag.course) order = 0;
+          database.run(
+            sql`
+              INSERT INTO "new_tags" (
+                "id",
+                "createdAt",
+                "course",
+                "reference",
+                "order",
+                "name",
+                "staffOnlyAt"
+              )
+              VALUES (
+                ${tag.id},
+                ${tag.createdAt},
+                ${tag.course},
+                ${tag.reference},
+                ${order},
+                ${tag.name},
+                ${tag.staffOnlyAt}
+              )
+            `,
+          );
+          previousCourse = tag.course;
+          order++;
+        }
+
+        database.execute(
+          sql`
+            DROP TABLE "tags";
+            ALTER TABLE "new_tags" RENAME TO "tags";
+            CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
           `,
         );
-        previousCourse = tag.course;
-        order++;
-      }
+      },
 
-      database.execute(
-        sql`
-          DROP TABLE "tags";
-          ALTER TABLE "new_tags" RENAME TO "tags";
-          CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
-        `,
-      );
-    },
+      (database) => {
+        database.execute(
+          sql`
+            CREATE TABLE "messagePolls" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+              "reference" TEXT NOT NULL,
+              "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+              "multipleChoicesAt" TEXT NULL,
+              "closesAt" TEXT NULL,
+              UNIQUE ("course", "reference")
+            );
 
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "messagePolls" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-            "reference" TEXT NOT NULL,
-            "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-            "multipleChoicesAt" TEXT NULL,
-            "closesAt" TEXT NULL,
-            UNIQUE ("course", "reference")
-          );
+            CREATE TABLE "messagePollOptions" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "messagePoll" INTEGER NOT NULL REFERENCES "messagePolls" ON DELETE CASCADE,
+              "reference" TEXT NOT NULL,
+              "order" INTEGER NOT NULL,
+              "contentSource" TEXT NOT NULL,
+              "contentPreprocessed" TEXT NOT NULL,
+              UNIQUE ("messagePoll", "reference")
+            );
 
-          CREATE TABLE "messagePollOptions" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "messagePoll" INTEGER NOT NULL REFERENCES "messagePolls" ON DELETE CASCADE,
-            "reference" TEXT NOT NULL,
-            "order" INTEGER NOT NULL,
-            "contentSource" TEXT NOT NULL,
-            "contentPreprocessed" TEXT NOT NULL,
-            UNIQUE ("messagePoll", "reference")
-          );
+            CREATE TABLE "messagePollVotes" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "messagePollOption" INTEGER NOT NULL REFERENCES "messagePollOptions" ON DELETE CASCADE,
+              "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+              UNIQUE ("messagePollOption", "enrollment")
+            );
 
-          CREATE TABLE "messagePollVotes" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "messagePollOption" INTEGER NOT NULL REFERENCES "messagePollOptions" ON DELETE CASCADE,
-            "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-            UNIQUE ("messagePollOption", "enrollment")
-          );
-
-          ALTER TABLE "courses" ADD COLUMN "studentsMayCreatePollsAt" TEXT NULL;
-        `,
-      );
-      database.run(
-        sql`
-          UPDATE "courses"
-          SET "studentsMayCreatePollsAt" = ${new Date().toISOString()};
-        `,
-      );
-    },
-
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_users" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "lastSeenOnlineAt" TEXT NOT NULL,
-            "reference" TEXT NOT NULL UNIQUE,
-            "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
-            "password" TEXT NOT NULL,
-            "emailVerifiedAt" TEXT NULL,
-            "name" TEXT NOT NULL,
-            "nameSearch" TEXT NOT NULL,
-            "avatar" TEXT NULL,
-            "avatarlessBackgroundColor" TEXT NOT NULL,
-            "biographySource" TEXT NULL,
-            "biographyPreprocessed" TEXT NULL,
-            "systemRole" TEXT NOT NULL,
-            "emailNotificationsForAllMessages" TEXT NOT NULL,
-            "emailNotificationsForAllMessagesDigestDeliveredAt" TEXT NULL,
-            "emailNotificationsForMentionsAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
-            "preferContentEditorProgrammerModeAt" TEXT NULL,
-            "preferContentEditorToolbarInCompactAt" TEXT NULL,
-            "preferAnonymousAt" TEXT NULL,
-            "latestNewsVersion" TEXT NOT NULL
-          );
-        `,
-      );
-      for (const user of database.all<{
-        id: number;
-        createdAt: string;
-        lastSeenOnlineAt: string;
-        reference: string;
-        email: string;
-        password: string;
-        emailVerifiedAt: string | null;
-        name: string;
-        nameSearch: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: string;
-        biographySource: string | null;
-        biographyPreprocessed: string | null;
-        systemRole: "none" | "staff" | "administrator";
-        emailNotificationsForAllMessages:
-          "none" | "instant" | "hourly-digests" | "daily-digests";
-        emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
-        emailNotificationsForMentionsAt: string | null;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          string | null;
-        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-        preferContentEditorProgrammerModeAt: string | null;
-        preferContentEditorToolbarInCompactAt: string | null;
-        preferAnonymousAt: string | null;
-      }>(
-        sql`
-          SELECT
-            "id",
-            "createdAt",
-            "lastSeenOnlineAt",
-            "reference",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "nameSearch",
-            "avatar",
-            "avatarlessBackgroundColor",
-            "biographySource",
-            "biographyPreprocessed",
-            "systemRole",
-            "emailNotificationsForAllMessages",
-            "emailNotificationsForAllMessagesDigestDeliveredAt",
-            "emailNotificationsForMentionsAt",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt",
-            "preferContentEditorProgrammerModeAt",
-            "preferContentEditorToolbarInCompactAt",
-            "preferAnonymousAt"
-          FROM "users"
-        `,
-      ))
+            ALTER TABLE "courses" ADD COLUMN "studentsMayCreatePollsAt" TEXT NULL;
+          `,
+        );
         database.run(
           sql`
-            INSERT INTO "new_users" (
+            UPDATE "courses"
+            SET "studentsMayCreatePollsAt" = ${new Date().toISOString()};
+          `,
+        );
+      },
+
+      (database) => {
+        database.execute(
+          sql`
+            CREATE TABLE "new_users" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "lastSeenOnlineAt" TEXT NOT NULL,
+              "reference" TEXT NOT NULL UNIQUE,
+              "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
+              "password" TEXT NOT NULL,
+              "emailVerifiedAt" TEXT NULL,
+              "name" TEXT NOT NULL,
+              "nameSearch" TEXT NOT NULL,
+              "avatar" TEXT NULL,
+              "avatarlessBackgroundColor" TEXT NOT NULL,
+              "biographySource" TEXT NULL,
+              "biographyPreprocessed" TEXT NULL,
+              "systemRole" TEXT NOT NULL,
+              "emailNotificationsForAllMessages" TEXT NOT NULL,
+              "emailNotificationsForAllMessagesDigestDeliveredAt" TEXT NULL,
+              "emailNotificationsForMentionsAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
+              "preferContentEditorProgrammerModeAt" TEXT NULL,
+              "preferContentEditorToolbarInCompactAt" TEXT NULL,
+              "preferAnonymousAt" TEXT NULL,
+              "latestNewsVersion" TEXT NOT NULL
+            );
+          `,
+        );
+        for (const user of database.all<{
+          id: number;
+          createdAt: string;
+          lastSeenOnlineAt: string;
+          reference: string;
+          email: string;
+          password: string;
+          emailVerifiedAt: string | null;
+          name: string;
+          nameSearch: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: string;
+          biographySource: string | null;
+          biographyPreprocessed: string | null;
+          systemRole: "none" | "staff" | "administrator";
+          emailNotificationsForAllMessages:
+            "none" | "instant" | "hourly-digests" | "daily-digests";
+          emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
+          emailNotificationsForMentionsAt: string | null;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+            string | null;
+          emailNotificationsForMessagesInConversationsYouStartedAt:
+            string | null;
+          preferContentEditorProgrammerModeAt: string | null;
+          preferContentEditorToolbarInCompactAt: string | null;
+          preferAnonymousAt: string | null;
+        }>(
+          sql`
+            SELECT
+              "id",
+              "createdAt",
+              "lastSeenOnlineAt",
+              "reference",
+              "email",
+              "password",
+              "emailVerifiedAt",
+              "name",
+              "nameSearch",
+              "avatar",
+              "avatarlessBackgroundColor",
+              "biographySource",
+              "biographyPreprocessed",
+              "systemRole",
+              "emailNotificationsForAllMessages",
+              "emailNotificationsForAllMessagesDigestDeliveredAt",
+              "emailNotificationsForMentionsAt",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+              "emailNotificationsForMessagesInConversationsYouStartedAt",
+              "preferContentEditorProgrammerModeAt",
+              "preferContentEditorToolbarInCompactAt",
+              "preferAnonymousAt"
+            FROM "users"
+          `,
+        ))
+          database.run(
+            sql`
+              INSERT INTO "new_users" (
+                "id",
+                "createdAt",
+                "lastSeenOnlineAt",
+                "reference",
+                "email",
+                "password",
+                "emailVerifiedAt",
+                "name",
+                "nameSearch",
+                "avatar",
+                "avatarlessBackgroundColor",
+                "biographySource",
+                "biographyPreprocessed",
+                "systemRole",
+                "emailNotificationsForAllMessages",
+                "emailNotificationsForAllMessagesDigestDeliveredAt",
+                "emailNotificationsForMentionsAt",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                "emailNotificationsForMessagesInConversationsYouStartedAt",
+                "preferContentEditorProgrammerModeAt",
+                "preferContentEditorToolbarInCompactAt",
+                "preferAnonymousAt",
+                "latestNewsVersion"
+              )
+              VALUES (
+                ${user.id},
+                ${user.createdAt},
+                ${user.lastSeenOnlineAt},
+                ${user.reference},
+                ${user.email},
+                ${user.password},
+                ${user.emailVerifiedAt},
+                ${user.name},
+                ${user.nameSearch},
+                ${user.avatar},
+                ${user.avatarlessBackgroundColor},
+                ${user.biographySource},
+                ${user.biographyPreprocessed},
+                ${user.systemRole},
+                ${user.emailNotificationsForAllMessages},
+                ${user.emailNotificationsForAllMessagesDigestDeliveredAt},
+                ${user.emailNotificationsForMentionsAt},
+                ${user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt},
+                ${user.emailNotificationsForMessagesInConversationsYouStartedAt},
+                ${user.preferContentEditorProgrammerModeAt},
+                ${user.preferContentEditorToolbarInCompactAt},
+                ${user.preferAnonymousAt},
+                ${"6.0.10"}
+              )
+            `,
+          );
+        database.execute(
+          sql`
+            DROP TABLE "users";
+            ALTER TABLE "new_users" RENAME TO "users";
+            CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+            END;
+          `,
+        );
+      },
+
+      sql`
+        CREATE TABLE "samlCache" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "samlIdentifier" TEXT NOT NULL,
+          "key" TEXT NOT NULL UNIQUE,
+          "value" TEXT NOT NULL
+        );
+
+        CREATE INDEX "samlCacheCreatedAtIndex" ON "samlCache" ("createdAt");
+
+        DELETE FROM "sessions";
+
+        ALTER TABLE "sessions" ADD COLUMN "samlIdentifier" TEXT NULL;
+        ALTER TABLE "sessions" ADD COLUMN "samlSessionIndex" TEXT NULL;
+      `,
+
+      (database) => {
+        database.execute(
+          sql`
+            CREATE TABLE "new_users" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "lastSeenOnlineAt" TEXT NOT NULL,
+              "reference" TEXT NOT NULL UNIQUE,
+              "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
+              "password" TEXT NULL,
+              "emailVerifiedAt" TEXT NULL,
+              "name" TEXT NOT NULL,
+              "nameSearch" TEXT NOT NULL,
+              "avatar" TEXT NULL,
+              "avatarlessBackgroundColor" TEXT NOT NULL,
+              "biographySource" TEXT NULL,
+              "biographyPreprocessed" TEXT NULL,
+              "systemRole" TEXT NOT NULL,
+              "emailNotificationsForAllMessages" TEXT NOT NULL,
+              "emailNotificationsForAllMessagesDigestDeliveredAt" TEXT NULL,
+              "emailNotificationsForMentionsAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
+              "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
+              "preferContentEditorProgrammerModeAt" TEXT NULL,
+              "preferContentEditorToolbarInCompactAt" TEXT NULL,
+              "preferAnonymousAt" TEXT NULL,
+              "latestNewsVersion" TEXT NOT NULL
+            );
+          `,
+        );
+        for (const user of database.all<{
+          id: number;
+          createdAt: string;
+          lastSeenOnlineAt: string;
+          reference: string;
+          email: string;
+          password: string;
+          emailVerifiedAt: string | null;
+          name: string;
+          nameSearch: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: string;
+          biographySource: string | null;
+          biographyPreprocessed: string | null;
+          systemRole: "none" | "staff" | "administrator";
+          emailNotificationsForAllMessages:
+            "none" | "instant" | "hourly-digests" | "daily-digests";
+          emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
+          emailNotificationsForMentionsAt: string | null;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+            string | null;
+          emailNotificationsForMessagesInConversationsYouStartedAt:
+            string | null;
+          preferContentEditorProgrammerModeAt: string | null;
+          preferContentEditorToolbarInCompactAt: string | null;
+          preferAnonymousAt: string | null;
+          latestNewsVersion: string;
+        }>(
+          sql`
+            SELECT
               "id",
               "createdAt",
               "lastSeenOnlineAt",
@@ -1744,282 +1896,120 @@ export default async (application: Application): Promise<void> => {
               "preferContentEditorToolbarInCompactAt",
               "preferAnonymousAt",
               "latestNewsVersion"
-            )
-            VALUES (
-              ${user.id},
-              ${user.createdAt},
-              ${user.lastSeenOnlineAt},
-              ${user.reference},
-              ${user.email},
-              ${user.password},
-              ${user.emailVerifiedAt},
-              ${user.name},
-              ${user.nameSearch},
-              ${user.avatar},
-              ${user.avatarlessBackgroundColor},
-              ${user.biographySource},
-              ${user.biographyPreprocessed},
-              ${user.systemRole},
-              ${user.emailNotificationsForAllMessages},
-              ${user.emailNotificationsForAllMessagesDigestDeliveredAt},
-              ${user.emailNotificationsForMentionsAt},
-              ${user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt},
-              ${user.emailNotificationsForMessagesInConversationsYouStartedAt},
-              ${user.preferContentEditorProgrammerModeAt},
-              ${user.preferContentEditorToolbarInCompactAt},
-              ${user.preferAnonymousAt},
-              ${"6.0.10"}
-            )
+            FROM "users"
+          `,
+        ))
+          database.run(
+            sql`
+              INSERT INTO "new_users" (
+                "id",
+                "createdAt",
+                "lastSeenOnlineAt",
+                "reference",
+                "email",
+                "password",
+                "emailVerifiedAt",
+                "name",
+                "nameSearch",
+                "avatar",
+                "avatarlessBackgroundColor",
+                "biographySource",
+                "biographyPreprocessed",
+                "systemRole",
+                "emailNotificationsForAllMessages",
+                "emailNotificationsForAllMessagesDigestDeliveredAt",
+                "emailNotificationsForMentionsAt",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                "emailNotificationsForMessagesInConversationsYouStartedAt",
+                "preferContentEditorProgrammerModeAt",
+                "preferContentEditorToolbarInCompactAt",
+                "preferAnonymousAt",
+                "latestNewsVersion"
+              )
+              VALUES (
+                ${user.id},
+                ${user.createdAt},
+                ${user.lastSeenOnlineAt},
+                ${user.reference},
+                ${user.email},
+                ${user.password},
+                ${user.emailVerifiedAt},
+                ${user.name},
+                ${user.nameSearch},
+                ${user.avatar},
+                ${user.avatarlessBackgroundColor},
+                ${user.biographySource},
+                ${user.biographyPreprocessed},
+                ${user.systemRole},
+                ${user.emailNotificationsForAllMessages},
+                ${user.emailNotificationsForAllMessagesDigestDeliveredAt},
+                ${user.emailNotificationsForMentionsAt},
+                ${user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt},
+                ${user.emailNotificationsForMessagesInConversationsYouStartedAt},
+                ${user.preferContentEditorProgrammerModeAt},
+                ${user.preferContentEditorToolbarInCompactAt},
+                ${user.preferAnonymousAt},
+                ${user.latestNewsVersion}
+              )
+            `,
+          );
+        database.execute(
+          sql`
+            DROP TABLE "users";
+            ALTER TABLE "new_users" RENAME TO "users";
+            CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+              INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+            END;
+            CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+              INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+            END;
           `,
         );
-      database.execute(
-        sql`
-          DROP TABLE "users";
-          ALTER TABLE "new_users" RENAME TO "users";
-          CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-          END;
-        `,
-      );
-    },
+      },
 
-    sql`
-      CREATE TABLE "samlCache" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "samlIdentifier" TEXT NOT NULL,
-        "key" TEXT NOT NULL UNIQUE,
-        "value" TEXT NOT NULL
-      );
+      sql`
+        ALTER TABLE "messageDrafts" DROP COLUMN "answerAt";
+      `,
 
-      CREATE INDEX "samlCacheCreatedAtIndex" ON "samlCache" ("createdAt");
-
-      DELETE FROM "sessions";
-
-      ALTER TABLE "sessions" ADD COLUMN "samlIdentifier" TEXT NULL;
-      ALTER TABLE "sessions" ADD COLUMN "samlSessionIndex" TEXT NULL;
-    `,
-
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_users" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "lastSeenOnlineAt" TEXT NOT NULL,
-            "reference" TEXT NOT NULL UNIQUE,
-            "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
-            "password" TEXT NULL,
-            "emailVerifiedAt" TEXT NULL,
-            "name" TEXT NOT NULL,
-            "nameSearch" TEXT NOT NULL,
-            "avatar" TEXT NULL,
-            "avatarlessBackgroundColor" TEXT NOT NULL,
-            "biographySource" TEXT NULL,
-            "biographyPreprocessed" TEXT NULL,
-            "systemRole" TEXT NOT NULL,
-            "emailNotificationsForAllMessages" TEXT NOT NULL,
-            "emailNotificationsForAllMessagesDigestDeliveredAt" TEXT NULL,
-            "emailNotificationsForMentionsAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
-            "preferContentEditorProgrammerModeAt" TEXT NULL,
-            "preferContentEditorToolbarInCompactAt" TEXT NULL,
-            "preferAnonymousAt" TEXT NULL,
-            "latestNewsVersion" TEXT NOT NULL
-          );
-        `,
-      );
-      for (const user of database.all<{
-        id: number;
-        createdAt: string;
-        lastSeenOnlineAt: string;
-        reference: string;
-        email: string;
-        password: string;
-        emailVerifiedAt: string | null;
-        name: string;
-        nameSearch: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: string;
-        biographySource: string | null;
-        biographyPreprocessed: string | null;
-        systemRole: "none" | "staff" | "administrator";
-        emailNotificationsForAllMessages:
-          "none" | "instant" | "hourly-digests" | "daily-digests";
-        emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
-        emailNotificationsForMentionsAt: string | null;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          string | null;
-        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-        preferContentEditorProgrammerModeAt: string | null;
-        preferContentEditorToolbarInCompactAt: string | null;
-        preferAnonymousAt: string | null;
-        latestNewsVersion: string;
-      }>(
-        sql`
-          SELECT
-            "id",
-            "createdAt",
-            "lastSeenOnlineAt",
-            "reference",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "nameSearch",
-            "avatar",
-            "avatarlessBackgroundColor",
-            "biographySource",
-            "biographyPreprocessed",
-            "systemRole",
-            "emailNotificationsForAllMessages",
-            "emailNotificationsForAllMessagesDigestDeliveredAt",
-            "emailNotificationsForMentionsAt",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt",
-            "preferContentEditorProgrammerModeAt",
-            "preferContentEditorToolbarInCompactAt",
-            "preferAnonymousAt",
-            "latestNewsVersion"
-          FROM "users"
-        `,
-      ))
-        database.run(
+      (database) => {
+        database.execute(
           sql`
-            INSERT INTO "new_users" (
-              "id",
-              "createdAt",
-              "lastSeenOnlineAt",
-              "reference",
-              "email",
-              "password",
-              "emailVerifiedAt",
-              "name",
-              "nameSearch",
-              "avatar",
-              "avatarlessBackgroundColor",
-              "biographySource",
-              "biographyPreprocessed",
-              "systemRole",
-              "emailNotificationsForAllMessages",
-              "emailNotificationsForAllMessagesDigestDeliveredAt",
-              "emailNotificationsForMentionsAt",
-              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-              "emailNotificationsForMessagesInConversationsYouStartedAt",
-              "preferContentEditorProgrammerModeAt",
-              "preferContentEditorToolbarInCompactAt",
-              "preferAnonymousAt",
-              "latestNewsVersion"
-            )
-            VALUES (
-              ${user.id},
-              ${user.createdAt},
-              ${user.lastSeenOnlineAt},
-              ${user.reference},
-              ${user.email},
-              ${user.password},
-              ${user.emailVerifiedAt},
-              ${user.name},
-              ${user.nameSearch},
-              ${user.avatar},
-              ${user.avatarlessBackgroundColor},
-              ${user.biographySource},
-              ${user.biographyPreprocessed},
-              ${user.systemRole},
-              ${user.emailNotificationsForAllMessages},
-              ${user.emailNotificationsForAllMessagesDigestDeliveredAt},
-              ${user.emailNotificationsForMentionsAt},
-              ${user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt},
-              ${user.emailNotificationsForMessagesInConversationsYouStartedAt},
-              ${user.preferContentEditorProgrammerModeAt},
-              ${user.preferContentEditorToolbarInCompactAt},
-              ${user.preferAnonymousAt},
-              ${user.latestNewsVersion}
-            )
+            CREATE TABLE "new_messages" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+              "createdAt" TEXT NOT NULL,
+              "updatedAt" TEXT NULL,
+              "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+              "reference" TEXT NOT NULL,
+              "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+              "anonymousAt" TEXT NULL,
+              "type" TEXT NOT NULL,
+              "contentSource" TEXT NOT NULL,
+              "contentPreprocessed" TEXT NOT NULL,
+              "contentSearch" TEXT NOT NULL,
+              UNIQUE ("conversation", "reference")
+            );
           `,
         );
-      database.execute(
-        sql`
-          DROP TABLE "users";
-          ALTER TABLE "new_users" RENAME TO "users";
-          CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-          CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-          END;
-        `,
-      );
-    },
 
-    sql`
-      ALTER TABLE "messageDrafts" DROP COLUMN "answerAt";
-    `,
-
-    (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_messages" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "updatedAt" TEXT NULL,
-            "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-            "reference" TEXT NOT NULL,
-            "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-            "anonymousAt" TEXT NULL,
-            "type" TEXT NOT NULL,
-            "contentSource" TEXT NOT NULL,
-            "contentPreprocessed" TEXT NOT NULL,
-            "contentSearch" TEXT NOT NULL,
-            UNIQUE ("conversation", "reference")
-          );
-        `,
-      );
-
-      for (const message of database.all<{
-        id: number;
-        createdAt: string;
-        updatedAt: string | null;
-        conversation: number;
-        reference: string;
-        authorEnrollment: number | null;
-        anonymousAt: string | null;
-        answerAt: string | null;
-        contentSource: string;
-        contentPreprocessed: string;
-        contentSearch: string;
-      }>(
-        sql`
-          SELECT
-            "id",
-            "createdAt",
-            "updatedAt",
-            "conversation",
-            "reference",
-            "authorEnrollment",
-            "anonymousAt",
-            "answerAt",
-            "contentSource",
-            "contentPreprocessed",
-            "contentSearch"
-          FROM "messages"
-        `,
-      ))
-        database.run(
+        for (const message of database.all<{
+          id: number;
+          createdAt: string;
+          updatedAt: string | null;
+          conversation: number;
+          reference: string;
+          authorEnrollment: number | null;
+          anonymousAt: string | null;
+          answerAt: string | null;
+          contentSource: string;
+          contentPreprocessed: string;
+          contentSearch: string;
+        }>(
           sql`
-            INSERT INTO "new_messages" (
+            SELECT
               "id",
               "createdAt",
               "updatedAt",
@@ -2027,1100 +2017,943 @@ export default async (application: Application): Promise<void> => {
               "reference",
               "authorEnrollment",
               "anonymousAt",
-              "type",
+              "answerAt",
               "contentSource",
               "contentPreprocessed",
               "contentSearch"
+            FROM "messages"
+          `,
+        ))
+          database.run(
+            sql`
+              INSERT INTO "new_messages" (
+                "id",
+                "createdAt",
+                "updatedAt",
+                "conversation",
+                "reference",
+                "authorEnrollment",
+                "anonymousAt",
+                "type",
+                "contentSource",
+                "contentPreprocessed",
+                "contentSearch"
+              )
+              VALUES (
+                ${message.id},
+                ${message.createdAt},
+                ${message.updatedAt},
+                ${message.conversation},
+                ${message.reference},
+                ${message.authorEnrollment},
+                ${message.anonymousAt},
+                ${typeof message.answerAt === "string" ? "answer" : "message"},
+                ${message.contentSource},
+                ${message.contentPreprocessed},
+                ${message.contentSearch}
+              )
+            `,
+          );
+
+        database.execute(
+          sql`
+            DROP TABLE "messages";
+
+            ALTER TABLE "new_messages" RENAME TO "messages";
+
+            CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
+            CREATE INDEX "messagesTypeIndex" ON "messages" ("type");
+
+            CREATE TRIGGER "messagesReferenceIndexInsert" AFTER INSERT ON "messages" BEGIN
+              INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+            END;
+            CREATE TRIGGER "messagesReferenceIndexUpdate" AFTER UPDATE ON "messages" BEGIN
+              INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+              INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+            END;
+            CREATE TRIGGER "messagesReferenceIndexDelete" AFTER DELETE ON "messages" BEGIN
+              INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+            END;
+
+            CREATE TRIGGER "messagesContentSearchIndexInsert" AFTER INSERT ON "messages" BEGIN
+              INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
+            END;
+            CREATE TRIGGER "messagesContentSearchIndexUpdate" AFTER UPDATE ON "messages" BEGIN
+              INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
+              INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
+            END;
+            CREATE TRIGGER "messagesContentSearchIndexDelete" AFTER DELETE ON "messages" BEGIN
+              INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
+            END;
+          `,
+        );
+      },
+
+      sql`
+        ALTER TABLE "users" ADD COLUMN "mostRecentlyVisitedEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL;
+        ALTER TABLE "enrollments" ADD COLUMN "mostRecentlyVisitedConversation" INTEGER NULL REFERENCES "conversations" ON DELETE SET NULL;
+      `,
+
+      async (database) => {
+        database.execute(
+          sql`
+            DROP TABLE "conversationDrafts";
+
+            UPDATE "enrollments" SET "courseRole" = 'course-staff' WHERE "courseRole" = 'staff';
+            UPDATE "conversations" SET "participants" = 'course-staff' WHERE "participants" = 'staff';
+            UPDATE "messages" SET "type" = 'course-staff-whisper' WHERE "type" = 'staff-whisper';
+            ALTER TABLE "tags" RENAME COLUMN "staffOnlyAt" TO "courseStaffOnlyAt";
+
+            ALTER TABLE "enrollments" RENAME TO "courseParticipants";
+            DROP INDEX "enrollmentsUserIndex";
+            CREATE INDEX "courseParticipantsUserIndex" ON "courseParticipants" ("user");
+            DROP INDEX "enrollmentsCourseIndex";
+            CREATE INDEX "courseParticipantsCourseIndex" ON "courseParticipants" ("course");
+            ALTER TABLE "readings" RENAME COLUMN "enrollment" TO "courseParticipant";
+            ALTER TABLE "emailNotificationDeliveries" RENAME COLUMN "enrollment" TO "courseParticipant";
+            ALTER TABLE "endorsements" RENAME COLUMN "enrollment" TO "courseParticipant";
+            ALTER TABLE "likes" RENAME COLUMN "enrollment" TO "courseParticipant";
+            ALTER TABLE "emailNotificationDigestMessages" RENAME COLUMN "enrollment" TO "courseParticipant";
+            DROP INDEX "emailNotificationDigestMessagesEnrollmentIndex";
+            CREATE INDEX "emailNotificationDigestMessagesCourseParticipantIndex" ON "emailNotificationDigestMessages" ("courseParticipant");
+            ALTER TABLE "conversations" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
+            ALTER TABLE "conversationSelectedParticipants" RENAME COLUMN "enrollment" TO "courseParticipant";
+            DROP INDEX "conversationSelectedParticipantsEnrollmentIndex";
+            CREATE INDEX "conversationSelectedParticipantsCourseParticipantIndex" ON "conversationSelectedParticipants" ("courseParticipant");
+            ALTER TABLE "messageDrafts" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
+            ALTER TABLE "messagePolls" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
+            ALTER TABLE "messagePollVotes" RENAME COLUMN "enrollment" TO "courseParticipant";
+            ALTER TABLE "users" RENAME COLUMN "mostRecentlyVisitedEnrollment" TO "mostRecentlyVisitedCourseParticipant";
+            ALTER TABLE "messages" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
+
+            UPDATE "conversations" SET "participants" = 'selected-participants' WHERE "participants" = 'selected-people';
+          `,
+        );
+
+        const contentPreprocessed = (contentSource: string) => ({
+          contentPreprocessed: "This became obsolete in version 9.0.0.",
+          contentSearch: "This became obsolete in version 9.0.0.",
+        });
+
+        for (const message of database.all<{
+          id: number;
+          contentSource: string;
+        }>(
+          sql`
+            SELECT "id", "contentSource" FROM "messages"
+          `,
+        )) {
+          const messageContentSource = message.contentSource.replace(
+            /(?<=^|\s)@staff(?=[^a-z0-9-]|$)/gi,
+            "@course-staff",
+          );
+          const messageContentPreprocessed =
+            contentPreprocessed(messageContentSource);
+          database.run(
+            sql`
+              UPDATE "messages"
+              SET
+                "contentSource" = ${messageContentSource},
+                "contentPreprocessed" = ${messageContentPreprocessed.contentPreprocessed},
+                "contentSearch" = ${messageContentPreprocessed.contentSearch}
+              WHERE "id" = ${message.id}
+            `,
+          );
+        }
+      },
+
+      sql`
+        ALTER TABLE "sessions" ADD COLUMN "samlNameID" TEXT NULL;
+        DELETE FROM "sessions" WHERE "samlIdentifier" IS NOT NULL;
+      `,
+
+      sql`
+        UPDATE "invitations" SET "courseRole" = 'course-staff' WHERE "courseRole" = 'staff';
+      `,
+
+      async (database) => {
+        database.execute(
+          sql`
+            CREATE TABLE "new_administrationOptions" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
+              "latestVersion" TEXT NOT NULL,
+              "privateKey" TEXT NOT NULL,
+              "certificate" TEXT NOT NULL,
+              "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
+            );
+          `,
+        );
+        const administrationOptions =
+          database.get<{
+            userSystemRolesWhoMayCreateCourses: string;
+            latestVersion: string;
+          }>(
+            sql`
+              SELECT
+                "userSystemRolesWhoMayCreateCourses",
+                "latestVersion"
+              FROM "administrationOptions"
+            `,
+          ) ??
+          (() => {
+            throw new Error("Failed to get ‘administrationOptions’.");
+          })();
+        database.run(
+          sql`
+            INSERT INTO "new_administrationOptions" (
+              "latestVersion",
+              "privateKey",
+              "certificate",
+              "userSystemRolesWhoMayCreateCourses"
             )
             VALUES (
-              ${message.id},
-              ${message.createdAt},
-              ${message.updatedAt},
-              ${message.conversation},
-              ${message.reference},
-              ${message.authorEnrollment},
-              ${message.anonymousAt},
-              ${typeof message.answerAt === "string" ? "answer" : "message"},
-              ${message.contentSource},
-              ${message.contentPreprocessed},
-              ${message.contentSearch}
+              ${administrationOptions.latestVersion},
+              ${"REMOVED IN VERSION 10.2.0"},
+              ${"REMOVED IN VERSION 10.2.0"},
+              ${administrationOptions.userSystemRolesWhoMayCreateCourses}
             )
           `,
         );
-
-      database.execute(
-        sql`
-          DROP TABLE "messages";
-
-          ALTER TABLE "new_messages" RENAME TO "messages";
-
-          CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
-          CREATE INDEX "messagesTypeIndex" ON "messages" ("type");
-
-          CREATE TRIGGER "messagesReferenceIndexInsert" AFTER INSERT ON "messages" BEGIN
-            INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-          END;
-          CREATE TRIGGER "messagesReferenceIndexUpdate" AFTER UPDATE ON "messages" BEGIN
-            INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-            INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-          END;
-          CREATE TRIGGER "messagesReferenceIndexDelete" AFTER DELETE ON "messages" BEGIN
-            INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-          END;
-
-          CREATE TRIGGER "messagesContentSearchIndexInsert" AFTER INSERT ON "messages" BEGIN
-            INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
-          END;
-          CREATE TRIGGER "messagesContentSearchIndexUpdate" AFTER UPDATE ON "messages" BEGIN
-            INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
-            INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
-          END;
-          CREATE TRIGGER "messagesContentSearchIndexDelete" AFTER DELETE ON "messages" BEGIN
-            INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
-          END;
-        `,
-      );
-    },
-
-    sql`
-      ALTER TABLE "users" ADD COLUMN "mostRecentlyVisitedEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL;
-      ALTER TABLE "enrollments" ADD COLUMN "mostRecentlyVisitedConversation" INTEGER NULL REFERENCES "conversations" ON DELETE SET NULL;
-    `,
-
-    async (database) => {
-      database.execute(
-        sql`
-          DROP TABLE "conversationDrafts";
-
-          UPDATE "enrollments" SET "courseRole" = 'course-staff' WHERE "courseRole" = 'staff';
-          UPDATE "conversations" SET "participants" = 'course-staff' WHERE "participants" = 'staff';
-          UPDATE "messages" SET "type" = 'course-staff-whisper' WHERE "type" = 'staff-whisper';
-          ALTER TABLE "tags" RENAME COLUMN "staffOnlyAt" TO "courseStaffOnlyAt";
-
-          ALTER TABLE "enrollments" RENAME TO "courseParticipants";
-          DROP INDEX "enrollmentsUserIndex";
-          CREATE INDEX "courseParticipantsUserIndex" ON "courseParticipants" ("user");
-          DROP INDEX "enrollmentsCourseIndex";
-          CREATE INDEX "courseParticipantsCourseIndex" ON "courseParticipants" ("course");
-          ALTER TABLE "readings" RENAME COLUMN "enrollment" TO "courseParticipant";
-          ALTER TABLE "emailNotificationDeliveries" RENAME COLUMN "enrollment" TO "courseParticipant";
-          ALTER TABLE "endorsements" RENAME COLUMN "enrollment" TO "courseParticipant";
-          ALTER TABLE "likes" RENAME COLUMN "enrollment" TO "courseParticipant";
-          ALTER TABLE "emailNotificationDigestMessages" RENAME COLUMN "enrollment" TO "courseParticipant";
-          DROP INDEX "emailNotificationDigestMessagesEnrollmentIndex";
-          CREATE INDEX "emailNotificationDigestMessagesCourseParticipantIndex" ON "emailNotificationDigestMessages" ("courseParticipant");
-          ALTER TABLE "conversations" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
-          ALTER TABLE "conversationSelectedParticipants" RENAME COLUMN "enrollment" TO "courseParticipant";
-          DROP INDEX "conversationSelectedParticipantsEnrollmentIndex";
-          CREATE INDEX "conversationSelectedParticipantsCourseParticipantIndex" ON "conversationSelectedParticipants" ("courseParticipant");
-          ALTER TABLE "messageDrafts" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
-          ALTER TABLE "messagePolls" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
-          ALTER TABLE "messagePollVotes" RENAME COLUMN "enrollment" TO "courseParticipant";
-          ALTER TABLE "users" RENAME COLUMN "mostRecentlyVisitedEnrollment" TO "mostRecentlyVisitedCourseParticipant";
-          ALTER TABLE "messages" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
-
-          UPDATE "conversations" SET "participants" = 'selected-participants' WHERE "participants" = 'selected-people';
-        `,
-      );
-
-      const contentPreprocessed = (contentSource: string) => ({
-        contentPreprocessed: "This became obsolete in version 9.0.0.",
-        contentSearch: "This became obsolete in version 9.0.0.",
-      });
-
-      for (const message of database.all<{
-        id: number;
-        contentSource: string;
-      }>(
-        sql`
-          SELECT "id", "contentSource" FROM "messages"
-        `,
-      )) {
-        const messageContentSource = message.contentSource.replace(
-          /(?<=^|\s)@staff(?=[^a-z0-9-]|$)/gi,
-          "@course-staff",
-        );
-        const messageContentPreprocessed =
-          contentPreprocessed(messageContentSource);
-        database.run(
+        database.execute(
           sql`
-            UPDATE "messages"
-            SET
-              "contentSource" = ${messageContentSource},
-              "contentPreprocessed" = ${messageContentPreprocessed.contentPreprocessed},
-              "contentSearch" = ${messageContentPreprocessed.contentSearch}
-            WHERE "id" = ${message.id}
+            DROP TABLE "administrationOptions";
+            ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
           `,
         );
-      }
-    },
+      },
 
-    sql`
-      ALTER TABLE "sessions" ADD COLUMN "samlNameID" TEXT NULL;
-      DELETE FROM "sessions" WHERE "samlIdentifier" IS NOT NULL;
-    `,
+      sql`
+        ALTER TABLE "courses" ADD COLUMN "aiTeachingAssistantAPIKey" TEXT NULL;
+      `,
 
-    sql`
-      UPDATE "invitations" SET "courseRole" = 'course-staff' WHERE "courseRole" = 'staff';
-    `,
+      sql`
+        CREATE INDEX "sendEmailJobsCreatedAtIndex" ON "sendEmailJobs" ("createdAt");
+        DROP INDEX "sendEmailJobsExpiresAtIndex";
+        ALTER TABLE "sendEmailJobs" DROP COLUMN "expiresAt";
 
-    async (database) => {
-      database.execute(
-        sql`
-          CREATE TABLE "new_administrationOptions" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
-            "latestVersion" TEXT NOT NULL,
-            "privateKey" TEXT NOT NULL,
-            "certificate" TEXT NOT NULL,
-            "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
-          );
-        `,
-      );
-      const administrationOptions =
-        database.get<{
-          userSystemRolesWhoMayCreateCourses: string;
-          latestVersion: string;
-        }>(
+        CREATE INDEX "emailNotificationMessageJobsCreatedAtIndex" ON "emailNotificationMessageJobs" ("createdAt");
+        DROP INDEX "emailNotificationMessageJobsExpiresAtIndex";
+        ALTER TABLE "emailNotificationMessageJobs" DROP COLUMN "expiresAt";
+
+        DROP TABLE "liveConnectionsMetadata";
+        CREATE TABLE "liveConnectionsMetadata" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL,
+          "nonce" TEXT NOT NULL UNIQUE,
+          "url" TEXT NOT NULL,
+          "processNumber" INTEGER NULL,
+          "liveUpdateAt" TEXT NULL
+        );
+        CREATE INDEX "liveConnectionsMetadataCreatedAtIndex" ON "liveConnectionsMetadata" ("createdAt");
+        CREATE INDEX "liveConnectionsMetadataNonceIndex" ON "liveConnectionsMetadata" ("nonce");
+        CREATE INDEX "liveConnectionsMetadataURLIndex" ON "liveConnectionsMetadata" ("url");
+        CREATE INDEX "liveConnectionsMetadataProcessNumberIndex" ON "liveConnectionsMetadata" ("processNumber");
+        CREATE INDEX "liveConnectionsMetadataLiveUpdateAtIndex" ON "liveConnectionsMetadata" ("liveUpdateAt");
+      `,
+
+      sql`
+        ALTER TABLE "users" ADD COLUMN "agreedToAITeachingAssistantAt" TEXT NULL;
+        ALTER TABLE "conversations" ADD COLUMN "aiTeachingAssistantChatId" TEXT NULL;
+        ALTER TABLE "messages" ADD COLUMN "authorAITeachingAssistantAt" TEXT NULL;
+      `,
+
+      async (database) => {
+        database.execute(
           sql`
-            SELECT
-              "userSystemRolesWhoMayCreateCourses",
-              "latestVersion"
-            FROM "administrationOptions"
+            drop trigger "conversationsReferenceIndexDelete";
+            drop trigger "conversationsReferenceIndexInsert";
+            drop trigger "conversationsReferenceIndexUpdate";
+            drop trigger "conversationsTitleSearchIndexDelete";
+            drop trigger "conversationsTitleSearchIndexInsert";
+            drop trigger "conversationsTitleSearchIndexUpdate";
+            drop trigger "usersNameSearchIndexDelete";
+            drop trigger "usersNameSearchIndexInsert";
+            drop trigger "usersNameSearchIndexUpdate";
+            drop trigger "messagesContentSearchIndexDelete";
+            drop trigger "messagesContentSearchIndexInsert";
+            drop trigger "messagesContentSearchIndexUpdate";
+            drop trigger "messagesReferenceIndexDelete";
+            drop trigger "messagesReferenceIndexInsert";
+            drop trigger "messagesReferenceIndexUpdate";
+            
+            drop table "conversationsReferenceIndex";
+            drop table "conversationsTitleSearchIndex";
+            drop table "messagesContentSearchIndex";
+            drop table "messagesReferenceIndex";
+            drop table "usersNameSearchIndex";
+            drop table "sendEmailJobs";
+            drop table "emailNotificationMessageJobs";
+            drop table "emailNotificationDigestJobs";
+            drop table "emailNotificationDigestMessages";
+            drop table "emailVerifications";
+            drop table "passwordResets";
+            drop table "liveConnectionsMetadata";
+            drop table "flashes";
+            drop table "samlCache";
+            drop table "emailNotificationDeliveries";
+            
+            alter table "administrationOptions" rename to "old_administrationOptions";
+            alter table "conversations" rename to "old_conversations";
+            alter table "conversationSelectedParticipants" rename to "old_conversationSelectedParticipants";
+            alter table "courseParticipants" rename to "old_courseParticipants";
+            alter table "courses" rename to "old_courses";
+            alter table "endorsements" rename to "old_endorsements";
+            alter table "invitations" rename to "old_invitations";
+            alter table "likes" rename to "old_likes";
+            alter table "messageDrafts" rename to "old_messageDrafts";
+            alter table "messagePollOptions" rename to "old_messagePollOptions";
+            alter table "messagePolls" rename to "old_messagePolls";
+            alter table "messagePollVotes" rename to "old_messagePollVotes";
+            alter table "messages" rename to "old_messages";
+            alter table "readings" rename to "old_readings";
+            alter table "sessions" rename to "old_sessions";
+            alter table "taggings" rename to "old_taggings";
+            alter table "tags" rename to "old_tags";
+            alter table "users" rename to "old_users";
+            
+            create table "systemOptions" (
+              "id" integer primary key autoincrement,
+              "privateKey" text not null,
+              "certificate" text not null,
+              "userRolesWhoMayCreateCourses" text not null
+            ) strict;
+            
+            create table "users" (
+              "id" integer primary key autoincrement,
+              "publicId" text not null unique,
+              "name" text not null,
+              "email" text not null unique,
+              "emailVerificationEmail" text null,
+              "emailVerificationNonce" text null unique,
+              "emailVerificationCreatedAt" text null,
+              "password" text null,
+              "passwordResetNonce" text null unique,
+              "passwordResetCreatedAt" text null,
+              "twoFactorAuthenticationEnabled" integer not null,
+              "twoFactorAuthenticationSecret" text null,
+              "twoFactorAuthenticationRecoveryCodes" text null,
+              "avatarColor" text not null,
+              "avatarImage" text null,
+              "userRole" text not null,
+              "lastSeenOnlineAt" text not null,
+              "darkMode" text not null,
+              "sidebarWidth" integer not null,
+              "emailNotificationsForAllMessages" integer not null,
+              "emailNotificationsForMessagesIncludingAMention" integer not null,
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
+              "emailNotificationsForMessagesInConversationsThatYouStarted" integer not null,
+              "userAnonymityPreferred" text not null,
+              "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations"
+            ) strict;
+            create index "index_users_mostRecentlyVisitedCourseParticipation" on "users" ("mostRecentlyVisitedCourseParticipation");
+            
+            create table "userSessions" (
+              "id" integer primary key autoincrement,
+              "publicId" text not null unique,
+              "user" integer not null references "users",
+              "createdAt" text not null,
+              "needsTwoFactorAuthentication" integer not null,
+              "samlIdentifier" text null,
+              "samlProfile" text null
+            ) strict;
+            create index "index_userSessions_user" on "userSessions" ("user");
+            create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
+            
+            create table "courses" (
+              "id" integer primary key autoincrement,
+              "publicId" text not null unique,
+              "name" text not null,
+              "information" text null,
+              "invitationLinkCourseParticipationRoleInstructorsEnabled" integer not null,
+              "invitationLinkCourseParticipationRoleInstructorsToken" text not null unique,
+              "invitationLinkCourseParticipationRoleStudentsEnabled" integer not null,
+              "invitationLinkCourseParticipationRoleStudentsToken" text not null unique,
+              "courseConversationRequiresTagging" integer not null,
+              "courseParticipationRoleStudentsAnonymityAllowed" text not null,
+              "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent" integer not null,
+              "courseState" text not null,
+              "courseConversationsNextPublicId" integer not null
+            ) strict;
+            
+            create table "coursePendingInvitationEmails" (
+              "id" integer primary key autoincrement,
+              "publicId" text not null unique,
+              "course" integer not null references "courses",
+              "email" text not null,
+              "courseParticipationRole" text not null,
+              unique ("course", "email")
+            ) strict;
+            
+            create table "courseParticipations" (
+              "id" integer primary key autoincrement,
+              "publicId" text not null unique,
+              "user" integer not null references "users",
+              "course" integer not null references "courses",
+              "courseParticipationRole" text not null,
+              "decorationColor" text not null,
+              "mostRecentlyVisitedCourseConversation" integer null references "courseConversations",
+              unique ("user", "course")
+            ) strict;
+            create index "index_courseParticipations_mostRecentlyVisitedCourseConversation" on "courseParticipations" ("mostRecentlyVisitedCourseConversation");
+
+            create table "courseConversationsTags" (
+              "id" integer primary key autoincrement,
+              "publicId" text not null unique,
+              "course" integer not null references "courses",
+              "order" integer not null,
+              "name" text not null,
+              "privateToCourseParticipationRoleInstructors" integer not null
+            ) strict;
+            create index "index_courseConversationsTags_course" on "courseConversationsTags" ("course");
+            
+            create table "courseConversations" (
+              "id" integer primary key autoincrement,
+              "publicId" text not null,
+              "course" integer not null references "courses",
+              "courseConversationType" text not null,
+              "questionResolved" integer not null,
+              "courseConversationVisibility" text not null,
+              "pinned" integer not null,
+              "title" text not null,
+              "titleSearch" text not null,
+              unique ("publicId", "course")
+            ) strict;
+            create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
+            create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
+            create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
+            create virtual table "search_courseConversations_titleSearch" using fts5(
+              "titleSearch",
+              content = "courseConversations",
+              content_rowid = "id",
+              prefix = '1 2 3'
+            );
+            create trigger "search_courseConversations_titleSearch_insert" after insert on "courseConversations" begin
+              insert into "search_courseConversations_titleSearch" ("rowid", "titleSearch") values ("new"."id", "new"."titleSearch");
+            end;
+            create trigger "search_courseConversations_titleSearch_update" after update on "courseConversations" begin
+              update "search_courseConversations_titleSearch" set "titleSearch" = "new"."titleSearch" where "rowid" = "old"."id";
+            end;
+            create trigger "search_courseConversations_titleSearch_delete" after delete on "courseConversations" begin
+              delete from "search_courseConversations_titleSearch" where "rowid" = "old"."id";
+            end;
+            
+            create table "courseConversationParticipations" (
+              "id" integer primary key autoincrement,
+              "courseConversation" integer not null references "courseConversations",
+              "courseParticipation" integer not null references "courseParticipations",
+              unique ("courseConversation", "courseParticipation")
+            ) strict;
+            
+            create table "courseConversationTaggings" (
+              "id" integer primary key autoincrement,
+              "courseConversation" integer not null references "courseConversations",
+              "courseConversationsTag" integer not null references "courseConversationsTags",
+              unique ("courseConversation", "courseConversationsTag")
+            ) strict;
+            
+            create table "courseConversationMessageDrafts" (
+              "id" integer primary key autoincrement,
+              "courseConversation" integer not null references "courseConversations",
+              "createdByCourseParticipation" integer not null references "courseParticipations",
+              "createdAt" text not null,
+              "courseConversationMessageType" text not null,
+              "courseConversationMessageVisibility" text not null,
+              "courseConversationMessageAnonymity" text not null,
+              "content" text not null,
+              unique ("courseConversation", "createdByCourseParticipation")
+            ) strict;
+            
+            create table "courseConversationMessages" (
+              "id" integer primary key autoincrement,
+              "publicId" text not null unique,
+              "courseConversation" integer not null references "courseConversations",
+              "createdByCourseParticipation" integer null references "courseParticipations",
+              "createdAt" text not null,
+              "updatedAt" text null,
+              "courseConversationMessageType" text not null,
+              "courseConversationMessageVisibility" text not null,
+              "courseConversationMessageAnonymity" text not null,
+              "content" text not null,
+              "contentSearch" text not null
+            ) strict;
+            create index "index_courseConversationMessages_courseConversation" on "courseConversationMessages" ("courseConversation");
+            create index "index_courseConversationMessages_createdByCourseParticipation" on "courseConversationMessages" ("createdByCourseParticipation");
+            create index "index_courseConversationMessages_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
+            create virtual table "search_courseConversationMessages_contentSearch" using fts5(
+              "contentSearch",
+              content = "courseConversationMessages",
+              content_rowid = "id",
+              prefix = '1 2 3'
+            );
+            create trigger "search_courseConversationMessages_contentSearch_insert" after insert on "courseConversationMessages" begin
+              insert into "search_courseConversationMessages_contentSearch" ("rowid", "contentSearch") values ("new"."id", "new"."contentSearch");
+            end;
+            create trigger "search_courseConversationMessages_contentSearch_update" after update on "courseConversationMessages" begin
+              update "search_courseConversationMessages_contentSearch" set "contentSearch" = "new"."contentSearch" where "rowid" = "old"."id";
+            end;
+            create trigger "search_courseConversationMessages_contentSearch_delete" after delete on "courseConversationMessages" begin
+              delete from "search_courseConversationMessages_contentSearch" where "rowid" = "old"."id";
+            end;
+            
+            create table "courseConversationMessageViews" (
+              "id" integer primary key autoincrement,
+              "courseConversationMessage" integer not null references "courseConversationMessages",
+              "courseParticipation" integer null references "courseParticipations",
+              "createdAt" text not null,
+              unique ("courseConversationMessage", "courseParticipation")
+            ) strict;
+            
+            create table "courseConversationMessageLikes" (
+              "id" integer primary key autoincrement,
+              "courseConversationMessage" integer not null references "courseConversationMessages",
+              "courseParticipation" integer null references "courseParticipations",
+              unique ("courseConversationMessage", "courseParticipation")
+            ) strict;
           `,
-        ) ??
-        (() => {
-          throw new Error("Failed to get ‘administrationOptions’.");
-        })();
-      database.run(
-        sql`
-          INSERT INTO "new_administrationOptions" (
-            "latestVersion",
-            "privateKey",
-            "certificate",
-            "userSystemRolesWhoMayCreateCourses"
-          )
-          VALUES (
-            ${administrationOptions.latestVersion},
-            ${"REMOVED IN VERSION 10.2.0"},
-            ${"REMOVED IN VERSION 10.2.0"},
-            ${administrationOptions.userSystemRolesWhoMayCreateCourses}
-          )
-        `,
-      );
-      database.execute(
-        sql`
-          DROP TABLE "administrationOptions";
-          ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
-        `,
-      );
-    },
+        );
 
-    sql`
-      ALTER TABLE "courses" ADD COLUMN "aiTeachingAssistantAPIKey" TEXT NULL;
-    `,
-
-    sql`
-      CREATE INDEX "sendEmailJobsCreatedAtIndex" ON "sendEmailJobs" ("createdAt");
-      DROP INDEX "sendEmailJobsExpiresAtIndex";
-      ALTER TABLE "sendEmailJobs" DROP COLUMN "expiresAt";
-
-      CREATE INDEX "emailNotificationMessageJobsCreatedAtIndex" ON "emailNotificationMessageJobs" ("createdAt");
-      DROP INDEX "emailNotificationMessageJobsExpiresAtIndex";
-      ALTER TABLE "emailNotificationMessageJobs" DROP COLUMN "expiresAt";
-
-      DROP TABLE "liveConnectionsMetadata";
-      CREATE TABLE "liveConnectionsMetadata" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "url" TEXT NOT NULL,
-        "processNumber" INTEGER NULL,
-        "liveUpdateAt" TEXT NULL
-      );
-      CREATE INDEX "liveConnectionsMetadataCreatedAtIndex" ON "liveConnectionsMetadata" ("createdAt");
-      CREATE INDEX "liveConnectionsMetadataNonceIndex" ON "liveConnectionsMetadata" ("nonce");
-      CREATE INDEX "liveConnectionsMetadataURLIndex" ON "liveConnectionsMetadata" ("url");
-      CREATE INDEX "liveConnectionsMetadataProcessNumberIndex" ON "liveConnectionsMetadata" ("processNumber");
-      CREATE INDEX "liveConnectionsMetadataLiveUpdateAtIndex" ON "liveConnectionsMetadata" ("liveUpdateAt");
-    `,
-
-    sql`
-      ALTER TABLE "users" ADD COLUMN "agreedToAITeachingAssistantAt" TEXT NULL;
-      ALTER TABLE "conversations" ADD COLUMN "aiTeachingAssistantChatId" TEXT NULL;
-      ALTER TABLE "messages" ADD COLUMN "authorAITeachingAssistantAt" TEXT NULL;
-    `,
-
-    async (database) => {
-      database.execute(
-        sql`
-          drop trigger "conversationsReferenceIndexDelete";
-          drop trigger "conversationsReferenceIndexInsert";
-          drop trigger "conversationsReferenceIndexUpdate";
-          drop trigger "conversationsTitleSearchIndexDelete";
-          drop trigger "conversationsTitleSearchIndexInsert";
-          drop trigger "conversationsTitleSearchIndexUpdate";
-          drop trigger "usersNameSearchIndexDelete";
-          drop trigger "usersNameSearchIndexInsert";
-          drop trigger "usersNameSearchIndexUpdate";
-          drop trigger "messagesContentSearchIndexDelete";
-          drop trigger "messagesContentSearchIndexInsert";
-          drop trigger "messagesContentSearchIndexUpdate";
-          drop trigger "messagesReferenceIndexDelete";
-          drop trigger "messagesReferenceIndexInsert";
-          drop trigger "messagesReferenceIndexUpdate";
-          
-          drop table "conversationsReferenceIndex";
-          drop table "conversationsTitleSearchIndex";
-          drop table "messagesContentSearchIndex";
-          drop table "messagesReferenceIndex";
-          drop table "usersNameSearchIndex";
-          drop table "sendEmailJobs";
-          drop table "emailNotificationMessageJobs";
-          drop table "emailNotificationDigestJobs";
-          drop table "emailNotificationDigestMessages";
-          drop table "emailVerifications";
-          drop table "passwordResets";
-          drop table "liveConnectionsMetadata";
-          drop table "flashes";
-          drop table "samlCache";
-          drop table "emailNotificationDeliveries";
-          
-          alter table "administrationOptions" rename to "old_administrationOptions";
-          alter table "conversations" rename to "old_conversations";
-          alter table "conversationSelectedParticipants" rename to "old_conversationSelectedParticipants";
-          alter table "courseParticipants" rename to "old_courseParticipants";
-          alter table "courses" rename to "old_courses";
-          alter table "endorsements" rename to "old_endorsements";
-          alter table "invitations" rename to "old_invitations";
-          alter table "likes" rename to "old_likes";
-          alter table "messageDrafts" rename to "old_messageDrafts";
-          alter table "messagePollOptions" rename to "old_messagePollOptions";
-          alter table "messagePolls" rename to "old_messagePolls";
-          alter table "messagePollVotes" rename to "old_messagePollVotes";
-          alter table "messages" rename to "old_messages";
-          alter table "readings" rename to "old_readings";
-          alter table "sessions" rename to "old_sessions";
-          alter table "taggings" rename to "old_taggings";
-          alter table "tags" rename to "old_tags";
-          alter table "users" rename to "old_users";
-          
-          create table "systemOptions" (
-            "id" integer primary key autoincrement,
-            "privateKey" text not null,
-            "certificate" text not null,
-            "userRolesWhoMayCreateCourses" text not null
-          ) strict;
-          
-          create table "users" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null unique,
-            "name" text not null,
-            "email" text not null unique,
-            "emailVerificationEmail" text null,
-            "emailVerificationNonce" text null unique,
-            "emailVerificationCreatedAt" text null,
-            "password" text null,
-            "passwordResetNonce" text null unique,
-            "passwordResetCreatedAt" text null,
-            "twoFactorAuthenticationEnabled" integer not null,
-            "twoFactorAuthenticationSecret" text null,
-            "twoFactorAuthenticationRecoveryCodes" text null,
-            "avatarColor" text not null,
-            "avatarImage" text null,
-            "userRole" text not null,
-            "lastSeenOnlineAt" text not null,
-            "darkMode" text not null,
-            "sidebarWidth" integer not null,
-            "emailNotificationsForAllMessages" integer not null,
-            "emailNotificationsForMessagesIncludingAMention" integer not null,
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
-            "emailNotificationsForMessagesInConversationsThatYouStarted" integer not null,
-            "userAnonymityPreferred" text not null,
-            "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations"
-          ) strict;
-          create index "index_users_mostRecentlyVisitedCourseParticipation" on "users" ("mostRecentlyVisitedCourseParticipation");
-          
-          create table "userSessions" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null unique,
-            "user" integer not null references "users",
-            "createdAt" text not null,
-            "needsTwoFactorAuthentication" integer not null,
-            "samlIdentifier" text null,
-            "samlProfile" text null
-          ) strict;
-          create index "index_userSessions_user" on "userSessions" ("user");
-          create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
-          
-          create table "courses" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null unique,
-            "name" text not null,
-            "information" text null,
-            "invitationLinkCourseParticipationRoleInstructorsEnabled" integer not null,
-            "invitationLinkCourseParticipationRoleInstructorsToken" text not null unique,
-            "invitationLinkCourseParticipationRoleStudentsEnabled" integer not null,
-            "invitationLinkCourseParticipationRoleStudentsToken" text not null unique,
-            "courseConversationRequiresTagging" integer not null,
-            "courseParticipationRoleStudentsAnonymityAllowed" text not null,
-            "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent" integer not null,
-            "courseState" text not null,
-            "courseConversationsNextPublicId" integer not null
-          ) strict;
-          
-          create table "coursePendingInvitationEmails" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null unique,
-            "course" integer not null references "courses",
-            "email" text not null,
-            "courseParticipationRole" text not null,
-            unique ("course", "email")
-          ) strict;
-          
-          create table "courseParticipations" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null unique,
-            "user" integer not null references "users",
-            "course" integer not null references "courses",
-            "courseParticipationRole" text not null,
-            "decorationColor" text not null,
-            "mostRecentlyVisitedCourseConversation" integer null references "courseConversations",
-            unique ("user", "course")
-          ) strict;
-          create index "index_courseParticipations_mostRecentlyVisitedCourseConversation" on "courseParticipations" ("mostRecentlyVisitedCourseConversation");
-
-          create table "courseConversationsTags" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null unique,
-            "course" integer not null references "courses",
-            "order" integer not null,
-            "name" text not null,
-            "privateToCourseParticipationRoleInstructors" integer not null
-          ) strict;
-          create index "index_courseConversationsTags_course" on "courseConversationsTags" ("course");
-          
-          create table "courseConversations" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null,
-            "course" integer not null references "courses",
-            "courseConversationType" text not null,
-            "questionResolved" integer not null,
-            "courseConversationVisibility" text not null,
-            "pinned" integer not null,
-            "title" text not null,
-            "titleSearch" text not null,
-            unique ("publicId", "course")
-          ) strict;
-          create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
-          create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
-          create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
-          create virtual table "search_courseConversations_titleSearch" using fts5(
-            "titleSearch",
-            content = "courseConversations",
-            content_rowid = "id",
-            prefix = '1 2 3'
-          );
-          create trigger "search_courseConversations_titleSearch_insert" after insert on "courseConversations" begin
-            insert into "search_courseConversations_titleSearch" ("rowid", "titleSearch") values ("new"."id", "new"."titleSearch");
-          end;
-          create trigger "search_courseConversations_titleSearch_update" after update on "courseConversations" begin
-            update "search_courseConversations_titleSearch" set "titleSearch" = "new"."titleSearch" where "rowid" = "old"."id";
-          end;
-          create trigger "search_courseConversations_titleSearch_delete" after delete on "courseConversations" begin
-            delete from "search_courseConversations_titleSearch" where "rowid" = "old"."id";
-          end;
-          
-          create table "courseConversationParticipations" (
-            "id" integer primary key autoincrement,
-            "courseConversation" integer not null references "courseConversations",
-            "courseParticipation" integer not null references "courseParticipations",
-            unique ("courseConversation", "courseParticipation")
-          ) strict;
-          
-          create table "courseConversationTaggings" (
-            "id" integer primary key autoincrement,
-            "courseConversation" integer not null references "courseConversations",
-            "courseConversationsTag" integer not null references "courseConversationsTags",
-            unique ("courseConversation", "courseConversationsTag")
-          ) strict;
-          
-          create table "courseConversationMessageDrafts" (
-            "id" integer primary key autoincrement,
-            "courseConversation" integer not null references "courseConversations",
-            "createdByCourseParticipation" integer not null references "courseParticipations",
-            "createdAt" text not null,
-            "courseConversationMessageType" text not null,
-            "courseConversationMessageVisibility" text not null,
-            "courseConversationMessageAnonymity" text not null,
-            "content" text not null,
-            unique ("courseConversation", "createdByCourseParticipation")
-          ) strict;
-          
-          create table "courseConversationMessages" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null unique,
-            "courseConversation" integer not null references "courseConversations",
-            "createdByCourseParticipation" integer null references "courseParticipations",
-            "createdAt" text not null,
-            "updatedAt" text null,
-            "courseConversationMessageType" text not null,
-            "courseConversationMessageVisibility" text not null,
-            "courseConversationMessageAnonymity" text not null,
-            "content" text not null,
-            "contentSearch" text not null
-          ) strict;
-          create index "index_courseConversationMessages_courseConversation" on "courseConversationMessages" ("courseConversation");
-          create index "index_courseConversationMessages_createdByCourseParticipation" on "courseConversationMessages" ("createdByCourseParticipation");
-          create index "index_courseConversationMessages_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
-          create virtual table "search_courseConversationMessages_contentSearch" using fts5(
-            "contentSearch",
-            content = "courseConversationMessages",
-            content_rowid = "id",
-            prefix = '1 2 3'
-          );
-          create trigger "search_courseConversationMessages_contentSearch_insert" after insert on "courseConversationMessages" begin
-            insert into "search_courseConversationMessages_contentSearch" ("rowid", "contentSearch") values ("new"."id", "new"."contentSearch");
-          end;
-          create trigger "search_courseConversationMessages_contentSearch_update" after update on "courseConversationMessages" begin
-            update "search_courseConversationMessages_contentSearch" set "contentSearch" = "new"."contentSearch" where "rowid" = "old"."id";
-          end;
-          create trigger "search_courseConversationMessages_contentSearch_delete" after delete on "courseConversationMessages" begin
-            delete from "search_courseConversationMessages_contentSearch" where "rowid" = "old"."id";
-          end;
-          
-          create table "courseConversationMessageViews" (
-            "id" integer primary key autoincrement,
-            "courseConversationMessage" integer not null references "courseConversationMessages",
-            "courseParticipation" integer null references "courseParticipations",
-            "createdAt" text not null,
-            unique ("courseConversationMessage", "courseParticipation")
-          ) strict;
-          
-          create table "courseConversationMessageLikes" (
-            "id" integer primary key autoincrement,
-            "courseConversationMessage" integer not null references "courseConversationMessages",
-            "courseParticipation" integer null references "courseParticipations",
-            unique ("courseConversationMessage", "courseParticipation")
-          ) strict;
-        `,
-      );
-
-      const old_administrationOptions =
-        database.get<{
-          privateKey: string;
-          certificate: string;
-          userSystemRolesWhoMayCreateCourses:
-            "all" | "staff-and-administrators" | "administrators";
-        }>(
-          sql`
-          select "privateKey", "certificate", "userSystemRolesWhoMayCreateCourses" from "old_administrationOptions";
-        `,
-        ) ??
-        (() => {
-          throw new Error();
-        })();
-      database.run(
-        sql`
-          insert into "systemOptions" (
-            "privateKey",
-            "certificate",
-            "userRolesWhoMayCreateCourses"
-          )
-          values (
-            ${old_administrationOptions.privateKey},
-            ${old_administrationOptions.certificate},
-            ${
-              {
-                all: "userRoleUser",
-                "staff-and-administrators": "userRoleStaff",
-                administrators: "userRoleSystemAdministrator",
-              }[old_administrationOptions.userSystemRolesWhoMayCreateCourses]
-            }
-          );
-        `,
-      );
-      for (const old_user of database.all<{
-        id: number;
-        lastSeenOnlineAt: string;
-        reference: string;
-        email: string;
-        password: string | null;
-        emailVerifiedAt: string | null;
-        name: string;
-        avatar: string | null;
-        avatarlessBackgroundColor:
-          | "red"
-          | "orange"
-          | "amber"
-          | "yellow"
-          | "lime"
-          | "green"
-          | "emerald"
-          | "teal"
-          | "cyan"
-          | "sky"
-          | "blue"
-          | "indigo"
-          | "violet"
-          | "purple"
-          | "fuchsia"
-          | "pink"
-          | "rose";
-        systemRole: "none" | "staff" | "administrator";
-        emailNotificationsForAllMessages:
-          "none" | "instant" | "hourly-digests" | "daily-digests";
-        emailNotificationsForMentionsAt: string | null;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          string | null;
-        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-      }>(
-        sql`
-          select
-            "id",
-            "lastSeenOnlineAt",
-            "reference",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "avatar",
-            "avatarlessBackgroundColor",
-            "systemRole",
-            "emailNotificationsForAllMessages",
-            "emailNotificationsForMentionsAt",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt"
-          from "old_users"
-          order by "id" asc;
-        `,
-      ))
+        const old_administrationOptions =
+          database.get<{
+            privateKey: string;
+            certificate: string;
+            userSystemRolesWhoMayCreateCourses:
+              "all" | "staff-and-administrators" | "administrators";
+          }>(
+            sql`
+            select "privateKey", "certificate", "userSystemRolesWhoMayCreateCourses" from "old_administrationOptions";
+          `,
+          ) ??
+          (() => {
+            throw new Error();
+          })();
         database.run(
           sql`
-            insert into "users" (
-              "id",
-              "publicId",
-              "name",
-              "email",
-              "emailVerificationEmail",
-              "emailVerificationNonce",
-              "emailVerificationCreatedAt",
-              "password",
-              "passwordResetNonce",
-              "passwordResetCreatedAt",
-              "twoFactorAuthenticationEnabled",
-              "twoFactorAuthenticationSecret",
-              "twoFactorAuthenticationRecoveryCodes",
-              "avatarColor",
-              "avatarImage",
-              "userRole",
-              "lastSeenOnlineAt",
-              "darkMode",
-              "sidebarWidth",
-              "emailNotificationsForAllMessages",
-              "emailNotificationsForMessagesIncludingAMention",
-              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-              "emailNotificationsForMessagesInConversationsThatYouStarted",
-              "userAnonymityPreferred",
-              "mostRecentlyVisitedCourseParticipation"
+            insert into "systemOptions" (
+              "privateKey",
+              "certificate",
+              "userRolesWhoMayCreateCourses"
             )
             values (
-              ${old_user.id},
-              ${old_user.reference},
-              ${old_user.name},
-              ${old_user.email},
-              ${old_user.emailVerifiedAt === null ? old_user.email : null},
-              ${null},
-              ${null},
-              ${old_user.password},
-              ${null},
-              ${null},
-              ${Number(false)},
-              ${null},
-              ${null},
-              ${old_user.avatarlessBackgroundColor},
-              ${typeof old_user.avatar === "string" ? new URL(old_user.avatar).pathname : null},
+              ${old_administrationOptions.privateKey},
+              ${old_administrationOptions.certificate},
               ${
                 {
-                  none: "userRoleUser",
-                  staff: "userRoleStaff",
-                  administrator: "userRoleSystemAdministrator",
-                }[old_user.systemRole]
-              },
-              ${old_user.lastSeenOnlineAt},
-              ${"userDarkModeSystem"},
-              ${80 * 4},
-              ${Number(old_user.emailNotificationsForAllMessages !== "none")},
-              ${Number(typeof old_user.emailNotificationsForMentionsAt === "string")},
-              ${Number(typeof old_user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt === "string")},
-              ${Number(typeof old_user.emailNotificationsForMessagesInConversationsYouStartedAt === "string")},
-              ${"userAnonymityPreferredNone"},
-              ${null}
+                  all: "userRoleUser",
+                  "staff-and-administrators": "userRoleStaff",
+                  administrators: "userRoleSystemAdministrator",
+                }[old_administrationOptions.userSystemRolesWhoMayCreateCourses]
+              }
             );
           `,
         );
-      for (const old_session of database.all<{
-        createdAt: string;
-        token: string;
-        user: number;
-        samlIdentifier: string | null;
-      }>(
-        sql`
-          select
-            "createdAt",
-            "token",
-            "user",
-            "samlIdentifier"
-          from "old_sessions"
-          order by "id" asc;
-        `,
-      ))
-        if (old_session.samlIdentifier === null)
+        for (const old_user of database.all<{
+          id: number;
+          lastSeenOnlineAt: string;
+          reference: string;
+          email: string;
+          password: string | null;
+          emailVerifiedAt: string | null;
+          name: string;
+          avatar: string | null;
+          avatarlessBackgroundColor:
+            | "red"
+            | "orange"
+            | "amber"
+            | "yellow"
+            | "lime"
+            | "green"
+            | "emerald"
+            | "teal"
+            | "cyan"
+            | "sky"
+            | "blue"
+            | "indigo"
+            | "violet"
+            | "purple"
+            | "fuchsia"
+            | "pink"
+            | "rose";
+          systemRole: "none" | "staff" | "administrator";
+          emailNotificationsForAllMessages:
+            "none" | "instant" | "hourly-digests" | "daily-digests";
+          emailNotificationsForMentionsAt: string | null;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+            string | null;
+          emailNotificationsForMessagesInConversationsYouStartedAt:
+            string | null;
+        }>(
+          sql`
+            select
+              "id",
+              "lastSeenOnlineAt",
+              "reference",
+              "email",
+              "password",
+              "emailVerifiedAt",
+              "name",
+              "avatar",
+              "avatarlessBackgroundColor",
+              "systemRole",
+              "emailNotificationsForAllMessages",
+              "emailNotificationsForMentionsAt",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+              "emailNotificationsForMessagesInConversationsYouStartedAt"
+            from "old_users"
+            order by "id" asc;
+          `,
+        ))
           database.run(
             sql`
-              insert into "userSessions" (
+              insert into "users" (
+                "id",
                 "publicId",
-                "user",
-                "createdAt",
-                "needsTwoFactorAuthentication",
-                "samlIdentifier",
-                "samlProfile"
-              ) values (
-                ${old_session.token},
-                ${old_session.user},
-                ${old_session.createdAt},
+                "name",
+                "email",
+                "emailVerificationEmail",
+                "emailVerificationNonce",
+                "emailVerificationCreatedAt",
+                "password",
+                "passwordResetNonce",
+                "passwordResetCreatedAt",
+                "twoFactorAuthenticationEnabled",
+                "twoFactorAuthenticationSecret",
+                "twoFactorAuthenticationRecoveryCodes",
+                "avatarColor",
+                "avatarImage",
+                "userRole",
+                "lastSeenOnlineAt",
+                "darkMode",
+                "sidebarWidth",
+                "emailNotificationsForAllMessages",
+                "emailNotificationsForMessagesIncludingAMention",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                "emailNotificationsForMessagesInConversationsThatYouStarted",
+                "userAnonymityPreferred",
+                "mostRecentlyVisitedCourseParticipation"
+              )
+              values (
+                ${old_user.id},
+                ${old_user.reference},
+                ${old_user.name},
+                ${old_user.email},
+                ${old_user.emailVerifiedAt === null ? old_user.email : null},
+                ${null},
+                ${null},
+                ${old_user.password},
+                ${null},
+                ${null},
                 ${Number(false)},
                 ${null},
+                ${null},
+                ${old_user.avatarlessBackgroundColor},
+                ${typeof old_user.avatar === "string" ? new URL(old_user.avatar).pathname : null},
+                ${
+                  {
+                    none: "userRoleUser",
+                    staff: "userRoleStaff",
+                    administrator: "userRoleSystemAdministrator",
+                  }[old_user.systemRole]
+                },
+                ${old_user.lastSeenOnlineAt},
+                ${"userDarkModeSystem"},
+                ${80 * 4},
+                ${Number(old_user.emailNotificationsForAllMessages !== "none")},
+                ${Number(typeof old_user.emailNotificationsForMentionsAt === "string")},
+                ${Number(typeof old_user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt === "string")},
+                ${Number(typeof old_user.emailNotificationsForMessagesInConversationsYouStartedAt === "string")},
+                ${"userAnonymityPreferredNone"},
                 ${null}
               );
             `,
           );
-      for (const old_course of database.all<{
-        id: number;
-        reference: string;
-        name: string;
-        year: string | null;
-        term: string | null;
-        institution: string | null;
-        code: string | null;
-        nextConversationReference: number;
-        archivedAt: string | null;
-      }>(
-        sql`
-          select
-            "id",
-            "reference",
-            "name",
-            "year",
-            "term",
-            "institution",
-            "code",
-            "nextConversationReference",
-            "archivedAt"
-          from "old_courses"
-          order by "id" asc;
-        `,
-      )) {
-        const courseInformation = [
-          old_course.year,
-          old_course.term,
-          old_course.institution,
-          old_course.code,
-        ]
-          .filter(
-            (courseInformationPart) =>
-              typeof courseInformationPart === "string",
-          )
-          .join(" / ")
-          .trim();
-        const invitationLinkCourseParticipationRoleInstructors = database.get<{
-          reference: string;
-        }>(
-          sql`
-            select "reference"
-            from "old_invitations"
-            where
-              "expiresAt" is null and
-              "course" = ${old_course.id} and
-              "email" is null and
-              "name" is null and
-              "courseRole" = ${"course-staff"}
-            order by "id" asc
-            limit 1;
-          `,
-        );
-        const invitationLinkCourseParticipationRoleStudents = database.get<{
-          reference: string;
-        }>(
-          sql`
-            select "reference"
-            from "old_invitations"
-            where
-              "expiresAt" is null and
-              "course" = ${old_course.id} and
-              "email" is null and
-              "name" is null and
-              "courseRole" = ${"student"}
-            order by "id" asc
-            limit 1;
-          `,
-        );
-        database.run(
-          sql`
-            insert into "courses" (
-              "id",
-              "publicId",
-              "name",
-              "information",
-              "invitationLinkCourseParticipationRoleInstructorsEnabled",
-              "invitationLinkCourseParticipationRoleInstructorsToken",
-              "invitationLinkCourseParticipationRoleStudentsEnabled",
-              "invitationLinkCourseParticipationRoleStudentsToken",
-              "courseConversationRequiresTagging",
-              "courseParticipationRoleStudentsAnonymityAllowed",
-              "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
-              "courseState",
-              "courseConversationsNextPublicId"
-            )
-            values (
-              ${old_course.id},
-              ${old_course.reference},
-              ${old_course.name},
-              ${courseInformation !== "" ? courseInformation : null},
-              ${Number(invitationLinkCourseParticipationRoleInstructors !== undefined)},
-              ${invitationLinkCourseParticipationRoleInstructors?.reference ?? cryptoRandomString({ length: 20, type: "numeric" })},
-              ${Number(invitationLinkCourseParticipationRoleStudents !== undefined)},
-              ${invitationLinkCourseParticipationRoleStudents?.reference ?? cryptoRandomString({ length: 20, type: "numeric" })},
-              ${Number(true)},
-              ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
-              ${Number(true)},
-              ${old_course.archivedAt === null ? "courseStateActive" : "courseStateArchived"},
-              ${old_course.nextConversationReference}
-            );
-          `,
-        );
-        for (const old_courseParticipant of database.all<{
-          id: number;
+        for (const old_session of database.all<{
+          createdAt: string;
+          token: string;
           user: number;
-          reference: string;
-          courseRole: "student" | "course-staff";
-          accentColor: "red" | "yellow" | "emerald" | "sky" | "violet" | "pink";
+          samlIdentifier: string | null;
         }>(
           sql`
             select
-              "id",
+              "createdAt",
+              "token",
               "user",
-              "reference",
-              "courseRole",
-              "accentColor"
-            from "old_courseParticipants"
-            where "course" = ${old_course.id}
+              "samlIdentifier"
+            from "old_sessions"
             order by "id" asc;
           `,
         ))
-          database.run(
-            sql`
-              insert into "courseParticipations" (
-                "id",
-                "publicId",
-                "user",
-                "course",
-                "courseParticipationRole",
-                "decorationColor",
-                "mostRecentlyVisitedCourseConversation"
-              )
-              values (
-                ${old_courseParticipant.id},
-                ${old_courseParticipant.reference},
-                ${old_courseParticipant.user},
-                ${old_course.id},
-                ${
-                  {
-                    student: "courseParticipationRoleStudent",
-                    "course-staff": "courseParticipationRoleInstructor",
-                  }[old_courseParticipant.courseRole]
-                },
-                ${old_courseParticipant.accentColor === "sky" ? "cyan" : old_courseParticipant.accentColor},
-                ${null}
-              );
-            `,
-          );
-        for (const old_tag of database.all<{
+          if (old_session.samlIdentifier === null)
+            database.run(
+              sql`
+                insert into "userSessions" (
+                  "publicId",
+                  "user",
+                  "createdAt",
+                  "needsTwoFactorAuthentication",
+                  "samlIdentifier",
+                  "samlProfile"
+                ) values (
+                  ${old_session.token},
+                  ${old_session.user},
+                  ${old_session.createdAt},
+                  ${Number(false)},
+                  ${null},
+                  ${null}
+                );
+              `,
+            );
+        for (const old_course of database.all<{
           id: number;
           reference: string;
-          order: number;
           name: string;
-          courseStaffOnlyAt: string | null;
+          year: string | null;
+          term: string | null;
+          institution: string | null;
+          code: string | null;
+          nextConversationReference: number;
+          archivedAt: string | null;
         }>(
           sql`
             select
               "id",
               "reference",
-              "order",
               "name",
-              "courseStaffOnlyAt"
-            from "old_tags"
-            where "course" = ${old_course.id}
+              "year",
+              "term",
+              "institution",
+              "code",
+              "nextConversationReference",
+              "archivedAt"
+            from "old_courses"
             order by "id" asc;
           `,
-        ))
-          database.run(
-            sql`
-              insert into "courseConversationsTags" (
-                "id",
-                "publicId",
-                "course",
-                "order",
-                "name",
-                "privateToCourseParticipationRoleInstructors"
-              )
-              values (
-                ${old_tag.id},
-                ${old_tag.reference},
-                ${old_course.id},
-                ${old_tag.order},
-                ${old_tag.name},
-                ${Number(typeof old_tag.courseStaffOnlyAt === "string")}
-              );
-            `,
-          );
-        for (const old_conversation of database.all<{
-          id: number;
-          reference: string;
-          participants: "everyone" | "course-staff" | "selected-participants";
-          type: "question" | "note" | "chat";
-          pinnedAt: string | null;
-          resolvedAt: string | null;
-          title: string;
-        }>(
-          sql`
-              select
-                "id",
-                "reference",
-                "participants",
-                "type",
-                "pinnedAt",
-                "resolvedAt",
-                "title"
-              from "old_conversations"
-              where "course" = ${old_course.id}
-              order by "id" asc;
-            `,
         )) {
-          database.run(
-            sql`
-              insert into "courseConversations" (
-                "id",
-                "publicId",
-                "course",
-                "courseConversationType",
-                "questionResolved",
-                "courseConversationVisibility",
-                "pinned",
-                "title",
-                "titleSearch"
-              )
-              values (
-                ${old_conversation.id},
-                ${old_conversation.reference},
-                ${old_course.id},
-                ${
-                  {
-                    question: "courseConversationTypeQuestion",
-                    note: "courseConversationTypeNote",
-                    chat: "courseConversationTypeNote",
-                  }[old_conversation.type]
-                },
-                ${Number(old_conversation.type === "question" && typeof old_conversation.resolvedAt === "string")},
-                ${
-                  {
-                    everyone: "courseConversationVisibilityEveryone",
-                    "course-staff":
-                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations",
-                    "selected-participants":
-                      "courseConversationVisibilityCourseConversationParticipations",
-                  }[old_conversation.participants]
-                },
-                ${Number(typeof old_conversation.pinnedAt === "string")},
-                ${old_conversation.title},
-                ${utilities
-                  .tokenize(old_conversation.title, {
-                    stopWords: application.applicationConfiguration.stopWords,
-                    stem: (token) => natural.PorterStemmer.stem(token),
-                  })
-                  .map((tokenWithPosition) => tokenWithPosition.token)
-                  .join(" ")}
-              );
-            `,
-          );
-          if (
-            old_conversation.participants === "course-staff" ||
-            old_conversation.participants === "selected-participants"
-          )
-            for (const old_conversationSelectedParticipant of database.all<{
-              courseParticipant: number;
+          const courseInformation = [
+            old_course.year,
+            old_course.term,
+            old_course.institution,
+            old_course.code,
+          ]
+            .filter(
+              (courseInformationPart) =>
+                typeof courseInformationPart === "string",
+            )
+            .join(" / ")
+            .trim();
+          const invitationLinkCourseParticipationRoleInstructors =
+            database.get<{
+              reference: string;
             }>(
               sql`
-                select "courseParticipant"
-                from "old_conversationSelectedParticipants"
-                where "conversation" = ${old_conversation.id}
-                order by "id" asc;
-              `,
-            ))
-              database.run(
-                sql`
-                  insert into "courseConversationParticipations" (
-                    "courseConversation",
-                    "courseParticipation"
-                  )
-                  values (
-                    ${old_conversation.id},
-                    ${old_conversationSelectedParticipant.courseParticipant}
-                  );
-                `,
-              );
-          for (const old_tagging of database.all<{ tag: number }>(
+              select "reference"
+              from "old_invitations"
+              where
+                "expiresAt" is null and
+                "course" = ${old_course.id} and
+                "email" is null and
+                "name" is null and
+                "courseRole" = ${"course-staff"}
+              order by "id" asc
+              limit 1;
+            `,
+            );
+          const invitationLinkCourseParticipationRoleStudents = database.get<{
+            reference: string;
+          }>(
             sql`
-              select "tag"
-              from "old_taggings"
-              where "conversation" = ${old_conversation.id}
+              select "reference"
+              from "old_invitations"
+              where
+                "expiresAt" is null and
+                "course" = ${old_course.id} and
+                "email" is null and
+                "name" is null and
+                "courseRole" = ${"student"}
+              order by "id" asc
+              limit 1;
+            `,
+          );
+          database.run(
+            sql`
+              insert into "courses" (
+                "id",
+                "publicId",
+                "name",
+                "information",
+                "invitationLinkCourseParticipationRoleInstructorsEnabled",
+                "invitationLinkCourseParticipationRoleInstructorsToken",
+                "invitationLinkCourseParticipationRoleStudentsEnabled",
+                "invitationLinkCourseParticipationRoleStudentsToken",
+                "courseConversationRequiresTagging",
+                "courseParticipationRoleStudentsAnonymityAllowed",
+                "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+                "courseState",
+                "courseConversationsNextPublicId"
+              )
+              values (
+                ${old_course.id},
+                ${old_course.reference},
+                ${old_course.name},
+                ${courseInformation !== "" ? courseInformation : null},
+                ${Number(invitationLinkCourseParticipationRoleInstructors !== undefined)},
+                ${invitationLinkCourseParticipationRoleInstructors?.reference ?? cryptoRandomString({ length: 20, type: "numeric" })},
+                ${Number(invitationLinkCourseParticipationRoleStudents !== undefined)},
+                ${invitationLinkCourseParticipationRoleStudents?.reference ?? cryptoRandomString({ length: 20, type: "numeric" })},
+                ${Number(true)},
+                ${"courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"},
+                ${Number(true)},
+                ${old_course.archivedAt === null ? "courseStateActive" : "courseStateArchived"},
+                ${old_course.nextConversationReference}
+              );
+            `,
+          );
+          for (const old_courseParticipant of database.all<{
+            id: number;
+            user: number;
+            reference: string;
+            courseRole: "student" | "course-staff";
+            accentColor:
+              "red" | "yellow" | "emerald" | "sky" | "violet" | "pink";
+          }>(
+            sql`
+              select
+                "id",
+                "user",
+                "reference",
+                "courseRole",
+                "accentColor"
+              from "old_courseParticipants"
+              where "course" = ${old_course.id}
               order by "id" asc;
             `,
           ))
             database.run(
               sql`
-                insert into "courseConversationTaggings" (
-                  "courseConversation",
-                  "courseConversationsTag"
+                insert into "courseParticipations" (
+                  "id",
+                  "publicId",
+                  "user",
+                  "course",
+                  "courseParticipationRole",
+                  "decorationColor",
+                  "mostRecentlyVisitedCourseConversation"
                 )
                 values (
-                  ${old_conversation.id},
-                  ${old_tagging.tag}
+                  ${old_courseParticipant.id},
+                  ${old_courseParticipant.reference},
+                  ${old_courseParticipant.user},
+                  ${old_course.id},
+                  ${
+                    {
+                      student: "courseParticipationRoleStudent",
+                      "course-staff": "courseParticipationRoleInstructor",
+                    }[old_courseParticipant.courseRole]
+                  },
+                  ${old_courseParticipant.accentColor === "sky" ? "cyan" : old_courseParticipant.accentColor},
+                  ${null}
                 );
               `,
             );
-          for (const old_message of database.all<{
+          for (const old_tag of database.all<{
             id: number;
-            createdAt: string;
-            updatedAt: string | null;
-            authorCourseParticipant: number | null;
-            anonymousAt: string | null;
-            type:
-              | "message"
-              | "answer"
-              | "follow-up-question"
-              | "course-staff-whisper";
-            contentSource: string;
+            reference: string;
+            order: number;
+            name: string;
+            courseStaffOnlyAt: string | null;
           }>(
             sql`
               select
                 "id",
-                "createdAt",
-                "updatedAt",
-                "authorCourseParticipant",
-                "anonymousAt",
-                "type",
-                "contentSource"
-              from "old_messages"
-              where "conversation" = ${old_conversation.id}
+                "reference",
+                "order",
+                "name",
+                "courseStaffOnlyAt"
+              from "old_tags"
+              where "course" = ${old_course.id}
               order by "id" asc;
             `,
-          )) {
-            const courseConversationMessageContent = old_message.contentSource
-              .replaceAll(
-                /<courselore-poll\s+reference="(?<pollReference>\d+)"><\/courselore-poll>/g,
-                (match, pollReference) => {
-                  const old_messagePoll = database.get<{ id: number }>(
-                    sql`
-                      select "id"
-                      from "old_messagePolls"
-                      where
-                        "course" = ${old_course.id} and
-                        "reference" = ${pollReference};
-                    `,
-                  );
-                  if (old_messagePoll === undefined) return markdown``;
-                  return markdown`
-                    <poll>
-
-                    ${database
-                      .all<{ id: number; contentSource: string }>(
-                        sql`
-                          select
-                            "id",
-                            "contentSource"
-                          from "old_messagePollOptions"
-                          where "messagePoll" = ${old_messagePoll.id}
-                          order by "order" asc;
-                        `,
-                      )
-                      .map((old_messagePollOption) => {
-                        const old_messagePollVotesCourseParticipations =
-                          database
-                            .all<{ courseParticipant: number }>(
-                              sql`
-                                select "courseParticipant"
-                                from "old_messagePollVotes"
-                                where "messagePollOption" = ${old_messagePollOption.id}
-                                order by "id" asc;
-                              `,
-                            )
-                            .map(
-                              (old_messagePollVote) =>
-                                database.get<{ publicId: string }>(
-                                  sql`
-                                    select "publicId"
-                                    from "courseParticipations"
-                                    where "id" = ${old_messagePollVote.courseParticipant};
-                                  `,
-                                )?.publicId ?? "0",
-                            );
-                        return markdown`- [ ] ${0 < old_messagePollVotesCourseParticipations.length ? markdown`<votes>${JSON.stringify(old_messagePollVotesCourseParticipations)}</votes> ` : markdown``}${old_messagePollOption.contentSource}`;
-                      })
-                      .join("\n")}
-
-                    </poll>
-                  `;
-                },
-              )
-              .replaceAll("@course-staff", "@instructors")
-              .replaceAll("messages%5BmessageReference%5D", "message");
+          ))
             database.run(
               sql`
-                insert into "courseConversationMessages" (
+                insert into "courseConversationsTags" (
                   "id",
                   "publicId",
-                  "courseConversation",
-                  "createdByCourseParticipation",
-                  "createdAt",
-                  "updatedAt",
-                  "courseConversationMessageType",
-                  "courseConversationMessageVisibility",
-                  "courseConversationMessageAnonymity",
-                  "content",
-                  "contentSearch"
+                  "course",
+                  "order",
+                  "name",
+                  "privateToCourseParticipationRoleInstructors"
                 )
                 values (
-                  ${old_message.id},
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${old_tag.id},
+                  ${old_tag.reference},
+                  ${old_course.id},
+                  ${old_tag.order},
+                  ${old_tag.name},
+                  ${Number(typeof old_tag.courseStaffOnlyAt === "string")}
+                );
+              `,
+            );
+          for (const old_conversation of database.all<{
+            id: number;
+            reference: string;
+            participants: "everyone" | "course-staff" | "selected-participants";
+            type: "question" | "note" | "chat";
+            pinnedAt: string | null;
+            resolvedAt: string | null;
+            title: string;
+          }>(
+            sql`
+                select
+                  "id",
+                  "reference",
+                  "participants",
+                  "type",
+                  "pinnedAt",
+                  "resolvedAt",
+                  "title"
+                from "old_conversations"
+                where "course" = ${old_course.id}
+                order by "id" asc;
+              `,
+          )) {
+            database.run(
+              sql`
+                insert into "courseConversations" (
+                  "id",
+                  "publicId",
+                  "course",
+                  "courseConversationType",
+                  "questionResolved",
+                  "courseConversationVisibility",
+                  "pinned",
+                  "title",
+                  "titleSearch"
+                )
+                values (
                   ${old_conversation.id},
-                  ${old_message.authorCourseParticipant},
-                  ${old_message.createdAt},
-                  ${old_message.updatedAt},
+                  ${old_conversation.reference},
+                  ${old_course.id},
                   ${
                     {
-                      message: "courseConversationMessageTypeMessage",
-                      answer: "courseConversationMessageTypeAnswer",
-                      "follow-up-question":
-                        "courseConversationMessageTypeFollowUpQuestion",
-                      "course-staff-whisper":
-                        "courseConversationMessageTypeMessage",
-                    }[old_message.type]
+                      question: "courseConversationTypeQuestion",
+                      note: "courseConversationTypeNote",
+                      chat: "courseConversationTypeNote",
+                    }[old_conversation.type]
                   },
-                  ${old_message.type === "course-staff-whisper" ? "courseConversationMessageVisibilityCourseParticipationRoleInstructors" : "courseConversationMessageVisibilityEveryone"},
-                  ${typeof old_message.anonymousAt === "string" ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityNone"},
-                  ${courseConversationMessageContent},
+                  ${Number(old_conversation.type === "question" && typeof old_conversation.resolvedAt === "string")},
+                  ${
+                    {
+                      everyone: "courseConversationVisibilityEveryone",
+                      "course-staff":
+                        "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations",
+                      "selected-participants":
+                        "courseConversationVisibilityCourseConversationParticipations",
+                    }[old_conversation.participants]
+                  },
+                  ${Number(typeof old_conversation.pinnedAt === "string")},
+                  ${old_conversation.title},
                   ${utilities
-                    .tokenize(courseConversationMessageContent, {
+                    .tokenize(old_conversation.title, {
                       stopWords: application.applicationConfiguration.stopWords,
                       stem: (token) => natural.PorterStemmer.stem(token),
                     })
@@ -3129,363 +2962,356 @@ export default async (application: Application): Promise<void> => {
                 );
               `,
             );
-            for (const old_reading of database.all<{
+            if (
+              old_conversation.participants === "course-staff" ||
+              old_conversation.participants === "selected-participants"
+            )
+              for (const old_conversationSelectedParticipant of database.all<{
+                courseParticipant: number;
+              }>(
+                sql`
+                  select "courseParticipant"
+                  from "old_conversationSelectedParticipants"
+                  where "conversation" = ${old_conversation.id}
+                  order by "id" asc;
+                `,
+              ))
+                database.run(
+                  sql`
+                    insert into "courseConversationParticipations" (
+                      "courseConversation",
+                      "courseParticipation"
+                    )
+                    values (
+                      ${old_conversation.id},
+                      ${old_conversationSelectedParticipant.courseParticipant}
+                    );
+                  `,
+                );
+            for (const old_tagging of database.all<{ tag: number }>(
+              sql`
+                select "tag"
+                from "old_taggings"
+                where "conversation" = ${old_conversation.id}
+                order by "id" asc;
+              `,
+            ))
+              database.run(
+                sql`
+                  insert into "courseConversationTaggings" (
+                    "courseConversation",
+                    "courseConversationsTag"
+                  )
+                  values (
+                    ${old_conversation.id},
+                    ${old_tagging.tag}
+                  );
+                `,
+              );
+            for (const old_message of database.all<{
+              id: number;
               createdAt: string;
-              courseParticipant: number;
+              updatedAt: string | null;
+              authorCourseParticipant: number | null;
+              anonymousAt: string | null;
+              type:
+                | "message"
+                | "answer"
+                | "follow-up-question"
+                | "course-staff-whisper";
+              contentSource: string;
             }>(
               sql`
                 select
+                  "id",
                   "createdAt",
-                  "courseParticipant"
-                from "old_readings"
-                where "message" = ${old_message.id}
+                  "updatedAt",
+                  "authorCourseParticipant",
+                  "anonymousAt",
+                  "type",
+                  "contentSource"
+                from "old_messages"
+                where "conversation" = ${old_conversation.id}
                 order by "id" asc;
               `,
-            ))
+            )) {
+              const courseConversationMessageContent = old_message.contentSource
+                .replaceAll(
+                  /<courselore-poll\s+reference="(?<pollReference>\d+)"><\/courselore-poll>/g,
+                  (match, pollReference) => {
+                    const old_messagePoll = database.get<{ id: number }>(
+                      sql`
+                        select "id"
+                        from "old_messagePolls"
+                        where
+                          "course" = ${old_course.id} and
+                          "reference" = ${pollReference};
+                      `,
+                    );
+                    if (old_messagePoll === undefined) return markdown``;
+                    return markdown`
+                      <poll>
+
+                      ${database
+                        .all<{ id: number; contentSource: string }>(
+                          sql`
+                            select
+                              "id",
+                              "contentSource"
+                            from "old_messagePollOptions"
+                            where "messagePoll" = ${old_messagePoll.id}
+                            order by "order" asc;
+                          `,
+                        )
+                        .map((old_messagePollOption) => {
+                          const old_messagePollVotesCourseParticipations =
+                            database
+                              .all<{ courseParticipant: number }>(
+                                sql`
+                                  select "courseParticipant"
+                                  from "old_messagePollVotes"
+                                  where "messagePollOption" = ${old_messagePollOption.id}
+                                  order by "id" asc;
+                                `,
+                              )
+                              .map(
+                                (old_messagePollVote) =>
+                                  database.get<{ publicId: string }>(
+                                    sql`
+                                      select "publicId"
+                                      from "courseParticipations"
+                                      where "id" = ${old_messagePollVote.courseParticipant};
+                                    `,
+                                  )?.publicId ?? "0",
+                              );
+                          return markdown`- [ ] ${0 < old_messagePollVotesCourseParticipations.length ? markdown`<votes>${JSON.stringify(old_messagePollVotesCourseParticipations)}</votes> ` : markdown``}${old_messagePollOption.contentSource}`;
+                        })
+                        .join("\n")}
+
+                      </poll>
+                    `;
+                  },
+                )
+                .replaceAll("@course-staff", "@instructors")
+                .replaceAll("messages%5BmessageReference%5D", "message");
               database.run(
                 sql`
-                  insert into "courseConversationMessageViews" (
-                    "courseConversationMessage",
-                    "courseParticipation",
-                    "createdAt"
+                  insert into "courseConversationMessages" (
+                    "id",
+                    "publicId",
+                    "courseConversation",
+                    "createdByCourseParticipation",
+                    "createdAt",
+                    "updatedAt",
+                    "courseConversationMessageType",
+                    "courseConversationMessageVisibility",
+                    "courseConversationMessageAnonymity",
+                    "content",
+                    "contentSearch"
                   )
                   values (
                     ${old_message.id},
-                    ${old_reading.courseParticipant},
-                    ${old_reading.createdAt}
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${old_conversation.id},
+                    ${old_message.authorCourseParticipant},
+                    ${old_message.createdAt},
+                    ${old_message.updatedAt},
+                    ${
+                      {
+                        message: "courseConversationMessageTypeMessage",
+                        answer: "courseConversationMessageTypeAnswer",
+                        "follow-up-question":
+                          "courseConversationMessageTypeFollowUpQuestion",
+                        "course-staff-whisper":
+                          "courseConversationMessageTypeMessage",
+                      }[old_message.type]
+                    },
+                    ${old_message.type === "course-staff-whisper" ? "courseConversationMessageVisibilityCourseParticipationRoleInstructors" : "courseConversationMessageVisibilityEveryone"},
+                    ${typeof old_message.anonymousAt === "string" ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityNone"},
+                    ${courseConversationMessageContent},
+                    ${utilities
+                      .tokenize(courseConversationMessageContent, {
+                        stopWords:
+                          application.applicationConfiguration.stopWords,
+                        stem: (token) => natural.PorterStemmer.stem(token),
+                      })
+                      .map((tokenWithPosition) => tokenWithPosition.token)
+                      .join(" ")}
                   );
                 `,
               );
-            for (const old_like of database.all<{
-              courseParticipant: number;
-            }>(
-              sql`
-                select "courseParticipant"
-                from "old_likes"
-                where "message" = ${old_message.id}
-                order by "id" asc;
-              `,
-            ))
-              database.run(
+              for (const old_reading of database.all<{
+                createdAt: string;
+                courseParticipant: number;
+              }>(
                 sql`
-                  insert into "courseConversationMessageLikes" (
-                    "courseConversationMessage",
-                    "courseParticipation"
-                  )
-                  values (
-                    ${old_message.id},
-                    ${old_like.courseParticipant}
-                  );
+                  select
+                    "createdAt",
+                    "courseParticipant"
+                  from "old_readings"
+                  where "message" = ${old_message.id}
+                  order by "id" asc;
                 `,
-              );
-            for (const old_endorsement of database.all<{
-              courseParticipant: number;
-            }>(
-              sql`
-                select "courseParticipant"
-                from "old_endorsements"
-                where "message" = ${old_message.id}
-                order by "id" asc;
-              `,
-            ))
-              if (
-                database.get(
-                  sql`
-                    select true
-                    from "courseConversationMessageLikes"
-                    where
-                      "courseConversationMessage" = ${old_message.id} and
-                      "courseParticipation" = ${old_endorsement.courseParticipant}
-                  `,
-                ) === undefined
-              )
+              ))
                 database.run(
                   sql`
-                  insert into "courseConversationMessageLikes" (
-                    "courseConversationMessage",
-                    "courseParticipation"
-                  )
-                  values (
-                    ${old_message.id},
-                    ${old_endorsement.courseParticipant}
-                  );
-                `,
-                );
-          }
-        }
-      }
-
-      database.execute(
-        sql`
-          drop table "old_administrationOptions";
-          drop table "old_conversations";
-          drop table "old_conversationSelectedParticipants";
-          drop table "old_courseParticipants";
-          drop table "old_courses";
-          drop table "old_endorsements";
-          drop table "old_invitations";
-          drop table "old_likes";
-          drop table "old_messageDrafts";
-          drop table "old_messagePollOptions";
-          drop table "old_messagePolls";
-          drop table "old_messagePollVotes";
-          drop table "old_messages";
-          drop table "old_readings";
-          drop table "old_sessions";
-          drop table "old_taggings";
-          drop table "old_tags";
-          drop table "old_users";        
-        `,
-      );
-
-      if (application.userConfiguration.environment === "development") {
-        const textExamples = JSON.parse(
-          await fs.readFile(
-            path.join(
-              import.meta.dirname,
-              "../models/text-examples/model.json",
-            ),
-            "utf-8",
-          ),
-        );
-        const userPassword = await cryptography.PasswordHash.hash("courselore");
-        const [user, ...users] = Array.from(
-          { length: 151 },
-          (value, userIndex) => {
-            const userName = examples.name();
-            return database.get<{
-              id: number;
-              email: string;
-            }>(
-              sql`
-                select * from "users" where "id" = ${
-                  database.run(
-                    sql`
-                      insert into "users" (
-                        "publicId",
-                        "name",
-                        "email",
-                        "emailVerificationEmail",
-                        "emailVerificationNonce",
-                        "emailVerificationCreatedAt",
-                        "password",
-                        "passwordResetNonce",
-                        "passwordResetCreatedAt",
-                        "twoFactorAuthenticationEnabled",
-                        "twoFactorAuthenticationSecret",
-                        "twoFactorAuthenticationRecoveryCodes",
-                        "avatarColor",
-                        "avatarImage",
-                        "userRole",
-                        "lastSeenOnlineAt",
-                        "darkMode",
-                        "sidebarWidth",
-                        "emailNotificationsForAllMessages",
-                        "emailNotificationsForMessagesIncludingAMention",
-                        "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                        "emailNotificationsForMessagesInConversationsThatYouStarted",
-                        "userAnonymityPreferred",
-                        "mostRecentlyVisitedCourseParticipation"
-                      )
-                      values (
-                        ${cryptoRandomString({ length: 20, type: "numeric" })},
-                        ${userName},
-                        ${`${userIndex === 0 ? "system-administrator" : `${userName.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
-                        ${null},
-                        ${null},
-                        ${null},
-                        ${userPassword},
-                        ${null},
-                        ${null},
-                        ${Number(false)},
-                        ${null},
-                        ${null},
-                        ${
-                          [
-                            "red",
-                            "orange",
-                            "amber",
-                            "yellow",
-                            "lime",
-                            "green",
-                            "emerald",
-                            "teal",
-                            "cyan",
-                            "sky",
-                            "blue",
-                            "indigo",
-                            "violet",
-                            "purple",
-                            "fuchsia",
-                            "pink",
-                            "rose",
-                          ][Math.floor(Math.random() * 17)]
-                        },
-                        ${
-                          Math.random() < 0.1
-                            ? `/node_modules/@radically-straightforward/examples/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
-                            : null
-                        },
-                        ${userIndex === 0 || Math.random() < 0.05 ? "userRoleSystemAdministrator" : Math.random() < 0.2 ? "userRoleStaff" : "userRoleUser"},
-                        ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
-                        ${"userDarkModeSystem"},
-                        ${80 * 4},
-                        ${Number(Math.random() < 0.1)},
-                        ${Number(Math.random() < 0.9)},
-                        ${Number(Math.random() < 0.9)},
-                        ${Number(Math.random() < 0.9)},
-                        ${Math.random() < 0.8 ? "userAnonymityPreferredNone" : Math.random() < 0.8 ? "userAnonymityPreferredCourseParticipationRoleStudents" : "userAnonymityPreferredEveryone"},
-                        ${null}
-                      );
-                    `,
-                  ).lastInsertRowid
-                };
-          `,
-            )!;
-          },
-        );
-        for (const courseData of [
-          {
-            name: "Principles of Programming Languages",
-            information: `${String(
-              new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).getFullYear(),
-            )} / Spring / EN.601.426/626`,
-            courseState: "courseStateArchived",
-            courseParticipationRole: "courseParticipationRoleInstructor",
-          },
-          {
-            name: "Full-Stack JavaScript",
-            information: `${String(new Date().getFullYear())} / Spring`,
-            courseParticipationRole: "courseParticipationRoleStudent",
-          },
-          {
-            name: "Principles of Programming Languages",
-            information: `${String(new Date().getFullYear())} / ${new Date().getMonth() < 6 ? "Spring" : "Fall"} / EN.601.426/626`,
-            courseParticipationRole: "courseParticipationRoleInstructor",
-            courseConversationsNextPublicId: 31,
-          },
-        ]) {
-          const course = database.get<{
-            id: number;
-            publicId: string;
-            courseConversationsNextPublicId: number;
-          }>(
-            sql`
-              select * from "courses" where "id" = ${
-                database.run(
-                  sql`
-                    insert into "courses" (
-                      "publicId",
-                      "name",
-                      "information",
-                      "invitationLinkCourseParticipationRoleInstructorsEnabled",
-                      "invitationLinkCourseParticipationRoleInstructorsToken",
-                      "invitationLinkCourseParticipationRoleStudentsEnabled",
-                      "invitationLinkCourseParticipationRoleStudentsToken",
-                      "courseConversationRequiresTagging",
-                      "courseParticipationRoleStudentsAnonymityAllowed",
-                      "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
-                      "courseState",
-                      "courseConversationsNextPublicId"
+                    insert into "courseConversationMessageViews" (
+                      "courseConversationMessage",
+                      "courseParticipation",
+                      "createdAt"
                     )
                     values (
-                      ${cryptoRandomString({ length: 10, type: "numeric" })},
-                      ${courseData.name},
-                      ${courseData.information},
-                      ${Number(Math.random() < 0.2)},
-                      ${cryptoRandomString({ length: 20, type: "numeric" })},
-                      ${Number(Math.random() < 0.8)},
-                      ${cryptoRandomString({ length: 20, type: "numeric" })},
-                      ${Number(Math.random() < 0.8)},
-                      ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedEveryone"},
-                      ${Number(Math.random() < 0.8)},
-                      ${courseData.courseState ?? "courseStateActive"},
-                      ${courseData.courseConversationsNextPublicId ?? 4}
+                      ${old_message.id},
+                      ${old_reading.courseParticipant},
+                      ${old_reading.createdAt}
                     );
                   `,
-                ).lastInsertRowid
-              };
-            `,
-          )!;
-          const usersForCoursePendingInvitationEmailsAndCourseParticipations = [
-            ...users,
-          ];
-          const coursePendingInvitationEmailsCount = Math.floor(
-            Math.random() * 30,
-          );
-          for (
-            let coursePendingInvitationEmailIndex = 0;
-            coursePendingInvitationEmailIndex <
-            coursePendingInvitationEmailsCount;
-            coursePendingInvitationEmailIndex++
-          )
-            database.run(
-              sql`
-                insert into "coursePendingInvitationEmails" (
-                  "publicId",
-                  "course",
-                  "email",
-                  "courseParticipationRole"
-                )
-                values (
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${course.id},
-                  ${
-                    Math.random() < 0.5
-                      ? `${examples
-                          .name()
-                          .replaceAll(/[^A-Za-z]/g, "-")
-                          .toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
-                      : usersForCoursePendingInvitationEmailsAndCourseParticipations.splice(
-                          Math.floor(
-                            Math.random() *
-                              usersForCoursePendingInvitationEmailsAndCourseParticipations.length,
-                          ),
-                          1,
-                        )[0].email
-                  },
-                  ${Math.random() < 0.5 ? "courseParticipationRoleInstructor" : "courseParticipationRoleStudent"}
                 );
-              `,
-            );
-          const [courseParticipation, ...courseParticipations] = [
-            user,
-            ...Array.from(
-              { length: 60 + Math.floor(Math.random() * 50) },
-              () =>
-                usersForCoursePendingInvitationEmailsAndCourseParticipations.splice(
-                  Math.floor(
-                    Math.random() *
-                      usersForCoursePendingInvitationEmailsAndCourseParticipations.length,
-                  ),
-                  1,
-                )[0],
+              for (const old_like of database.all<{
+                courseParticipant: number;
+              }>(
+                sql`
+                  select "courseParticipant"
+                  from "old_likes"
+                  where "message" = ${old_message.id}
+                  order by "id" asc;
+                `,
+              ))
+                database.run(
+                  sql`
+                    insert into "courseConversationMessageLikes" (
+                      "courseConversationMessage",
+                      "courseParticipation"
+                    )
+                    values (
+                      ${old_message.id},
+                      ${old_like.courseParticipant}
+                    );
+                  `,
+                );
+              for (const old_endorsement of database.all<{
+                courseParticipant: number;
+              }>(
+                sql`
+                  select "courseParticipant"
+                  from "old_endorsements"
+                  where "message" = ${old_message.id}
+                  order by "id" asc;
+                `,
+              ))
+                if (
+                  database.get(
+                    sql`
+                      select true
+                      from "courseConversationMessageLikes"
+                      where
+                        "courseConversationMessage" = ${old_message.id} and
+                        "courseParticipation" = ${old_endorsement.courseParticipant}
+                    `,
+                  ) === undefined
+                )
+                  database.run(
+                    sql`
+                    insert into "courseConversationMessageLikes" (
+                      "courseConversationMessage",
+                      "courseParticipation"
+                    )
+                    values (
+                      ${old_message.id},
+                      ${old_endorsement.courseParticipant}
+                    );
+                  `,
+                  );
+            }
+          }
+        }
+
+        database.execute(
+          sql`
+            drop table "old_administrationOptions";
+            drop table "old_conversations";
+            drop table "old_conversationSelectedParticipants";
+            drop table "old_courseParticipants";
+            drop table "old_courses";
+            drop table "old_endorsements";
+            drop table "old_invitations";
+            drop table "old_likes";
+            drop table "old_messageDrafts";
+            drop table "old_messagePollOptions";
+            drop table "old_messagePolls";
+            drop table "old_messagePollVotes";
+            drop table "old_messages";
+            drop table "old_readings";
+            drop table "old_sessions";
+            drop table "old_taggings";
+            drop table "old_tags";
+            drop table "old_users";        
+          `,
+        );
+
+        if (application.userConfiguration.environment === "development") {
+          const textExamples = JSON.parse(
+            await fs.readFile(
+              path.join(
+                import.meta.dirname,
+                "../models/text-examples/model.json",
+              ),
+              "utf-8",
             ),
-          ].map((user, userIndex) =>
-            database.get<{
-              id: number;
-              publicId: string;
-              courseParticipationRole:
-                | "courseParticipationRoleInstructor"
-                | "courseParticipationRoleStudent";
-            }>(
-              sql`
-                  select * from "courseParticipations" where "id" = ${
+          );
+          const userPassword =
+            await cryptography.PasswordHash.hash("courselore");
+          const [user, ...users] = Array.from(
+            { length: 151 },
+            (value, userIndex) => {
+              const userName = examples.name();
+              return database.get<{
+                id: number;
+                email: string;
+              }>(
+                sql`
+                  select * from "users" where "id" = ${
                     database.run(
                       sql`
-                        insert into "courseParticipations" (
+                        insert into "users" (
                           "publicId",
-                          "user",
-                          "course",
-                          "courseParticipationRole",
-                          "decorationColor",
-                          "mostRecentlyVisitedCourseConversation"
+                          "name",
+                          "email",
+                          "emailVerificationEmail",
+                          "emailVerificationNonce",
+                          "emailVerificationCreatedAt",
+                          "password",
+                          "passwordResetNonce",
+                          "passwordResetCreatedAt",
+                          "twoFactorAuthenticationEnabled",
+                          "twoFactorAuthenticationSecret",
+                          "twoFactorAuthenticationRecoveryCodes",
+                          "avatarColor",
+                          "avatarImage",
+                          "userRole",
+                          "lastSeenOnlineAt",
+                          "darkMode",
+                          "sidebarWidth",
+                          "emailNotificationsForAllMessages",
+                          "emailNotificationsForMessagesIncludingAMention",
+                          "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                          "emailNotificationsForMessagesInConversationsThatYouStarted",
+                          "userAnonymityPreferred",
+                          "mostRecentlyVisitedCourseParticipation"
                         )
                         values (
                           ${cryptoRandomString({ length: 20, type: "numeric" })},
-                          ${user.id},
-                          ${course.id},
-                          ${userIndex === 0 ? courseData.courseParticipationRole : Math.random() < 0.15 ? "courseParticipationRoleInstructor" : "courseParticipationRoleStudent"},
+                          ${userName},
+                          ${`${userIndex === 0 ? "system-administrator" : `${userName.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
+                          ${null},
+                          ${null},
+                          ${null},
+                          ${userPassword},
+                          ${null},
+                          ${null},
+                          ${Number(false)},
+                          ${null},
+                          ${null},
                           ${
                             [
                               "red",
@@ -3497,253 +3323,288 @@ export default async (application: Application): Promise<void> => {
                               "emerald",
                               "teal",
                               "cyan",
+                              "sky",
+                              "blue",
+                              "indigo",
                               "violet",
                               "purple",
                               "fuchsia",
                               "pink",
                               "rose",
-                            ][Math.floor(Math.random() * 14)]
+                            ][Math.floor(Math.random() * 17)]
                           },
+                          ${
+                            Math.random() < 0.1
+                              ? `/node_modules/@radically-straightforward/examples/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
+                              : null
+                          },
+                          ${userIndex === 0 || Math.random() < 0.05 ? "userRoleSystemAdministrator" : Math.random() < 0.2 ? "userRoleStaff" : "userRoleUser"},
+                          ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
+                          ${"userDarkModeSystem"},
+                          ${80 * 4},
+                          ${Number(Math.random() < 0.1)},
+                          ${Number(Math.random() < 0.9)},
+                          ${Number(Math.random() < 0.9)},
+                          ${Number(Math.random() < 0.9)},
+                          ${Math.random() < 0.8 ? "userAnonymityPreferredNone" : Math.random() < 0.8 ? "userAnonymityPreferredCourseParticipationRoleStudents" : "userAnonymityPreferredEveryone"},
                           ${null}
                         );
                       `,
                     ).lastInsertRowid
                   };
-                `,
-            )!,
+            `,
+              )!;
+            },
           );
-          const courseConversationsTags = [
-            { name: "Assignment 1" },
-            { name: "Assignment 2" },
-            { name: "Assignment 3" },
-            { name: "Assignment 4" },
-            { name: "Assignment 5" },
-            { name: "Assignment 6" },
+          for (const courseData of [
             {
-              name: "Change for next year",
-              privateToCourseParticipationRoleInstructors: true,
+              name: "Principles of Programming Languages",
+              information: `${String(
+                new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).getFullYear(),
+              )} / Spring / EN.601.426/626`,
+              courseState: "courseStateArchived",
+              courseParticipationRole: "courseParticipationRoleInstructor",
             },
             {
-              name: "Duplicate question",
-              privateToCourseParticipationRoleInstructors: true,
+              name: "Full-Stack JavaScript",
+              information: `${String(new Date().getFullYear())} / Spring`,
+              courseParticipationRole: "courseParticipationRoleStudent",
             },
-          ].map((courseConversationsTag, courseConversationsTagIndex) =>
-            database.get<{ id: number }>(
-              sql`
-                  select * from "courseConversationsTags" where "id" = ${
-                    database.run(
-                      sql`
-                        insert into "courseConversationsTags" (
-                          "publicId",
-                          "course",
-                          "order",
-                          "name",
-                          "privateToCourseParticipationRoleInstructors"
-                        )
-                        values (
-                          ${cryptoRandomString({ length: 20, type: "numeric" })},
-                          ${course.id},
-                          ${courseConversationsTagIndex},
-                          ${courseConversationsTag.name},
-                          ${Number(courseConversationsTag.privateToCourseParticipationRoleInstructors ?? false)}
-                        );
-                      `,
-                    ).lastInsertRowid
-                  };
-                `,
-            )!,
-          );
-          for (
-            let courseConversationPublicId = 1;
-            courseConversationPublicId < course.courseConversationsNextPublicId;
-            courseConversationPublicId++
-          ) {
-            const courseConversationTitle = examples.text({
-              model: textExamples,
-              length: 0,
-            });
-            const courseConversation = database.get<{
+            {
+              name: "Principles of Programming Languages",
+              information: `${String(new Date().getFullYear())} / ${new Date().getMonth() < 6 ? "Spring" : "Fall"} / EN.601.426/626`,
+              courseParticipationRole: "courseParticipationRoleInstructor",
+              courseConversationsNextPublicId: 31,
+            },
+          ]) {
+            const course = database.get<{
               id: number;
-              courseConversationVisibility:
-                | "courseConversationVisibilityEveryone"
-                | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                | "courseConversationVisibilityCourseConversationParticipations";
+              publicId: string;
+              courseConversationsNextPublicId: number;
             }>(
               sql`
-                select * from "courseConversations" where "id" = ${
+                select * from "courses" where "id" = ${
                   database.run(
                     sql`
-                      insert into "courseConversations" (
+                      insert into "courses" (
                         "publicId",
-                        "course",
-                        "courseConversationType",
-                        "questionResolved",
-                        "courseConversationVisibility",
-                        "pinned",
-                        "title",
-                        "titleSearch"
+                        "name",
+                        "information",
+                        "invitationLinkCourseParticipationRoleInstructorsEnabled",
+                        "invitationLinkCourseParticipationRoleInstructorsToken",
+                        "invitationLinkCourseParticipationRoleStudentsEnabled",
+                        "invitationLinkCourseParticipationRoleStudentsToken",
+                        "courseConversationRequiresTagging",
+                        "courseParticipationRoleStudentsAnonymityAllowed",
+                        "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+                        "courseState",
+                        "courseConversationsNextPublicId"
                       )
                       values (
-                        ${String(courseConversationPublicId)},
-                        ${course.id},
-                        ${Math.random() < 0.3 ? "courseConversationTypeNote" : "courseConversationTypeQuestion"},
-                        ${Number(Math.random() < 0.5)},
-                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "courseConversationVisibilityEveryone" : Math.random() < 0.8 ? "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" : "courseConversationVisibilityCourseConversationParticipations"},
-                        ${Number(courseConversationPublicId !== 1 && Math.random() < 0.1)},
-                        ${courseConversationTitle},
-                        ${utilities
-                          .tokenize(courseConversationTitle, {
-                            stopWords:
-                              application.applicationConfiguration.stopWords,
-                            stem: (token) => natural.PorterStemmer.stem(token),
-                          })
-                          .map((tokenWithPosition) => tokenWithPosition.token)
-                          .join(" ")}
+                        ${cryptoRandomString({ length: 10, type: "numeric" })},
+                        ${courseData.name},
+                        ${courseData.information},
+                        ${Number(Math.random() < 0.2)},
+                        ${cryptoRandomString({ length: 20, type: "numeric" })},
+                        ${Number(Math.random() < 0.8)},
+                        ${cryptoRandomString({ length: 20, type: "numeric" })},
+                        ${Number(Math.random() < 0.8)},
+                        ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedEveryone"},
+                        ${Number(Math.random() < 0.8)},
+                        ${courseData.courseState ?? "courseStateActive"},
+                        ${courseData.courseConversationsNextPublicId ?? 4}
                       );
                     `,
                   ).lastInsertRowid
                 };
               `,
             )!;
-            if (
-              courseConversation.courseConversationVisibility ===
-                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" ||
-              courseConversation.courseConversationVisibility ===
-                "courseConversationVisibilityCourseConversationParticipations"
-            ) {
-              const courseParticipationsForCourseConversationParticipations = [
-                ...courseParticipations,
-              ].filter(
-                (courseParticipation) =>
-                  !(
-                    courseConversation.courseConversationVisibility ===
-                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
-                    courseParticipation.courseParticipationRole ===
-                      "courseParticipationRoleInstructor"
-                  ),
-              );
-              for (const courseParticipationForCourseConversationParticipations of [
-                ...(Math.random() < 0.7 ? [courseParticipation] : []),
-                ...Array.from(
-                  { length: Math.floor(Math.random() * 10) },
-                  () =>
-                    courseParticipationsForCourseConversationParticipations.splice(
-                      Math.floor(
-                        Math.random() *
-                          courseParticipationsForCourseConversationParticipations.length,
-                      ),
-                      1,
-                    )[0],
-                ),
-              ])
-                database.run(
-                  sql`
-                    insert into "courseConversationParticipations" (
-                      "courseConversation",
-                      "courseParticipation"
-                    )
-                    values (
-                      ${courseConversation.id},
-                      ${courseParticipationForCourseConversationParticipations.id}
-                    );
-                  `,
-                );
-            }
-            const courseConversationsTagsForCourseConversationTaggings = [
-              ...courseConversationsTags,
-            ];
-            const courseConversationTaggingsCount =
-              1 + Math.floor(Math.random() * 4);
+            const usersForCoursePendingInvitationEmailsAndCourseParticipations =
+              [...users];
+            const coursePendingInvitationEmailsCount = Math.floor(
+              Math.random() * 30,
+            );
             for (
-              let courseConversationTaggingIndex = 0;
-              courseConversationTaggingIndex < courseConversationTaggingsCount;
-              courseConversationTaggingIndex++
+              let coursePendingInvitationEmailIndex = 0;
+              coursePendingInvitationEmailIndex <
+              coursePendingInvitationEmailsCount;
+              coursePendingInvitationEmailIndex++
             )
               database.run(
                 sql`
-                  insert into "courseConversationTaggings" (
-                    "courseConversation",
-                    "courseConversationsTag"
+                  insert into "coursePendingInvitationEmails" (
+                    "publicId",
+                    "course",
+                    "email",
+                    "courseParticipationRole"
                   )
                   values (
-                    ${courseConversation.id},
-                    ${courseConversationsTagsForCourseConversationTaggings.splice(Math.floor(Math.random() * courseConversationsTagsForCourseConversationTaggings.length), 1)[0].id}
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${course.id},
+                    ${
+                      Math.random() < 0.5
+                        ? `${examples
+                            .name()
+                            .replaceAll(/[^A-Za-z]/g, "-")
+                            .toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
+                        : usersForCoursePendingInvitationEmailsAndCourseParticipations.splice(
+                            Math.floor(
+                              Math.random() *
+                                usersForCoursePendingInvitationEmailsAndCourseParticipations.length,
+                            ),
+                            1,
+                          )[0].email
+                    },
+                    ${Math.random() < 0.5 ? "courseParticipationRoleInstructor" : "courseParticipationRoleStudent"}
                   );
                 `,
               );
-            const courseConversationMessagesCount =
-              courseConversationPublicId === 1
-                ? 1
-                : 1 + Math.floor(Math.random() * 15);
-            const firstCourseConversationMessageCreatedAt = new Date(
-              Date.now() -
-                Math.floor(
-                  (course.courseConversationsNextPublicId -
-                    courseConversationPublicId +
-                    Math.random()) *
-                    2 *
-                    24 *
-                    60 *
-                    60 *
-                    1000,
-                ),
-            );
-            let courseConversationMessageForCourseConversationMessageDraft: {
-              publicId: string;
-            };
-            for (
-              let courseConversationMessageIndex = 0;
-              courseConversationMessageIndex < courseConversationMessagesCount;
-              courseConversationMessageIndex++
-            ) {
-              const courseConversationMessageContent = examples.text({
-                model: textExamples,
-                length: 1 + Math.floor(Math.random() * 5),
-              });
-              const courseConversationMessage = database.get<{
+            const [courseParticipation, ...courseParticipations] = [
+              user,
+              ...Array.from(
+                { length: 60 + Math.floor(Math.random() * 50) },
+                () =>
+                  usersForCoursePendingInvitationEmailsAndCourseParticipations.splice(
+                    Math.floor(
+                      Math.random() *
+                        usersForCoursePendingInvitationEmailsAndCourseParticipations.length,
+                    ),
+                    1,
+                  )[0],
+              ),
+            ].map((user, userIndex) =>
+              database.get<{
                 id: number;
                 publicId: string;
+                courseParticipationRole:
+                  | "courseParticipationRoleInstructor"
+                  | "courseParticipationRoleStudent";
               }>(
                 sql`
-                  select * from "courseConversationMessages" where "id" = ${
+                    select * from "courseParticipations" where "id" = ${
+                      database.run(
+                        sql`
+                          insert into "courseParticipations" (
+                            "publicId",
+                            "user",
+                            "course",
+                            "courseParticipationRole",
+                            "decorationColor",
+                            "mostRecentlyVisitedCourseConversation"
+                          )
+                          values (
+                            ${cryptoRandomString({ length: 20, type: "numeric" })},
+                            ${user.id},
+                            ${course.id},
+                            ${userIndex === 0 ? courseData.courseParticipationRole : Math.random() < 0.15 ? "courseParticipationRoleInstructor" : "courseParticipationRoleStudent"},
+                            ${
+                              [
+                                "red",
+                                "orange",
+                                "amber",
+                                "yellow",
+                                "lime",
+                                "green",
+                                "emerald",
+                                "teal",
+                                "cyan",
+                                "violet",
+                                "purple",
+                                "fuchsia",
+                                "pink",
+                                "rose",
+                              ][Math.floor(Math.random() * 14)]
+                            },
+                            ${null}
+                          );
+                        `,
+                      ).lastInsertRowid
+                    };
+                  `,
+              )!,
+            );
+            const courseConversationsTags = [
+              { name: "Assignment 1" },
+              { name: "Assignment 2" },
+              { name: "Assignment 3" },
+              { name: "Assignment 4" },
+              { name: "Assignment 5" },
+              { name: "Assignment 6" },
+              {
+                name: "Change for next year",
+                privateToCourseParticipationRoleInstructors: true,
+              },
+              {
+                name: "Duplicate question",
+                privateToCourseParticipationRoleInstructors: true,
+              },
+            ].map((courseConversationsTag, courseConversationsTagIndex) =>
+              database.get<{ id: number }>(
+                sql`
+                    select * from "courseConversationsTags" where "id" = ${
+                      database.run(
+                        sql`
+                          insert into "courseConversationsTags" (
+                            "publicId",
+                            "course",
+                            "order",
+                            "name",
+                            "privateToCourseParticipationRoleInstructors"
+                          )
+                          values (
+                            ${cryptoRandomString({ length: 20, type: "numeric" })},
+                            ${course.id},
+                            ${courseConversationsTagIndex},
+                            ${courseConversationsTag.name},
+                            ${Number(courseConversationsTag.privateToCourseParticipationRoleInstructors ?? false)}
+                          );
+                        `,
+                      ).lastInsertRowid
+                    };
+                  `,
+              )!,
+            );
+            for (
+              let courseConversationPublicId = 1;
+              courseConversationPublicId <
+              course.courseConversationsNextPublicId;
+              courseConversationPublicId++
+            ) {
+              const courseConversationTitle = examples.text({
+                model: textExamples,
+                length: 0,
+              });
+              const courseConversation = database.get<{
+                id: number;
+                courseConversationVisibility:
+                  | "courseConversationVisibilityEveryone"
+                  | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                  | "courseConversationVisibilityCourseConversationParticipations";
+              }>(
+                sql`
+                  select * from "courseConversations" where "id" = ${
                     database.run(
                       sql`
-                        insert into "courseConversationMessages" (
+                        insert into "courseConversations" (
                           "publicId",
-                          "courseConversation",
-                          "createdByCourseParticipation",
-                          "createdAt",
-                          "updatedAt",
-                          "courseConversationMessageType",
-                          "courseConversationMessageVisibility",
-                          "courseConversationMessageAnonymity",
-                          "content",
-                          "contentSearch"
+                          "course",
+                          "courseConversationType",
+                          "questionResolved",
+                          "courseConversationVisibility",
+                          "pinned",
+                          "title",
+                          "titleSearch"
                         )
                         values (
-                          ${cryptoRandomString({ length: 20, type: "numeric" })},
-                          ${courseConversation.id},
-                          ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
-                          ${new Date(firstCourseConversationMessageCreatedAt.valueOf() + Math.floor((courseConversationMessageIndex + Math.random()) * 60 * 60 * 1000)).toISOString()},
-                          ${Math.random() < 0.1 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
-                          ${
-                            courseConversationMessageIndex === 0 ||
-                            Math.random() < 0.7
-                              ? "courseConversationMessageTypeMessage"
-                              : Math.random() < 0.7
-                                ? "courseConversationMessageTypeAnswer"
-                                : "courseConversationMessageTypeFollowUpQuestion"
-                          },
-                          ${
-                            courseConversationMessageIndex === 0 ||
-                            Math.random() < 0.7
-                              ? "courseConversationMessageVisibilityEveryone"
-                              : "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
-                          },
-                          ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityEveryone"},
-                          ${courseConversationMessageContent},
+                          ${String(courseConversationPublicId)},
+                          ${course.id},
+                          ${Math.random() < 0.3 ? "courseConversationTypeNote" : "courseConversationTypeQuestion"},
+                          ${Number(Math.random() < 0.5)},
+                          ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "courseConversationVisibilityEveryone" : Math.random() < 0.8 ? "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" : "courseConversationVisibilityCourseConversationParticipations"},
+                          ${Number(courseConversationPublicId !== 1 && Math.random() < 0.1)},
+                          ${courseConversationTitle},
                           ${utilities
-                            .tokenize(courseConversationMessageContent, {
+                            .tokenize(courseConversationTitle, {
                               stopWords:
                                 application.applicationConfiguration.stopWords,
                               stem: (token) =>
@@ -3757,717 +3618,881 @@ export default async (application: Application): Promise<void> => {
                   };
                 `,
               )!;
-              courseConversationMessageForCourseConversationMessageDraft =
-                courseConversationMessage;
-              const courseParticipationsForCourseConversationMessageLikes = [
-                ...courseParticipations,
+              if (
+                courseConversation.courseConversationVisibility ===
+                  "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" ||
+                courseConversation.courseConversationVisibility ===
+                  "courseConversationVisibilityCourseConversationParticipations"
+              ) {
+                const courseParticipationsForCourseConversationParticipations =
+                  [...courseParticipations].filter(
+                    (courseParticipation) =>
+                      !(
+                        courseConversation.courseConversationVisibility ===
+                          "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                        courseParticipation.courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                      ),
+                  );
+                for (const courseParticipationForCourseConversationParticipations of [
+                  ...(Math.random() < 0.7 ? [courseParticipation] : []),
+                  ...Array.from(
+                    { length: Math.floor(Math.random() * 10) },
+                    () =>
+                      courseParticipationsForCourseConversationParticipations.splice(
+                        Math.floor(
+                          Math.random() *
+                            courseParticipationsForCourseConversationParticipations.length,
+                        ),
+                        1,
+                      )[0],
+                  ),
+                ])
+                  database.run(
+                    sql`
+                      insert into "courseConversationParticipations" (
+                        "courseConversation",
+                        "courseParticipation"
+                      )
+                      values (
+                        ${courseConversation.id},
+                        ${courseParticipationForCourseConversationParticipations.id}
+                      );
+                    `,
+                  );
+              }
+              const courseConversationsTagsForCourseConversationTaggings = [
+                ...courseConversationsTags,
               ];
-              const courseConversationMessageLikesCount =
-                Math.random() < 0.6
-                  ? 0
-                  : Math.random() < 0.8
-                    ? Math.floor(Math.random() * 3)
-                    : Math.floor(Math.random() * 30);
+              const courseConversationTaggingsCount =
+                1 + Math.floor(Math.random() * 4);
               for (
-                let courseConversationMessageLikeIndex = 0;
-                courseConversationMessageLikeIndex <
-                courseConversationMessageLikesCount;
-                courseConversationMessageLikeIndex++
+                let courseConversationTaggingIndex = 0;
+                courseConversationTaggingIndex <
+                courseConversationTaggingsCount;
+                courseConversationTaggingIndex++
               )
                 database.run(
                   sql`
-                    insert into "courseConversationMessageLikes" (
-                      "courseConversationMessage",
-                      "courseParticipation"
+                    insert into "courseConversationTaggings" (
+                      "courseConversation",
+                      "courseConversationsTag"
                     )
                     values (
-                      ${courseConversationMessage.id},
-                      ${Math.random() < 0.9 ? courseParticipationsForCourseConversationMessageLikes.splice(Math.floor(Math.random() * courseParticipationsForCourseConversationMessageLikes.length), 1)[0].id : null}
+                      ${courseConversation.id},
+                      ${courseConversationsTagsForCourseConversationTaggings.splice(Math.floor(Math.random() * courseConversationsTagsForCourseConversationTaggings.length), 1)[0].id}
+                    );
+                  `,
+                );
+              const courseConversationMessagesCount =
+                courseConversationPublicId === 1
+                  ? 1
+                  : 1 + Math.floor(Math.random() * 15);
+              const firstCourseConversationMessageCreatedAt = new Date(
+                Date.now() -
+                  Math.floor(
+                    (course.courseConversationsNextPublicId -
+                      courseConversationPublicId +
+                      Math.random()) *
+                      2 *
+                      24 *
+                      60 *
+                      60 *
+                      1000,
+                  ),
+              );
+              let courseConversationMessageForCourseConversationMessageDraft: {
+                publicId: string;
+              };
+              for (
+                let courseConversationMessageIndex = 0;
+                courseConversationMessageIndex <
+                courseConversationMessagesCount;
+                courseConversationMessageIndex++
+              ) {
+                const courseConversationMessageContent = examples.text({
+                  model: textExamples,
+                  length: 1 + Math.floor(Math.random() * 5),
+                });
+                const courseConversationMessage = database.get<{
+                  id: number;
+                  publicId: string;
+                }>(
+                  sql`
+                    select * from "courseConversationMessages" where "id" = ${
+                      database.run(
+                        sql`
+                          insert into "courseConversationMessages" (
+                            "publicId",
+                            "courseConversation",
+                            "createdByCourseParticipation",
+                            "createdAt",
+                            "updatedAt",
+                            "courseConversationMessageType",
+                            "courseConversationMessageVisibility",
+                            "courseConversationMessageAnonymity",
+                            "content",
+                            "contentSearch"
+                          )
+                          values (
+                            ${cryptoRandomString({ length: 20, type: "numeric" })},
+                            ${courseConversation.id},
+                            ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
+                            ${new Date(firstCourseConversationMessageCreatedAt.valueOf() + Math.floor((courseConversationMessageIndex + Math.random()) * 60 * 60 * 1000)).toISOString()},
+                            ${Math.random() < 0.1 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
+                            ${
+                              courseConversationMessageIndex === 0 ||
+                              Math.random() < 0.7
+                                ? "courseConversationMessageTypeMessage"
+                                : Math.random() < 0.7
+                                  ? "courseConversationMessageTypeAnswer"
+                                  : "courseConversationMessageTypeFollowUpQuestion"
+                            },
+                            ${
+                              courseConversationMessageIndex === 0 ||
+                              Math.random() < 0.7
+                                ? "courseConversationMessageVisibilityEveryone"
+                                : "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                            },
+                            ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityEveryone"},
+                            ${courseConversationMessageContent},
+                            ${utilities
+                              .tokenize(courseConversationMessageContent, {
+                                stopWords:
+                                  application.applicationConfiguration
+                                    .stopWords,
+                                stem: (token) =>
+                                  natural.PorterStemmer.stem(token),
+                              })
+                              .map(
+                                (tokenWithPosition) => tokenWithPosition.token,
+                              )
+                              .join(" ")}
+                          );
+                        `,
+                      ).lastInsertRowid
+                    };
+                  `,
+                )!;
+                courseConversationMessageForCourseConversationMessageDraft =
+                  courseConversationMessage;
+                const courseParticipationsForCourseConversationMessageLikes = [
+                  ...courseParticipations,
+                ];
+                const courseConversationMessageLikesCount =
+                  Math.random() < 0.6
+                    ? 0
+                    : Math.random() < 0.8
+                      ? Math.floor(Math.random() * 3)
+                      : Math.floor(Math.random() * 30);
+                for (
+                  let courseConversationMessageLikeIndex = 0;
+                  courseConversationMessageLikeIndex <
+                  courseConversationMessageLikesCount;
+                  courseConversationMessageLikeIndex++
+                )
+                  database.run(
+                    sql`
+                      insert into "courseConversationMessageLikes" (
+                        "courseConversationMessage",
+                        "courseParticipation"
+                      )
+                      values (
+                        ${courseConversationMessage.id},
+                        ${Math.random() < 0.9 ? courseParticipationsForCourseConversationMessageLikes.splice(Math.floor(Math.random() * courseParticipationsForCourseConversationMessageLikes.length), 1)[0].id : null}
+                      );
+                    `,
+                  );
+              }
+              if (courseConversationPublicId === 1)
+                database.run(
+                  sql`
+                    insert into "courseConversationMessageDrafts" (
+                      "courseConversation",
+                      "createdByCourseParticipation",
+                      "createdAt",
+                      "courseConversationMessageType",
+                      "courseConversationMessageVisibility",
+                      "courseConversationMessageAnonymity",
+                      "content"
+                    )
+                    values (
+                      ${courseConversation.id},
+                      ${courseParticipation.id},
+                      ${new Date().toISOString()},
+                      ${"courseConversationMessageTypeMessage"},
+                      ${"courseConversationMessageVisibilityEveryone"},
+                      ${"courseConversationMessageAnonymityNone"},
+                      ${markdown`
+                        # Headings
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        # Heading 1
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        ## Heading 2
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        ### Heading 3
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        #### Heading 4
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        ##### Heading 5
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        ###### Heading 6
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        # Separator
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        ---
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        # Inline
+
+                        **Bold**, _italics_, <u>underline</u>, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
+                        break.
+
+                        Areallylongwordwithoutbreaks${examples
+                          .text({ model: textExamples, length: 4 })
+                          .toLowerCase()
+                          .replaceAll(/[^a-z]/g, "")}
+
+                        # Image
+
+                        ![Image](/node_modules/@radically-straightforward/examples/avatars/webp/1.webp)
+
+                        # Animated GIF
+
+                        [<video src="/development/video-example.mp4"></video>](/development/video-example.mp4)
+
+                        # Video
+
+                        <video src="/development/video-example.mp4"></video>
+
+                        # Audio
+
+                        <audio src="/development/audio-example.mp3"></audio>
+
+                        # Image/Video/Audio Proxy
+
+                        ![Proxied image](https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg)
+
+                        <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+
+                        <audio src="https://1cb2b4ea-084b-4282-9796-d397d4a2cc4d.mdnplay.dev/shared-assets/audio/t-rex-roar.mp3"></audio>
+
+                        # Lists
+
+                        - Banana
+                        - Pyjamas
+                        - Phone
+
+                        ---
+
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
+
+                        ---
+
+                        1. Banana
+                        2. Pyjamas
+                        3. Phone
+
+                        ---
+
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`).join("\n\n")}
+
+                        ---
+
+                        - [ ] Banana
+                        - [x] Pyjamas
+                        - [ ] Phone
+
+                        ---
+
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
+
+                        # Poll
+
+                        <poll>
+
+                        - [ ] Banana
+                        - [ ] <votes>${(() => {
+                          const courseParticipationsForcourseConversationMessageContentPollOptionVotes =
+                            [...courseParticipations];
+                          return JSON.stringify(
+                            Array.from(
+                              { length: 3 + Math.floor(Math.random() * 5) },
+                              () =>
+                                courseParticipationsForcourseConversationMessageContentPollOptionVotes.splice(
+                                  Math.floor(
+                                    Math.random() *
+                                      courseParticipationsForcourseConversationMessageContentPollOptionVotes.length,
+                                  ),
+                                  1,
+                                )[0].publicId,
+                            ),
+                          );
+                        })()}</votes> Pyjamas
+                        - [ ] <votes>${(() => {
+                          const courseParticipationsForcourseConversationMessageContentPollOptionVotes =
+                            [...courseParticipations];
+                          return JSON.stringify(
+                            Array.from(
+                              { length: 30 + Math.floor(Math.random() * 10) },
+                              () =>
+                                courseParticipationsForcourseConversationMessageContentPollOptionVotes.splice(
+                                  Math.floor(
+                                    Math.random() *
+                                      courseParticipationsForcourseConversationMessageContentPollOptionVotes.length,
+                                  ),
+                                  1,
+                                )[0].publicId,
+                            ),
+                          );
+                        })()}</votes> Phone
+
+                        </poll>
+
+                        # Blockquote
+
+                        ${examples
+                          .text({
+                            model: textExamples,
+                            length: 1 + Math.floor(Math.random() * 7),
+                          })
+                          .split("\n")
+                          .map((paragraph) => `> ${paragraph}`)
+                          .join("\n")}
+
+                        # Table
+
+                        | Left-aligned | Center-aligned | Right-aligned |
+                        | :---         |     :---:      |          ---: |
+                        | git status   | git status     | git status    |
+                        | git diff     | git diff       | git diff      |
+
+                        | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned |
+                        | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: |
+                        | git status   | git status     | git status    | git status   | git status     | git status    | git status   | git status     | git status    |
+                        | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      |
+
+                        # Details
+
+                        <details>
+                        <summary>Example of details with summary</summary>
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        </details>
+
+                        <details>
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        </details>
+
+                        # Footnotes
+
+                        Footnote[^1] and another.[^2]
+
+                        [^1]: ${examples.text({ model: textExamples, length: 1 })}
+
+                        [^2]: ${examples.text({ model: textExamples, length: 1 })}
+
+                        # \`id="___"\`
+
+                        <p id="an-id-defined-by-the-user">${examples.text({ model: textExamples, length: 1 })}</p>
+
+                        <a href="#an-id-defined-by-the-user">An anchor that points to that id</a>
+
+                        # Cross-Site Scripting
+
+                        👍<script>document.write("💩");</script>🙌
+
+                        # Mathematics
+
+                        Lift($L$) can be determined by Lift Coefficient ($$C_L$$) like the following
+                        equation.
+
+                        $$
+                        L = \\frac{1}{2} \\rho v^2 S C_L
+                        $$
+
+                        Big equation:
+
+                        $$
+                        \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }
+                        $$
+
+                        Raw dollar signs: \\$Hello\\$
+
+                        An invalid macro:
+
+                        $$
+                        \\invalidMacro
+                        $$
+
+                        Inline large width/height $\\rule{500em}{500em}$ visual affront.
+
+                        Block large width/height visual affront:
+
+                        $$
+                        \\rule{500em}{500em}
+                        $$
+
+                        # Syntax Highlighting
+
+                        \`\`\`javascript
+                        for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
+                          const upperLeft = [];
+                          const lowerLeft = [];
+                          const lowerRight = [];
+                          const upperRight = [];
+                          for (const [x, y] of points) {
+                            upperLeft.push([y / 2, x / 2]);
+                            lowerLeft.push([x / 2, y / 2 + 1 / 2]);
+                            lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
+                            upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
+                          }
+                          points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
+                        }
+                        \`\`\`
+
+                        \`\`\`
+                        L          TE
+                        A       A
+                        C    V
+                        R A
+                        DOU
+                        LOU
+                        REUSE
+                        QUE TU
+                        PORTES
+                        ET QUI T'
+                        ORNE O CI
+                        VILISÉ
+                        OTE-  TU VEUX
+                        LA    BIEN
+                        SI      RESPI
+                            RER       - Apollinaire
+                        \`\`\`
+
+                        <pre>
+                        L          TE
+                        A       A
+                        C    V
+                        R A
+                        DOU
+                        LOU
+                        REUSE
+                        QUE TU
+                        PORTES
+                        ET QUI T'
+                        ORNE O CI
+                        VILISÉ
+                        OTE-  TU VEUX
+                        LA    BIEN
+                        SI      RESPI
+                            RER       - Apollinaire
+                        </pre>
+
+                        # \`@mentions\`
+
+                        Self: @self--${courseParticipation.publicId}
+
+                        Other: @other--${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].publicId}
+
+                        Non-existent: @non-existent--1571024857
+
+                        Course roles: @everyone, @instructors, @students
+
+                        # \`#references\`
+
+                        Conversation existent: #1
+
+                        Conversation non-existent: #999999
+
+                        Conversation existent permanent link turned reference: <https://${
+                          application.userConfiguration.hostname
+                        }/courses/${course.publicId}/conversations/1>
+
+                        Conversation non-existent permanent link turned reference: <https://${
+                          application.userConfiguration.hostname
+                        }/courses/${course.publicId}/conversations/999999>
+
+                        Message existent: #1/${courseConversationMessageForCourseConversationMessageDraft!.publicId}
+
+                        Message non-existent: #1/999999
+
+                        Message existent permanent link turned reference: <https://${
+                          application.userConfiguration.hostname
+                        }/courses/${course.publicId}/conversations/1?message=${courseConversationMessageForCourseConversationMessageDraft!.publicId}>
+
+                        Message non-existent permanent link turned reference: <https://${
+                          application.userConfiguration.hostname
+                        }/courses/${course.publicId}/conversations/1?message=999999>
+
+                        # Comment
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                        <!-- Comments should be removed -->
+
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      `}
                     );
                   `,
                 );
             }
-            if (courseConversationPublicId === 1)
-              database.run(
-                sql`
-                  insert into "courseConversationMessageDrafts" (
-                    "courseConversation",
-                    "createdByCourseParticipation",
-                    "createdAt",
-                    "courseConversationMessageType",
-                    "courseConversationMessageVisibility",
-                    "courseConversationMessageAnonymity",
-                    "content"
-                  )
-                  values (
-                    ${courseConversation.id},
-                    ${courseParticipation.id},
-                    ${new Date().toISOString()},
-                    ${"courseConversationMessageTypeMessage"},
-                    ${"courseConversationMessageVisibilityEveryone"},
-                    ${"courseConversationMessageAnonymityNone"},
-                    ${markdown`
-                      # Headings
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      # Heading 1
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      ## Heading 2
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      ### Heading 3
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      #### Heading 4
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      ##### Heading 5
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      ###### Heading 6
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      # Separator
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      ---
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      # Inline
-
-                      **Bold**, _italics_, <u>underline</u>, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
-                      break.
-
-                      Areallylongwordwithoutbreaks${examples
-                        .text({ model: textExamples, length: 4 })
-                        .toLowerCase()
-                        .replaceAll(/[^a-z]/g, "")}
-
-                      # Image
-
-                      ![Image](/node_modules/@radically-straightforward/examples/avatars/webp/1.webp)
-
-                      # Animated GIF
-
-                      [<video src="/development/video-example.mp4"></video>](/development/video-example.mp4)
-
-                      # Video
-
-                      <video src="/development/video-example.mp4"></video>
-
-                      # Audio
-
-                      <audio src="/development/audio-example.mp3"></audio>
-
-                      # Image/Video/Audio Proxy
-
-                      ![Proxied image](https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg)
-
-                      <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
-
-                      <audio src="https://1cb2b4ea-084b-4282-9796-d397d4a2cc4d.mdnplay.dev/shared-assets/audio/t-rex-roar.mp3"></audio>
-
-                      # Lists
-
-                      - Banana
-                      - Pyjamas
-                      - Phone
-
-                      ---
-
-                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
-
-                      ---
-
-                      1. Banana
-                      2. Pyjamas
-                      3. Phone
-
-                      ---
-
-                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`).join("\n\n")}
-
-                      ---
-
-                      - [ ] Banana
-                      - [x] Pyjamas
-                      - [ ] Phone
-
-                      ---
-
-                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
-
-                      # Poll
-
-                      <poll>
-
-                      - [ ] Banana
-                      - [ ] <votes>${(() => {
-                        const courseParticipationsForcourseConversationMessageContentPollOptionVotes =
-                          [...courseParticipations];
-                        return JSON.stringify(
-                          Array.from(
-                            { length: 3 + Math.floor(Math.random() * 5) },
-                            () =>
-                              courseParticipationsForcourseConversationMessageContentPollOptionVotes.splice(
-                                Math.floor(
-                                  Math.random() *
-                                    courseParticipationsForcourseConversationMessageContentPollOptionVotes.length,
-                                ),
-                                1,
-                              )[0].publicId,
-                          ),
-                        );
-                      })()}</votes> Pyjamas
-                      - [ ] <votes>${(() => {
-                        const courseParticipationsForcourseConversationMessageContentPollOptionVotes =
-                          [...courseParticipations];
-                        return JSON.stringify(
-                          Array.from(
-                            { length: 30 + Math.floor(Math.random() * 10) },
-                            () =>
-                              courseParticipationsForcourseConversationMessageContentPollOptionVotes.splice(
-                                Math.floor(
-                                  Math.random() *
-                                    courseParticipationsForcourseConversationMessageContentPollOptionVotes.length,
-                                ),
-                                1,
-                              )[0].publicId,
-                          ),
-                        );
-                      })()}</votes> Phone
-
-                      </poll>
-
-                      # Blockquote
-
-                      ${examples
-                        .text({
-                          model: textExamples,
-                          length: 1 + Math.floor(Math.random() * 7),
-                        })
-                        .split("\n")
-                        .map((paragraph) => `> ${paragraph}`)
-                        .join("\n")}
-
-                      # Table
-
-                      | Left-aligned | Center-aligned | Right-aligned |
-                      | :---         |     :---:      |          ---: |
-                      | git status   | git status     | git status    |
-                      | git diff     | git diff       | git diff      |
-
-                      | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned |
-                      | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: |
-                      | git status   | git status     | git status    | git status   | git status     | git status    | git status   | git status     | git status    |
-                      | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      |
-
-                      # Details
-
-                      <details>
-                      <summary>Example of details with summary</summary>
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      </details>
-
-                      <details>
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      </details>
-
-                      # Footnotes
-
-                      Footnote[^1] and another.[^2]
-
-                      [^1]: ${examples.text({ model: textExamples, length: 1 })}
-
-                      [^2]: ${examples.text({ model: textExamples, length: 1 })}
-
-                      # \`id="___"\`
-
-                      <p id="an-id-defined-by-the-user">${examples.text({ model: textExamples, length: 1 })}</p>
-
-                      <a href="#an-id-defined-by-the-user">An anchor that points to that id</a>
-
-                      # Cross-Site Scripting
-
-                      👍<script>document.write("💩");</script>🙌
-
-                      # Mathematics
-
-                      Lift($L$) can be determined by Lift Coefficient ($$C_L$$) like the following
-                      equation.
-
-                      $$
-                      L = \\frac{1}{2} \\rho v^2 S C_L
-                      $$
-
-                      Big equation:
-
-                      $$
-                      \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }
-                      $$
-
-                      Raw dollar signs: \\$Hello\\$
-
-                      An invalid macro:
-
-                      $$
-                      \\invalidMacro
-                      $$
-
-                      Inline large width/height $\\rule{500em}{500em}$ visual affront.
-
-                      Block large width/height visual affront:
-
-                      $$
-                      \\rule{500em}{500em}
-                      $$
-
-                      # Syntax Highlighting
-
-                      \`\`\`javascript
-                      for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
-                        const upperLeft = [];
-                        const lowerLeft = [];
-                        const lowerRight = [];
-                        const upperRight = [];
-                        for (const [x, y] of points) {
-                          upperLeft.push([y / 2, x / 2]);
-                          lowerLeft.push([x / 2, y / 2 + 1 / 2]);
-                          lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
-                          upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
-                        }
-                        points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
-                      }
-                      \`\`\`
-
-                      \`\`\`
-                      L          TE
-                      A       A
-                      C    V
-                      R A
-                      DOU
-                      LOU
-                      REUSE
-                      QUE TU
-                      PORTES
-                      ET QUI T'
-                      ORNE O CI
-                      VILISÉ
-                      OTE-  TU VEUX
-                      LA    BIEN
-                      SI      RESPI
-                          RER       - Apollinaire
-                      \`\`\`
-
-                      <pre>
-                      L          TE
-                      A       A
-                      C    V
-                      R A
-                      DOU
-                      LOU
-                      REUSE
-                      QUE TU
-                      PORTES
-                      ET QUI T'
-                      ORNE O CI
-                      VILISÉ
-                      OTE-  TU VEUX
-                      LA    BIEN
-                      SI      RESPI
-                          RER       - Apollinaire
-                      </pre>
-
-                      # \`@mentions\`
-
-                      Self: @self--${courseParticipation.publicId}
-
-                      Other: @other--${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].publicId}
-
-                      Non-existent: @non-existent--1571024857
-
-                      Course roles: @everyone, @instructors, @students
-
-                      # \`#references\`
-
-                      Conversation existent: #1
-
-                      Conversation non-existent: #999999
-
-                      Conversation existent permanent link turned reference: <https://${
-                        application.userConfiguration.hostname
-                      }/courses/${course.publicId}/conversations/1>
-
-                      Conversation non-existent permanent link turned reference: <https://${
-                        application.userConfiguration.hostname
-                      }/courses/${course.publicId}/conversations/999999>
-
-                      Message existent: #1/${courseConversationMessageForCourseConversationMessageDraft!.publicId}
-
-                      Message non-existent: #1/999999
-
-                      Message existent permanent link turned reference: <https://${
-                        application.userConfiguration.hostname
-                      }/courses/${course.publicId}/conversations/1?message=${courseConversationMessageForCourseConversationMessageDraft!.publicId}>
-
-                      Message non-existent permanent link turned reference: <https://${
-                        application.userConfiguration.hostname
-                      }/courses/${course.publicId}/conversations/1?message=999999>
-
-                      # Comment
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-
-                      <!-- Comments should be removed -->
-
-                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
-                    `}
-                  );
-                `,
-              );
           }
         }
-      }
-    },
+      },
 
-    sql`
-      alter table "systemOptions" rename to "systemSettings";
-    `,
+      sql`
+        alter table "systemOptions" rename to "systemSettings";
+      `,
 
-    () => {
-      // Removed in version 10.2.0
-    },
+      () => {
+        // Removed in version 10.2.0
+      },
 
-    sql`
-      alter table "userSessions" drop column "samlIdentifier";
-      alter table "userSessions" drop column "samlProfile";
-    `,
+      sql`
+        alter table "userSessions" drop column "samlIdentifier";
+        alter table "userSessions" drop column "samlProfile";
+      `,
 
-    sql`
-      alter table "courses" add column "ltiIdentifier" text null;
-      alter table "courses" add column "ltiContextId" text null;
-      alter table "courses" add column "ltiNamesAndRoleProvisioningServicesURL" text null;
-      create unique index "index_courses_ltiIdentifier_ltiContextId" on "courses" ("ltiIdentifier", "ltiContextId");
+      sql`
+        alter table "courses" add column "ltiIdentifier" text null;
+        alter table "courses" add column "ltiContextId" text null;
+        alter table "courses" add column "ltiNamesAndRoleProvisioningServicesURL" text null;
+        create unique index "index_courses_ltiIdentifier_ltiContextId" on "courses" ("ltiIdentifier", "ltiContextId");
 
-      alter table "courseParticipations" add column "ltiUserId" text null;
-      create unique index "index_courseParticipations_course_ltiUserId" on "courseParticipations" ("course", "ltiUserId");
-    `,
+        alter table "courseParticipations" add column "ltiUserId" text null;
+        create unique index "index_courseParticipations_course_ltiUserId" on "courseParticipations" ("course", "ltiUserId");
+      `,
 
-    sql`
-      drop index "index_courseParticipations_course_ltiUserId";
-      alter table "courseParticipations" drop column "ltiUserId";
-    `,
+      sql`
+        drop index "index_courseParticipations_course_ltiUserId";
+        alter table "courseParticipations" drop column "ltiUserId";
+      `,
 
-    sql`
-      alter table "courseParticipations" add column "ltiState" text null;
-    `,
+      sql`
+        alter table "courseParticipations" add column "ltiState" text null;
+      `,
 
-    sql`
-      alter table "users" alter column "lastSeenOnlineAt" drop not null;
-    `,
+      sql`
+        alter table "users" alter column "lastSeenOnlineAt" drop not null;
+      `,
 
-    sql`
-      alter table "users" rename column "emailVerificationNonce" to "emailVerificationNonceHash";
-      alter table "users" rename column "password" to "passwordHash";
-      alter table "users" rename column "passwordResetNonce" to "passwordResetNonceHash";
-      alter table "users" rename column "twoFactorAuthenticationRecoveryCodes" to "twoFactorAuthenticationRecoveryCodesHashes";
-      
-      alter table "userSessions" rename column "createdAt" to "lastUsedAt";
-      drop index "index_userSessions_createdAt";
-      create index "index_userSessions_lastUsedAt" on "userSessions" ("lastUsedAt");
-      
-      alter table "users" drop column "lastSeenOnlineAt";
-      
-      create index "index_users_emailVerificationCreatedAt" on "users" ("emailVerificationCreatedAt");
-      create index "index_users_passwordResetCreatedAt" on "users" ("passwordResetCreatedAt");
-      
-      alter table "users" add column "deleteMyAccountNonceHash" text null;
-      alter table "users" add column "deleteMyAccountCreatedAt" text null;
-      create index "index_users_deleteMyAccountCreatedAt" on "users" ("deleteMyAccountCreatedAt");
-      
-      alter table "users" rename column "emailVerificationCreatedAt" to "emailVerificationNonceCreatedAt";
-      alter table "users" rename column "passwordResetCreatedAt" to "passwordResetNonceCreatedAt";
-      alter table "users" rename column "deleteMyAccountCreatedAt" to "deleteMyAccountNonceCreatedAt";
-      drop index "index_users_emailVerificationCreatedAt";
-      drop index "index_users_passwordResetCreatedAt";
-      drop index "index_users_deleteMyAccountCreatedAt";
-      create index "index_users_emailVerificationNonceCreatedAt" on "users" ("emailVerificationNonceCreatedAt");
-      create index "index_users_passwordResetNonceCreatedAt" on "users" ("passwordResetNonceCreatedAt");
-      create index "index_users_deleteMyAccountNonceCreatedAt" on "users" ("deleteMyAccountNonceCreatedAt");
-    `,
+      sql`
+        alter table "users" rename column "emailVerificationNonce" to "emailVerificationNonceHash";
+        alter table "users" rename column "password" to "passwordHash";
+        alter table "users" rename column "passwordResetNonce" to "passwordResetNonceHash";
+        alter table "users" rename column "twoFactorAuthenticationRecoveryCodes" to "twoFactorAuthenticationRecoveryCodesHashes";
+        
+        alter table "userSessions" rename column "createdAt" to "lastUsedAt";
+        drop index "index_userSessions_createdAt";
+        create index "index_userSessions_lastUsedAt" on "userSessions" ("lastUsedAt");
+        
+        alter table "users" drop column "lastSeenOnlineAt";
+        
+        create index "index_users_emailVerificationCreatedAt" on "users" ("emailVerificationCreatedAt");
+        create index "index_users_passwordResetCreatedAt" on "users" ("passwordResetCreatedAt");
+        
+        alter table "users" add column "deleteMyAccountNonceHash" text null;
+        alter table "users" add column "deleteMyAccountCreatedAt" text null;
+        create index "index_users_deleteMyAccountCreatedAt" on "users" ("deleteMyAccountCreatedAt");
+        
+        alter table "users" rename column "emailVerificationCreatedAt" to "emailVerificationNonceCreatedAt";
+        alter table "users" rename column "passwordResetCreatedAt" to "passwordResetNonceCreatedAt";
+        alter table "users" rename column "deleteMyAccountCreatedAt" to "deleteMyAccountNonceCreatedAt";
+        drop index "index_users_emailVerificationCreatedAt";
+        drop index "index_users_passwordResetCreatedAt";
+        drop index "index_users_deleteMyAccountCreatedAt";
+        create index "index_users_emailVerificationNonceCreatedAt" on "users" ("emailVerificationNonceCreatedAt");
+        create index "index_users_passwordResetNonceCreatedAt" on "users" ("passwordResetNonceCreatedAt");
+        create index "index_users_deleteMyAccountNonceCreatedAt" on "users" ("deleteMyAccountNonceCreatedAt");
+      `,
 
-    (database) => {
-      if (application.userConfiguration.environment === "development") return;
-      for (const user of database.all<{
-        id: number;
-        passwordHash: string | null;
-      }>(
-        sql`
-          select "id", "passwordHash"
-          from "users"
-          order by "id" asc;
-        `,
-      )) {
-        if (typeof user.passwordHash !== "string") continue;
-        const phcStringParts = user.passwordHash.split("$");
-        const nonce = Buffer.from(phcStringParts.at(-2)!, "base64");
-        const hash = Buffer.from(phcStringParts.at(-1)!, "base64");
-        database.run(
+      (database) => {
+        if (application.userConfiguration.environment === "development") return;
+        for (const user of database.all<{
+          id: number;
+          passwordHash: string | null;
+        }>(
           sql`
-            update "users"
-            set "passwordHash" = ${JSON.stringify({
-              nonce: nonce.toString("hex"),
-              hash: hash.toString("hex"),
-            })}
-            where "id" = ${user.id};
+            select "id", "passwordHash"
+            from "users"
+            order by "id" asc;
+          `,
+        )) {
+          if (typeof user.passwordHash !== "string") continue;
+          const phcStringParts = user.passwordHash.split("$");
+          const nonce = Buffer.from(phcStringParts.at(-2)!, "base64");
+          const hash = Buffer.from(phcStringParts.at(-1)!, "base64");
+          database.run(
+            sql`
+              update "users"
+              set "passwordHash" = ${JSON.stringify({
+                nonce: nonce.toString("hex"),
+                hash: hash.toString("hex"),
+              })}
+              where "id" = ${user.id};
+            `,
+          );
+        }
+      },
+
+      (database) => {
+        const systemSettings = database.get<{
+          privateKey: string;
+          certificate: string;
+        }>(
+          sql`
+            select "privateKey", "certificate"
+            from "systemSettings"
+            limit 1;
           `,
         );
-      }
-    },
+        if (systemSettings === undefined) throw new Error();
+        if (application.userConfiguration.environment !== "development")
+          console.log(
+            utilities.dedent`
+              In version 10.2.0 of Courselore the SAML private key and certificate were moved from the database into the configuration file. If you had Identity Providers setup, please copy them over:
 
-    (database) => {
-      const systemSettings = database.get<{
-        privateKey: string;
-        certificate: string;
-      }>(
-        sql`
-          select "privateKey", "certificate"
-          from "systemSettings"
-          limit 1;
-        `,
-      );
-      if (systemSettings === undefined) throw new Error();
-      if (application.userConfiguration.environment !== "development")
-        console.log(
-          utilities.dedent`
-            In version 10.2.0 of Courselore the SAML private key and certificate were moved from the database into the configuration file. If you had Identity Providers setup, please copy them over:
+              ${systemSettings.privateKey}
 
-            ${systemSettings.privateKey}
-
-            ${systemSettings.certificate}
+              ${systemSettings.certificate}
+            `,
+          );
+        database.execute(
+          sql`
+            alter table "systemSettings" drop column "privateKey";
+            alter table "systemSettings" drop column "certificate";
           `,
         );
-      database.execute(
-        sql`
-          alter table "systemSettings" drop column "privateKey";
-          alter table "systemSettings" drop column "certificate";
-        `,
-      );
-    },
+      },
 
-    sql`
-      drop index "index_courses_ltiIdentifier_ltiContextId";
-      alter table "courses" drop column "ltiIdentifier";
-      alter table "courses" drop column "ltiContextId";
-      alter table "courses" drop column "ltiNamesAndRoleProvisioningServicesURL";
-      
-      alter table "courses" add column "ltiPlatformId" text null;
-      alter table "courses" add column "ltiClientId" text null;
-      alter table "courses" add column "ltiContextId" text null;
-      alter table "courses" add column "ltiNamesAndRoleProvisioningServicesURL" text null;
-      create unique index "index_courses_ltiPlatformId_ltiClientId_ltiContextId" on "courses" ("ltiPlatformId", "ltiClientId", "ltiContextId");
-    `,
+      sql`
+        drop index "index_courses_ltiIdentifier_ltiContextId";
+        alter table "courses" drop column "ltiIdentifier";
+        alter table "courses" drop column "ltiContextId";
+        alter table "courses" drop column "ltiNamesAndRoleProvisioningServicesURL";
+        
+        alter table "courses" add column "ltiPlatformId" text null;
+        alter table "courses" add column "ltiClientId" text null;
+        alter table "courses" add column "ltiContextId" text null;
+        alter table "courses" add column "ltiNamesAndRoleProvisioningServicesURL" text null;
+        create unique index "index_courses_ltiPlatformId_ltiClientId_ltiContextId" on "courses" ("ltiPlatformId", "ltiClientId", "ltiContextId");
+      `,
 
-    sql`
-      alter table "users" rename column "emailVerificationNonceHash" to "emailVerificationNonceTokenHash";
-      alter table "users" rename column "passwordHash" to "passwordPasswordHash";
-      alter table "users" rename column "passwordResetNonceHash" to "passwordResetNonceTokenHash";
-      alter table "users" rename column "twoFactorAuthenticationRecoveryCodesHashes" to "twoFactorAuthenticationRecoveryCodesPasswordHashes";
-      alter table "users" rename column "deleteMyAccountNonceHash" to "deleteMyAccountNonceTokenHash";
-      
-      create index "index_users_passwordResetNonceTokenHash" on "users" ("passwordResetNonceTokenHash");
-    `,
+      sql`
+        alter table "users" rename column "emailVerificationNonceHash" to "emailVerificationNonceTokenHash";
+        alter table "users" rename column "passwordHash" to "passwordPasswordHash";
+        alter table "users" rename column "passwordResetNonceHash" to "passwordResetNonceTokenHash";
+        alter table "users" rename column "twoFactorAuthenticationRecoveryCodesHashes" to "twoFactorAuthenticationRecoveryCodesPasswordHashes";
+        alter table "users" rename column "deleteMyAccountNonceHash" to "deleteMyAccountNonceTokenHash";
+        
+        create index "index_users_passwordResetNonceTokenHash" on "users" ("passwordResetNonceTokenHash");
+      `,
 
-    (database) => {
-      database.execute(
-        sql`
-          alter table "users" rename column "twoFactorAuthenticationSecret" to "twoFactorAuthenticationSecretEncrypted";
-        `,
-      );
-      for (const user of database.all<{
-        id: number;
-        twoFactorAuthenticationSecretEncrypted: string;
-        twoFactorAuthenticationRecoveryCodesPasswordHashes: string;
-      }>(
-        sql`
-          select
-            "id",
-            "twoFactorAuthenticationSecretEncrypted",
-            "twoFactorAuthenticationRecoveryCodesPasswordHashes"
-          from "users"
-          where "twoFactorAuthenticationSecretEncrypted" is not null
-          order by "id" asc;
-        `,
-      ))
-        database.run(
+      (database) => {
+        database.execute(
           sql`
-            update "users"
-            set
-              "twoFactorAuthenticationSecretEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecretEncrypted)},
-              "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${JSON.stringify(
-                JSON.parse(
-                  user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
-                ).map(
-                  (twoFactorAuthenticationRecoveryCodePasswordHash: string) => {
-                    const phcStringParts =
-                      twoFactorAuthenticationRecoveryCodePasswordHash.split(
-                        "$",
+            alter table "users" rename column "twoFactorAuthenticationSecret" to "twoFactorAuthenticationSecretEncrypted";
+          `,
+        );
+        for (const user of database.all<{
+          id: number;
+          twoFactorAuthenticationSecretEncrypted: string;
+          twoFactorAuthenticationRecoveryCodesPasswordHashes: string;
+        }>(
+          sql`
+            select
+              "id",
+              "twoFactorAuthenticationSecretEncrypted",
+              "twoFactorAuthenticationRecoveryCodesPasswordHashes"
+            from "users"
+            where "twoFactorAuthenticationSecretEncrypted" is not null
+            order by "id" asc;
+          `,
+        ))
+          database.run(
+            sql`
+              update "users"
+              set
+                "twoFactorAuthenticationSecretEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, user.twoFactorAuthenticationSecretEncrypted)},
+                "twoFactorAuthenticationRecoveryCodesPasswordHashes" = ${JSON.stringify(
+                  JSON.parse(
+                    user.twoFactorAuthenticationRecoveryCodesPasswordHashes,
+                  ).map(
+                    (
+                      twoFactorAuthenticationRecoveryCodePasswordHash: string,
+                    ) => {
+                      const phcStringParts =
+                        twoFactorAuthenticationRecoveryCodePasswordHash.split(
+                          "$",
+                        );
+                      const nonce = Buffer.from(
+                        phcStringParts.at(-2)!,
+                        "base64",
                       );
-                    const nonce = Buffer.from(phcStringParts.at(-2)!, "base64");
-                    const hash = Buffer.from(phcStringParts.at(-1)!, "base64");
-                    return JSON.stringify({
-                      nonce: nonce.toString("hex"),
-                      hash: hash.toString("hex"),
-                    });
-                  },
-                ),
-              )}
-            where "id" = ${user.id};
+                      const hash = Buffer.from(
+                        phcStringParts.at(-1)!,
+                        "base64",
+                      );
+                      return JSON.stringify({
+                        nonce: nonce.toString("hex"),
+                        hash: hash.toString("hex"),
+                      });
+                    },
+                  ),
+                )}
+              where "id" = ${user.id};
+            `,
+          );
+      },
+
+      sql`
+        update "users"
+        set
+          "emailVerificationNonceTokenHash" = null,
+          "emailVerificationNonceCreatedAt" = null,
+          "passwordResetNonceTokenHash" = null,
+          "passwordResetNonceCreatedAt" = null,
+          "deleteMyAccountNonceTokenHash" = null,
+          "deleteMyAccountNonceCreatedAt" = null;
+      `,
+
+      (database) => {
+        database.execute(
+          sql`
+            alter table "courses" rename column "invitationLinkCourseParticipationRoleInstructorsToken" to "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted";
+            alter table "courses" rename column "invitationLinkCourseParticipationRoleStudentsToken" to "invitationLinkCourseParticipationRoleStudentsTokenEncrypted";
           `,
         );
-    },
-
-    sql`
-      update "users"
-      set
-        "emailVerificationNonceTokenHash" = null,
-        "emailVerificationNonceCreatedAt" = null,
-        "passwordResetNonceTokenHash" = null,
-        "passwordResetNonceCreatedAt" = null,
-        "deleteMyAccountNonceTokenHash" = null,
-        "deleteMyAccountNonceCreatedAt" = null;
-    `,
-
-    (database) => {
-      database.execute(
-        sql`
-          alter table "courses" rename column "invitationLinkCourseParticipationRoleInstructorsToken" to "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted";
-          alter table "courses" rename column "invitationLinkCourseParticipationRoleStudentsToken" to "invitationLinkCourseParticipationRoleStudentsTokenEncrypted";
-        `,
-      );
-      for (const course of database.all<{
-        id: number;
-        invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
-        invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
-      }>(
-        sql`
-          select
-            "id",
-            "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
-            "invitationLinkCourseParticipationRoleStudentsTokenEncrypted"
-          from "courses"
-          order by "id" asc;
-        `,
-      ))
-        database.run(
+        for (const course of database.all<{
+          id: number;
+          invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
+          invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
+        }>(
           sql`
-          update "courses"
-          set
-            "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleInstructorsTokenEncrypted)},
-            "invitationLinkCourseParticipationRoleStudentsTokenEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleStudentsTokenEncrypted)}
-          where "id" = ${course.id};
-        `,
-        );
-    },
+            select
+              "id",
+              "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
+              "invitationLinkCourseParticipationRoleStudentsTokenEncrypted"
+            from "courses"
+            order by "id" asc;
+          `,
+        ))
+          database.run(
+            sql`
+            update "courses"
+            set
+              "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleInstructorsTokenEncrypted)},
+              "invitationLinkCourseParticipationRoleStudentsTokenEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, course.invitationLinkCourseParticipationRoleStudentsTokenEncrypted)}
+            where "id" = ${course.id};
+          `,
+          );
+      },
 
-    (database) => {
-      database.execute(
-        sql`
-          alter table "userSessions" rename column "publicId" to "tokenTokenHash";
-        `,
-      );
-      for (const userSession of database.all<{
-        id: number;
-        tokenTokenHash: string;
-      }>(
-        sql`
-          select "id", "tokenTokenHash"
-          from "userSessions"
-          order by "id" asc;
-        `,
-      ))
-        database.run(
+      (database) => {
+        database.execute(
           sql`
-            update "userSessions"
-            set "tokenTokenHash" = ${cryptography.TokenHash.hash(userSession.tokenTokenHash)}
-            where "id" = ${userSession.id};
+            alter table "userSessions" rename column "publicId" to "tokenTokenHash";
           `,
         );
-    },
-
-    (database) => {
-      database.execute(
-        sql`
-          create table "new_coursePendingInvitationEmails" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null,
-            "tokenTokenHash" text not null unique,
-            "course" integer not null references "courses",
-            "email" text not null,
-            "courseParticipationRole" text not null,
-            unique ("publicId", "course"),
-            unique ("course", "email")
-          ) strict;
-        `,
-      );
-      for (const coursePendingInvitationEmail of database.all<{
-        id: number;
-        publicId: string;
-        course: number;
-        email: string;
-        courseParticipationRole:
-          | "courseParticipationRoleInstructor"
-          | "courseParticipationRoleStudent";
-      }>(
-        sql`
-          select
-            "id",
-            "publicId",
-            "course",
-            "email",
-            "courseParticipationRole"
-          from "coursePendingInvitationEmails"
-          order by "id" asc;
-        `,
-      ))
-        database.run(
+        for (const userSession of database.all<{
+          id: number;
+          tokenTokenHash: string;
+        }>(
           sql`
-            insert into "new_coursePendingInvitationEmails" (
+            select "id", "tokenTokenHash"
+            from "userSessions"
+            order by "id" asc;
+          `,
+        ))
+          database.run(
+            sql`
+              update "userSessions"
+              set "tokenTokenHash" = ${cryptography.TokenHash.hash(userSession.tokenTokenHash)}
+              where "id" = ${userSession.id};
+            `,
+          );
+      },
+
+      (database) => {
+        database.execute(
+          sql`
+            create table "new_coursePendingInvitationEmails" (
+              "id" integer primary key autoincrement,
+              "publicId" text not null,
+              "tokenTokenHash" text not null unique,
+              "course" integer not null references "courses",
+              "email" text not null,
+              "courseParticipationRole" text not null,
+              unique ("publicId", "course"),
+              unique ("course", "email")
+            ) strict;
+          `,
+        );
+        for (const coursePendingInvitationEmail of database.all<{
+          id: number;
+          publicId: string;
+          course: number;
+          email: string;
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+        }>(
+          sql`
+            select
+              "id",
               "publicId",
-              "tokenTokenHash",
               "course",
               "email",
               "courseParticipationRole"
-            )
-            values (
-              ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${cryptography.TokenHash.hash(coursePendingInvitationEmail.publicId)},
-              ${coursePendingInvitationEmail.course},
-              ${coursePendingInvitationEmail.email},
-              ${coursePendingInvitationEmail.courseParticipationRole}
-            );
+            from "coursePendingInvitationEmails"
+            order by "id" asc;
+          `,
+        ))
+          database.run(
+            sql`
+              insert into "new_coursePendingInvitationEmails" (
+                "publicId",
+                "tokenTokenHash",
+                "course",
+                "email",
+                "courseParticipationRole"
+              )
+              values (
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${cryptography.TokenHash.hash(coursePendingInvitationEmail.publicId)},
+                ${coursePendingInvitationEmail.course},
+                ${coursePendingInvitationEmail.email},
+                ${coursePendingInvitationEmail.courseParticipationRole}
+              );
+            `,
+          );
+        database.execute(
+          sql`
+            drop table "coursePendingInvitationEmails";
+            alter table "new_coursePendingInvitationEmails" rename to "coursePendingInvitationEmails";
           `,
         );
-      database.execute(
-        sql`
-          drop table "coursePendingInvitationEmails";
-          alter table "new_coursePendingInvitationEmails" rename to "coursePendingInvitationEmails";
-        `,
-      );
-    },
-  );
+      },
+    );
 };
