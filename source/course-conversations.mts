@@ -1306,58 +1306,112 @@ export default async (application: Application): Promise<void> => {
             </a>
           `);
         }
-        for (const courseConversationMessage of application.database.all<{
-          publicId: string;
-          courseConversation: number;
-          createdByCourseParticipation: number | null;
-          updatedAt: string | null;
-          content: string;
-        }>(
-          sql`
-            select
-              "courseConversationMessages"."publicId" as "publicId",
-              "courseConversationMessages"."courseConversation" as "courseConversation",
-              "courseConversationMessages"."createdByCourseParticipation" as "createdByCourseParticipation",
-              "courseConversationMessages"."updatedAt" as "updatedAt",
-              "courseConversationMessages"."content" as "content"
-            from "courseConversationMessages"
-            join "lexicalSearch_courseConversationMessages_contentLexicalSearch" on
-              "courseConversationMessages"."id" = "lexicalSearch_courseConversationMessages_contentLexicalSearch"."rowid" and
-              "lexicalSearch_courseConversationMessages_contentLexicalSearch" match ${lexicalSearchString}
-            join "courseConversations" on
-              "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
-              "courseConversations"."course" = ${request.state.course.id} and (
-                "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+        for (const courseConversationMessageId of utilities.reciprocalRankFusion(
+          application.database
+            .all<{ id: number }>(
+              sql`
+                select "courseConversationMessages"."id" as "id"
+                from "courseConversationMessages"
+                join "lexicalSearch_courseConversationMessages_contentLexicalSearch" on
+                  "courseConversationMessages"."id" = "lexicalSearch_courseConversationMessages_contentLexicalSearch"."rowid" and
+                  "lexicalSearch_courseConversationMessages_contentLexicalSearch" match ${lexicalSearchString}
+                join "courseConversations" on
+                  "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                  "courseConversations"."course" = ${request.state.course.id} and (
+                    "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                    ${
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                        ? sql`
+                            or
+                            "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                          `
+                        : sql``
+                    }
+                    or (
+                      select true
+                      from "courseConversationParticipations"
+                      where
+                        "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                        "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                    )
+                  )
                 ${
-                  request.state.courseParticipation.courseParticipationRole ===
+                  request.state.courseParticipation!.courseParticipationRole !==
                   "courseParticipationRoleInstructor"
                     ? sql`
-                        or
-                        "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                        where
+                          "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
                       `
                     : sql``
                 }
-                or (
-                  select true
-                  from "courseConversationParticipations"
-                  where
-                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                )
-              )
-            ${
-              request.state.courseParticipation!.courseParticipationRole !==
-              "courseParticipationRoleInstructor"
-                ? sql`
-                    where
-                      "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                  `
-                : sql``
-            }
-            order by "lexicalSearch_courseConversationMessages_contentLexicalSearch"."rank" asc
-            limit ${5 - results.length};
-          `,
+                order by "lexicalSearch_courseConversationMessages_contentLexicalSearch"."rank" asc
+                limit 20;
+              `,
+            )
+            .map((courseConversationMessage) => courseConversationMessage.id),
+          application.database
+            .all<{ id: number }>(
+              sql`
+                select "courseConversationMessages"."id" as "id"
+                from "courseConversationMessages"
+                join "courseConversations" on
+                  "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                  "courseConversations"."course" = ${request.state.course.id} and (
+                    "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                    ${
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                        ? sql`
+                            or
+                            "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                          `
+                        : sql``
+                    }
+                    or (
+                      select true
+                      from "courseConversationParticipations"
+                      where
+                        "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                        "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                    )
+                  )
+                ${
+                  request.state.courseParticipation!.courseParticipationRole !==
+                  "courseParticipationRoleInstructor"
+                    ? sql`
+                        where
+                          "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                      `
+                    : sql``
+                }
+                order by vec_distance_L2("courseConversationMessages"."contentSemanticSearch", ${semanticSearch}) asc
+                limit 20;
+              `,
+            )
+            .map((courseConversationMessage) => courseConversationMessage.id),
         )) {
+          const courseConversationMessage = application.database.get<{
+            publicId: string;
+            courseConversation: number;
+            createdByCourseParticipation: number | null;
+            updatedAt: string | null;
+            content: string;
+          }>(
+            sql`
+              select
+                "publicId",
+                "courseConversation",
+                "createdByCourseParticipation",
+                "updatedAt",
+                "content"
+              from "courseConversationMessages"
+              where "id" = ${courseConversationMessageId};
+            `,
+          );
+          if (courseConversationMessage === undefined) throw new Error();
           const courseConversation = application.database.get<{
             publicId: string;
             title: string;
