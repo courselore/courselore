@@ -1179,6 +1179,16 @@ export default async (application: Application): Promise<void> => {
         const lexicalSearchString = lexicalSearchTokens
           .map((tokenWithPosition) => `"${tokenWithPosition.token}"*`)
           .join(" ");
+        const semanticSearch = JSON.stringify(
+          Array.from(
+            (
+              await application.applicationConfiguration.semanticSearchEmbedder(
+                `search_query: ${request.search.search}`,
+                { pooling: "mean", normalize: true },
+              )
+            ).data,
+          ),
+        );
         for (const courseConversationId of utilities
           .reciprocalRankFusion(
             application.database
@@ -1241,7 +1251,7 @@ export default async (application: Application): Promise<void> => {
                           "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
-                  order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
+                  order by vec_distance_L2("contentSemanticSearch", ${semanticSearch}) asc
                   limit 20;
                 `,
               )
