@@ -1251,7 +1251,7 @@ export default async (application: Application): Promise<void> => {
                           "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
-                  order by vec_distance_L2("contentSemanticSearch", ${semanticSearch}) asc
+                  order by vec_distance_L2("courseConversations"."titleSemanticSearch", ${semanticSearch}) asc
                   limit 20;
                 `,
               )
