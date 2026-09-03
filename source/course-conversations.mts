@@ -1171,12 +1171,12 @@ export default async (application: Application): Promise<void> => {
         request.search.search.trim() === ""
       )
         throw "validation";
-      const searchTokens = utilities.tokenize(request.search.search, {
+      const lexicalSearchTokens = utilities.tokenize(request.search.search, {
         stem: (token) => natural.PorterStemmer.stem(token),
       });
       const results = new Array<HTML>();
-      if (0 < searchTokens.length) {
-        const searchString = searchTokens
+      if (0 < lexicalSearchTokens.length) {
+        const lexicalSearchString = lexicalSearchTokens
           .map((tokenWithPosition) => `"${tokenWithPosition.token}"*`)
           .join(" ");
         for (const courseConversation of application.database.all<{
@@ -1190,7 +1190,7 @@ export default async (application: Application): Promise<void> => {
             from "courseConversations"
             join "lexicalSearch_courseConversations_titleLexicalSearch" on
               "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
-              "lexicalSearch_courseConversations_titleLexicalSearch" match ${searchString}
+              "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
             where
               "courseConversations"."course" = ${request.state.course.id} and (
                 "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
@@ -1238,7 +1238,7 @@ export default async (application: Application): Promise<void> => {
                 >$${utilities.highlight(
                   html`${courseConversation.title}`,
                   new Set(
-                    searchTokens.map(
+                    lexicalSearchTokens.map(
                       (tokenWithPosition) => tokenWithPosition.token,
                     ),
                   ),
@@ -1269,7 +1269,7 @@ export default async (application: Application): Promise<void> => {
               from "courseConversationMessages"
               join "lexicalSearch_courseConversationMessages_contentLexicalSearch" on
                 "courseConversationMessages"."id" = "lexicalSearch_courseConversationMessages_contentLexicalSearch"."rowid" and
-                "lexicalSearch_courseConversationMessages_contentLexicalSearch" match ${searchString}
+                "lexicalSearch_courseConversationMessages_contentLexicalSearch" match ${lexicalSearchString}
               join "courseConversations" on
                 "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
                 "courseConversations"."course" = ${request.state.course.id} and (
@@ -1363,7 +1363,7 @@ export default async (application: Application): Promise<void> => {
                       },
                     )}`,
                     new Set(
-                      searchTokens.map(
+                      lexicalSearchTokens.map(
                         (tokenWithPosition) => tokenWithPosition.token,
                       ),
                     ),
