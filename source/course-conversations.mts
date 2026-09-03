@@ -1163,8 +1163,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.user === undefined ||
         request.state.course === undefined ||
-        request.state.courseParticipation === undefined ||
-        request.state.courseConversationsTags === undefined
+        request.state.courseParticipation === undefined
       )
         return;
       if (
