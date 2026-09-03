@@ -1220,9 +1220,6 @@ export default async (application: Application): Promise<void> => {
                 sql`
                   select "courseConversations"."id" as "id"
                   from "courseConversations"
-                  join "lexicalSearch_courseConversations_titleLexicalSearch" on
-                    "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
-                    "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
                   where
                     "courseConversations"."course" = ${request.state.course.id} and (
                       "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
