@@ -10,7 +10,7 @@
     "@huggingface/transformers": "^4.2.0",
     "@node-saml/node-saml": "^5.1.0",
     "@radically-straightforward/ffmpeg": "^1.0.2",
-    "@radically-straightforward/production": "^1.0.76",
+    "@radically-straightforward/production": "^1.0.77",
     "crypto-random-string": "^6.0.0",
     "email-addresses": "^5.0.0",
     "github-slugger": "^2.0.0",
