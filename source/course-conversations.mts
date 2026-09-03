@@ -1179,14 +1179,12 @@ export default async (application: Application): Promise<void> => {
         const lexicalSearchString = lexicalSearchTokens
           .map((tokenWithPosition) => `"${tokenWithPosition.token}"*`)
           .join(" ");
-        for (const courseConversation of application.database.all<{
-          publicId: string;
-          title: string;
-        }>(
-          sql`
-            select
-              "courseConversations"."publicId" as "publicId",
-              "courseConversations"."title" as "title"
+        const lexicalSearchCourseConversationsIds = application.database
+          .all<{
+            id: number;
+          }>(
+            sql`
+            select "courseConversations"."id" as "id"
             from "courseConversations"
             join "lexicalSearch_courseConversations_titleLexicalSearch" on
               "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
@@ -1212,9 +1210,30 @@ export default async (application: Application): Promise<void> => {
                 )
               )
             order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
-            limit 5;
+            limit 20;
           `,
-        ))
+          )
+          .map((courseConversation) => courseConversation.id);
+        const lexicalAndSemanticSearchCourseConversationsIds =
+          utilities.reciprocalRankFusion(
+            lexicalSearchCourseConversationsIds,
+            semanticSearchCourseConversationsIds,
+          );
+        for (const courseConversationId of lexicalAndSemanticSearchCourseConversationsIds.slice(
+          0,
+          5,
+        )) {
+          const courseConversation = application.database.get<{
+            publicId: string;
+            title: string;
+          }>(
+            sql`
+              select "publicId", "title"
+              from "courseConversations"
+              where "id" = ${courseConversationId};
+            `,
+          );
+          if (courseConversation === undefined) throw new Error();
           results.push(html`
             <a
               href="/courses/${
@@ -1251,6 +1270,7 @@ export default async (application: Application): Promise<void> => {
               >
             </a>
           `);
+        }
         if (results.length < 5)
           for (const courseConversationMessage of application.database.all<{
             publicId: string;
