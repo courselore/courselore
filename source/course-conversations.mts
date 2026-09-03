@@ -1179,81 +1179,78 @@ export default async (application: Application): Promise<void> => {
         const lexicalSearchString = lexicalSearchTokens
           .map((tokenWithPosition) => `"${tokenWithPosition.token}"*`)
           .join(" ");
-        const lexicalSearchCourseConversationsIds = application.database
-          .all<{ id: number }>(
-            sql`
-            select "courseConversations"."id" as "id"
-            from "courseConversations"
-            join "lexicalSearch_courseConversations_titleLexicalSearch" on
-              "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
-              "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
-            where
-              "courseConversations"."course" = ${request.state.course.id} and (
-                "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                ${
-                  request.state.courseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor"
-                    ? sql`
-                        or
-                        "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                      `
-                    : sql``
-                }
-                or (
-                  select true
-                  from "courseConversationParticipations"
+        for (const courseConversationId of utilities
+          .reciprocalRankFusion(
+            application.database
+              .all<{ id: number }>(
+                sql`
+                  select "courseConversations"."id" as "id"
+                  from "courseConversations"
+                  join "lexicalSearch_courseConversations_titleLexicalSearch" on
+                    "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
+                    "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
                   where
-                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                )
+                    "courseConversations"."course" = ${request.state.course.id} and (
+                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                      ${
+                        request.state.courseParticipation
+                          .courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? sql`
+                              or
+                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                            `
+                          : sql``
+                      }
+                      or (
+                        select true
+                        from "courseConversationParticipations"
+                        where
+                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                      )
+                    )
+                  order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
+                  limit 20;
+                `,
               )
-            order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
-            limit 20;
-          `,
-          )
-          .map((courseConversation) => courseConversation.id);
-        const semanticSearchCourseConversationsIds = application.database
-          .all<{ id: number }>(
-            sql`
-            select "courseConversations"."id" as "id"
-            from "courseConversations"
-            join "lexicalSearch_courseConversations_titleLexicalSearch" on
-              "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
-              "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
-            where
-              "courseConversations"."course" = ${request.state.course.id} and (
-                "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                ${
-                  request.state.courseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor"
-                    ? sql`
-                        or
-                        "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                      `
-                    : sql``
-                }
-                or (
-                  select true
-                  from "courseConversationParticipations"
+              .map((courseConversation) => courseConversation.id),
+            application.database
+              .all<{ id: number }>(
+                sql`
+                  select "courseConversations"."id" as "id"
+                  from "courseConversations"
+                  join "lexicalSearch_courseConversations_titleLexicalSearch" on
+                    "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
+                    "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
                   where
-                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                )
+                    "courseConversations"."course" = ${request.state.course.id} and (
+                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                      ${
+                        request.state.courseParticipation
+                          .courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? sql`
+                              or
+                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                            `
+                          : sql``
+                      }
+                      or (
+                        select true
+                        from "courseConversationParticipations"
+                        where
+                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                      )
+                    )
+                  order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
+                  limit 20;
+                `,
               )
-            order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
-            limit 20;
-          `,
+              .map((courseConversation) => courseConversation.id),
           )
-          .map((courseConversation) => courseConversation.id);
-        const lexicalAndSemanticSearchCourseConversationsIds =
-          utilities.reciprocalRankFusion(
-            lexicalSearchCourseConversationsIds,
-            semanticSearchCourseConversationsIds,
-          );
-        for (const courseConversationId of lexicalAndSemanticSearchCourseConversationsIds.slice(
-          0,
-          5,
-        )) {
+          .slice(0, 5)) {
           const courseConversation = application.database.get<{
             publicId: string;
             title: string;
