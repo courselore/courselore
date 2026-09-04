@@ -47,9 +47,9 @@ jobs:
             mv /root/courselore--ubuntu--${{ github.ref_name }}.tar.gz /root/courselore--deploy/courselore--ubuntu--${{ github.ref_name }}.tar.gz
             cd /root/courselore--deploy/
             tar -xzf ./courselore--ubuntu--${{ github.ref_name }}.tar.gz
+            systemctl stop courselore || true
             cp /root/courselore--deploy/courselore/_/configuration/courselore.service /etc/systemd/system/courselore.service
             systemctl daemon-reload
-            systemctl stop courselore
             mv /root/courselore/courselore/ /root/courselore--deploy/courselore--old/ || true
             mv /root/courselore--deploy/courselore/ /root/courselore/courselore/
             systemctl start courselore
