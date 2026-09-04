@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.2.3 · 2026-09-04
+
+- Improved the search feature with semantic search in addition to the lexical search that we already had. For example, lexical search matches the search term “programming” with “programmer”. Semantic search improves on lexical search in two ways: 1. Semantic search matches “programming” with “coding”, even though the words are different. 2. Semantic search tells apart the “program” in “computer program” as opposed to “the program of the music festival,” because they mean different things.
+
 ## 10.2.2 · 2026-08-06
 
 - In LTI, added support for being loaded in an iFrame.
