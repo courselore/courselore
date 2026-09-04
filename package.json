@@ -62,5 +62,8 @@
     "protobufjs@7.6.6": true,
     "esbuild@0.28.2": true
   },
+  "overrides": {
+    "sharp": "$sharp"
+  },
   "prettier": {}
 }
