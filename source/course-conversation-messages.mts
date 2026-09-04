@@ -390,306 +390,310 @@ export default async (application: Application): Promise<void> => {
   });
 
   if (application.commandLineArguments.values.type === "backgroundJobWorker")
-    application.database.backgroundJobWorker<{
-      courseConversationMessageId: number;
-      announcement?: boolean;
-    }>(
-      { type: "courseConversationMessageEmailNotification" },
-      async (parameters) => {
-        const courseConversationMessage = application.database.get<{
-          id: number;
-          publicId: string;
-          courseConversation: number;
-          createdByCourseParticipation: number | null;
-          updatedAt: string | null;
-          courseConversationMessageVisibility:
-            | "courseConversationMessageVisibilityEveryone"
-            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
-          courseConversationMessageAnonymity:
-            | "courseConversationMessageAnonymityNone"
-            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-            | "courseConversationMessageAnonymityEveryone";
-          content: string;
-        }>(
-          sql`
-            select
-              "id",
-              "publicId",
-              "courseConversation",
-              "createdByCourseParticipation",
-              "updatedAt",
-              "courseConversationMessageVisibility",
-              "courseConversationMessageAnonymity",
-              "content"
-            from "courseConversationMessages"
-            where "id" = ${parameters.courseConversationMessageId};
-          `,
-        );
-        if (courseConversationMessage === undefined) return;
-        const courseConversation = application.database.get<{
-          id: number;
-          publicId: string;
-          course: number;
-          courseConversationVisibility:
-            | "courseConversationVisibilityEveryone"
-            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-            | "courseConversationParticipations";
-          title: string;
-        }>(
-          sql`
-            select
-              "id",
-              "publicId",
-              "course",
-              "courseConversationVisibility",
-              "title"
-            from "courseConversations"
-            where "id" = ${courseConversationMessage.courseConversation};
-          `,
-        );
-        if (courseConversation === undefined) throw new Error();
-        const firstCourseConversationMessage = application.database.get<{
-          createdByCourseParticipation: number | null;
-        }>(
-          sql`
-            select "createdByCourseParticipation"
-            from "courseConversationMessages"
-            where "courseConversation" = ${courseConversation.id}
-            order by "id" asc
-            limit 1;
-          `,
-        );
-        if (firstCourseConversationMessage === undefined) throw new Error();
-        const course = application.database.get<{
-          id: number;
-          publicId: string;
-          name: string;
-          courseState: "courseStateActive" | "courseStateArchived";
-        }>(
-          sql`
-            select
-              "id",
-              "publicId",
-              "name",
-              "courseState"
-            from "courses"
-            where "id" = ${courseConversation.course};
-          `,
-        );
-        if (course === undefined) throw new Error();
-        const courseConversationMessageCreatedByCourseParticipation =
-          typeof courseConversationMessage.createdByCourseParticipation ===
-          "number"
-            ? application.database.get<{
-                user: number;
-                courseParticipationRole:
-                  | "courseParticipationRoleInstructor"
-                  | "courseParticipationRoleStudent";
+    setTimeout(() => {
+      application.database.backgroundJobWorker<{
+        courseConversationMessageId: number;
+        announcement?: boolean;
+      }>(
+        { type: "courseConversationMessageEmailNotification" },
+        async (parameters) => {
+          const courseConversationMessage = application.database.get<{
+            id: number;
+            publicId: string;
+            courseConversation: number;
+            createdByCourseParticipation: number | null;
+            updatedAt: string | null;
+            courseConversationMessageVisibility:
+              | "courseConversationMessageVisibilityEveryone"
+              | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+            courseConversationMessageAnonymity:
+              | "courseConversationMessageAnonymityNone"
+              | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+              | "courseConversationMessageAnonymityEveryone";
+            content: string;
+          }>(
+            sql`
+              select
+                "id",
+                "publicId",
+                "courseConversation",
+                "createdByCourseParticipation",
+                "updatedAt",
+                "courseConversationMessageVisibility",
+                "courseConversationMessageAnonymity",
+                "content"
+              from "courseConversationMessages"
+              where "id" = ${parameters.courseConversationMessageId};
+            `,
+          );
+          if (courseConversationMessage === undefined) return;
+          const courseConversation = application.database.get<{
+            id: number;
+            publicId: string;
+            course: number;
+            courseConversationVisibility:
+              | "courseConversationVisibilityEveryone"
+              | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+              | "courseConversationParticipations";
+            title: string;
+          }>(
+            sql`
+              select
+                "id",
+                "publicId",
+                "course",
+                "courseConversationVisibility",
+                "title"
+              from "courseConversations"
+              where "id" = ${courseConversationMessage.courseConversation};
+            `,
+          );
+          if (courseConversation === undefined) throw new Error();
+          const firstCourseConversationMessage = application.database.get<{
+            createdByCourseParticipation: number | null;
+          }>(
+            sql`
+              select "createdByCourseParticipation"
+              from "courseConversationMessages"
+              where "courseConversation" = ${courseConversation.id}
+              order by "id" asc
+              limit 1;
+            `,
+          );
+          if (firstCourseConversationMessage === undefined) throw new Error();
+          const course = application.database.get<{
+            id: number;
+            publicId: string;
+            name: string;
+            courseState: "courseStateActive" | "courseStateArchived";
+          }>(
+            sql`
+              select
+                "id",
+                "publicId",
+                "name",
+                "courseState"
+              from "courses"
+              where "id" = ${courseConversation.course};
+            `,
+          );
+          if (course === undefined) throw new Error();
+          const courseConversationMessageCreatedByCourseParticipation =
+            typeof courseConversationMessage.createdByCourseParticipation ===
+            "number"
+              ? application.database.get<{
+                  user: number;
+                  courseParticipationRole:
+                    | "courseParticipationRoleInstructor"
+                    | "courseParticipationRoleStudent";
+                }>(
+                  sql`
+                    select
+                      "user",
+                      "courseParticipationRole"
+                    from "courseParticipations"
+                    where "id" = ${courseConversationMessage.createdByCourseParticipation};
+                  `,
+                )
+              : undefined;
+          const courseConversationMessageCreatedByUser =
+            typeof courseConversationMessageCreatedByCourseParticipation ===
+            "object"
+              ? application.database.get<{ name: string }>(
+                  sql`
+                    select "name"
+                    from "users"
+                    where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
+                  `,
+                )
+              : undefined;
+          const courseConversationMessageMentions =
+            await application.partials.courseConversationMessageContentProcessor(
+              {
+                course,
+                courseConversation,
+                courseConversationMessage,
+                mode: "mentions",
+              },
+            );
+          const courseConversationMessageEmailNotifications = new Array<any>();
+          for (const courseConversationMessageEmailNotificationCourseParticipation of application.database.all<{
+            id: number;
+            publicId: string;
+            user: number;
+            courseParticipationRole:
+              | "courseParticipationRoleInstructor"
+              | "courseParticipationRoleStudent";
+          }>(
+            sql`
+              select
+                "id",
+                "publicId",
+                "user",
+                "courseParticipationRole"
+              from "courseParticipations"
+              where "course" = ${course.id}
+              order by "id" asc;
+            `,
+          )) {
+            const courseConversationMessageEmailNotificationUser =
+              application.database.get<{
+                email: string;
+                emailNotificationsForAllMessages: number;
+                emailNotificationsForMessagesIncludingAMention: number;
+                emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+                emailNotificationsForMessagesInConversationsThatYouStarted: number;
               }>(
                 sql`
                   select
-                    "user",
-                    "courseParticipationRole"
-                  from "courseParticipations"
-                  where "id" = ${courseConversationMessage.createdByCourseParticipation};
-                `,
-              )
-            : undefined;
-        const courseConversationMessageCreatedByUser =
-          typeof courseConversationMessageCreatedByCourseParticipation ===
-          "object"
-            ? application.database.get<{ name: string }>(
-                sql`
-                  select "name"
+                    "email",
+                    "emailNotificationsForAllMessages",
+                    "emailNotificationsForMessagesIncludingAMention",
+                    "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                    "emailNotificationsForMessagesInConversationsThatYouStarted"
                   from "users"
-                  where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
+                  where "id" = ${courseConversationMessageEmailNotificationCourseParticipation.user};
                 `,
-              )
-            : undefined;
-        const courseConversationMessageMentions =
-          await application.partials.courseConversationMessageContentProcessor({
-            course,
-            courseConversation,
-            courseConversationMessage,
-            mode: "mentions",
-          });
-        const courseConversationMessageEmailNotifications = new Array<any>();
-        for (const courseConversationMessageEmailNotificationCourseParticipation of application.database.all<{
-          id: number;
-          publicId: string;
-          user: number;
-          courseParticipationRole:
-            | "courseParticipationRoleInstructor"
-            | "courseParticipationRoleStudent";
-        }>(
-          sql`
-            select
-              "id",
-              "publicId",
-              "user",
-              "courseParticipationRole"
-            from "courseParticipations"
-            where "course" = ${course.id}
-            order by "id" asc;
-          `,
-        )) {
-          const courseConversationMessageEmailNotificationUser =
-            application.database.get<{
-              email: string;
-              emailNotificationsForAllMessages: number;
-              emailNotificationsForMessagesIncludingAMention: number;
-              emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-              emailNotificationsForMessagesInConversationsThatYouStarted: number;
-            }>(
-              sql`
-                select
-                  "email",
-                  "emailNotificationsForAllMessages",
-                  "emailNotificationsForMessagesIncludingAMention",
-                  "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                  "emailNotificationsForMessagesInConversationsThatYouStarted"
-                from "users"
-                where "id" = ${courseConversationMessageEmailNotificationCourseParticipation.user};
-              `,
-            );
-          if (courseConversationMessageEmailNotificationUser === undefined)
-            throw new Error();
-          const courseConversationMessageAnonymous =
-            courseConversationMessage.createdByCourseParticipation !==
-              courseConversationMessageEmailNotificationCourseParticipation.id &&
-            ((courseConversationMessage.courseConversationMessageAnonymity ===
-              "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
-              courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
-                "courseParticipationRoleStudent") ||
-              courseConversationMessage.courseConversationMessageAnonymity ===
-                "courseConversationMessageAnonymityEveryone");
-          if (
-            courseConversationMessage.createdByCourseParticipation !==
-              courseConversationMessageEmailNotificationCourseParticipation.id &&
-            (courseConversation.courseConversationVisibility ===
-              "courseConversationVisibilityEveryone" ||
+              );
+            if (courseConversationMessageEmailNotificationUser === undefined)
+              throw new Error();
+            const courseConversationMessageAnonymous =
+              courseConversationMessage.createdByCourseParticipation !==
+                courseConversationMessageEmailNotificationCourseParticipation.id &&
+              ((courseConversationMessage.courseConversationMessageAnonymity ===
+                "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
+                  "courseParticipationRoleStudent") ||
+                courseConversationMessage.courseConversationMessageAnonymity ===
+                  "courseConversationMessageAnonymityEveryone");
+            if (
+              courseConversationMessage.createdByCourseParticipation !==
+                courseConversationMessageEmailNotificationCourseParticipation.id &&
               (courseConversation.courseConversationVisibility ===
-                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
-                courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor") ||
-              application.database.get(
-                sql`
-                  select true
-                  from "courseConversationParticipations"
-                  where
-                    "courseConversation" = ${courseConversation.id} and
-                    "courseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id};
-                `,
-              ) !== undefined) &&
-            (courseConversationMessage.courseConversationMessageVisibility ===
-              "courseConversationMessageVisibilityEveryone" ||
-              (courseConversationMessage.courseConversationMessageVisibility ===
-                "courseConversationMessageVisibilityCourseParticipationRoleInstructors" &&
-                courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor")) &&
-            (parameters.announcement === true ||
-              Boolean(
-                courseConversationMessageEmailNotificationUser.emailNotificationsForAllMessages,
-              ) ||
-              (Boolean(
-                courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesIncludingAMention,
-              ) &&
-                (courseConversationMessageMentions.has("everyone") ||
-                  (courseConversationMessageMentions.has("instructors") &&
-                    courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
-                      "courseParticipationRoleInstructor") ||
-                  (courseConversationMessageMentions.has("students") &&
-                    courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
-                      "courseParticipationRoleStudent") ||
-                  courseConversationMessageMentions.has(
-                    courseConversationMessageEmailNotificationCourseParticipation.publicId,
-                  ))) ||
-              (Boolean(
-                courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesInConversationsInWhichYouParticipated,
-              ) &&
+                "courseConversationVisibilityEveryone" ||
+                (courseConversation.courseConversationVisibility ===
+                  "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                  courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
+                    "courseParticipationRoleInstructor") ||
                 application.database.get(
                   sql`
                     select true
-                    from "courseConversationMessages"
+                    from "courseConversationParticipations"
                     where
                       "courseConversation" = ${courseConversation.id} and
-                      "createdByCourseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id}
-                    limit 1;
+                      "courseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id};
                   `,
-                ) !== undefined) ||
-              (Boolean(
-                courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesInConversationsThatYouStarted,
-              ) &&
-                firstCourseConversationMessage.createdByCourseParticipation ===
-                  courseConversationMessageEmailNotificationCourseParticipation.id)) &&
-            application.database.get(
-              sql`
-                select true
-                from "courseConversationMessageViews"
-                where
-                  "courseConversationMessage" = ${courseConversationMessage.id} and
-                  "courseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id};
-              `,
-            ) === undefined
-          )
-            courseConversationMessageEmailNotifications.push({
-              from: {
-                name: `${
-                  courseConversationMessageAnonymous
-                    ? "Anonymous"
-                    : (courseConversationMessageCreatedByUser?.name ??
-                      "Deleted course participant")
-                } · ${course.name}`,
-                address: application.userConfiguration.email.from,
-              },
-              to: courseConversationMessageEmailNotificationUser.email,
-              subject: courseConversation.title,
-              inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
-              references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
-              html: html`
-                $${await application.partials.courseConversationMessageContentProcessor(
-                  {
-                    course,
-                    courseParticipation:
-                      courseConversationMessageEmailNotificationCourseParticipation,
-                    courseConversation,
-                    courseConversationMessage,
-                    mode: "emailNotification",
-                  },
-                )}
-                <hr />
-                <p>
-                  <small>
-                    <a
-                      href="https://${
-                        application.userConfiguration.hostname
-                      }/courses/${course.publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
-                        {
-                          message: courseConversationMessage.publicId,
-                        },
-                      ).toString()}"
-                      >See message in Courselore</a
-                    > ·
-                    <a
-                      href="https://${
-                        application.userConfiguration.hostname
-                      }/settings"
-                      >Change email notification preferences</a
-                    >
-                  </small>
-                </p>
-              `,
-            });
-        }
-        application.database.transaction(() => {
-          for (const courseConversationMessageEmailNotification of courseConversationMessageEmailNotifications)
-            application.database.backgroundJob({
-              type: "email",
-              parameters: courseConversationMessageEmailNotification,
-            });
-        });
-      },
-    );
+                ) !== undefined) &&
+              (courseConversationMessage.courseConversationMessageVisibility ===
+                "courseConversationMessageVisibilityEveryone" ||
+                (courseConversationMessage.courseConversationMessageVisibility ===
+                  "courseConversationMessageVisibilityCourseParticipationRoleInstructors" &&
+                  courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
+                    "courseParticipationRoleInstructor")) &&
+              (parameters.announcement === true ||
+                Boolean(
+                  courseConversationMessageEmailNotificationUser.emailNotificationsForAllMessages,
+                ) ||
+                (Boolean(
+                  courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesIncludingAMention,
+                ) &&
+                  (courseConversationMessageMentions.has("everyone") ||
+                    (courseConversationMessageMentions.has("instructors") &&
+                      courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
+                        "courseParticipationRoleInstructor") ||
+                    (courseConversationMessageMentions.has("students") &&
+                      courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
+                        "courseParticipationRoleStudent") ||
+                    courseConversationMessageMentions.has(
+                      courseConversationMessageEmailNotificationCourseParticipation.publicId,
+                    ))) ||
+                (Boolean(
+                  courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesInConversationsInWhichYouParticipated,
+                ) &&
+                  application.database.get(
+                    sql`
+                      select true
+                      from "courseConversationMessages"
+                      where
+                        "courseConversation" = ${courseConversation.id} and
+                        "createdByCourseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id}
+                      limit 1;
+                    `,
+                  ) !== undefined) ||
+                (Boolean(
+                  courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesInConversationsThatYouStarted,
+                ) &&
+                  firstCourseConversationMessage.createdByCourseParticipation ===
+                    courseConversationMessageEmailNotificationCourseParticipation.id)) &&
+              application.database.get(
+                sql`
+                  select true
+                  from "courseConversationMessageViews"
+                  where
+                    "courseConversationMessage" = ${courseConversationMessage.id} and
+                    "courseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id};
+                `,
+              ) === undefined
+            )
+              courseConversationMessageEmailNotifications.push({
+                from: {
+                  name: `${
+                    courseConversationMessageAnonymous
+                      ? "Anonymous"
+                      : (courseConversationMessageCreatedByUser?.name ??
+                        "Deleted course participant")
+                  } · ${course.name}`,
+                  address: application.userConfiguration.email.from,
+                },
+                to: courseConversationMessageEmailNotificationUser.email,
+                subject: courseConversation.title,
+                inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
+                references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
+                html: html`
+                  $${await application.partials.courseConversationMessageContentProcessor(
+                    {
+                      course,
+                      courseParticipation:
+                        courseConversationMessageEmailNotificationCourseParticipation,
+                      courseConversation,
+                      courseConversationMessage,
+                      mode: "emailNotification",
+                    },
+                  )}
+                  <hr />
+                  <p>
+                    <small>
+                      <a
+                        href="https://${
+                          application.userConfiguration.hostname
+                        }/courses/${course.publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
+                          {
+                            message: courseConversationMessage.publicId,
+                          },
+                        ).toString()}"
+                        >See message in Courselore</a
+                      > ·
+                      <a
+                        href="https://${
+                          application.userConfiguration.hostname
+                        }/settings"
+                        >Change email notification preferences</a
+                      >
+                    </small>
+                  </p>
+                `,
+              });
+          }
+          application.database.transaction(() => {
+            for (const courseConversationMessageEmailNotification of courseConversationMessageEmailNotifications)
+              application.database.backgroundJob({
+                type: "email",
+                parameters: courseConversationMessageEmailNotification,
+              });
+          });
+        },
+      );
+    });
 
   application.server?.push({
     pathname: new RegExp(
