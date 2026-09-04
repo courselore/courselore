@@ -14,7 +14,6 @@ import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
 import selfsigned from "selfsigned";
 import * as transformers from "@huggingface/transformers";
-import database, { ApplicationDatabase } from "./database.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
@@ -34,6 +33,7 @@ import courseConversationMessageContent, {
 } from "./course-conversation-message-content.mjs";
 import emails from "./emails.mjs";
 import errors from "./errors.mjs";
+import database, { ApplicationDatabase } from "./database.mjs";
 
 export type Application = {
   version: string;
@@ -89,14 +89,14 @@ export type Application = {
   server: undefined | ReturnType<typeof server>;
   layouts: {};
   partials: {};
-} & ApplicationDatabase &
-  ApplicationLayouts &
+} & ApplicationLayouts &
   ApplicationAuthentication &
   ApplicationUsers &
   ApplicationCourses &
   ApplicationCourseConversation &
   ApplicationCourseConversationMessages &
-  ApplicationCourseConversationMessageContent;
+  ApplicationCourseConversationMessageContent &
+  ApplicationDatabase;
 const application = {} as Application;
 application.version = "10.2.3";
 application.commandLineArguments = util.parseArgs({
@@ -215,7 +215,6 @@ process.once("beforeExit", () => {
   );
 });
 
-await database(application);
 await layouts(application);
 await authentication(application);
 await homepage(application);
@@ -227,6 +226,7 @@ await courseConversationMessages(application);
 await courseConversationMessageContent(application);
 await emails(application);
 await errors(application);
+await database(application);
 
 if (application.commandLineArguments.values.type === undefined) {
   for (const port of application.applicationConfiguration.ports) {
