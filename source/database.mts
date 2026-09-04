@@ -4689,7 +4689,7 @@ export default async (application: Application): Promise<void> => {
                                 from "courses"
                                 join "courseConversations" on "courses"."id" = "courseConversations"."course"
                                 join "courseConversationMessages" on
-                                  "courseConversations"."id" = "courseConversationMessages"."conversation" and
+                                  "courseConversations"."id" = "courseConversationMessages"."courseConversation" and
                                   "courseConversationMessages"."id" = ${courseConversationMessage.id};
                               `,
                             ) ??
