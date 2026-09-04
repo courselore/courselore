@@ -4638,6 +4638,7 @@ export default async (application: Application): Promise<void> => {
             alter table "courseConversations" alter column "titleSemanticSearch" set not null;
           `,
         );
+        console.log();
 
         database.execute(
           sql`
@@ -4715,6 +4716,7 @@ export default async (application: Application): Promise<void> => {
             alter table "courseConversationMessages" alter column "contentSemanticSearch" set not null;
           `,
         );
+        console.log();
       },
     );
 };
