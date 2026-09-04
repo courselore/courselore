@@ -4651,7 +4651,28 @@ export default async (application: Application): Promise<void> => {
                     await application.applicationConfiguration.semanticSearchEmbedder(
                       `search_document: ${await application.partials.courseConversationMessageContentProcessor(
                         {
-                          course: request.state.course,
+                          course:
+                            database.get<{
+                              id: number;
+                              publicId: string;
+                              courseState:
+                                "courseStateActive" | "courseStateArchived";
+                            }>(
+                              sql`
+                                select
+                                  "courses"."id" as "id",
+                                  "courses"."publicId" as "publicId",
+                                  "courses"."courseState" as "courseState"
+                                from "courses"
+                                join "courseConversations" on "courses"."id" = "courseConversations"."course"
+                                join "courseConversationMessages" on
+                                  "courseConversations"."id" = "courseConversationMessages"."conversation" and
+                                  "courseConversationMessages"."id" = ${courseConversationMessage.id};
+                              `,
+                            ) ??
+                            (() => {
+                              throw new Error();
+                            })(),
                           courseConversationMessageContent:
                             courseConversationMessage.content,
                           mode: "textContent",
