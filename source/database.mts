@@ -4639,7 +4639,9 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         console.log();
+      },
 
+      async (database) => {
         database.execute(
           sql`
             alter table "courseConversationMessages" add column "contentSemanticSearch" blob null;
