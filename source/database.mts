@@ -4649,7 +4649,14 @@ export default async (application: Application): Promise<void> => {
                 Array.from(
                   (
                     await application.applicationConfiguration.semanticSearchEmbedder(
-                      `search_document: ${courseConversationMessage.content}`,
+                      `search_document: ${await application.partials.courseConversationMessageContentProcessor(
+                        {
+                          course: request.state.course,
+                          courseConversationMessageContent:
+                            courseConversationMessage.content,
+                          mode: "textContent",
+                        },
+                      )}`,
                       { pooling: "mean", normalize: true },
                     )
                   ).data,
