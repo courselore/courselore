@@ -4595,6 +4595,14 @@ export default async (application: Application): Promise<void> => {
             alter table "courseConversations" add column "titleSemanticSearch" blob null;
           `,
         );
+        let courseConversationsIndex = 0;
+        const courseConversationsCount = database.get<{
+          count: number;
+        }>(
+          sql`
+            select count(*) as "count" from "courseConversations";
+          `,
+        )!.count;
         for (const courseConversation of database.iterate<{
           id: number;
           title: string;
@@ -4604,7 +4612,10 @@ export default async (application: Application): Promise<void> => {
             from "courseConversations"
             order by "id" asc;
           `,
-        ))
+        )) {
+          process.stdout.write(
+            `courseConversation: ${++courseConversationsIndex}/${courseConversationsCount}\r`,
+          );
           database.run(
             sql`
               update "courseConversations"
@@ -4621,6 +4632,7 @@ export default async (application: Application): Promise<void> => {
               where "id" = ${courseConversation.id};
             `,
           );
+        }
         database.execute(
           sql`
             alter table "courseConversations" alter column "titleSemanticSearch" set not null;
@@ -4632,6 +4644,14 @@ export default async (application: Application): Promise<void> => {
             alter table "courseConversationMessages" add column "contentSemanticSearch" blob null;
           `,
         );
+        let courseConversationMessagesIndex = 0;
+        const courseConversationMessagesCount = database.get<{
+          count: number;
+        }>(
+          sql`
+            select count(*) as "count" from "courseConversationMessages";
+          `,
+        )!.count;
         for (const courseConversationMessage of database.iterate<{
           id: number;
           content: string;
@@ -4641,7 +4661,10 @@ export default async (application: Application): Promise<void> => {
             from "courseConversationMessages"
             order by "id" asc;
           `,
-        ))
+        )) {
+          process.stdout.write(
+            `courseConversationMessage: ${++courseConversationMessagesIndex}/${courseConversationMessagesCount}\r`,
+          );
           database.run(
             sql`
               update "courseConversationMessages"
@@ -4686,6 +4709,7 @@ export default async (application: Application): Promise<void> => {
               where "id" = ${courseConversationMessage.id};
             `,
           );
+        }
         database.execute(
           sql`
             alter table "courseConversationMessages" alter column "contentSemanticSearch" set not null;
