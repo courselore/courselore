@@ -4595,7 +4595,7 @@ export default async (application: Application): Promise<void> => {
             alter table "courseConversations" add column "titleSemanticSearch" blob null;
           `,
         );
-        for (const courseConversation of database.all<{
+        for (const courseConversation of database.iterate<{
           id: number;
           title: string;
         }>(
@@ -4632,7 +4632,7 @@ export default async (application: Application): Promise<void> => {
             alter table "courseConversationMessages" add column "contentSemanticSearch" blob null;
           `,
         );
-        for (const courseConversationMessage of database.all<{
+        for (const courseConversationMessage of database.iterate<{
           id: number;
           content: string;
         }>(

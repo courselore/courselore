@@ -7,27 +7,20 @@ const exampleGenerator = await transformers.pipeline(
 );
 
 console.log(
-  JSON.parse(
-    (
-      await exampleGenerator(
-        [
-          {
-            role: "system",
-            content:
-              "You are a helpful teaching assistant generating realistic database seed data. Return ONLY JSON with `title` and `content` keys.",
-          },
-          {
-            role: "user",
-            content:
-              "Generate a realistic student forum question about principles of programming languages.",
-          },
-        ],
+  (
+    await exampleGenerator(
+      [
         {
-          max_new_tokens: 150,
-          temperature: 0.7,
-          do_sample: true,
+          role: "user",
+          content:
+            "Please generate an example of a realistic conversation between an instructor and a student in an university setting. The conversation is about principles of programming languages. The conversation takes place in an online forum. The conversation starts with the student asking a question, and then the instructor responds to the question. The conversation may continue for a few more messages, with the student asking follow-up questions and the instructor providing answers. Please provide your answer in a JSON object with the keys `title` (string) and `messages` (array). Each `message` is an object with the keys `role` (either `instructor` or `student`) and `content` (the text of the message in Markdown).",
         },
-      )
-    )[0].generated_text.at(-1)!.content as string,
-  ),
+      ],
+      // {
+      //   max_new_tokens: 150,
+      //   temperature: 0.7,
+      //   do_sample: true,
+      // },
+    )
+  )[0].generated_text.at(-1)!.content as string,
 );
