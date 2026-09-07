@@ -182,6 +182,7 @@ application.applicationConfiguration.secretKey =
   cryptography.SymmetricEncryption.importKey(
     application.userConfiguration.secretKey,
   );
+transformers.env.allowRemoteModels = false;
 application.applicationConfiguration.semanticSearchEmbedder =
   await transformers.pipeline(
     "feature-extraction",
