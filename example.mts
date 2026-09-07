@@ -2,7 +2,9 @@ import * as transformers from "@huggingface/transformers";
 
 const exampleGenerator = await transformers.pipeline(
   "text-generation",
-  "onnx-community/Qwen2.5-0.5B-Instruct",
+  // "onnx-community/Qwen2.5-0.5B-Instruct",
+  "onnx-community/Qwen2.5-1.5B-Instruct",
+  // "onnx-community/Llama-3.2-1B-Instruct-ONNX",
   { dtype: "q4" },
 );
 
