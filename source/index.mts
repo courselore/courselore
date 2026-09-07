@@ -231,7 +231,7 @@ await errors(application);
 await database(application);
 
 if (application.commandLineArguments.values.type === undefined) {
-  for (const port of application.applicationConfiguration.ports) {
+  for (const port of application.applicationConfiguration.ports)
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
         process.argv[0],
@@ -253,28 +253,25 @@ if (application.commandLineArguments.values.type === undefined) {
         },
       ),
     );
-    node.childProcessKeepAlive(() =>
-      childProcess.spawn(
-        process.argv[0],
-        [
-          "--enable-source-maps",
-          process.argv[1],
-          ...application.commandLineArguments.positionals,
-          "--type",
-          "backgroundJobWorker",
-          "--port",
-          String(port),
-        ],
-        {
-          env: {
-            ...process.env,
-            NODE_ENV: application.userConfiguration.environment,
-          },
-          stdio: "inherit",
+  node.childProcessKeepAlive(() =>
+    childProcess.spawn(
+      process.argv[0],
+      [
+        "--enable-source-maps",
+        process.argv[1],
+        ...application.commandLineArguments.positionals,
+        "--type",
+        "backgroundJobWorker",
+      ],
+      {
+        env: {
+          ...process.env,
+          NODE_ENV: application.userConfiguration.environment,
         },
-      ),
-    );
-  }
+        stdio: "inherit",
+      },
+    ),
+  );
   caddy.start({
     ...application.userConfiguration,
     ...application.applicationConfiguration,
