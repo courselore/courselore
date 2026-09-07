@@ -266,7 +266,7 @@ export default async (application: Application): Promise<void> => {
         Array.from(
           (
             await application.applicationConfiguration.semanticSearchEmbedder(
-              `search_document: ${contentTextContent}`,
+              contentTextContent,
               { pooling: "mean", normalize: true },
             )
           ).data,
@@ -1412,7 +1412,7 @@ export default async (application: Application): Promise<void> => {
         Array.from(
           (
             await application.applicationConfiguration.semanticSearchEmbedder(
-              `search_document: ${contentTextContent}`,
+              contentTextContent,
               { pooling: "mean", normalize: true },
             )
           ).data,

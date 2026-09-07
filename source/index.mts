@@ -185,7 +185,8 @@ application.applicationConfiguration.secretKey =
 application.applicationConfiguration.semanticSearchEmbedder =
   await transformers.pipeline(
     "feature-extraction",
-    "nomic-ai/nomic-embed-text-v1.5",
+    "Xenova/bge-small-en-v1.5",
+    { dtype: "q8" },
   );
 if (application.commandLineArguments.values.type === "server")
   application.server = server({

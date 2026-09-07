@@ -3174,7 +3174,7 @@ You may also use the buttons on the message content editor to ${
         Array.from(
           (
             await application.applicationConfiguration.semanticSearchEmbedder(
-              `search_document: ${contentTextContent}`,
+              contentTextContent,
               { pooling: "mean", normalize: true },
             )
           ).data,

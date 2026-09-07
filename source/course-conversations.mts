@@ -1183,7 +1183,7 @@ export default async (application: Application): Promise<void> => {
           Array.from(
             (
               await application.applicationConfiguration.semanticSearchEmbedder(
-                `search_query: ${request.search.search}`,
+                `Represent this sentence for searching relevant passages: ${request.search.search}`,
                 { pooling: "mean", normalize: true },
               )
             ).data,
@@ -2882,7 +2882,7 @@ export default async (application: Application): Promise<void> => {
         Array.from(
           (
             await application.applicationConfiguration.semanticSearchEmbedder(
-              `search_document: ${request.body.title}`,
+              request.body.title,
               { pooling: "mean", normalize: true },
             )
           ).data,
@@ -2911,7 +2911,7 @@ export default async (application: Application): Promise<void> => {
         Array.from(
           (
             await application.applicationConfiguration.semanticSearchEmbedder(
-              `search_document: ${contentTextContent}`,
+              contentTextContent,
               { pooling: "mean", normalize: true },
             )
           ).data,
@@ -6897,7 +6897,7 @@ export default async (application: Application): Promise<void> => {
         Array.from(
           (
             await application.applicationConfiguration.semanticSearchEmbedder(
-              `search_document: ${request.body.title}`,
+              request.body.title,
               { pooling: "mean", normalize: true },
             )
           ).data,
