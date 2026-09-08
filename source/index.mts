@@ -26,7 +26,6 @@ const application = JSON.parse(
       throw new Error();
     })(),
 );
-
 if (!application) process.exit();
 
 for (const port of application.applicationConfiguration.ports)
