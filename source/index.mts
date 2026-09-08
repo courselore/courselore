@@ -2,6 +2,8 @@ import childProcess from "node:child_process";
 import * as node from "@radically-straightforward/node";
 import * as caddy from "@radically-straightforward/caddy";
 
+// DOTENV_CONFIG_QUIET=true
+
 for (const port of application.applicationConfiguration.ports)
   node.childProcessKeepAlive(() =>
     childProcess.spawn(
