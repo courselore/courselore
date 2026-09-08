@@ -4,12 +4,9 @@ import os from "node:os";
 import url from "node:url";
 import fs from "node:fs/promises";
 import crypto from "node:crypto";
-import childProcess from "node:child_process";
 import server from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
-import * as node from "@radically-straightforward/node";
 import * as cryptography from "@radically-straightforward/cryptography";
-import * as caddy from "@radically-straightforward/caddy";
 import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
 import selfsigned from "selfsigned";
@@ -229,75 +226,3 @@ await courseConversationMessageContent(application);
 await emails(application);
 await errors(application);
 await database(application);
-
-if (application.commandLineArguments.values.type === undefined) {
-  for (const port of application.applicationConfiguration.ports)
-    node.childProcessKeepAlive(() =>
-      childProcess.spawn(
-        process.argv[0],
-        [
-          "--enable-source-maps",
-          process.argv[1],
-          ...application.commandLineArguments.positionals,
-          "--type",
-          "server",
-          "--port",
-          String(port),
-        ],
-        {
-          env: {
-            ...process.env,
-            NODE_ENV: application.userConfiguration.environment,
-          },
-          stdio: "inherit",
-        },
-      ),
-    );
-  node.childProcessKeepAlive(() =>
-    childProcess.spawn(
-      process.argv[0],
-      [
-        "--enable-source-maps",
-        process.argv[1],
-        ...application.commandLineArguments.positionals,
-        "--type",
-        "backgroundJobWorker",
-      ],
-      {
-        env: {
-          ...process.env,
-          NODE_ENV: application.userConfiguration.environment,
-        },
-        stdio: "inherit",
-      },
-    ),
-  );
-  caddy.start({
-    ...application.userConfiguration,
-    ...application.applicationConfiguration,
-    untrustedStaticFilesRoots: [
-      `/files/* "${application.userConfiguration.dataDirectory}"`,
-    ],
-  });
-  if (application.userConfiguration.environment === "development")
-    node.childProcessKeepAlive(() =>
-      childProcess.spawn(
-        path.join(
-          import.meta.dirname,
-          `../node_modules/.bin/maildev${process.platform === "win32" ? ".cmd" : ""}`,
-        ),
-        [
-          "--web",
-          "17000",
-          "--smtp",
-          "17001",
-          "--mail-directory",
-          path.join(application.userConfiguration.dataDirectory, "emails"),
-        ],
-        {
-          stdio: "ignore",
-          ...(process.platform === "win32" ? { shell: true } : {}),
-        },
-      ),
-    );
-}
