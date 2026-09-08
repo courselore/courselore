@@ -4570,132 +4570,20 @@ export default async (application: Application): Promise<void> => {
       database.execute(
         sql`
           alter table "courseConversations" add column "titleSemanticSearch" blob null;
-        `,
-      );
-      let courseConversationsIndex = 0;
-      const courseConversationsCount = database.get<{
-        count: number;
-      }>(
-        sql`
-          select count(*) as "count" from "courseConversations";
-        `,
-      )!.count;
-      for (const courseConversation of database.iterate<{
-        id: number;
-        title: string;
-      }>(
-        sql`
-          select "id", "title"
-          from "courseConversations"
-          order by "id" asc;
-        `,
-      )) {
-        process.stdout.write(
-          `courseConversation: ${++courseConversationsIndex}/${courseConversationsCount}\r`,
-        );
-        database.run(
-          sql`
-            update "courseConversations"
-            set "titleSemanticSearch" = vec_f32(${JSON.stringify(
-              Array.from(
-                (
-                  await application.applicationConfiguration.semanticSearchEmbedder(
-                    `search_document: ${courseConversation.title}`,
-                    { pooling: "mean", normalize: true },
-                  )
-                ).data,
-              ),
-            )})
-            where "id" = ${courseConversation.id};
-          `,
-        );
-      }
-      database.execute(
-        sql`
+          update "courseConversations" set "titleSemanticSearch" = x'';
           alter table "courseConversations" alter column "titleSemanticSearch" set not null;
         `,
       );
-      console.log();
     },
 
     async (database) => {
       database.execute(
         sql`
           alter table "courseConversationMessages" add column "contentSemanticSearch" blob null;
-        `,
-      );
-      let courseConversationMessagesIndex = 0;
-      const courseConversationMessagesCount = database.get<{
-        count: number;
-      }>(
-        sql`
-          select count(*) as "count" from "courseConversationMessages";
-        `,
-      )!.count;
-      for (const courseConversationMessage of database.iterate<{
-        id: number;
-        content: string;
-      }>(
-        sql`
-          select "id", "content"
-          from "courseConversationMessages"
-          order by "id" asc;
-        `,
-      )) {
-        process.stdout.write(
-          `courseConversationMessage: ${++courseConversationMessagesIndex}/${courseConversationMessagesCount}\r`,
-        );
-        database.run(
-          sql`
-            update "courseConversationMessages"
-            set "contentSemanticSearch" = vec_f32(${JSON.stringify(
-              Array.from(
-                (
-                  await application.applicationConfiguration.semanticSearchEmbedder(
-                    `search_document: ${await application.partials.courseConversationMessageContentProcessor(
-                      {
-                        course:
-                          database.get<{
-                            id: number;
-                            publicId: string;
-                            courseState:
-                              "courseStateActive" | "courseStateArchived";
-                          }>(
-                            sql`
-                              select
-                                "courses"."id" as "id",
-                                "courses"."publicId" as "publicId",
-                                "courses"."courseState" as "courseState"
-                              from "courses"
-                              join "courseConversations" on "courses"."id" = "courseConversations"."course"
-                              join "courseConversationMessages" on
-                                "courseConversations"."id" = "courseConversationMessages"."courseConversation" and
-                                "courseConversationMessages"."id" = ${courseConversationMessage.id};
-                            `,
-                          ) ??
-                          (() => {
-                            throw new Error();
-                          })(),
-                        courseConversationMessageContent:
-                          courseConversationMessage.content,
-                        mode: "textContent",
-                      },
-                    )}`,
-                    { pooling: "mean", normalize: true },
-                  )
-                ).data,
-              ),
-            )})
-            where "id" = ${courseConversationMessage.id};
-          `,
-        );
-      }
-      database.execute(
-        sql`
+          update "courseConversationMessages" set "contentSemanticSearch" = x'';
           alter table "courseConversationMessages" alter column "contentSemanticSearch" set not null;
         `,
       );
-      console.log();
     },
 
     async (database) => {
@@ -4738,7 +4626,9 @@ export default async (application: Application): Promise<void> => {
         );
       }
       console.log();
+    },
 
+    async (database) => {
       let courseConversationMessagesIndex = 0;
       const courseConversationMessagesCount = database.get<{
         count: number;
