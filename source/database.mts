@@ -10,7 +10,7 @@ import * as sqliteVec from "sqlite-vec";
 import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
 import natural from "natural";
-import { Application } from "./index.mjs";
+import { Application } from "./application.mjs";
 
 export type ApplicationDatabase = {
   database: Database;

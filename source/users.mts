@@ -12,7 +12,7 @@ import cryptoRandomString from "crypto-random-string";
 import * as OTPAuth from "otpauth";
 import QRCode from "qrcode";
 import sharp from "sharp";
-import { Application } from "./index.mjs";
+import { Application } from "./application.mjs";
 
 export type ApplicationUsers = {
   partials: {

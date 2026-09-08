@@ -11,7 +11,7 @@ import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
 import * as cryptography from "@radically-straightforward/cryptography";
 import * as OTPAuth from "otpauth";
-import { Application } from "./index.mjs";
+import { Application } from "./application.mjs";
 
 export type ApplicationAuthentication = {
   types: {

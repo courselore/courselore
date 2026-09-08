@@ -28,7 +28,7 @@ import javascript from "@radically-straightforward/javascript";
 import { dedent as markdown } from "@radically-straightforward/utilities";
 import * as utilities from "@radically-straightforward/utilities";
 import natural from "natural";
-import { Application } from "./index.mjs";
+import { Application } from "./application.mjs";
 
 export type ApplicationCourseConversationMessageContent = {
   partials: {

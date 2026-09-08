@@ -6,7 +6,7 @@ import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
-import { Application } from "./index.mjs";
+import { Application } from "./application.mjs";
 
 export type ApplicationCourseConversation = {
   types: {

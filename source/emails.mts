@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { Application } from "./index.mjs";
+import { Application } from "./application.mjs";
 
 export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "backgroundJobWorker")

@@ -1,6 +1,6 @@
 import html from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
-import { Application } from "./index.mjs";
+import { Application } from "./application.mjs";
 
 export default async (application: Application): Promise<void> => {
   application.server?.push({
