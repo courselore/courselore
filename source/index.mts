@@ -38,7 +38,7 @@ for (const port of application.applicationConfiguration.ports)
       process.argv[0],
       [
         "--enable-source-maps",
-        process.argv[1],
+        path.join(import.meta.dirname, "application.mjs"),
         ...application.commandLineArguments.positionals,
         "--type",
         "server",
@@ -61,7 +61,7 @@ node.childProcessKeepAlive(() =>
     process.argv[0],
     [
       "--enable-source-maps",
-      process.argv[1],
+      path.join(import.meta.dirname, "application.mjs"),
       ...application.commandLineArguments.positionals,
       "--type",
       "backgroundJobWorker",
