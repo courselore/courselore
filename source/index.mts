@@ -1,8 +1,25 @@
+import path from "node:path";
 import childProcess from "node:child_process";
 import * as node from "@radically-straightforward/node";
 import * as caddy from "@radically-straightforward/caddy";
 
-// DOTENV_CONFIG_QUIET=true
+childProcess.spawn(
+  process.argv[0],
+  [
+    "--enable-source-maps",
+    path.join(import.meta.dirname, "application.mjs"),
+    ...process.argv.slice(2),
+    "--type",
+    "initialize",
+  ],
+  {
+    env: {
+      ...process.env,
+      DOTENV_CONFIG_QUIET: "true",
+    },
+    stdio: "inherit",
+  },
+);
 
 for (const port of application.applicationConfiguration.ports)
   node.childProcessKeepAlive(() =>
@@ -21,6 +38,7 @@ for (const port of application.applicationConfiguration.ports)
         env: {
           ...process.env,
           NODE_ENV: application.userConfiguration.environment,
+          DOTENV_CONFIG_QUIET: "true",
         },
         stdio: "inherit",
       },
@@ -40,6 +58,7 @@ node.childProcessKeepAlive(() =>
       env: {
         ...process.env,
         NODE_ENV: application.userConfiguration.environment,
+        DOTENV_CONFIG_QUIET: "true",
       },
       stdio: "inherit",
     },
