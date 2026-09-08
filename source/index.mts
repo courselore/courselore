@@ -3,30 +3,27 @@ import childProcess from "node:child_process";
 import * as node from "@radically-straightforward/node";
 import * as caddy from "@radically-straightforward/caddy";
 
-const application = JSON.parse(
-  childProcess.spawnSync(
-    process.argv[0],
-    [
-      "--enable-source-maps",
-      path.join(import.meta.dirname, "application.mjs"),
-      ...process.argv.slice(2),
-      "--type",
-      "initialize",
-    ],
-    {
-      env: {
-        ...process.env,
-        DOTENV_CONFIG_QUIET: "true",
-      },
-      stdio: ["inherit", "inherit", "inherit", "pipe"],
-      encoding: "utf-8",
+const applicationJSON = childProcess.spawnSync(
+  process.argv[0],
+  [
+    "--enable-source-maps",
+    path.join(import.meta.dirname, "application.mjs"),
+    ...process.argv.slice(2),
+    "--type",
+    "initialize",
+  ],
+  {
+    env: {
+      ...process.env,
+      DOTENV_CONFIG_QUIET: "true",
     },
-  ).output[3] ??
-    (() => {
-      throw new Error();
-    })(),
-);
-if (!application) process.exit();
+    stdio: ["inherit", "inherit", "inherit", "pipe"],
+    encoding: "utf-8",
+  },
+).output[3];
+if (typeof applicationJSON !== "string" || applicationJSON.trim() === "")
+  process.exit();
+const application = JSON.parse(applicationJSON);
 
 for (const port of application.applicationConfiguration.ports)
   node.childProcessKeepAlive(() =>
