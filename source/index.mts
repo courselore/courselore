@@ -1,6 +1,5 @@
 import path from "node:path";
 import childProcess from "node:child_process";
-import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
 import * as caddy from "@radically-straightforward/caddy";
 
@@ -25,7 +24,7 @@ let applicationJSON = "";
 initialize.stderr.on("data", (data) => {
   applicationJSON += data;
 });
-const initializePromiseWithResolvers = utilities.PromiseWithResolvers<void>();
+const initializePromiseWithResolvers = Promise.withResolvers<void>();
 initialize.on("close", () => {
   initializePromiseWithResolvers.resolve();
 });
@@ -39,7 +38,7 @@ for (const port of application.applicationConfiguration.ports)
       [
         "--enable-source-maps",
         path.join(import.meta.dirname, "application.mjs"),
-        ...application.commandLineArguments.positionals,
+        ...process.argv.slice(2),
         "--type",
         "server",
         "--port",
@@ -62,7 +61,7 @@ node.childProcessKeepAlive(() =>
     [
       "--enable-source-maps",
       path.join(import.meta.dirname, "application.mjs"),
-      ...application.commandLineArguments.positionals,
+      ...process.argv.slice(2),
       "--type",
       "backgroundJobWorker",
     ],
