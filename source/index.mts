@@ -27,6 +27,8 @@ const application = JSON.parse(
     })(),
 );
 
+if (!application) process.exit();
+
 for (const port of application.applicationConfiguration.ports)
   node.childProcessKeepAlive(() =>
     childProcess.spawn(

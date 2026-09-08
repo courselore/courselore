@@ -3,6 +3,7 @@ import path from "node:path";
 import os from "node:os";
 import url from "node:url";
 import fs from "node:fs/promises";
+import fsCallback from "node:fs";
 import crypto from "node:crypto";
 import "@radically-straightforward/node";
 import server from "@radically-straightforward/server";
@@ -37,7 +38,7 @@ export type Application = {
   version: string;
   commandLineArguments: {
     values: {
-      type: undefined | "server" | "backgroundJobWorker";
+      type: "initialize" | "server" | "backgroundJobWorker";
       port: undefined | string;
     };
     positionals: string[];
@@ -130,7 +131,10 @@ application.applicationConfiguration.ports = Array.from(
 application.applicationConfiguration.stopWords = new Set(
   natural.stopwords.map((stopWord) => utilities.normalizeToken(stopWord)),
 );
-if (typeof application.userConfiguration.secretKey !== "string") {
+if (
+  application.commandLineArguments.values.type === "initialize" &&
+  typeof application.userConfiguration.secretKey !== "string"
+) {
   const secretKey = cryptography.SymmetricEncryption.exportKey(
     await cryptography.SymmetricEncryption.generateKey(),
   );
@@ -201,16 +205,16 @@ utilities.log(
   "COURSELORE",
   application.version,
   "START",
-  application.commandLineArguments.values.type ??
-    `https://${application.userConfiguration.hostname}`,
+  application.commandLineArguments.values.type,
+  `https://${application.userConfiguration.hostname}`,
   application.commandLineArguments.values.port ?? "",
 );
 process.once("beforeExit", () => {
   utilities.log(
     "COURSELORE",
     "STOP",
-    application.commandLineArguments.values.type ??
-      `https://${application.userConfiguration.hostname}`,
+    application.commandLineArguments.values.type,
+    `https://${application.userConfiguration.hostname}`,
     application.commandLineArguments.values.port ?? "",
   );
 });
@@ -227,3 +231,6 @@ await courseConversationMessageContent(application);
 await emails(application);
 await errors(application);
 await database(application);
+
+if (application.commandLineArguments.values.type === "initialize")
+  fsCallback.writeSync(3, JSON.stringify(application));
