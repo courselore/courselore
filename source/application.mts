@@ -4,6 +4,7 @@ import os from "node:os";
 import url from "node:url";
 import fs from "node:fs/promises";
 import crypto from "node:crypto";
+import "@radically-straightforward/node";
 import server from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
 import * as cryptography from "@radically-straightforward/cryptography";
