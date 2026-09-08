@@ -203,10 +203,11 @@ application.partials = {} as Application["partials"];
 
 utilities.log(
   "COURSELORE",
-  application.version,
   "START",
   application.commandLineArguments.values.type,
-  `https://${application.userConfiguration.hostname}`,
+  ...(application.commandLineArguments.values.type === "initialize"
+    ? [application.version, `https://${application.userConfiguration.hostname}`]
+    : []),
   application.commandLineArguments.values.port ?? "",
 );
 process.once("beforeExit", () => {
@@ -214,7 +215,6 @@ process.once("beforeExit", () => {
     "COURSELORE",
     "STOP",
     application.commandLineArguments.values.type,
-    `https://${application.userConfiguration.hostname}`,
     application.commandLineArguments.values.port ?? "",
   );
 });
