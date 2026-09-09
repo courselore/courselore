@@ -9,9 +9,11 @@ import "@radically-straightforward/node";
 import server from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
 import * as cryptography from "@radically-straightforward/cryptography";
+import { Database } from "@radically-straightforward/sqlite";
 import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
 import selfsigned from "selfsigned";
+import * as sqliteVec from "sqlite-vec";
 import * as transformers from "@huggingface/transformers";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
@@ -32,7 +34,7 @@ import courseConversationMessageContent, {
 } from "./course-conversation-message-content.mjs";
 import emails from "./emails.mjs";
 import errors from "./errors.mjs";
-import database, { ApplicationDatabase } from "./database.mjs";
+import database from "./database.mjs";
 
 export type Application = {
   version: string;
@@ -85,6 +87,7 @@ export type Application = {
     secretKey: crypto.KeyObject;
     semanticSearchEmbedder: transformers.FeatureExtractionPipeline;
   };
+  database: Database;
   server: undefined | ReturnType<typeof server>;
   layouts: {};
   partials: {};
@@ -94,8 +97,7 @@ export type Application = {
   ApplicationCourses &
   ApplicationCourseConversation &
   ApplicationCourseConversationMessages &
-  ApplicationCourseConversationMessageContent &
-  ApplicationDatabase;
+  ApplicationCourseConversationMessageContent;
 const application = {} as Application;
 application.version = "10.2.4";
 application.commandLineArguments = util.parseArgs({
@@ -191,6 +193,9 @@ application.applicationConfiguration.semanticSearchEmbedder =
     "Xenova/bge-small-en-v1.5",
     { dtype: "q8" },
   );
+application.database = new Database(
+  path.join(application.userConfiguration.dataDirectory, "courselore.db"),
+).loadExtension(sqliteVec.getLoadablePath());
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),

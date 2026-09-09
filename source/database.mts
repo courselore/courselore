@@ -1,25 +1,17 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 import readline from "node:readline/promises";
-import sql, { Database } from "@radically-straightforward/sqlite";
+import sql from "@radically-straightforward/sqlite";
 import * as utilities from "@radically-straightforward/utilities";
 import * as cryptography from "@radically-straightforward/cryptography";
 import { dedent as markdown } from "@radically-straightforward/utilities";
 import * as examples from "@radically-straightforward/examples";
-import * as sqliteVec from "sqlite-vec";
 import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
 import natural from "natural";
 import { Application } from "./application.mjs";
 
-export type ApplicationDatabase = {
-  database: Database;
-};
-
 export default async (application: Application): Promise<void> => {
-  application.database = new Database(
-    path.join(application.userConfiguration.dataDirectory, "courselore.db"),
-  ).loadExtension(sqliteVec.getLoadablePath());
   if (application.commandLineArguments.values.type === "initialize")
     await application.database.migrate(
       sql`
