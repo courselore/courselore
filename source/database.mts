@@ -4628,9 +4628,9 @@ export default async (application: Application): Promise<void> => {
             order by "id" asc;
           `,
         )) {
-          process.stdout.write(
-            `courseConversation: ${++courseConversationsIndex}/${courseConversationsCount}\r`,
-          );
+          // process.stdout.write(
+          //   `courseConversation: ${++courseConversationsIndex}/${courseConversationsCount}\r`,
+          // );
           database.run(
             sql`
               update "courseConversations"
@@ -4648,7 +4648,7 @@ export default async (application: Application): Promise<void> => {
             `,
           );
         }
-        console.log();
+        // console.log();
       },
 
       async (database) => {
@@ -4670,9 +4670,9 @@ export default async (application: Application): Promise<void> => {
             order by "id" asc;
           `,
         )) {
-          process.stdout.write(
-            `courseConversationMessage: ${++courseConversationMessagesIndex}/${courseConversationMessagesCount}\r`,
-          );
+          // process.stdout.write(
+          //   `courseConversationMessage: ${++courseConversationMessagesIndex}/${courseConversationMessagesCount}\r`,
+          // );
           database.run(
             sql`
               update "courseConversationMessages"
@@ -4718,7 +4718,7 @@ export default async (application: Application): Promise<void> => {
             `,
           );
         }
-        console.log();
+        // console.log();
       },
     );
 };
