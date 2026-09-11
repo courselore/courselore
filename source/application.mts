@@ -99,7 +99,7 @@ export type Application = {
   ApplicationCourseConversationMessages &
   ApplicationCourseConversationMessageContent;
 const application = {} as Application;
-application.version = "10.2.4";
+application.version = "10.2.5";
 application.commandLineArguments = util.parseArgs({
   options: {
     type: { type: "string" },
