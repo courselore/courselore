@@ -30,14 +30,14 @@ jobs:
         run: |
           cat >> ~/.ssh/known_hosts << "EOF"
             # $ ssh-keyscan courselore.org
-            # courselore.org:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
-            courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC5eOOhibzQisUIjimiuzbMpuyWjY7RhvfELsO6B2sU2Be3zCWWsWYK1VZNgKo3I3MLbZ/7NTgS01JWMt7QnsHF3TIyVorXIO96BSTfyqaTtT17AFJ8Qbd4F4ZRRhkmeIDNwddXvFrVIVC1r9YMocbQVbHg/n4iABnGGej+Am2G/4GGBTPREUTpi0cvh1VrXLuCPxVWi9ykHjg8N8NFxKtw+CJdtAIkxRWqf+8alHmgtPL4qge1kX7MMZMxhrzkKl3Bo90nqWLRIldIqnM/1gI7BNfLMJpryBBUtGZPlrMxgWSHWdpCV7E8gGHP+MosB0XDwlAFoyhTnL8chxzR9/0T6a8oTTTK31TJlyZ+60fhwK5+ySaULGC4Z171P0iB2i2DIeFgBMJ+RPe2AgoL6NNCS3b5uvc3t0HvIvNjt/6/H339eCbtTPUeQ8hFmo+HMkdEA6mrCxGKp6/xeI0wiVTOraEJ3Qe+jWU8mAxzlEBfkaUzeNWpiV6T5wrSCFgTjnc=
-            # courselore.org:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
-            courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIulsFvclWU5Fb4aNK+OEV85SvnWCm5t1SP3W15bNaJ4NCs8i71dDGAlFbxVFY4CNWt78n5F/fmBW9/Beg4mQzk=
-            # courselore.org:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
-            courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG5NCmaqehtXTIGpCEtHIZuHROhVy3ucr4LOb2S7u2D/
-            # courselore.org:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
-            # courselore.org:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
+            # courselore.org:22 SSH-2.0-OpenSSH_10.2p1 Ubuntu-2ubuntu3.6
+            # courselore.org:22 SSH-2.0-OpenSSH_10.2p1 Ubuntu-2ubuntu3.6
+            courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDL/ZFWuUq7tipz/+vx/jbXYeJpvt7dDgMhrz1erOrtf8kT6aK7A9Q3r/VxGmfYTam96RVaAsRcivuvOafwSw4OGGkUXYBBWYwWDNkwuX+dfQx71SVFHeQlEC5e0jlk50Kjh1HsjRubz+ng/7/FentSNqbZdB7vBVu7lQLGBodUiczfZ3HXn1DLaDb6D8gkMS6prLaFJ7Nof+3Pkmi3QrtOIHVzFbypx87GuCDErzW3/QJ3hplKXbC9NVa83IYKdPbZCF/3WuvCCVi5KG8OV2TKVQhdCphhfdqAjiu8AFqJ7wMojUkUM+1oFv4Ix5N64YJvgFTzU0ifQ4ZiruYTxh52yBa32RP0mHSQKQvF8O676zrT6MufkgTMeMhoQbmYB2pLJHh9rWS7Bo84I/BXPhLgP7e1L8vNXhtmOkbYOqjoeXE8Qr2w5wrYzI77eAzBAni0zaPL7wB1t/NrhL8kRIlV2sZ/K4P11PCPZY+8qxXJbnIp9OOBqhQ7BDxBbQOTmtM=
+            # courselore.org:22 SSH-2.0-OpenSSH_10.2p1 Ubuntu-2ubuntu3.6
+            courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJIL3HXFm12745u+CWWOeTu07jvu13yttKxDauiqXRB/EJTu3jnn5dw5e0m3BCIt//owbwlOZ7ojOdokgC7WIKQ=
+            # courselore.org:22 SSH-2.0-OpenSSH_10.2p1 Ubuntu-2ubuntu3.6
+            courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPjvJXcgMS0iNdO7NLuf4pfEj5fX0f6jhe9Na6Wp2IQL
+            # courselore.org:22 SSH-2.0-OpenSSH_10.2p1 Ubuntu-2ubuntu3.6
           EOF
           rsync -a ./courselore--ubuntu--${{ github.ref_name }}.tar.gz root@courselore.org:/root/courselore--ubuntu--${{ github.ref_name }}.tar.gz
           ssh root@courselore.org << "EOF"
