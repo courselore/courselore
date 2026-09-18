@@ -39,7 +39,7 @@ jobs:
             courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPjvJXcgMS0iNdO7NLuf4pfEj5fX0f6jhe9Na6Wp2IQL
             # courselore.org:22 SSH-2.0-OpenSSH_10.2p1 Ubuntu-2ubuntu3.6
           EOF
-          rsync -a ./courselore--ubuntu--${{ github.ref_name }}.tar.gz root@courselore.org:/root/courselore--ubuntu--${{ github.ref_name }}.tar.gz
+          rsync -az ./courselore--ubuntu--${{ github.ref_name }}.tar.gz root@courselore.org:/root/courselore--ubuntu--${{ github.ref_name }}.tar.gz
           ssh root@courselore.org << "EOF"
             mkdir -p /root/courselore/
             rm -rf /root/courselore--deploy/
