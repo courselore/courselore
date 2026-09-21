@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.2.6 · 2026-09-21
+
+- Changed the structure of processes, saving even more RAM and CPU.
+
 ## 10.2.4 · 2026-09-08
 
 - Changed the model used for semantic search, making it use less RAM.
