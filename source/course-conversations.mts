@@ -1179,16 +1179,15 @@ export default async (application: Application): Promise<void> => {
         const lexicalSearchString = lexicalSearchTokens
           .map((tokenWithPosition) => `"${tokenWithPosition.token}"*`)
           .join(" ");
-        const semanticSearch = JSON.stringify(
-          Array.from(
-            (
-              await application.applicationConfiguration.semanticSearchEmbedder(
-                `Represent this sentence for searching relevant passages: ${request.search.search}`,
-                { pooling: "mean", normalize: true },
-              )
-            ).data,
-          ),
-        );
+        const semanticSearch = await (
+          await fetch("http://localhost:19000/vector-embedding", {
+            method: "POST",
+            headers: { "CSRF-Protection": "true" },
+            body: new URLSearchParams({
+              text: `Represent this sentence for searching relevant passages: ${request.search.search}`,
+            }),
+          })
+        ).text();
         for (const courseConversationId of utilities
           .reciprocalRankFusion(
             application.database
@@ -2878,16 +2877,13 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"))))
       )
         throw "validation";
-      const titleSemanticSearch = JSON.stringify(
-        Array.from(
-          (
-            await application.applicationConfiguration.semanticSearchEmbedder(
-              request.body.title,
-              { pooling: "mean", normalize: true },
-            )
-          ).data,
-        ),
-      );
+      const titleSemanticSearch = await (
+        await fetch("http://localhost:19000/vector-embedding", {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({ text: request.body.title }),
+        })
+      ).text();
       let courseConversation: {
         id: number;
         publicId: string;
@@ -2907,16 +2903,13 @@ export default async (application: Application): Promise<void> => {
           courseConversationMessageContent: request.body.content,
           mode: "textContent",
         });
-      const contentSemanticSearch = JSON.stringify(
-        Array.from(
-          (
-            await application.applicationConfiguration.semanticSearchEmbedder(
-              contentTextContent,
-              { pooling: "mean", normalize: true },
-            )
-          ).data,
-        ),
-      );
+      const contentSemanticSearch = await (
+        await fetch("http://localhost:19000/vector-embedding", {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({ text: contentTextContent }),
+        })
+      ).text();
       application.database.transaction(() => {
         courseConversation = application.database.get<{
           id: number;
@@ -6893,16 +6886,13 @@ export default async (application: Application): Promise<void> => {
         )
       )
         throw "validation";
-      const titleSemanticSearch = JSON.stringify(
-        Array.from(
-          (
-            await application.applicationConfiguration.semanticSearchEmbedder(
-              request.body.title,
-              { pooling: "mean", normalize: true },
-            )
-          ).data,
-        ),
-      );
+      const titleSemanticSearch = await (
+        await fetch("http://localhost:19000/vector-embedding", {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({ text: request.body.title }),
+        })
+      ).text();
       application.database.transaction(() => {
         application.database.run(
           sql`

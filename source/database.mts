@@ -4626,16 +4626,13 @@ export default async (application: Application): Promise<void> => {
           database.run(
             sql`
               update "courseConversations"
-              set "titleSemanticSearch" = vec_f32(${JSON.stringify(
-                Array.from(
-                  (
-                    await application.applicationConfiguration.semanticSearchEmbedder(
-                      courseConversation.title,
-                      { pooling: "mean", normalize: true },
-                    )
-                  ).data,
-                ),
-              )})
+              set "titleSemanticSearch" = vec_f32(${await (
+                await fetch("http://localhost:19000/vector-embedding", {
+                  method: "POST",
+                  headers: { "CSRF-Protection": "true" },
+                  body: new URLSearchParams({ text: courseConversation.title }),
+                })
+              ).text()})
               where "id" = ${courseConversation.id};
             `,
           );
@@ -4668,44 +4665,43 @@ export default async (application: Application): Promise<void> => {
           database.run(
             sql`
               update "courseConversationMessages"
-              set "contentSemanticSearch" = vec_f32(${JSON.stringify(
-                Array.from(
-                  (
-                    await application.applicationConfiguration.semanticSearchEmbedder(
-                      await application.partials.courseConversationMessageContentProcessor(
-                        {
-                          course:
-                            database.get<{
-                              id: number;
-                              publicId: string;
-                              courseState:
-                                "courseStateActive" | "courseStateArchived";
-                            }>(
-                              sql`
-                                select
-                                  "courses"."id" as "id",
-                                  "courses"."publicId" as "publicId",
-                                  "courses"."courseState" as "courseState"
-                                from "courses"
-                                join "courseConversations" on "courses"."id" = "courseConversations"."course"
-                                join "courseConversationMessages" on
-                                  "courseConversations"."id" = "courseConversationMessages"."courseConversation" and
-                                  "courseConversationMessages"."id" = ${courseConversationMessage.id};
-                              `,
-                            ) ??
-                            (() => {
-                              throw new Error();
-                            })(),
-                          courseConversationMessageContent:
-                            courseConversationMessage.content,
-                          mode: "textContent",
-                        },
-                      ),
-                      { pooling: "mean", normalize: true },
-                    )
-                  ).data,
-                ),
-              )})
+              set "contentSemanticSearch" = vec_f32(${await (
+                await fetch("http://localhost:19000/vector-embedding", {
+                  method: "POST",
+                  headers: { "CSRF-Protection": "true" },
+                  body: new URLSearchParams({
+                    text: await application.partials.courseConversationMessageContentProcessor(
+                      {
+                        course:
+                          database.get<{
+                            id: number;
+                            publicId: string;
+                            courseState:
+                              "courseStateActive" | "courseStateArchived";
+                          }>(
+                            sql`
+                              select
+                                "courses"."id" as "id",
+                                "courses"."publicId" as "publicId",
+                                "courses"."courseState" as "courseState"
+                              from "courses"
+                              join "courseConversations" on "courses"."id" = "courseConversations"."course"
+                              join "courseConversationMessages" on
+                                "courseConversations"."id" = "courseConversationMessages"."courseConversation" and
+                                "courseConversationMessages"."id" = ${courseConversationMessage.id};
+                            `,
+                          ) ??
+                          (() => {
+                            throw new Error();
+                          })(),
+                        courseConversationMessageContent:
+                          courseConversationMessage.content,
+                        mode: "textContent",
+                      },
+                    ),
+                  }),
+                })
+              ).text()})
               where "id" = ${courseConversationMessage.id};
             `,
           );

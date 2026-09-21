@@ -14,7 +14,6 @@ import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
 import selfsigned from "selfsigned";
 import * as sqliteVec from "sqlite-vec";
-import * as transformers from "@huggingface/transformers";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
@@ -85,7 +84,6 @@ export type Application = {
     ports: number[];
     stopWords: Set<string>;
     secretKey: crypto.KeyObject;
-    semanticSearchEmbedder: transformers.FeatureExtractionPipeline;
   };
   database: Database;
   server: undefined | ReturnType<typeof server>;
@@ -185,13 +183,6 @@ if (
 application.applicationConfiguration.secretKey =
   cryptography.SymmetricEncryption.importKey(
     application.userConfiguration.secretKey,
-  );
-transformers.env.allowRemoteModels = false;
-application.applicationConfiguration.semanticSearchEmbedder =
-  await transformers.pipeline(
-    "feature-extraction",
-    "Xenova/bge-small-en-v1.5",
-    { dtype: "q8" },
   );
 application.database = new Database(
   path.join(application.userConfiguration.dataDirectory, "courselore.db"),

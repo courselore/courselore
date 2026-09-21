@@ -262,16 +262,13 @@ export default async (application: Application): Promise<void> => {
           courseConversationMessageContent: request.body.content,
           mode: "textContent",
         });
-      const contentSemanticSearch = JSON.stringify(
-        Array.from(
-          (
-            await application.applicationConfiguration.semanticSearchEmbedder(
-              contentTextContent,
-              { pooling: "mean", normalize: true },
-            )
-          ).data,
-        ),
-      );
+      const contentSemanticSearch = await (
+        await fetch("http://localhost:19000/vector-embedding", {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({ text: contentTextContent }),
+        })
+      ).text();
       application.database.transaction(() => {
         application.database.run(
           sql`
@@ -1404,16 +1401,13 @@ export default async (application: Application): Promise<void> => {
           courseConversationMessageContent: request.body.content,
           mode: "textContent",
         });
-      const contentSemanticSearch = JSON.stringify(
-        Array.from(
-          (
-            await application.applicationConfiguration.semanticSearchEmbedder(
-              contentTextContent,
-              { pooling: "mean", normalize: true },
-            )
-          ).data,
-        ),
-      );
+      const contentSemanticSearch = await (
+        await fetch("http://localhost:19000/vector-embedding", {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({ text: contentTextContent }),
+        })
+      ).text();
       application.database.run(
         sql`
           update "courseConversationMessages"

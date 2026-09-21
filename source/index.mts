@@ -3,6 +3,26 @@ import childProcess from "node:child_process";
 import * as node from "@radically-straightforward/node";
 import * as caddy from "@radically-straightforward/caddy";
 
+const modelsServerPromiseWithResolvers = Promise.withResolvers<void>();
+node.childProcessKeepAlive(() => {
+  const childProcessInstance = childProcess.spawn(
+    process.argv[0],
+    ["--enable-source-maps", path.join(import.meta.dirname, "models-server.mjs")],
+    {
+      env: {
+        ...process.env,
+        DOTENV_CONFIG_QUIET: "true",
+      },
+      stdio: ["inherit", "inherit", "inherit", "pipe"],
+    },
+  );
+  childProcessInstance.stdio[3]!.once("data", () => {
+    modelsServerPromiseWithResolvers.resolve();
+  });
+  return childProcessInstance;
+});
+await modelsServerPromiseWithResolvers.promise;
+
 const applicationJSON = childProcess.spawnSync(
   process.argv[0],
   [
