@@ -8,6 +8,7 @@ const rerankingModel =
 const rerankingTokenizer = await transformers.AutoTokenizer.from_pretrained(
   "Xenova/ms-marco-MiniLM-L-6-v2",
 );
+// 1.5 is a good threshold
 
 console.log(
   (
