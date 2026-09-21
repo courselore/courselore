@@ -3242,15 +3242,6 @@ export default async (application: Application): Promise<void> => {
         );
 
         if (application.userConfiguration.environment === "development") {
-          const textExamples = JSON.parse(
-            await fs.readFile(
-              path.join(
-                import.meta.dirname,
-                "../models/text-examples/model.json",
-              ),
-              "utf-8",
-            ),
-          );
           const userPassword =
             await cryptography.PasswordHash.hash("courselore");
           const [user, ...users] = Array.from(
@@ -3348,6 +3339,70 @@ export default async (application: Application): Promise<void> => {
               )!;
             },
           );
+          /*
+            Please generate examples of conversations.
+
+            The conversations take place in an online forum for a course about Principles of Programming Languages.
+            
+            The participants are instructors and students.
+
+            A few of the conversations are announcements from instructors (`courseConversationTypeNote`). A few of the announcements are followed by follow-up questions by students and clarifications from the instructors.
+
+            Most of the conversations are questions from students (`courseConversationTypeQuestion`). Most of the questions are answered by instructors, and a few of them by other students. In a few cases the conversation continues, with students asking follow-up questions and other people answering.
+
+            The contents of the messages that are exchanged are formatted in Markdown with support for LaTeX. Most times it’s a short message. A few times it’s a long message that’s several paragraphs long. A few times it includes snippets of code.
+
+            Please generate 20 of these conversations.
+
+            Please make it follow a timeline of the course, for example, the first announcement is welcoming students to the course, then questions about a few homeworks in order, announcements about exams, and so forth, and at the end announcements about the final grades.
+
+            ```json
+            {
+              "type": "object",
+              "required": ["courseConversations"],
+              "properties": {
+                "courseConversations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "title",
+                      "courseConversationType",
+                      "courseConversationMessages"
+                    ],
+                    "properties": {
+                      "title": { "type": "string" },
+                      "courseConversationType": {
+                        "type": "string",
+                        "enum": [
+                          "courseConversationTypeNote",
+                          "courseConversationTypeQuestion"
+                        ]
+                      },
+                      "courseConversationMessages": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": ["courseParticipationRole", "content"],
+                          "properties": {
+                            "courseParticipationRole": {
+                              "type": "string",
+                              "enum": [
+                                "courseParticipationRoleInstructor",
+                                "courseParticipationRoleStudent"
+                              ]
+                            },
+                            "content": { "type": "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            ```
+          */
           for (const courseData of [
             {
               name: "Principles of Programming Languages",
@@ -3366,7 +3421,7 @@ export default async (application: Application): Promise<void> => {
               name: "Principles of Programming Languages",
               information: `${String(new Date().getFullYear())} / ${new Date().getMonth() < 6 ? "Spring" : "Fall"} / EN.601.426/626`,
               courseParticipationRole: "courseParticipationRoleInstructor",
-              courseConversationsNextPublicId: 31,
+              courseConversations: [],
             },
           ]) {
             const course = database.get<{
