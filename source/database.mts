@@ -6698,7 +6698,7 @@ export default async (application: Application): Promise<void> => {
                         ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedEveryone"},
                         ${Number(Math.random() < 0.8)},
                         ${courseData.courseState ?? "courseStateActive"},
-                        ${courseData.courseConversationsNextPublicId ?? 4}
+                        ${courseData.courseConversations.length + 1}
                       );
                     `,
                   ).lastInsertRowid
@@ -6850,16 +6850,10 @@ export default async (application: Application): Promise<void> => {
                   `,
               )!,
             );
-            for (
-              let courseConversationPublicId = 1;
-              courseConversationPublicId <
-              course.courseConversationsNextPublicId;
-              courseConversationPublicId++
-            ) {
-              const courseConversationTitle = examples.text({
-                model: textExamples,
-                length: 0,
-              });
+            for (const [
+              courseConversationIndex,
+              courseConversationData,
+            ] of courseData.courseConversations.entries()) {
               const courseConversation = database.get<{
                 id: number;
                 courseConversationVisibility:
@@ -6882,15 +6876,15 @@ export default async (application: Application): Promise<void> => {
                           "titleSearch"
                         )
                         values (
-                          ${String(courseConversationPublicId)},
+                          ${String(courseConversationIndex + 1)},
                           ${course.id},
                           ${Math.random() < 0.3 ? "courseConversationTypeNote" : "courseConversationTypeQuestion"},
                           ${Number(Math.random() < 0.5)},
-                          ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "courseConversationVisibilityEveryone" : Math.random() < 0.8 ? "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" : "courseConversationVisibilityCourseConversationParticipations"},
-                          ${Number(courseConversationPublicId !== 1 && Math.random() < 0.1)},
-                          ${courseConversationTitle},
+                          ${courseConversationIndex === 0 || Math.random() < 0.3 ? "courseConversationVisibilityEveryone" : Math.random() < 0.8 ? "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" : "courseConversationVisibilityCourseConversationParticipations"},
+                          ${Number(courseConversationIndex !== 0 && Math.random() < 0.1)},
+                          ${courseConversationData.title},
                           ${utilities
-                            .tokenize(courseConversationTitle, {
+                            .tokenize(courseConversationData.title, {
                               stopWords:
                                 application.applicationConfiguration.stopWords,
                               stem: (token) =>
@@ -6970,15 +6964,11 @@ export default async (application: Application): Promise<void> => {
                     );
                   `,
                 );
-              const courseConversationMessagesCount =
-                courseConversationPublicId === 1
-                  ? 1
-                  : 1 + Math.floor(Math.random() * 15);
               const firstCourseConversationMessageCreatedAt = new Date(
                 Date.now() -
                   Math.floor(
                     (course.courseConversationsNextPublicId -
-                      courseConversationPublicId +
+                      (courseConversationIndex + 1) +
                       Math.random()) *
                       2 *
                       24 *
@@ -6990,16 +6980,10 @@ export default async (application: Application): Promise<void> => {
               let courseConversationMessageForCourseConversationMessageDraft: {
                 publicId: string;
               };
-              for (
-                let courseConversationMessageIndex = 0;
-                courseConversationMessageIndex <
-                courseConversationMessagesCount;
-                courseConversationMessageIndex++
-              ) {
-                const courseConversationMessageContent = examples.text({
-                  model: textExamples,
-                  length: 1 + Math.floor(Math.random() * 5),
-                });
+              for (const [
+                courseConversationMessageIndex,
+                courseConversationMessageData,
+              ] of courseConversationData.courseConversationMessages.entries()) {
                 const courseConversationMessage = database.get<{
                   id: number;
                   publicId: string;
@@ -7041,9 +7025,9 @@ export default async (application: Application): Promise<void> => {
                                 : "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
                             },
                             ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityEveryone"},
-                            ${courseConversationMessageContent},
+                            ${courseConversationMessageData.content},
                             ${utilities
-                              .tokenize(courseConversationMessageContent, {
+                              .tokenize(courseConversationMessageData.content, {
                                 stopWords:
                                   application.applicationConfiguration
                                     .stopWords,
@@ -7090,7 +7074,7 @@ export default async (application: Application): Promise<void> => {
                     `,
                   );
               }
-              if (courseConversationPublicId === 1)
+              if (courseConversationIndex === 0)
                 database.run(
                   sql`
                     insert into "courseConversationMessageDrafts" (
@@ -7112,39 +7096,39 @@ export default async (application: Application): Promise<void> => {
                       ${markdown`
                         # Headings
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         # Heading 1
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         ## Heading 2
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         ### Heading 3
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         #### Heading 4
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         ##### Heading 5
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         ###### Heading 6
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         # Separator
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         ---
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         # Inline
 
@@ -7152,7 +7136,7 @@ export default async (application: Application): Promise<void> => {
                         break.
 
                         Areallylongwordwithoutbreaks${examples
-                          .text({ model: textExamples, length: 4 })
+                          .text({ length: 4 })
                           .toLowerCase()
                           .replaceAll(/[^a-z]/g, "")}
 
@@ -7188,7 +7172,7 @@ export default async (application: Application): Promise<void> => {
 
                         ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
 
                         ---
 
@@ -7198,7 +7182,7 @@ export default async (application: Application): Promise<void> => {
 
                         ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`).join("\n\n")}
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`).join("\n\n")}
 
                         ---
 
@@ -7208,7 +7192,7 @@ export default async (application: Application): Promise<void> => {
 
                         ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
 
                         # Poll
 
@@ -7256,7 +7240,6 @@ export default async (application: Application): Promise<void> => {
 
                         ${examples
                           .text({
-                            model: textExamples,
                             length: 1 + Math.floor(Math.random() * 7),
                           })
                           .split("\n")
@@ -7280,13 +7263,13 @@ export default async (application: Application): Promise<void> => {
                         <details>
                         <summary>Example of details with summary</summary>
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         </details>
 
                         <details>
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         </details>
 
@@ -7294,13 +7277,13 @@ export default async (application: Application): Promise<void> => {
 
                         Footnote[^1] and another.[^2]
 
-                        [^1]: ${examples.text({ model: textExamples, length: 1 })}
+                        [^1]: ${examples.text({ length: 1 })}
 
-                        [^2]: ${examples.text({ model: textExamples, length: 1 })}
+                        [^2]: ${examples.text({ length: 1 })}
 
                         # \`id="___"\`
 
-                        <p id="an-id-defined-by-the-user">${examples.text({ model: textExamples, length: 1 })}</p>
+                        <p id="an-id-defined-by-the-user">${examples.text({ length: 1 })}</p>
 
                         <a href="#an-id-defined-by-the-user">An anchor that points to that id</a>
 
@@ -7433,11 +7416,11 @@ export default async (application: Application): Promise<void> => {
 
                         # Comment
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
 
                         <!-- Comments should be removed -->
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ length: 1 + Math.floor(Math.random() * 7) })}
                       `}
                     );
                   `,
