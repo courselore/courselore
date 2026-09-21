@@ -20,11 +20,7 @@ modelsServer.push({
     request: serverTypes.Request<{}, {}, {}, { text: string }, {}>,
     response,
   ) => {
-    if (
-      typeof request.body.text !== "string" ||
-      request.body.text.trim() === ""
-    )
-      throw "validation";
+    if (typeof request.body.text !== "string") throw "validation";
     response.setHeader("Content-Type", "application/json; charset=utf-8").send(
       JSON.stringify(
         Array.from(

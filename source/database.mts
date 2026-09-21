@@ -5836,7 +5836,7 @@ export default async (application: Application): Promise<void> => {
                       courseParticipationRole:
                         "courseParticipationRoleInstructor",
                       content:
-                        "This is it: $$[\\![e_1]\\!]\\; (\\lambda b.\\; \\text{if } b \\text{ then } [\\![e_2]\\!]\\; k \\text{ else } [\\![e_3]\\!]\\; k)$$",
+                        "$$[\\![e_1]\\!]\\; (\\lambda b.\\; \\text{if } b \\text{ then } [\\![e_2]\\!]\\; k \\text{ else } [\\![e_3]\\!]\\; k)$$",
                     },
                   ],
                 },
@@ -6236,7 +6236,7 @@ export default async (application: Application): Promise<void> => {
                       courseParticipationRole:
                         "courseParticipationRoleInstructor",
                       content:
-                        "This is it: $$\\text{bind} : M\\ \\alpha \\to (\\alpha \\to M\\ \\beta) \\to M\\ \\beta$$",
+                        "$$\\text{bind} : M\\ \\alpha \\to (\\alpha \\to M\\ \\beta) \\to M\\ \\beta$$",
                     },
                   ],
                 },
