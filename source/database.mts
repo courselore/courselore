@@ -6809,6 +6809,18 @@ export default async (application: Application): Promise<void> => {
                   `,
               )!,
             );
+            const courseParticipationsByCourseParticipationRole = {
+              courseParticipationRoleInstructor: new Array<
+                (typeof courseParticipations)[number]
+              >(),
+              courseParticipationRoleStudent: new Array<
+                (typeof courseParticipations)[number]
+              >(),
+            };
+            for (const courseParticipation of courseParticipations)
+              courseParticipationsByCourseParticipationRole[
+                courseParticipation.courseParticipationRole
+              ].push(courseParticipation);
             const courseConversationsTags = [
               { name: "Assignment 1" },
               { name: "Assignment 2" },
@@ -7007,7 +7019,26 @@ export default async (application: Application): Promise<void> => {
                           values (
                             ${cryptoRandomString({ length: 20, type: "numeric" })},
                             ${courseConversation.id},
-                            ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
+                            ${
+                              Math.random() < 0.9
+                                ? (
+                                    courseParticipationsByCourseParticipationRole as any
+                                  )[
+                                    courseConversationMessageData
+                                      .courseParticipationRole
+                                  ][
+                                    Math.floor(
+                                      Math.random() *
+                                        (
+                                          courseParticipationsByCourseParticipationRole as any
+                                        )[
+                                          courseConversationMessageData
+                                            .courseParticipationRole
+                                        ].length,
+                                    )
+                                  ].id
+                                : null
+                            },
                             ${new Date(firstCourseConversationMessageCreatedAt.valueOf() + Math.floor((courseConversationMessageIndex + Math.random()) * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.1 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                             ${
