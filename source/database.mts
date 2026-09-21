@@ -6893,7 +6893,7 @@ export default async (application: Application): Promise<void> => {
                           ${courseConversationData.courseConversationType},
                           ${Number(Math.random() < 0.5)},
                           ${courseConversationIndex === 0 || Math.random() < 0.3 ? "courseConversationVisibilityEveryone" : Math.random() < 0.8 ? "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" : "courseConversationVisibilityCourseConversationParticipations"},
-                          ${Number(courseConversationIndex !== 0 && Math.random() < 0.1)},
+                          ${Number(courseConversationIndex !== 0 && Math.random() < 0.02)},
                           ${courseConversationData.title},
                           ${utilities
                             .tokenize(courseConversationData.title, {
