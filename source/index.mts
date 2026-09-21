@@ -7,7 +7,10 @@ const modelsServerPromiseWithResolvers = Promise.withResolvers<void>();
 node.childProcessKeepAlive(() => {
   const childProcessInstance = childProcess.spawn(
     process.argv[0],
-    ["--enable-source-maps", path.join(import.meta.dirname, "models-server.mjs")],
+    [
+      "--enable-source-maps",
+      path.join(import.meta.dirname, "models-server.mjs"),
+    ],
     {
       env: {
         ...process.env,
