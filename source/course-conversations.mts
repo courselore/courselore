@@ -1829,7 +1829,22 @@ export default async (application: Application): Promise<void> => {
                           </div>
                         </label>
                       </div>
-                      <div key="similarQuestions" hidden>
+                      <div
+                        key="similarQuestions"
+                        hidden
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--600),
+                            var(--color--slate--400)
+                          );
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--size--1);
+                        `}"
+                      >
                         <div
                           css="${css`
                             color: light-dark(
@@ -1839,6 +1854,48 @@ export default async (application: Application): Promise<void> => {
                           `}"
                         >
                           Similar questions
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--1-5);
+                          `}"
+                        >
+                          <div>
+                            <a
+                              href="#2"
+                              class="button button--rectangle button--transparent"
+                            >
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >#2</span
+                              >
+                              Hello
+                            </a>
+                          </div>
+                          <div>
+                            <a
+                              href="#2"
+                              class="button button--rectangle button--transparent"
+                            >
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >#45</span
+                              >
+                              World
+                            </a>
+                          </div>
                         </div>
                       </div>
                       <div
@@ -1895,6 +1952,7 @@ export default async (application: Application): Promise<void> => {
                                   if (!this.checked) return;
                                   this.closest('[type~="form"]').querySelector('[key~="announcement"]')?.removeAttribute("hidden");
                                   this.closest('[type~="form"]').querySelector('[name="announcement"]')?.removeAttribute("disabled");
+                                  this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = true;
                                 };
                               `}"
                             /><span
