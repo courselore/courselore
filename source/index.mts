@@ -15,6 +15,7 @@ node.childProcessKeepAlive(() => {
       env: {
         ...process.env,
         DOTENV_CONFIG_QUIET: "true",
+        NODE_ENV: "production",
       },
       stdio: ["inherit", "inherit", "inherit", "pipe"],
     },
