@@ -6,7 +6,7 @@ const classifier = await transformers.pipeline(
   { dtype: "q8" },
 );
 
-const classification = (await classifier(`In Next.js App Router, when should we prefer Server Actions ('use server') over traditional Route Handlers (app/api/.../route.ts) for mutating database records?`))[0];
+const classification = (await classifier(`I’m loving this course!`))[0];
 
 console.log(
   classification.label === "POSITIVE"
