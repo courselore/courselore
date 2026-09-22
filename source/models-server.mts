@@ -5,11 +5,21 @@ import * as utilities from "@radically-straightforward/utilities";
 import * as transformers from "@huggingface/transformers";
 
 transformers.env.allowRemoteModels = false;
+
 const vectorEmbedding = await transformers.pipeline(
   "feature-extraction",
   "Xenova/bge-small-en-v1.5",
   { dtype: "q8" },
 );
+
+const rerankingTokenizer = await transformers.AutoTokenizer.from_pretrained(
+  "Xenova/ms-marco-MiniLM-L-6-v2",
+);
+const rerankingModel =
+  await transformers.AutoModelForSequenceClassification.from_pretrained(
+    "Xenova/ms-marco-MiniLM-L-6-v2",
+    { dtype: "q8" },
+  );
 
 const modelsServer = server({ port: 19000 });
 
@@ -31,6 +41,51 @@ modelsServer.push({
             })
           ).data,
         ),
+      ),
+    );
+  },
+});
+
+modelsServer.push({
+  method: "POST",
+  pathname: "/reranking",
+  handler: async (
+    request: serverTypes.Request<
+      {},
+      {},
+      {},
+      {
+        query: string;
+        searchResults: string[];
+      },
+      {}
+    >,
+    response,
+  ) => {
+    if (
+      typeof request.body.query !== "string" ||
+      !Array.isArray(request.body.searchResults) ||
+      request.body.searchResults.some(
+        (searchResult) => typeof searchResult !== "string",
+      )
+    )
+      throw "validation";
+    response.setHeader("Content-Type", "application/json; charset=utf-8").send(
+      JSON.stringify(
+        (
+          await rerankingModel(
+            rerankingTokenizer(
+              new Array(request.body.searchResults.length).fill(
+                request.body.query,
+              ),
+              {
+                text_pair: request.body.searchResults,
+                padding: true,
+                truncation: true,
+              },
+            ),
+          )
+        ).logits.data,
       ),
     );
   },

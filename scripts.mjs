@@ -6,4 +6,11 @@ if (process.argv[2] === "postinstall") {
     "Xenova/bge-small-en-v1.5",
     { dtype: "q8" },
   );
-}
+  await transformers.AutoTokenizer.from_pretrained(
+    "Xenova/ms-marco-MiniLM-L-6-v2",
+  );
+  await transformers.AutoModelForSequenceClassification.from_pretrained(
+    "Xenova/ms-marco-MiniLM-L-6-v2",
+    { dtype: "q8" },
+  );
+} else throw new Error();
