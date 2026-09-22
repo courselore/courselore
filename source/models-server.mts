@@ -72,20 +72,22 @@ modelsServer.push({
       throw "validation";
     response.setHeader("Content-Type", "application/json; charset=utf-8").send(
       JSON.stringify(
-        (
-          await rerankingModel(
-            rerankingTokenizer(
-              new Array(request.body.searchResults.length).fill(
-                request.body.query,
+        Array.from(
+          (
+            await rerankingModel(
+              rerankingTokenizer(
+                new Array(request.body.searchResults.length).fill(
+                  request.body.query,
+                ),
+                {
+                  text_pair: request.body.searchResults,
+                  padding: true,
+                  truncation: true,
+                },
               ),
-              {
-                text_pair: request.body.searchResults,
-                padding: true,
-                truncation: true,
-              },
-            ),
-          )
-        ).logits.data,
+            )
+          ).logits.data,
+        ),
       ),
     );
   },
