@@ -2864,6 +2864,83 @@ export default async (application: Application): Promise<void> => {
             }),
           })
         ).text();
+        const courseConversations = [
+          ...application.database.all<{
+            id: number;
+            publicId: string;
+            title: string;
+          }>(
+            sql`
+              select
+                "courseConversations"."id" as "id",
+                "courseConversations"."publicId" as "publicId",
+                "courseConversations"."title" as "title"
+              from "courseConversations"
+              join "lexicalSearch_courseConversations_titleLexicalSearch" on
+                "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
+                "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
+              where
+                "courseConversations"."course" = ${request.state.course.id} and (
+                  "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                  ${
+                    request.state.courseParticipation
+                      .courseParticipationRole ===
+                    "courseParticipationRoleInstructor"
+                      ? sql`
+                          or
+                          "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                        `
+                      : sql``
+                  }
+                  or (
+                    select true
+                    from "courseConversationParticipations"
+                    where
+                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                      "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                  )
+                )
+              order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
+              limit 20;
+            `,
+          ),
+          ...application.database.all<{
+            id: number;
+            publicId: string;
+            title: string;
+          }>(
+            sql`
+              select
+                "courseConversations"."id" as "id",
+                "courseConversations"."publicId" as "publicId",
+                "courseConversations"."title" as "title"
+              from "courseConversations"
+              where
+                "courseConversations"."course" = ${request.state.course.id} and (
+                  "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                  ${
+                    request.state.courseParticipation
+                      .courseParticipationRole ===
+                    "courseParticipationRoleInstructor"
+                      ? sql`
+                          or
+                          "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                        `
+                      : sql``
+                  }
+                  or (
+                    select true
+                    from "courseConversationParticipations"
+                    where
+                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                      "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                  )
+                )
+              order by vec_distance_L2("courseConversations"."titleSemanticSearch", ${semanticSearch}) asc
+              limit 20;
+            `,
+          ),
+        ];
         for (const courseConversationId of utilities
           .reciprocalRankFusion(
             application.database
