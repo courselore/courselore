@@ -1818,12 +1818,12 @@ export default async (application: Application): Promise<void> => {
                                 flex: 1;
                               `}"
                               javascript="${javascript`
-                                this.onchange = () => {
+                                this.onchange = utilities.throttle(() => {
                                   if (this.closest('[type~="form"]').querySelector('[name="courseConversationType"]:checked').value !== "courseConversationTypeQuestion" || this.value.trim().length < 5) {
                                     this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = true;
                                     return;
                                   }
-                                };
+                                });
                               `}"
                             />
                           </div>
