@@ -2865,12 +2865,14 @@ export default async (application: Application): Promise<void> => {
           })
         ).text();
         const courseConversations = [
-          ...application.database.all<{
-            id: number;
-            publicId: string;
-            title: string;
-          }>(
-            sql`
+          ...new Map(
+            [
+              ...application.database.all<{
+                id: number;
+                publicId: string;
+                title: string;
+              }>(
+                sql`
               select
                 "courseConversations"."id" as "id",
                 "courseConversations"."publicId" as "publicId",
@@ -2903,13 +2905,13 @@ export default async (application: Application): Promise<void> => {
               order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
               limit 20;
             `,
-          ),
-          ...application.database.all<{
-            id: number;
-            publicId: string;
-            title: string;
-          }>(
-            sql`
+              ),
+              ...application.database.all<{
+                id: number;
+                publicId: string;
+                title: string;
+              }>(
+                sql`
               select
                 "courseConversations"."id" as "id",
                 "courseConversations"."publicId" as "publicId",
@@ -2939,8 +2941,30 @@ export default async (application: Application): Promise<void> => {
               order by vec_distance_L2("courseConversations"."titleSemanticSearch", ${semanticSearch}) asc
               limit 20;
             `,
-          ),
+              ),
+            ].map((courseConversation) => [
+              courseConversation.id,
+              { ...courseConversation, reranking: undefined },
+            ]),
+          ).values(),
         ];
+        for (const [courseConversationIndex, courseConversationReranking] of (
+          await (
+            await fetch("http://localhost:19000/reranking", {
+              method: "POST",
+              headers: { "CSRF-Protection": "true" },
+              body: new URLSearchParams([
+                ["query", request.search.title],
+                ...courseConversations.map((courseConversation) => [
+                  "searchResults[]",
+                  courseConversation.title,
+                ]),
+              ]),
+            })
+          ).json()
+        ).entries())
+          courseConversations[courseConversationIndex].reranking =
+            courseConversationReranking;
         for (const courseConversationId of utilities
           .reciprocalRankFusion(
             application.database
