@@ -1817,9 +1817,29 @@ export default async (application: Application): Promise<void> => {
                               css="${css`
                                 flex: 1;
                               `}"
+                              javascript="${javascript`
+                                this.onchange = () => {
+                                  if (this.closest('[type~="form"]').querySelector('[name="courseConversationType"]:checked').value !== "courseConversationTypeQuestion" || this.value.trim().length < 5) {
+                                    this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = true;
+                                    return;
+                                  }
+                                };
+                              `}"
                             />
                           </div>
                         </label>
+                      </div>
+                      <div key="similarQuestions" hidden>
+                        <div
+                          css="${css`
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Similar questions
+                        </div>
                       </div>
                       <div
                         css="${css`
@@ -1841,8 +1861,8 @@ export default async (application: Application): Promise<void> => {
                           type="button"
                           class="button button--rectangle button--transparent"
                           javascript="${javascript`
-                          javascript.popover({ element: this, trigger: "click" });
-                        `}"
+                            javascript.popover({ element: this, trigger: "click" });
+                          `}"
                         >
                           <form>
                             <span
@@ -1871,12 +1891,12 @@ export default async (application: Application): Promise<void> => {
                               }
                               hidden
                               javascript="${javascript`
-                              this.oninput = () => {
-                                if (!this.checked) return;
-                                this.closest('[type~="form"]').querySelector('[key~="announcement"]')?.removeAttribute("hidden");
-                                this.closest('[type~="form"]').querySelector('[name="announcement"]')?.removeAttribute("disabled");
-                              };
-                            `}"
+                                this.oninput = () => {
+                                  if (!this.checked) return;
+                                  this.closest('[type~="form"]').querySelector('[key~="announcement"]')?.removeAttribute("hidden");
+                                  this.closest('[type~="form"]').querySelector('[name="announcement"]')?.removeAttribute("disabled");
+                                };
+                              `}"
                             /><span
                               css="${css`
                                 :not(:checked) + & {
@@ -1902,12 +1922,12 @@ export default async (application: Application): Promise<void> => {
                               }
                               hidden
                               javascript="${javascript`
-                              this.oninput = () => {
-                                if (!this.checked) return;
-                                this.closest('[type~="form"]').querySelector('[key~="announcement"]')?.setAttribute("hidden", "");
-                                this.closest('[type~="form"]').querySelector('[name="announcement"]')?.setAttribute("disabled", "");
-                              };
-                            `}"
+                                this.oninput = () => {
+                                  if (!this.checked) return;
+                                  this.closest('[type~="form"]').querySelector('[key~="announcement"]')?.setAttribute("hidden", "");
+                                  this.closest('[type~="form"]').querySelector('[name="announcement"]')?.setAttribute("disabled", "");
+                                };
+                              `}"
                             /><span
                               css="${css`
                                 :not(:checked) + & {
@@ -1930,10 +1950,10 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
-                            };
-                          `}"
+                              this.onclick = () => {
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
+                              };
+                            `}"
                           >
                             Note
                           </button>
@@ -1941,10 +1961,10 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
-                            };
-                          `}"
+                              this.onclick = () => {
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
+                              };
+                            `}"
                           >
                             Question
                           </button>
@@ -1953,8 +1973,8 @@ export default async (application: Application): Promise<void> => {
                           type="button"
                           class="button button--rectangle button--transparent"
                           javascript="${javascript`
-                          javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
-                        `}"
+                            javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                          `}"
                         >
                           <form>
                             <span
@@ -2042,11 +2062,11 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
-                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                            };
-                          `}"
+                              this.onclick = () => {
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                              };
+                            `}"
                           >
                             Everyone
                           </button>
@@ -2054,14 +2074,14 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
-                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                              if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
-                            };
-                          `}"
+                              this.onclick = () => {
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                              };
+                            `}"
                           >
                             Instructors and selected course participants
                           </button>
@@ -2069,14 +2089,14 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
-                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                              if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
-                            };
-                          `}"
+                              this.onclick = () => {
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                              };
+                            `}"
                           >
                             Selected course participants
                           </button>
@@ -2088,18 +2108,18 @@ export default async (application: Application): Promise<void> => {
                               gap: var(--size--2);
                             `}"
                             javascript="${javascript`
-                            this.setHidden = () => {
-                              this.hidden =
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityEveryone" || (
-                                  this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
-                                  ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
-                                ) || (
-                                  this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
-                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
-                                );
-                            };
-                            this.setHidden();
-                          `}"
+                              this.setHidden = () => {
+                                this.hidden =
+                                  this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityEveryone" || (
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                                    ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
+                                  ) || (
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
+                                  );
+                              };
+                              this.setHidden();
+                            `}"
                           >
                             <hr class="separator" />
                             <input
@@ -2109,24 +2129,24 @@ export default async (application: Application): Promise<void> => {
                               maxlength="3000"
                               class="input--text"
                               javascript="${javascript`
-                              this.isModified = false;
-                              this.onkeyup = utilities.throttle(() => {
-                                const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                                for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
-                                  const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
-                                  nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
-                                  nameElement.morph = nameElement.querySelector("span") === null;
-                                  element.hidden =
-                                    (
-                                      element.courseParticipationRole === "courseParticipationRoleInstructor" &&
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                    ) || (
-                                      0 < search.size &&
-                                      nameElement.querySelector("span") === null
-                                    );
-                                }
-                              });
-                            `}"
+                                this.isModified = false;
+                                this.onkeyup = utilities.throttle(() => {
+                                  const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
+                                  for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
+                                    const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
+                                    nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
+                                    nameElement.morph = nameElement.querySelector("span") === null;
+                                    element.hidden =
+                                      (
+                                        element.courseParticipationRole === "courseParticipationRoleInstructor" &&
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                      ) || (
+                                        0 < search.size &&
+                                        nameElement.querySelector("span") === null
+                                      );
+                                  }
+                                });
+                              `}"
                             />
                             <div
                               key="courseConversationParticipations--courseParticipations"
@@ -2140,8 +2160,8 @@ export default async (application: Application): Promise<void> => {
                                 gap: var(--size--2);
                               `}"
                               javascript="${javascript`
-                              this.morph = false;
-                            `}"
+                                this.morph = false;
+                              `}"
                             >
                               $${application.database
                                 .all<{
@@ -2152,19 +2172,19 @@ export default async (application: Application): Promise<void> => {
                                     | "courseParticipationRoleStudent";
                                 }>(
                                   sql`
-                                  select
-                                    "courseParticipations"."publicId" as "publicId",
-                                    "courseParticipations"."user" as "user",
-                                    "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                  from "courseParticipations"
-                                  join "users" on "courseParticipations"."user" = "users"."id"
-                                  where
-                                    "courseParticipations"."course" = ${request.state.course.id} and
-                                    "users"."id" != ${request.state.user.id}
-                                  order by
-                                    "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                    "users"."name" asc;
-                                `,
+                                    select
+                                      "courseParticipations"."publicId" as "publicId",
+                                      "courseParticipations"."user" as "user",
+                                      "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                    from "courseParticipations"
+                                    join "users" on "courseParticipations"."user" = "users"."id"
+                                    where
+                                      "courseParticipations"."course" = ${request.state.course.id} and
+                                      "users"."id" != ${request.state.user.id}
+                                    order by
+                                      "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                      "users"."name" asc;
+                                  `,
                                 )
                                 .map(
                                   (
@@ -2196,15 +2216,15 @@ export default async (application: Application): Promise<void> => {
                                       avatarImage: string | null;
                                     }>(
                                       sql`
-                                      select
-                                        "id",
-                                        "publicId",
-                                        "name",
-                                        "avatarColor",
-                                        "avatarImage"
-                                      from "users"
-                                      where "id" = ${courseParticipation.user};
-                                    `,
+                                        select
+                                          "id",
+                                          "publicId",
+                                          "name",
+                                          "avatarColor",
+                                          "avatarImage"
+                                        from "users"
+                                        where "id" = ${courseParticipation.user};
+                                      `,
                                     );
                                     if (user === undefined) throw new Error();
                                     return html`
@@ -2216,9 +2236,9 @@ export default async (application: Application): Promise<void> => {
                                           gap: var(--size--2);
                                         `}"
                                         javascript="${javascript`
-                                        this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
-                                        this.order = ${courseParticipationOrder};
-                                      `}"
+                                          this.courseParticipationRole = ${courseParticipation.courseParticipationRole};
+                                          this.order = ${courseParticipationOrder};
+                                        `}"
                                       >
                                         <input
                                           type="checkbox"
@@ -2229,27 +2249,27 @@ export default async (application: Application): Promise<void> => {
                                             margin-top: var(--size--1);
                                           `}"
                                           javascript="${javascript`
-                                          this.oninput = () => {
-                                            const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
-                                            for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
-                                              if (
-                                                (
-                                                  this.checked && (
-                                                    otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
-                                                    element.order < otherElement.order
-                                                  ) 
-                                                ) || (
-                                                  !this.checked &&
-                                                    otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
-                                                    element.order < otherElement.order
-                                                )
-                                              ) {
-                                                otherElement.insertAdjacentElement("beforebegin", element);
-                                                return;
-                                              }
-                                            this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
-                                          };
-                                        `}"
+                                            this.oninput = () => {
+                                              const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
+                                              for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
+                                                if (
+                                                  (
+                                                    this.checked && (
+                                                      otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
+                                                      element.order < otherElement.order
+                                                    ) 
+                                                  ) || (
+                                                    !this.checked &&
+                                                      otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
+                                                      element.order < otherElement.order
+                                                  )
+                                                ) {
+                                                  otherElement.insertAdjacentElement("beforebegin", element);
+                                                  return;
+                                                }
+                                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
+                                            };
+                                          `}"
                                         />
                                         $${application.partials.userAvatar({
                                           user,
@@ -2262,8 +2282,8 @@ export default async (application: Application): Promise<void> => {
                                           <span
                                             key="courseConversationParticipations--courseParticipation--name"
                                             javascript="${javascript`
-                                            this.name = ${user.name};
-                                          `}"
+                                              this.name = ${user.name};
+                                            `}"
                                             >${user.name}</span
                                           >$${
                                             courseParticipation.courseParticipationRole ===
@@ -2303,8 +2323,8 @@ export default async (application: Application): Promise<void> => {
                                   type="button"
                                   class="button button--rectangle button--transparent"
                                   javascript="${javascript`
-                                javascript.popover({ element: this, trigger: "click" });
-                              `}"
+                                    javascript.popover({ element: this, trigger: "click" });
+                                  `}"
                                 >
                                   <form>
                                     <span
@@ -2367,10 +2387,10 @@ export default async (application: Application): Promise<void> => {
                                     type="button"
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[type~="form"]').querySelector('[name="pinned"][value="false"]').click();
-                                  };
-                                `}"
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="pinned"][value="false"]').click();
+                                      };
+                                    `}"
                                   >
                                     Unpinned
                                   </button>
@@ -2378,10 +2398,10 @@ export default async (application: Application): Promise<void> => {
                                     type="button"
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[type~="form"]').querySelector('[name="pinned"][value="true"]').click();
-                                  };
-                                `}"
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="pinned"][value="true"]').click();
+                                      };
+                                    `}"
                                   >
                                     Pinned
                                   </button>
@@ -2567,21 +2587,21 @@ export default async (application: Application): Promise<void> => {
                                     type="button"
                                     class="button button--rectangle button--transparent"
                                     javascript="${javascript`
-                                  javascript.popover({ element: this, trigger: "click" });
-                                `}"
+                                    javascript.popover({ element: this, trigger: "click" });
+                                  `}"
                                   >
                                     <form
                                       javascript="${javascript`
-                                    this.oninput = async () => {
-                                      await fetch(
-                                        "/settings/anonymity-preferred", {
-                                          method: "PATCH",
-                                          headers: { "CSRF-Protection": "true" },
-                                          body: new URLSearchParams(javascript.serialize(this)),
-                                        }
-                                      );
-                                    };
-                                  `}"
+                                      this.oninput = async () => {
+                                        await fetch(
+                                          "/settings/anonymity-preferred", {
+                                            method: "PATCH",
+                                            headers: { "CSRF-Protection": "true" },
+                                            body: new URLSearchParams(javascript.serialize(this)),
+                                          }
+                                        );
+                                      };
+                                    `}"
                                     >
                                       <span
                                         css="${css`
@@ -2701,10 +2721,10 @@ export default async (application: Application): Promise<void> => {
                                       type="button"
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
-                                    };
-                                  `}"
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
+                                      };
+                                    `}"
                                     >
                                       None
                                     </button>
@@ -2712,10 +2732,10 @@ export default async (application: Application): Promise<void> => {
                                       type="button"
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
-                                    };
-                                  `}"
+                                      this.onclick = () => {
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
+                                      };
+                                    `}"
                                     >
                                       Anonymous to students
                                     </button>
@@ -2728,10 +2748,10 @@ export default async (application: Application): Promise<void> => {
                                               type="button"
                                               class="button button--rectangle button--transparent button--dropdown-menu"
                                               javascript="${javascript`
-                                          this.onclick = () => {
-                                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityEveryone"]').click();
-                                          };
-                                        `}"
+                                            this.onclick = () => {
+                                              this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityEveryone"]').click();
+                                            };
+                                          `}"
                                             >
                                               Anonymous to everyone
                                             </button>
