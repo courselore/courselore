@@ -2944,7 +2944,7 @@ export default async (application: Application): Promise<void> => {
               ),
             ].map((courseConversation) => [
               courseConversation.id,
-              { ...courseConversation, reranking: undefined },
+              { ...courseConversation, reranking: -Infinity },
             ]),
           ).values(),
         ];
@@ -2965,305 +2965,49 @@ export default async (application: Application): Promise<void> => {
         ).entries())
           courseConversations[courseConversationIndex].reranking =
             courseConversationReranking;
-        for (const courseConversationId of utilities
-          .reciprocalRankFusion(
-            application.database
-              .all<{ id: number }>(
-                sql`
-                  select "courseConversations"."id" as "id"
-                  from "courseConversations"
-                  join "lexicalSearch_courseConversations_titleLexicalSearch" on
-                    "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
-                    "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
-                  where
-                    "courseConversations"."course" = ${request.state.course.id} and (
-                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                      ${
-                        request.state.courseParticipation
-                          .courseParticipationRole ===
-                        "courseParticipationRoleInstructor"
-                          ? sql`
-                              or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                            `
-                          : sql``
-                      }
-                      or (
-                        select true
-                        from "courseConversationParticipations"
-                        where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                      )
-                    )
-                  order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
-                  limit 20;
-                `,
-              )
-              .map((courseConversation) => courseConversation.id),
-            application.database
-              .all<{ id: number }>(
-                sql`
-                  select "courseConversations"."id" as "id"
-                  from "courseConversations"
-                  where
-                    "courseConversations"."course" = ${request.state.course.id} and (
-                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                      ${
-                        request.state.courseParticipation
-                          .courseParticipationRole ===
-                        "courseParticipationRoleInstructor"
-                          ? sql`
-                              or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                            `
-                          : sql``
-                      }
-                      or (
-                        select true
-                        from "courseConversationParticipations"
-                        where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                      )
-                    )
-                  order by vec_distance_L2("courseConversations"."titleSemanticSearch", ${semanticSearch}) asc
-                  limit 20;
-                `,
-              )
-              .map((courseConversation) => courseConversation.id),
+        for (const courseConversation of courseConversations
+          .filter((courseConversation) => 1.5 < courseConversation.reranking)
+          .sort(
+            (courseConversationA, courseConversationB) =>
+              courseConversationB.reranking - courseConversationA.reranking,
           )
-          .slice(0, 5)) {
-          const courseConversation = application.database.get<{
-            publicId: string;
-            title: string;
-          }>(
-            sql`
-              select "publicId", "title"
-              from "courseConversations"
-              where "id" = ${courseConversationId};
-            `,
-          );
-          if (courseConversation === undefined) throw new Error();
+          .slice(0, 3))
           results.push(html`
-            <a
-              href="/courses/${
-                request.state.course.publicId
-              }/conversations/${courseConversation.publicId}"
-              class="button button--rectangle button--transparent button--dropdown-menu"
-            >
-              <span
-                css="${css`
-                  font-size: var(--font-size--3);
-                  line-height: var(--font-size--3--line-height);
-                  font-weight: 500;
-                  color: light-dark(
-                    var(--color--slate--400),
-                    var(--color--slate--600)
-                  );
-                `}"
-                >#${courseConversation.publicId}</span
+            <div>
+              <a
+                href="/courses/${
+                  request.state.course.publicId
+                }/conversations/${courseConversation.publicId}"
+                target="_blank"
+                class="button button--rectangle button--transparent"
               >
-              <span
-                >$${utilities.highlight(
-                  html`${courseConversation.title}`,
-                  new Set(
-                    lexicalSearchTokens.map(
-                      (tokenWithPosition) => tokenWithPosition.token,
-                    ),
-                  ),
-                  {
-                    prefix: true,
-                    stopWords: application.applicationConfiguration.stopWords,
-                    stem: (token) => natural.PorterStemmer.stem(token),
-                  },
-                )}</span
-              >
-            </a>
-          `);
-        }
-        for (const courseConversationMessageId of utilities
-          .reciprocalRankFusion(
-            application.database
-              .all<{ id: number }>(
-                sql`
-                  select "courseConversationMessages"."id" as "id"
-                  from "courseConversationMessages"
-                  join "lexicalSearch_courseConversationMessages_contentLexicalSearch" on
-                    "courseConversationMessages"."id" = "lexicalSearch_courseConversationMessages_contentLexicalSearch"."rowid" and
-                    "lexicalSearch_courseConversationMessages_contentLexicalSearch" match ${lexicalSearchString}
-                  join "courseConversations" on
-                    "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
-                    "courseConversations"."course" = ${request.state.course.id} and (
-                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                      ${
-                        request.state.courseParticipation
-                          .courseParticipationRole ===
-                        "courseParticipationRoleInstructor"
-                          ? sql`
-                              or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                            `
-                          : sql``
-                      }
-                      or (
-                        select true
-                        from "courseConversationParticipations"
-                        where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                      )
-                    )
-                  ${
-                    request.state.courseParticipation!
-                      .courseParticipationRole !==
-                    "courseParticipationRoleInstructor"
-                      ? sql`
-                          where
-                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                        `
-                      : sql``
-                  }
-                  order by "lexicalSearch_courseConversationMessages_contentLexicalSearch"."rank" asc
-                  limit 20;
-                `,
-              )
-              .map((courseConversationMessage) => courseConversationMessage.id),
-            application.database
-              .all<{ id: number }>(
-                sql`
-                  select "courseConversationMessages"."id" as "id"
-                  from "courseConversationMessages"
-                  join "courseConversations" on
-                    "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
-                    "courseConversations"."course" = ${request.state.course.id} and (
-                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                      ${
-                        request.state.courseParticipation
-                          .courseParticipationRole ===
-                        "courseParticipationRoleInstructor"
-                          ? sql`
-                              or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                            `
-                          : sql``
-                      }
-                      or (
-                        select true
-                        from "courseConversationParticipations"
-                        where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                      )
-                    )
-                  ${
-                    request.state.courseParticipation!
-                      .courseParticipationRole !==
-                    "courseParticipationRoleInstructor"
-                      ? sql`
-                          where
-                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                        `
-                      : sql``
-                  }
-                  order by vec_distance_L2("courseConversationMessages"."contentSemanticSearch", ${semanticSearch}) asc
-                  limit 20;
-                `,
-              )
-              .map((courseConversationMessage) => courseConversationMessage.id),
-          )
-          .slice(0, 5)) {
-          const courseConversationMessage = application.database.get<{
-            publicId: string;
-            courseConversation: number;
-            createdByCourseParticipation: number | null;
-            updatedAt: string | null;
-            content: string;
-          }>(
-            sql`
-              select
-                "publicId",
-                "courseConversation",
-                "createdByCourseParticipation",
-                "updatedAt",
-                "content"
-              from "courseConversationMessages"
-              where "id" = ${courseConversationMessageId};
-            `,
-          );
-          if (courseConversationMessage === undefined) throw new Error();
-          const courseConversation = application.database.get<{
-            publicId: string;
-            title: string;
-          }>(
-            sql`
-              select
-                "publicId",
-                "title"
-              from "courseConversations"
-              where "id" = ${courseConversationMessage.courseConversation};
-            `,
-          );
-          if (courseConversation === undefined) throw new Error();
-          results.push(html`
-            <a
-              href="/courses/${
-                request.state.course.publicId
-              }/conversations/${courseConversation.publicId}?${new URLSearchParams(
-                { message: courseConversationMessage.publicId },
-              ).toString()}"
-              class="button button--rectangle button--transparent button--dropdown-menu"
-            >
-              <div>
                 <span
                   css="${css`
-                    font-size: var(--font-size--3);
-                    line-height: var(--font-size--3--line-height);
-                    font-weight: 500;
                     color: light-dark(
-                      var(--color--slate--400),
-                      var(--color--slate--600)
+                      var(--color--slate--500),
+                      var(--color--slate--500)
                     );
                   `}"
                   >#${courseConversation.publicId}</span
                 >
-                <span>${courseConversation.title}</span>
-              </div>
-              <div
-                css="${css`
-                  font-size: var(--font-size--3);
-                  line-height: var(--font-size--3--line-height);
-                  color: light-dark(
-                    var(--color--slate--600),
-                    var(--color--slate--400)
-                  );
-                `}"
-              >
-                $${utilities.snippet(
-                  html`${await application.partials.courseConversationMessageContentProcessor(
-                    {
-                      course: request.state.course,
-                      courseParticipation: request.state.courseParticipation,
-                      courseConversation,
-                      courseConversationMessage,
-                      mode: "textContent",
-                    },
-                  )}`,
-                  new Set(
-                    lexicalSearchTokens.map(
-                      (tokenWithPosition) => tokenWithPosition.token,
+                <span
+                  >$${utilities.highlight(
+                    html`${courseConversation.title}`,
+                    new Set(
+                      lexicalSearchTokens.map(
+                        (tokenWithPosition) => tokenWithPosition.token,
+                      ),
                     ),
-                  ),
-                  {
-                    prefix: true,
-                    stopWords: application.applicationConfiguration.stopWords,
-                    stem: (token) => natural.PorterStemmer.stem(token),
-                  },
-                )}
-              </div>
-            </a>
+                    {
+                      prefix: true,
+                      stopWords: application.applicationConfiguration.stopWords,
+                      stem: (token) => natural.PorterStemmer.stem(token),
+                    },
+                  )}</span
+                >
+              </a>
+            </div>
           `);
-        }
       }
       response.send(
         0 < results.length
