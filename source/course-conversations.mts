@@ -1823,9 +1823,14 @@ export default async (application: Application): Promise<void> => {
                                     this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = true;
                                     return;
                                   }
+                                  const similarQuestionsResults = await (await fetch(${`/courses/${request.state.course.publicId}/conversations/new/similar-questions`} + "?" + new URLSearchParams({ title: this.value }))).text();
+                                  if (similarQuestionsResults === "") {
+                                    this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = true;
+                                    return;
+                                  }
                                   javascript.mount(
                                     this.closest('[type~="form"]').querySelector('[key~="similarQuestionsResults"]'),
-                                    await (await fetch(${`/courses/${request.state.course.publicId}/conversations/new/similar-questions`} + "?" + new URLSearchParams({ title: this.value }))).text(),
+                                    similarQuestionsResults,
                                   );
                                   this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = false;
                                 });
@@ -3170,40 +3175,6 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--1-5);
                 `}"
               >
-                <div>
-                  <a
-                    href="#2"
-                    class="button button--rectangle button--transparent"
-                  >
-                    <span
-                      css="${css`
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                      >#2</span
-                    >
-                    Hello
-                  </a>
-                </div>
-                <div>
-                  <a
-                    href="#2"
-                    class="button button--rectangle button--transparent"
-                  >
-                    <span
-                      css="${css`
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                      >#45</span
-                    >
-                    World
-                  </a>
-                </div>
                 $${results}
               </div>
             `
