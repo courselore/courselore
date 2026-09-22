@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.2.7 · 2026-09-22
+
+- Added the feature of showing “Similar questions” when a person is asking a question.
+
 ## 10.2.6 · 2026-09-21
 
 - Changed the structure of processes, saving even more RAM and CPU.
