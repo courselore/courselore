@@ -1818,11 +1818,16 @@ export default async (application: Application): Promise<void> => {
                                 flex: 1;
                               `}"
                               javascript="${javascript`
-                                this.onchange = utilities.throttle(() => {
+                                this.onchange = utilities.throttle(async () => {
                                   if (this.closest('[type~="form"]').querySelector('[name="courseConversationType"]:checked').value !== "courseConversationTypeQuestion" || this.value.trim().length < 5) {
                                     this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = true;
                                     return;
                                   }
+                                  javascript.mount(
+                                    this.closest('[type~="form"]').querySelector('[key~="similarQuestionsResults"]'),
+                                    await (await fetch(${`/courses/${request.state.course.publicId}/conversations/new/similar-questions`} + "?" + new URLSearchParams({ title: this.value }))).text(),
+                                  );
+                                  this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = false;
                                 });
                               `}"
                             />
@@ -1856,6 +1861,7 @@ export default async (application: Application): Promise<void> => {
                           Similar questions
                         </div>
                         <div
+                          key="similarQuestionsResults"
                           css="${css`
                             display: flex;
                             flex-direction: column;
