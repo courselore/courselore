@@ -1860,49 +1860,7 @@ export default async (application: Application): Promise<void> => {
                         >
                           Similar questions
                         </div>
-                        <div
-                          key="similarQuestionsResults"
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--size--1-5);
-                          `}"
-                        >
-                          <div>
-                            <a
-                              href="#2"
-                              class="button button--rectangle button--transparent"
-                            >
-                              <span
-                                css="${css`
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
-                                >#2</span
-                              >
-                              Hello
-                            </a>
-                          </div>
-                          <div>
-                            <a
-                              href="#2"
-                              class="button button--rectangle button--transparent"
-                            >
-                              <span
-                                css="${css`
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
-                                >#45</span
-                              >
-                              World
-                            </a>
-                          </div>
-                        </div>
+                        <div key="similarQuestionsResults"></div>
                       </div>
                       <div
                         css="${css`
@@ -3201,32 +3159,56 @@ export default async (application: Application): Promise<void> => {
           `);
         }
       }
-      response.send(html`
-        <div
-          css="${css`
-            display: flex;
-            flex-direction: column;
-            gap: var(--size--2);
-          `}"
-        >
-          $${
-            0 < results.length
-              ? results
-              : html`
-                  <div
-                    css="${css`
-                      color: light-dark(
-                        var(--color--slate--400),
-                        var(--color--slate--600)
-                      );
-                    `}"
+      response.send(
+        0 < results.length
+          ? html`
+              <div
+                key="similarQuestionsResults"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--1-5);
+                `}"
+              >
+                <div>
+                  <a
+                    href="#2"
+                    class="button button--rectangle button--transparent"
                   >
-                    No results
-                  </div>
-                `
-          }
-        </div>
-      `);
+                    <span
+                      css="${css`
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                      >#2</span
+                    >
+                    Hello
+                  </a>
+                </div>
+                <div>
+                  <a
+                    href="#2"
+                    class="button button--rectangle button--transparent"
+                  >
+                    <span
+                      css="${css`
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                      >#45</span
+                    >
+                    World
+                  </a>
+                </div>
+                $${results}
+              </div>
+            `
+          : html``,
+      );
     },
   });
 
