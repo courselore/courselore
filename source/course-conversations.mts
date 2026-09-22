@@ -2882,7 +2882,8 @@ export default async (application: Application): Promise<void> => {
                     "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
                     "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
                   where
-                    "courseConversations"."course" = ${request.state.course.id} and (
+                    "courseConversations"."course" = ${request.state.course.id} and
+                    "courseConversations"."courseConversationType" = 'courseConversationTypeQuestion' and (
                       "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
                       ${
                         request.state.courseParticipation
@@ -2918,7 +2919,8 @@ export default async (application: Application): Promise<void> => {
                     "courseConversations"."title" as "title"
                   from "courseConversations"
                   where
-                    "courseConversations"."course" = ${request.state.course.id} and (
+                    "courseConversations"."course" = ${request.state.course.id} and
+                    "courseConversations"."courseConversationType" = 'courseConversationTypeQuestion' and (
                       "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
                       ${
                         request.state.courseParticipation
