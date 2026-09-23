@@ -51,11 +51,10 @@ export default async (application: Application): Promise<void> => {
               email: string;
             }>(
               sql`
-            select "id", "email" from "users"
-          `,
+                select "id", "email" from "users";
+              `,
             )
             .slice(0, 10);
-
           const limit = new Date(Date.now() - 20 * 24 * 60 * 60 * 1000);
           for (const user of users) {
             const emailContent = [];
@@ -66,10 +65,13 @@ export default async (application: Application): Promise<void> => {
               courseParticipationRole:
                 | "courseParticipationRoleInstructor"
                 | "courseParticipationRoleStudent";
-            }>(sql`
-                  select "id", "course", "publicId", "courseParticipationRole" from "courseParticipations"
-                  where "user" = ${user.id}
-            `);
+            }>(
+              sql`
+                select "id", "course", "publicId", "courseParticipationRole"
+                from "courseParticipations"
+                where "user" = ${user.id};
+              `,
+            );
             for (const courseParticipation of courseParticipations) {
               const isStudent =
                 courseParticipation.courseParticipationRole ===
