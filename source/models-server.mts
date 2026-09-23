@@ -117,7 +117,11 @@ modelsServer.push({
     if (typeof request.body.text !== "string") throw "validation";
     response
       .setHeader("Content-Type", "application/json; charset=utf-8")
-      .send(JSON.stringify((await sentimentAnalysis(request.body.text))[0]));
+      .send(
+        JSON.stringify(
+          (await sentimentAnalysis(request.body.text.slice(0, 1500)))[0],
+        ),
+      );
   },
 });
 
