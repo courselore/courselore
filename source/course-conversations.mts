@@ -312,6 +312,14 @@ export default async (application: Application): Promise<void> => {
                       `,
                     )
                     .map(async (courseConversation) => {
+                      const courseConversationMessagesCount =
+                        application.database.get<{ count: number }>(
+                          sql`
+                            select count(*) as "count"
+                            from "courseConversationMessages"
+                            where "courseConversation" = ${courseConversation.id};
+                          `,
+                        )!.count;
                       const firstCourseConversationMessage =
                         application.database.get<{
                           id: number;
@@ -324,6 +332,9 @@ export default async (application: Application): Promise<void> => {
                             | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                             | "courseConversationMessageAnonymityEveryone";
                           content: string;
+                          contentSentimentAnalysisType:
+                            "positive" | "neutral" | "negative";
+                          contentSentimentAnalysisIntensity: number;
                         }>(
                           sql`
                             select
@@ -333,7 +344,9 @@ export default async (application: Application): Promise<void> => {
                               "createdAt",
                               "updatedAt",
                               "courseConversationMessageAnonymity",
-                              "content"
+                              "content",
+                              "contentSentimentAnalysisType",
+                              "contentSentimentAnalysisIntensity"
                             from "courseConversationMessages"
                             where "courseConversation" = ${courseConversation.id}
                             order by "id" asc
@@ -571,6 +584,45 @@ export default async (application: Application): Promise<void> => {
                                   font-weight: 600;
                                 `}"
                               >
+                                $${
+                                  courseConversation.courseConversationType ===
+                                    "courseConversationTypeQuestion" &&
+                                  Boolean(
+                                    courseConversation.questionResolved,
+                                  ) === false &&
+                                  courseConversationMessagesCount === 1 &&
+                                  firstCourseConversationMessage.contentSentimentAnalysisType ===
+                                    "negative" &&
+                                  0.5 <
+                                    firstCourseConversationMessage.contentSentimentAnalysisIntensity
+                                    ? html`
+                                        <span
+                                          css="${
+                                            request.state.courseConversation
+                                              ?.id === courseConversation.id
+                                              ? css``
+                                              : css`
+                                                  color: light-dark(
+                                                    var(--color--red--400),
+                                                    var(--color--red--600)
+                                                  );
+                                                `
+                                          }"
+                                          javascript="${javascript`
+                                            javascript.popover({ element: this });
+                                          `}"
+                                        >
+                                          <i
+                                            class="bi bi-exclamation-diamond-fill"
+                                          ></i>
+                                        </span>
+                                        <span type="popover"
+                                          >This is a high-priority
+                                          question.</span
+                                        >
+                                      `
+                                    : html``
+                                }
                                 ${courseConversation.title}
                               </div>
                               <div
