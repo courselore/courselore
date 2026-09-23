@@ -269,6 +269,13 @@ export default async (application: Application): Promise<void> => {
           body: new URLSearchParams({ text: contentTextContent }),
         })
       ).text();
+      const contentSentimentAnalysis = await (
+        await fetch("http://localhost:19000/sentiment-analysis", {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({ text: contentTextContent }),
+        })
+      ).json();
       application.database.transaction(() => {
         application.database.run(
           sql`
@@ -323,7 +330,9 @@ export default async (application: Application): Promise<void> => {
                     "courseConversationMessageAnonymity",
                     "content",
                     "contentLexicalSearch",
-                    "contentSemanticSearch"
+                    "contentSemanticSearch",
+                    "contentSentimentAnalysisType",
+                    "contentSentimentAnalysisIntensity"
                   )
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -343,7 +352,9 @@ export default async (application: Application): Promise<void> => {
                       })
                       .map((tokenWithPosition) => tokenWithPosition.token)
                       .join(" ")},
-                    vec_f32(${contentSemanticSearch})
+                    vec_f32(${contentSemanticSearch}),
+                    ${contentSentimentAnalysis.label},
+                    ${contentSentimentAnalysis.score}
                   );
                 `,
               ).lastInsertRowid
