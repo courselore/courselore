@@ -8045,7 +8045,7 @@ export default async (application: Application): Promise<void> => {
           // process.stdout.write(
           //   `courseConversationMessage: ${++courseConversationMessagesIndex}/${courseConversationMessagesCount}\r`,
           // );
-          const sentimentAnalysis = await (
+          const contentSentimentAnalysis = await (
             await fetch("http://localhost:19000/sentiment-analysis", {
               method: "POST",
               headers: { "CSRF-Protection": "true" },
@@ -8086,8 +8086,8 @@ export default async (application: Application): Promise<void> => {
             sql`
               update "courseConversationMessages"
               set
-                "contentSentimentAnalysisType" = ${sentimentAnalysis.label},
-                "contentSentimentAnalysisIntensity" = ${sentimentAnalysis.score}
+                "contentSentimentAnalysisType" = ${contentSentimentAnalysis.label},
+                "contentSentimentAnalysisIntensity" = ${contentSentimentAnalysis.score}
               where "id" = ${courseConversationMessage.id};
             `,
           );
