@@ -8016,5 +8016,11 @@ export default async (application: Application): Promise<void> => {
         }
         // console.log();
       },
+
+      sql`
+        alter table "courseConversations" add column "questionHighPriority" integer null;
+        update "courseConversations" set "questionHighPriority" = false;
+        alter table "courseConversations" alter column "questionHighPriority" set not null;
+      `,
     );
 };
