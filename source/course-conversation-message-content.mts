@@ -3177,6 +3177,13 @@ You may also use the buttons on the message content editor to ${
           body: new URLSearchParams({ text: contentTextContent }),
         })
       ).text();
+      const contentSentimentAnalysis = await (
+        await fetch("http://localhost:19000/sentiment-analysis", {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({ text: contentTextContent }),
+        })
+      ).json();
       application.database.run(
         sql`
           update "courseConversationMessages"
@@ -3190,7 +3197,9 @@ You may also use the buttons on the message content editor to ${
               })
               .map((tokenWithPosition) => tokenWithPosition.token)
               .join(" ")},
-            "contentSemanticSearch" = vec_f32(${contentSemanticSearch})
+            "contentSemanticSearch" = vec_f32(${contentSemanticSearch}),
+            "contentSentimentAnalysisType" = ${contentSentimentAnalysis.label},
+            "contentSentimentAnalysisIntensity" = ${contentSentimentAnalysis.score}
           where "id" = ${request.state.courseConversationMessage.id};
         `,
       );
