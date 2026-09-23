@@ -596,7 +596,7 @@ export default async (application: Application): Promise<void> => {
                                   courseConversationMessagesCount === 1 &&
                                   firstCourseConversationMessage.contentSentimentAnalysisType ===
                                     "negative" &&
-                                  0.5 <
+                                  0.6 <
                                     firstCourseConversationMessage.contentSentimentAnalysisIntensity
                                     ? html`
                                         <span
