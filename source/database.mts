@@ -8017,10 +8017,88 @@ export default async (application: Application): Promise<void> => {
         // console.log();
       },
 
-      sql`
-        alter table "courseConversations" add column "questionHighPriority" integer null;
-        update "courseConversations" set "questionHighPriority" = false;
-        alter table "courseConversations" alter column "questionHighPriority" set not null;
-      `,
+      async (database) => {
+        database.execute(
+          sql`
+            alter table "courseConversationMessages" add column "sentimentAnalysisType" text null;
+            alter table "courseConversationMessages" add column "sentimentAnalysisIntensity" real null;
+          `,
+        );
+        let courseConversationMessagesIndex = 0;
+        const courseConversationMessagesCount = database.get<{
+          count: number;
+        }>(
+          sql`
+            select count(*) as "count" from "courseConversationMessages";
+          `,
+        )!.count;
+        for (const courseConversationMessage of database.iterate<{
+          id: number;
+          content: string;
+        }>(
+          sql`
+            select "id", "content"
+            from "courseConversationMessages"
+            order by "id" asc;
+          `,
+        )) {
+          // process.stdout.write(
+          //   `courseConversationMessage: ${++courseConversationMessagesIndex}/${courseConversationMessagesCount}\r`,
+          // );
+          const sentimentAnalysis = await (
+            await fetch("http://localhost:19000/sentiment-analysis", {
+              method: "POST",
+              headers: { "CSRF-Protection": "true" },
+              body: new URLSearchParams({
+                text: await application.partials.courseConversationMessageContentProcessor(
+                  {
+                    course:
+                      database.get<{
+                        id: number;
+                        publicId: string;
+                        courseState:
+                          "courseStateActive" | "courseStateArchived";
+                      }>(
+                        sql`
+                          select
+                            "courses"."id" as "id",
+                            "courses"."publicId" as "publicId",
+                            "courses"."courseState" as "courseState"
+                          from "courses"
+                          join "courseConversations" on "courses"."id" = "courseConversations"."course"
+                          join "courseConversationMessages" on
+                            "courseConversations"."id" = "courseConversationMessages"."courseConversation" and
+                            "courseConversationMessages"."id" = ${courseConversationMessage.id};
+                        `,
+                      ) ??
+                      (() => {
+                        throw new Error();
+                      })(),
+                    courseConversationMessageContent:
+                      courseConversationMessage.content,
+                    mode: "textContent",
+                  },
+                ),
+              }),
+            })
+          ).json();
+          database.run(
+            sql`
+              update "courseConversationMessages"
+              set
+                "sentimentAnalysisType" = ${sentimentAnalysis.label},
+                "sentimentAnalysisIntensity" = ${sentimentAnalysis.score}
+              where "id" = ${courseConversationMessage.id};
+            `,
+          );
+        }
+        // console.log();
+        database.execute(
+          sql`
+            alter table "courseConversationMessages" alter column "sentimentAnalysisType" set not null;
+            alter table "courseConversationMessages" alter column "sentimentAnalysisIntensity" set not null;
+          `,
+        );
+      },
     );
 };
