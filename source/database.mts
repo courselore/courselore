@@ -8020,8 +8020,8 @@ export default async (application: Application): Promise<void> => {
       async (database) => {
         database.execute(
           sql`
-            alter table "courseConversationMessages" add column "sentimentAnalysisType" text null;
-            alter table "courseConversationMessages" add column "sentimentAnalysisIntensity" real null;
+            alter table "courseConversationMessages" add column "contentSentimentAnalysisType" text null;
+            alter table "courseConversationMessages" add column "contentSentimentAnalysisIntensity" real null;
           `,
         );
         let courseConversationMessagesIndex = 0;
@@ -8086,8 +8086,8 @@ export default async (application: Application): Promise<void> => {
             sql`
               update "courseConversationMessages"
               set
-                "sentimentAnalysisType" = ${sentimentAnalysis.label},
-                "sentimentAnalysisIntensity" = ${sentimentAnalysis.score}
+                "contentSentimentAnalysisType" = ${sentimentAnalysis.label},
+                "contentSentimentAnalysisIntensity" = ${sentimentAnalysis.score}
               where "id" = ${courseConversationMessage.id};
             `,
           );
@@ -8095,8 +8095,8 @@ export default async (application: Application): Promise<void> => {
         // console.log();
         database.execute(
           sql`
-            alter table "courseConversationMessages" alter column "sentimentAnalysisType" set not null;
-            alter table "courseConversationMessages" alter column "sentimentAnalysisIntensity" set not null;
+            alter table "courseConversationMessages" alter column "contentSentimentAnalysisType" set not null;
+            alter table "courseConversationMessages" alter column "contentSentimentAnalysisIntensity" set not null;
           `,
         );
       },
