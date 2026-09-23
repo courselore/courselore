@@ -41,8 +41,8 @@ export default async (application: Application): Promise<void> => {
     if (application.commandLineArguments.values.type === "backgroundJobWorker")
       application.database.scheduledBackgroundJobWorker(
         {
-          schedule: "@minutely",
           type: "digest",
+          schedule: "@minutely",
         },
         async () => {
           const users = application.database
