@@ -2,14 +2,14 @@ import * as transformers from "@huggingface/transformers";
 
 const classifier = await transformers.pipeline(
   "sentiment-analysis",
-  "Xenova/distilbert-base-uncased-finetuned-sst-2-english",
+  "Xenova/twitter-roberta-base-sentiment-latest",
   { dtype: "q8" },
 );
 
-const classification = (await classifier(`I’m loving this course!`))[0];
-
 console.log(
-  classification.label === "POSITIVE"
-    ? classification.score
-    : -classification.score,
+  await classifier(`
+How do we unroll nested tags and calculate average score per tag in the aggregation pipeline for Task 3?
+
+Unfortunately I’m really having a hard time with this.
+`),
 );
