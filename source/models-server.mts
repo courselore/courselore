@@ -21,6 +21,12 @@ const rerankingModel =
     { dtype: "q8" },
   );
 
+const sentimentAnalysis = await transformers.pipeline(
+  "sentiment-analysis",
+  "Xenova/twitter-roberta-base-sentiment-latest",
+  { dtype: "q8" },
+);
+
 const modelsServer = server({ port: 19000 });
 
 modelsServer.push({
@@ -90,6 +96,28 @@ modelsServer.push({
         ),
       ),
     );
+  },
+});
+
+modelsServer.push({
+  method: "POST",
+  pathname: "/sentiment-analysis",
+  handler: async (
+    request: serverTypes.Request<
+      {},
+      {},
+      {},
+      {
+        text: string;
+      },
+      {}
+    >,
+    response,
+  ) => {
+    if (typeof request.body.text !== "string") throw "validation";
+    response
+      .setHeader("Content-Type", "application/json; charset=utf-8")
+      .send(JSON.stringify((await sentimentAnalysis(request.body.text))[0]));
   },
 });
 

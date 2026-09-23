@@ -13,4 +13,9 @@ if (process.argv[2] === "postinstall") {
     "Xenova/ms-marco-MiniLM-L-6-v2",
     { dtype: "q8" },
   );
+  await transformers.pipeline(
+    "sentiment-analysis",
+    "Xenova/twitter-roberta-base-sentiment-latest",
+    { dtype: "q8" },
+  );
 } else throw new Error();
