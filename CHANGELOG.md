@@ -1,5 +1,7 @@
 # Changelog
 
+- Added a feature in which some questions are shown to instructors as “high-priority” on the sidebar. What determines whether a question is high-priority is sentiment analysis.
+
 ## 10.2.7 · 2026-09-22
 
 - Added the feature of showing “Similar questions” when a person is asking a question.

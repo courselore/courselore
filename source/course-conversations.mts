@@ -585,6 +585,9 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               >
                                 $${
+                                  request.state.courseParticipation!
+                                    .courseParticipationRole ===
+                                    "courseParticipationRoleInstructor" &&
                                   courseConversation.courseConversationType ===
                                     "courseConversationTypeQuestion" &&
                                   Boolean(
