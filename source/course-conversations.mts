@@ -3005,23 +3005,24 @@ export default async (application: Application): Promise<void> => {
             ]),
           ).values(),
         ];
-        for (const [courseConversationIndex, courseConversationReranking] of (
-          await (
-            await fetch("http://localhost:19000/reranking", {
-              method: "POST",
-              headers: { "CSRF-Protection": "true" },
-              body: new URLSearchParams([
-                ["query", request.search.title],
-                ...courseConversations.map((courseConversation) => [
-                  "searchResults[]",
-                  courseConversation.title,
+        if (0 < courseConversations.length)
+          for (const [courseConversationIndex, courseConversationReranking] of (
+            await (
+              await fetch("http://localhost:19000/reranking", {
+                method: "POST",
+                headers: { "CSRF-Protection": "true" },
+                body: new URLSearchParams([
+                  ["query", request.search.title],
+                  ...courseConversations.map((courseConversation) => [
+                    "searchResults[]",
+                    courseConversation.title,
+                  ]),
                 ]),
-              ]),
-            })
-          ).json()
-        ).entries())
-          courseConversations[courseConversationIndex].reranking =
-            courseConversationReranking;
+              })
+            ).json()
+          ).entries())
+            courseConversations[courseConversationIndex].reranking =
+              courseConversationReranking;
         for (const courseConversation of courseConversations
           .filter((courseConversation) => 1.5 < courseConversation.reranking)
           .sort(
