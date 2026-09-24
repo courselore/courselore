@@ -115,19 +115,22 @@ modelsServer.push({
     response,
   ) => {
     if (typeof request.body.text !== "string") throw "validation";
-    response
-      .setHeader("Content-Type", "application/json; charset=utf-8")
-      .send(
-        JSON.stringify(
-          (
-            await sentimentAnalysis(
-              request.body.text
-                .slice(0, 1500)
-                .replaceAll(/[^A-Za-z0-9 ]/gu, ""),
-            )
-          )[0],
-        ),
-      );
+    response.setHeader("Content-Type", "application/json; charset=utf-8");
+    for (let textLength = 2000; 0 < textLength; textLength -= 400)
+      try {
+        response.send(
+          JSON.stringify(
+            (
+              await sentimentAnalysis(
+                request.body.text
+                  .slice(0, textLength)
+                  .replaceAll(/[^A-Za-z0-9 ]/gu, ""),
+              )
+            )[0],
+          ),
+        );
+        break;
+      } catch {}
   },
 });
 
