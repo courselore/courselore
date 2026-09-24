@@ -1,5 +1,7 @@
 # Changelog
 
+## 10.2.8 · 2026-09-24
+
 - Added a feature in which some questions are shown to instructors as “high-priority” on the sidebar. What determines whether a question is high-priority is sentiment analysis.
 
 ## 10.2.7 · 2026-09-22
