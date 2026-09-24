@@ -56,10 +56,10 @@
     "@radically-straightforward/typescript@1.0.5": true,
     "xxhash-addon@2.1.0": true,
     "fsevents@2.3.3": true,
-    "onnxruntime-node@1.24.3": true,
     "sharp@0.34.5": true,
     "protobufjs@7.6.6": true,
-    "esbuild@0.28.2": true
+    "esbuild@0.28.2": true,
+    "onnxruntime-node@1.30.0": true
   },
   "overrides": {
     "sharp": "$sharp"
