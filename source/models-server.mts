@@ -119,7 +119,7 @@ modelsServer.push({
       .setHeader("Content-Type", "application/json; charset=utf-8")
       .send(
         JSON.stringify(
-          (await sentimentAnalysis(request.body.text.slice(0, 1500)))[0],
+          (await sentimentAnalysis(request.body.text.slice(0, 1000)))[0],
         ),
       );
   },
