@@ -123,7 +123,7 @@ modelsServer.push({
             await sentimentAnalysis(
               request.body.text
                 .slice(0, 1500)
-                .replaceAll(/[^\p{Letter}\p{Number}\p{White_Space}]/gu, ""),
+                .replaceAll(/[^A-Za-z0-9 ]/gu, ""),
             )
           )[0],
         ),
