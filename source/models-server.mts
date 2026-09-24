@@ -119,7 +119,16 @@ modelsServer.push({
       .setHeader("Content-Type", "application/json; charset=utf-8")
       .send(
         JSON.stringify(
-          (await sentimentAnalysis(request.body.text.slice(0, 1000)))[0],
+          (
+            await sentimentAnalysis(
+              request.body.text
+                .slice(0, 1500)
+                .replaceAll(
+                  /[^\p{Letter}\p{Number}\p{Private_Use}\p{White_Space}]/gu,
+                  "",
+                ),
+            )
+          )[0],
         ),
       );
   },
