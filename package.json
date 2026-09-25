@@ -10,7 +10,7 @@
     "@huggingface/transformers": "^4.3.0",
     "@node-saml/node-saml": "^5.1.0",
     "@radically-straightforward/ffmpeg": "^1.0.2",
-    "@radically-straightforward/production": "^1.0.81",
+    "@radically-straightforward/production": "^1.0.82",
     "crypto-random-string": "^6.0.0",
     "email-addresses": "^5.0.0",
     "github-slugger": "^2.0.0",
@@ -51,7 +51,6 @@
     "typescript": "^7.0.2"
   },
   "allowScripts": {
-    "@radically-straightforward/caddy@2.0.12": true,
     "@radically-straightforward/ffmpeg@1.0.2": true,
     "@radically-straightforward/typescript@1.0.5": true,
     "xxhash-addon@2.1.0": true,
@@ -59,7 +58,8 @@
     "sharp@0.34.5": true,
     "protobufjs@7.6.6": true,
     "esbuild@0.28.2": true,
-    "onnxruntime-node@1.30.0": true
+    "onnxruntime-node@1.30.0": true,
+    "@radically-straightforward/caddy@2.0.13": true
   },
   "overrides": {
     "sharp": "$sharp"
