@@ -670,6 +670,7 @@ export default async (application: Application): Promise<void> => {
                 address: application.userConfiguration.email.from,
               },
               to: courseConversationMessageEmailNotificationUser.email,
+              replyTo: `${courseConversationMessageEmailNotificationReplyToken}@${TODO}`,
               inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
               references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
               subject: courseConversation.title,
