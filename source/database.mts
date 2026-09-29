@@ -8100,5 +8100,20 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       },
+
+      sql`
+        create table "emailNotificationReplyTokens" (
+          "id" integer primary key autoincrement,
+          "tokenTokenHash" text not null unique,
+          "courseConversation" integer not null references "courseConversations",
+          "courseParticipation" integer not null references "courseParticipations"
+        ) strict;
+        create index "index_emailNotificationReplyTokens_courseConversation" on "emailNotificationReplyTokens" ("courseConversation");
+        create index "index_emailNotificationReplyTokens_courseParticipation" on "emailNotificationReplyTokens" ("courseParticipation");
+
+        alter table "courseConversationMessages" add column "sentViaEmail" integer null;
+        update "courseConversationMessages" set "sentViaEmail" = false;
+        alter table "courseConversationMessages" alter column "sentViaEmail" set not null;
+      `,
     );
 };
