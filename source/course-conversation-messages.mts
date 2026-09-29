@@ -1,5 +1,6 @@
 import * as serverTypes from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
+import * as cryptography from "@radically-straightforward/cryptography";
 import cryptoRandomString from "crypto-random-string";
 import natural from "natural";
 import sql from "@radically-straightforward/sqlite";
@@ -639,7 +640,25 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id};
               `,
             ) === undefined
-          )
+          ) {
+            const courseConversationMessageEmailNotificationReplyToken =
+              cryptoRandomString({
+                length: 100,
+                characters: "abcdefghijklmnopqrstuvwxyz",
+              });
+            application.database.run(
+              sql`
+                insert into "courseConversationMessageEmailNotificationReplyTokens" (
+                  "tokenTokenHash",
+                  "courseConversation",
+                  "courseParticipation",
+                ) values (
+                  ${cryptography.TokenHash.hash(courseConversationMessageEmailNotificationReplyToken)},
+                  ${courseConversation.id},
+                  ${courseConversationMessageEmailNotificationCourseParticipation.id}
+                );
+              `,
+            );
             courseConversationMessageEmailNotifications.push({
               from: {
                 name: `${
@@ -651,9 +670,9 @@ export default async (application: Application): Promise<void> => {
                 address: application.userConfiguration.email.from,
               },
               to: courseConversationMessageEmailNotificationUser.email,
-              subject: courseConversation.title,
               inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
               references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
+              subject: courseConversation.title,
               html: html`
                 $${await application.partials.courseConversationMessageContentProcessor(
                   {
@@ -688,6 +707,7 @@ export default async (application: Application): Promise<void> => {
                 </p>
               `,
             });
+          }
         }
         application.database.transaction(() => {
           for (const courseConversationMessageEmailNotification of courseConversationMessageEmailNotifications)
