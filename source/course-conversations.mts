@@ -7402,7 +7402,7 @@ export default async (application: Application): Promise<void> => {
         }
         application.database.run(
           sql`
-            delete from "emailNotificationReplyTokens"
+            delete from "courseConversationMessageEmailNotificationReplyTokens"
             where "courseConversation" = ${request.state.courseConversation!.id};
           `,
         );

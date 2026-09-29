@@ -8102,14 +8102,14 @@ export default async (application: Application): Promise<void> => {
       },
 
       sql`
-        create table "emailNotificationReplyTokens" (
+        create table "courseConversationMessageEmailNotificationReplyTokens" (
           "id" integer primary key autoincrement,
           "tokenTokenHash" text not null unique,
           "courseConversation" integer not null references "courseConversations",
           "courseParticipation" integer not null references "courseParticipations"
         ) strict;
-        create index "index_emailNotificationReplyTokens_courseConversation" on "emailNotificationReplyTokens" ("courseConversation");
-        create index "index_emailNotificationReplyTokens_courseParticipation" on "emailNotificationReplyTokens" ("courseParticipation");
+        create index "index_courseConversationMessageEmailNotificationReplyTokens_courseConversation" on "courseConversationMessageEmailNotificationReplyTokens" ("courseConversation");
+        create index "index_courseConversationMessageEmailNotificationReplyTokens_courseParticipation" on "courseConversationMessageEmailNotificationReplyTokens" ("courseParticipation");
 
         alter table "courseConversationMessages" add column "sentViaEmail" integer null;
         update "courseConversationMessages" set "sentViaEmail" = false;
