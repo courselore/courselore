@@ -39,7 +39,6 @@
     "@fontsource-variable/roboto-serif": "^5.3.0",
     "@radically-straightforward/development": "^1.0.84",
     "@types/node": "^26.6.2",
-    "@types/nodemailer": "^8.0.2",
     "@types/qrcode": "^1.5.6",
     "bootstrap-icons": "^1.13.1",
     "maildev": "^3.0.0",
