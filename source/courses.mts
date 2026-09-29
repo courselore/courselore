@@ -4920,6 +4920,12 @@ export default async (application: Application): Promise<void> => {
           );
           application.database.run(
             sql`
+              delete from "emailNotificationReplyTokens"
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
               delete from "courseParticipations" where "id" = ${courseParticipation.id};
             `,
           );
@@ -5470,6 +5476,12 @@ export default async (application: Application): Promise<void> => {
             );
             application.database.run(
               sql`
+                delete from "emailNotificationReplyTokens"
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
                 delete from "courseParticipations" where "id" = ${courseParticipation.id};
               `,
             );
@@ -5595,6 +5607,12 @@ export default async (application: Application): Promise<void> => {
           sql`
             update "courseConversationMessageLikes"
             set "courseParticipation" = null
+            where "courseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "emailNotificationReplyTokens"
             where "courseParticipation" = ${request.state.courseParticipation!.id};
           `,
         );

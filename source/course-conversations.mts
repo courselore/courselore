@@ -7402,6 +7402,12 @@ export default async (application: Application): Promise<void> => {
         }
         application.database.run(
           sql`
+            delete from "emailNotificationReplyTokens"
+            where "courseConversation" = ${request.state.courseConversation!.id};
+          `,
+        );
+        application.database.run(
+          sql`
             delete from "courseConversations"
             where "id" = ${request.state.courseConversation!.id};
           `,
