@@ -5,12 +5,12 @@ export default {
 
   // Nodemailer email configuration: https://nodemailer.com/
   email: {
+    from: "courselore@example.com",
     host: "smtp.example.com",
     auth: {
       user: "courselore@example.com",
       pass: "example",
     },
-    from: "courselore@example.com",
   },
 
   // To generate this key, run Courselore.
