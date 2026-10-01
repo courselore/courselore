@@ -25,9 +25,12 @@ export default async (application: Application): Promise<void> => {
       name: application.userConfiguration.hostname,
       size: 512 * 2 ** 10,
       disabledCommands: ["AUTH"],
-      key: await fs.readFile(application.userConfiguration.tls.key, "utf-8"),
+      key: await fs.readFile(
+        application.userConfiguration.email.receive.key,
+        "utf-8",
+      ),
       cert: await fs.readFile(
-        application.userConfiguration.tls.certificate,
+        application.userConfiguration.email.receive.certificate,
         "utf-8",
       ),
       onMailFrom: util.callbackify(
@@ -265,8 +268,8 @@ export default async (application: Application): Promise<void> => {
       application.emailServer!.close();
     });
     for (const file of [
-      application.userConfiguration.tls.key,
-      application.userConfiguration.tls.certificate,
+      application.userConfiguration.email.receive.key,
+      application.userConfiguration.email.receive.certificate,
     ])
       fsCallback
         .watchFile(file, () => {
