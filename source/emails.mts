@@ -297,177 +297,64 @@ export default async (application: Application): Promise<void> => {
             if (session.envelope.mailFrom === false) throw new Error();
             const email = await mailParser.simpleParser(emailStream);
             if (emailStream.sizeExceeded) throw new Error();
-            const feedEntryEnclosures = new Array<{ id: number }>();
-            for (const attachment of email.attachments) {
-              const feedEntryEnclosure = application.database.get<{
-                id: number;
-                publicId: string;
-                name: string;
-              }>(
-                sql`
-                select * from "feedEntryEnclosures" where "id" = ${
-                  application.database.run(
-                    sql`
-                      insert into "feedEntryEnclosures" (
-                        "publicId",
-                        "type",
-                        "length",
-                        "name"
-                      )
-                      values (
-                        ${cryptoRandomString({
-                          length: 40,
-                          characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-                        })},
-                        ${attachment.contentType},
-                        ${attachment.size},
-                        ${
-                          attachment.filename?.replaceAll(
-                            /[^A-Za-z0-9_.-]/g,
-                            "-",
-                          ) ?? "untitled"
-                        }
-                      );
-                    `,
-                  ).lastInsertRowid
-                };
-              `,
-              )!;
-              await fs.mkdir(
-                path.join(
-                  application.userConfiguration.dataDirectory,
-                  "files",
-                  feedEntryEnclosure.publicId,
-                ),
-                { recursive: true },
-              );
-              await fs.writeFile(
-                path.join(
-                  application.userConfiguration.dataDirectory,
-                  "files",
-                  feedEntryEnclosure.publicId,
-                  feedEntryEnclosure.name,
-                ),
-                attachment.content,
-              );
-              feedEntryEnclosures.push(feedEntryEnclosure);
-            }
-            for (const feed of session.states.feeds)
+            const attachments = new Array<string>();
+            // for (const attachment of email.attachments) {
+            //   const feedEntryEnclosure = application.database.get<{
+            //     id: number;
+            //     publicId: string;
+            //     name: string;
+            //   }>(
+            //     sql`
+            //     select * from "feedEntryEnclosures" where "id" = ${
+            //       application.database.run(
+            //         sql`
+            //           insert into "feedEntryEnclosures" (
+            //             "publicId",
+            //             "type",
+            //             "length",
+            //             "name"
+            //           )
+            //           values (
+            //             ${cryptoRandomString({
+            //               length: 40,
+            //               characters: "abcdefghijklmnopqrstuvwxyz0123456789",
+            //             })},
+            //             ${attachment.contentType},
+            //             ${attachment.size},
+            //             ${
+            //               attachment.filename?.replaceAll(
+            //                 /[^A-Za-z0-9_.-]/g,
+            //                 "-",
+            //               ) ?? "untitled"
+            //             }
+            //           );
+            //         `,
+            //       ).lastInsertRowid
+            //     };
+            //   `,
+            //   )!;
+            //   await fs.mkdir(
+            //     path.join(
+            //       application.userConfiguration.dataDirectory,
+            //       "files",
+            //       feedEntryEnclosure.publicId,
+            //     ),
+            //     { recursive: true },
+            //   );
+            //   await fs.writeFile(
+            //     path.join(
+            //       application.userConfiguration.dataDirectory,
+            //       "files",
+            //       feedEntryEnclosure.publicId,
+            //       feedEntryEnclosure.name,
+            //     ),
+            //     attachment.content,
+            //   );
+            //   attachments.push(feedEntryEnclosure);
+            // }
+            for (const state of session.states)
               application.database.transaction(() => {
-                application.database.run(
-                  sql`
-                  update "feeds"
-                  set "emailIcon" = ${`https://${(session.envelope.mailFrom as smtpServer.SMTPServerAddress).address.split("@")[1]}/favicon.ico`}
-                  where "id" = ${feed.id};
-                `,
-                );
-                const feedEntry = application.database.get<{
-                  id: number;
-                  publicId: string;
-                }>(
-                  sql`
-                  select * from "feedEntries" where "id" = ${
-                    application.database.run(
-                      sql`
-                        insert into "feedEntries" (
-                          "publicId",
-                          "feed",
-                          "createdAt",
-                          "author",
-                          "title",
-                          "content"
-                        )
-                        values (
-                          ${cryptoRandomString({
-                            length: 40,
-                            characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-                          })},
-                          ${feed.id},
-                          ${new Date().toISOString()},
-                          ${(session.envelope.mailFrom as smtpServer.SMTPServerAddress).address},
-                          ${email.subject ?? "Untitled"},
-                          ${typeof email.html === "string" ? email.html : typeof email.textAsHtml === "string" ? email.textAsHtml : "No content."}
-                        );
-                      `,
-                    ).lastInsertRowid
-                  };
-                `,
-                )!;
-                for (const feedEntryEnclosure of feedEntryEnclosures)
-                  application.database.run(
-                    sql`
-                    insert into "feedEntryEnclosureLinks" (
-                      "feedEntry",
-                      "feedEntryEnclosure"
-                    ) values (
-                      ${feedEntry.id},
-                      ${feedEntryEnclosure.id}
-                    );
-                  `,
-                  );
-                const deletedFeedEntries = application.database.all<{
-                  id: number;
-                  publicId: string;
-                  title: string;
-                  content: string;
-                }>(
-                  sql`
-                  select "id", "publicId", "title", "content"
-                  from "feedEntries"
-                  where "feed" = ${feed.id}
-                  order by "id" asc;
-                `,
-                );
-                let feedLength = 0;
-                while (0 < deletedFeedEntries.length) {
-                  const feedEntry = deletedFeedEntries.pop()!;
-                  feedLength +=
-                    feedEntry.title.length + feedEntry.content.length;
-                  if (512 * 2 ** 10 < feedLength) break;
-                }
-                for (const deletedFeedEntry of deletedFeedEntries) {
-                  application.database.run(
-                    sql`
-                    delete from "feedEntryEnclosureLinks" where "feedEntry" = ${deletedFeedEntry.id};
-                  `,
-                  );
-                  application.database.run(
-                    sql`
-                    delete from "feedEntries" where "id" = ${deletedFeedEntry.id};
-                  `,
-                  );
-                }
-                for (const feedWebSubSubscription of application.database.all<{
-                  id: number;
-                }>(
-                  sql`
-                  select "id" from "feedWebSubSubscriptions" where "feed" = ${feed.id};
-                `,
-                ))
-                  application.database.backgroundJob({
-                    type: "feedWebSubSubscriptions.dispatch",
-                    parameters: {
-                      feedId: feed.id,
-                      feedEntryId: feedEntry.id,
-                      feedWebSubSubscriptionId: feedWebSubSubscription.id,
-                    },
-                  });
-                utilities.log(
-                  "EMAIL",
-                  "SUCCESS",
-                  "FEED",
-                  String(feed.publicId),
-                  "ENTRY",
-                  feedEntry.publicId,
-                  (session.envelope.mailFrom as smtpServer.SMTPServerAddress)
-                    .address,
-                  "DELETED ENTRIES",
-                  JSON.stringify(
-                    deletedFeedEntries.map(
-                      (deletedFeedEntry) => deletedFeedEntry.publicId,
-                    ),
-                  ),
-                );
+                utilities.log("EMAIL", "SUCCESS");
               });
           } finally {
             emailStream.resume();
