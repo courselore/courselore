@@ -57,6 +57,8 @@ export type Application = {
       };
       receive: {
         hostname: string;
+        key: string;
+        certificate: string;
       };
     };
     secretKey: string;

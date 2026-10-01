@@ -1,3 +1,6 @@
+import path from "node:path";
+import * as caddy from "@radically-straightforward/caddy";
+
 export default {
   hostname: process.env.HOSTNAME ?? "localhost",
   email: {
@@ -10,6 +13,14 @@ export default {
     },
     receive: {
       hostname: "localhost",
+      key: path.join(
+        caddy.dataDirectory(),
+        `certificates/local/localhost/localhost.key`,
+      ),
+      certificate: path.join(
+        caddy.dataDirectory(),
+        `certificates/local/localhost/localhost.crt`,
+      ),
     },
   },
   secretKey: "c3499fa3806312af850b7009c680725b01300fc1ee7806f455effb3213d20cf9",
