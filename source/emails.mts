@@ -1,5 +1,4 @@
 import util from "node:util";
-import path from "node:path";
 import fs from "node:fs/promises";
 import fsCallback from "node:fs";
 import sql from "@radically-straightforward/sqlite";
