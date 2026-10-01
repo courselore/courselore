@@ -645,15 +645,15 @@ export default async (application: Application): Promise<void> => {
           ) {
             const courseConversationMessageEmailNotificationReplyToken =
               cryptoRandomString({
-                length: 100,
-                characters: "abcdefghijklmnopqrstuvwxyz",
+                length: 40,
+                characters: "abcdefghijklmnopqrstuvwxyz0123456789",
               });
             application.database.run(
               sql`
                 insert into "courseConversationMessageEmailNotificationReplyTokens" (
                   "tokenTokenHash",
                   "courseConversation",
-                  "courseParticipation",
+                  "courseParticipation"
                 ) values (
                   ${cryptography.TokenHash.hash(courseConversationMessageEmailNotificationReplyToken)},
                   ${courseConversation.id},
