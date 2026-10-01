@@ -8110,7 +8110,7 @@ export default async (application: Application): Promise<void> => {
         ) strict;
         create index "index_courseConversationMessageEmailNotificationReplyTokens_courseConversation" on "courseConversationMessageEmailNotificationReplyTokens" ("courseConversation");
         create index "index_courseConversationMessageEmailNotificationReplyTokens_courseParticipation" on "courseConversationMessageEmailNotificationReplyTokens" ("courseParticipation");
-
+        
         alter table "courseConversationMessages" add column "sentViaEmail" integer null;
         update "courseConversationMessages" set "sentViaEmail" = false;
         alter table "courseConversationMessages" alter column "sentViaEmail" set not null;
