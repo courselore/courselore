@@ -167,16 +167,16 @@ export default async (application: Application): Promise<void> => {
               mostRecentlyVisitedCourseConversation: number | null;
             }>(
               sql`
-              select
-                "id",
-                "publicId",
-                "course",
-                "courseParticipationRole",
-                "decorationColor",
-                "mostRecentlyVisitedCourseConversation"
-              from "courseParticipations"
-              where "id" = ${courseConversationMessageEmailNotificationReplyToken.courseParticipation};
-            `,
+                select
+                  "id",
+                  "publicId",
+                  "course",
+                  "courseParticipationRole",
+                  "decorationColor",
+                  "mostRecentlyVisitedCourseConversation"
+                from "courseParticipations"
+                where "id" = ${courseConversationMessageEmailNotificationReplyToken.courseParticipation};
+              `,
             ) ??
             (() => {
               throw new Error();
@@ -205,27 +205,27 @@ export default async (application: Application): Promise<void> => {
               ltiNamesAndRoleProvisioningServicesURL: string | null;
             }>(
               sql`
-              select
-                "id",
-                "publicId",
-                "name",
-                "information",
-                "invitationLinkCourseParticipationRoleInstructorsEnabled",
-                "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
-                "invitationLinkCourseParticipationRoleStudentsEnabled",
-                "invitationLinkCourseParticipationRoleStudentsTokenEncrypted",
-                "courseConversationRequiresTagging",
-                "courseParticipationRoleStudentsAnonymityAllowed",
-                "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
-                "courseState",
-                "courseConversationsNextPublicId",
-                "ltiPlatformId",
-                "ltiClientId",
-                "ltiContextId",
-                "ltiNamesAndRoleProvisioningServicesURL"
-              from "courses"
-              where "id" = ${courseParticipation.course};
-            `,
+                select
+                  "id",
+                  "publicId",
+                  "name",
+                  "information",
+                  "invitationLinkCourseParticipationRoleInstructorsEnabled",
+                  "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
+                  "invitationLinkCourseParticipationRoleStudentsEnabled",
+                  "invitationLinkCourseParticipationRoleStudentsTokenEncrypted",
+                  "courseConversationRequiresTagging",
+                  "courseParticipationRoleStudentsAnonymityAllowed",
+                  "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+                  "courseState",
+                  "courseConversationsNextPublicId",
+                  "ltiPlatformId",
+                  "ltiClientId",
+                  "ltiContextId",
+                  "ltiNamesAndRoleProvisioningServicesURL"
+                from "courses"
+                where "id" = ${courseParticipation.course};
+              `,
             ) ??
             (() => {
               throw new Error();
