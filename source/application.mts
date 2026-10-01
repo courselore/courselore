@@ -15,6 +15,7 @@ import * as SAML from "@node-saml/node-saml";
 import selfsigned from "selfsigned";
 import * as sqliteVec from "sqlite-vec";
 import nodemailer from "nodemailer";
+import smtpServer from "smtp-server";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
@@ -40,7 +41,7 @@ export type Application = {
   version: string;
   commandLineArguments: {
     values: {
-      type: "initialize" | "webServer" | "backgroundJobWorker";
+      type: "initialize" | "webServer" | "emailServer" | "backgroundJobWorker";
       port: undefined | string;
     };
     positionals: string[];
@@ -102,6 +103,7 @@ export type Application = {
   webServer: undefined | ReturnType<typeof server>;
   layouts: {};
   partials: {};
+  emailServer: undefined | smtpServer.SMTPServer;
 } & ApplicationLayouts &
   ApplicationAuthentication &
   ApplicationUsers &
