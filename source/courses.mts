@@ -4303,7 +4303,7 @@ export default async (application: Application): Promise<void> => {
           parameters: {
             from: {
               name: `${request.state.course.name} · Courselore`,
-              address: application.userConfiguration.email.from,
+              address: application.userConfiguration.email.send.from,
             },
             to: userEmail,
             subject: `Invitation`,

@@ -669,7 +669,7 @@ export default async (application: Application): Promise<void> => {
                     : (courseConversationMessageCreatedByUser?.name ??
                       "Deleted course participant")
                 } · ${course.name}`,
-                address: application.userConfiguration.email.from,
+                address: application.userConfiguration.email.send.from,
               },
               to: courseConversationMessageEmailNotificationUser.email,
               replyTo: `${courseConversationMessageEmailNotificationReplyToken}@${application.userConfiguration.email.receive}`,
