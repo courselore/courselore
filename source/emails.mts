@@ -21,6 +21,65 @@ export default async (application: Application): Promise<void> => {
           courseConversation: number;
           courseParticipation: number;
         };
+        course: {
+          id: number;
+          publicId: string;
+          name: string;
+          information: string | null;
+          invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+          invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
+          invitationLinkCourseParticipationRoleStudentsEnabled: number;
+          invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
+          courseConversationRequiresTagging: number;
+          courseParticipationRoleStudentsAnonymityAllowed:
+            | "courseParticipationRoleStudentsAnonymityAllowedNone"
+            | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+            | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
+          courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+          courseState: "courseStateActive" | "courseStateArchived";
+          courseConversationsNextPublicId: number;
+          ltiPlatformId: string | null;
+          ltiClientId: string | null;
+          ltiContextId: string | null;
+          ltiNamesAndRoleProvisioningServicesURL: string | null;
+        };
+        courseParticipation: {
+          id: number;
+          publicId: string;
+          course: number;
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+          decorationColor:
+            | "red"
+            | "orange"
+            | "amber"
+            | "yellow"
+            | "lime"
+            | "green"
+            | "emerald"
+            | "teal"
+            | "cyan"
+            | "violet"
+            | "purple"
+            | "fuchsia"
+            | "pink"
+            | "rose";
+          mostRecentlyVisitedCourseConversation: number | null;
+        };
+        courseConversation: {
+          id: number;
+          publicId: string;
+          courseConversationType:
+            "courseConversationTypeNote" | "courseConversationTypeQuestion";
+          questionResolved: number;
+          courseConversationVisibility:
+            | "courseConversationVisibilityEveryone"
+            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseConversationVisibilityCourseConversationParticipations";
+          pinned: number;
+          title: string;
+        };
       };
     };
     application.emailServer = new smtpServer.SMTPServer({
@@ -40,7 +99,7 @@ export default async (application: Application): Promise<void> => {
           address: smtpServer.SMTPServerAddress,
           session: smtpServer.SMTPServerSession & SMTPServerSessionState,
         ) => {
-          session.state = {};
+          session.state = {} as SMTPServerSessionState["state"];
         },
       ),
       onRcptTo: util.callbackify(
@@ -77,6 +136,146 @@ export default async (application: Application): Promise<void> => {
                 where "tokenTokenHash" = ${cryptography.TokenHash.hash(
                   courseConversationMessageEmailNotificationReplyTokenToken,
                 )};
+              `,
+            ) ??
+            (() => {
+              throw new Error();
+            })();
+          session.state.courseParticipation =
+            application.database.get<{
+              id: number;
+              publicId: string;
+              course: number;
+              courseParticipationRole:
+                | "courseParticipationRoleInstructor"
+                | "courseParticipationRoleStudent";
+              decorationColor:
+                | "red"
+                | "orange"
+                | "amber"
+                | "yellow"
+                | "lime"
+                | "green"
+                | "emerald"
+                | "teal"
+                | "cyan"
+                | "violet"
+                | "purple"
+                | "fuchsia"
+                | "pink"
+                | "rose";
+              mostRecentlyVisitedCourseConversation: number | null;
+            }>(
+              sql`
+              select
+                "id",
+                "publicId",
+                "course",
+                "courseParticipationRole",
+                "decorationColor",
+                "mostRecentlyVisitedCourseConversation"
+              from "courseParticipations"
+              where "id" = ${session.state.courseConversationMessageEmailNotificationReplyToken.courseParticipation};
+            `,
+            ) ??
+            (() => {
+              throw new Error();
+            })();
+          session.state.course =
+            application.database.get<{
+              id: number;
+              publicId: string;
+              name: string;
+              information: string | null;
+              invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+              invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
+              invitationLinkCourseParticipationRoleStudentsEnabled: number;
+              invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
+              courseConversationRequiresTagging: number;
+              courseParticipationRoleStudentsAnonymityAllowed:
+                | "courseParticipationRoleStudentsAnonymityAllowedNone"
+                | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
+              courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+              courseState: "courseStateActive" | "courseStateArchived";
+              courseConversationsNextPublicId: number;
+              ltiPlatformId: string | null;
+              ltiClientId: string | null;
+              ltiContextId: string | null;
+              ltiNamesAndRoleProvisioningServicesURL: string | null;
+            }>(
+              sql`
+              select
+                "id",
+                "publicId",
+                "name",
+                "information",
+                "invitationLinkCourseParticipationRoleInstructorsEnabled",
+                "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
+                "invitationLinkCourseParticipationRoleStudentsEnabled",
+                "invitationLinkCourseParticipationRoleStudentsTokenEncrypted",
+                "courseConversationRequiresTagging",
+                "courseParticipationRoleStudentsAnonymityAllowed",
+                "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+                "courseState",
+                "courseConversationsNextPublicId",
+                "ltiPlatformId",
+                "ltiClientId",
+                "ltiContextId",
+                "ltiNamesAndRoleProvisioningServicesURL"
+              from "courses"
+              where "id" = ${session.state.courseParticipation.course};
+            `,
+            ) ??
+            (() => {
+              throw new Error();
+            })();
+          session.state.courseConversation =
+            application.database.get<{
+              id: number;
+              publicId: string;
+              courseConversationType:
+                "courseConversationTypeNote" | "courseConversationTypeQuestion";
+              questionResolved: number;
+              courseConversationVisibility:
+                | "courseConversationVisibilityEveryone"
+                | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                | "courseConversationVisibilityCourseConversationParticipations";
+              pinned: number;
+              title: string;
+            }>(
+              sql`
+                select 
+                  "id",
+                  "publicId",
+                  "courseConversationType",
+                  "questionResolved",
+                  "courseConversationVisibility",
+                  "pinned",
+                  "title"
+                from "courseConversations"
+                where
+                  "course" = ${session.state.course.id} and
+                  "id" = ${session.state.courseConversationMessageEmailNotificationReplyToken.courseConversation} and (
+                    "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                    ${
+                      session.state.courseParticipation
+                        .courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                        ? sql`
+                            or
+                            "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                          `
+                        : sql``
+                    }
+                    or (
+                      select true
+                      from "courseConversationParticipations"
+                      where
+                        "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                        "courseConversationParticipations"."courseParticipation" = ${session.state.courseParticipation.id}
+                    )
+                  );
               `,
             ) ??
             (() => {
