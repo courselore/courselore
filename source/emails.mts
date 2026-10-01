@@ -422,80 +422,79 @@ export default async (application: Application): Promise<void> => {
                   id: number;
                 }>(
                   sql`
-                      select * from "courseConversationMessages" where "id" = ${
-                        application.database.run(
-                          sql`
-                            insert into "courseConversationMessages" (
-                              "publicId",
-                              "courseConversation",
-                              "createdByCourseParticipation",
-                              "createdAt",
-                              "updatedAt",
-                              "courseConversationMessageType",
-                              "courseConversationMessageVisibility",
-                              "courseConversationMessageAnonymity",
-                              "sentViaEmail",
-                              "content",
-                              "contentLexicalSearch",
-                              "contentSemanticSearch",
-                              "contentSentimentAnalysisType",
-                              "contentSentimentAnalysisIntensity"
-                            )
-                            values (
-                              ${cryptoRandomString({ length: 20, type: "numeric" })},
-                              ${state.courseConversation.id},
-                              ${state.courseParticipation.id},
-                              ${new Date().toISOString()},
-                              ${null},
-                              ${
-                                state.courseConversation
-                                  .courseConversationType ===
-                                  "courseConversationTypeQuestion" &&
-                                state.courseParticipation
-                                  .courseParticipationRole ===
-                                  "courseParticipationRoleInstructor"
-                                  ? "courseConversationMessageTypeAnswer"
-                                  : "courseConversationMessageTypeMessage"
-                              },
-                              ${"courseConversationMessageVisibilityEveryone"},
-                              ${"courseConversationMessageAnonymityNone"},
-                              ${Number(true)},
-                              ${content},
-                              ${utilities
-                                .tokenize(contentTextContent, {
-                                  stopWords:
-                                    application.applicationConfiguration
-                                      .stopWords,
-                                  stem: (token) =>
-                                    natural.PorterStemmer.stem(token),
-                                })
-                                .map(
-                                  (tokenWithPosition) =>
-                                    tokenWithPosition.token,
-                                )
-                                .join(" ")},
-                              vec_f32(${contentSemanticSearch}),
-                              ${contentSentimentAnalysis.label},
-                              ${contentSentimentAnalysis.score}
-                            );
-                          `,
-                        ).lastInsertRowid
-                      };
-                    `,
+                    select * from "courseConversationMessages" where "id" = ${
+                      application.database.run(
+                        sql`
+                          insert into "courseConversationMessages" (
+                            "publicId",
+                            "courseConversation",
+                            "createdByCourseParticipation",
+                            "createdAt",
+                            "updatedAt",
+                            "courseConversationMessageType",
+                            "courseConversationMessageVisibility",
+                            "courseConversationMessageAnonymity",
+                            "sentViaEmail",
+                            "content",
+                            "contentLexicalSearch",
+                            "contentSemanticSearch",
+                            "contentSentimentAnalysisType",
+                            "contentSentimentAnalysisIntensity"
+                          )
+                          values (
+                            ${cryptoRandomString({ length: 20, type: "numeric" })},
+                            ${state.courseConversation.id},
+                            ${state.courseParticipation.id},
+                            ${new Date().toISOString()},
+                            ${null},
+                            ${
+                              state.courseConversation
+                                .courseConversationType ===
+                                "courseConversationTypeQuestion" &&
+                              state.courseParticipation
+                                .courseParticipationRole ===
+                                "courseParticipationRoleInstructor"
+                                ? "courseConversationMessageTypeAnswer"
+                                : "courseConversationMessageTypeMessage"
+                            },
+                            ${"courseConversationMessageVisibilityEveryone"},
+                            ${"courseConversationMessageAnonymityNone"},
+                            ${Number(true)},
+                            ${content},
+                            ${utilities
+                              .tokenize(contentTextContent, {
+                                stopWords:
+                                  application.applicationConfiguration
+                                    .stopWords,
+                                stem: (token) =>
+                                  natural.PorterStemmer.stem(token),
+                              })
+                              .map(
+                                (tokenWithPosition) => tokenWithPosition.token,
+                              )
+                              .join(" ")},
+                            vec_f32(${contentSemanticSearch}),
+                            ${contentSentimentAnalysis.label},
+                            ${contentSentimentAnalysis.score}
+                          );
+                        `,
+                      ).lastInsertRowid
+                    };
+                  `,
                 )!;
                 application.database.run(
                   sql`
-                      insert into "courseConversationMessageViews" (
-                        "courseConversationMessage",
-                        "courseParticipation",
-                        "createdAt"
-                      )
-                      values (
-                        ${state.courseConversationMessage.id},
-                        ${state.courseParticipation.id},
-                        ${new Date().toISOString()}
-                      );
-                    `,
+                    insert into "courseConversationMessageViews" (
+                      "courseConversationMessage",
+                      "courseParticipation",
+                      "createdAt"
+                    )
+                    values (
+                      ${state.courseConversationMessage.id},
+                      ${state.courseParticipation.id},
+                      ${new Date().toISOString()}
+                    );
+                  `,
                 );
                 application.database.backgroundJob({
                   type: "courseConversationMessageEmailNotification",
