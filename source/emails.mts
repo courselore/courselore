@@ -14,16 +14,11 @@ import { Application } from "./application.mjs";
 export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "emailServer") {
     type SMTPServerSessionState = {
-      state: {
-        feeds: {
-          id: number;
-          publicId: string;
-        }[];
-      };
+      state: {};
     };
     application.emailServer = new smtpServer.SMTPServer({
       name: application.userConfiguration.hostname,
-      size: 512 * 2 ** 10,
+      size: 20 * 2 ** 20,
       disabledCommands: ["AUTH"],
       key: await fs.readFile(
         application.userConfiguration.email.receive.key,
@@ -38,14 +33,7 @@ export default async (application: Application): Promise<void> => {
           address: smtpServer.SMTPServerAddress,
           session: smtpServer.SMTPServerSession & SMTPServerSessionState,
         ) => {
-          session.state = { feeds: [] };
-          if (
-            address.address.match(utilities.emailRegExp) === null ||
-            ["blogtrottr.com", "feedrabbit.com"].some((hostname) =>
-              address.address.endsWith("@" + hostname),
-            )
-          )
-            throw new Error();
+          session.state = {};
         },
       ),
       onRcptTo: util.callbackify(
