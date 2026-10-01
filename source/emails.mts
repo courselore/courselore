@@ -2,10 +2,18 @@ import util from "node:util";
 import fs from "node:fs/promises";
 import fsCallback from "node:fs";
 import sql from "@radically-straightforward/sqlite";
+import html from "@radically-straightforward/html";
 import * as utilities from "@radically-straightforward/utilities";
 import * as cryptography from "@radically-straightforward/cryptography";
 import * as node from "@radically-straightforward/node";
+import { unified } from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeRemark from "rehype-remark";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import remarkStringify from "remark-stringify";
 import cryptoRandomString from "crypto-random-string";
+import natural from "natural";
 import smtpServer from "smtp-server";
 import * as mailParser from "mailparser";
 import nodemailer from "nodemailer";
@@ -78,6 +86,9 @@ export default async (application: Application): Promise<void> => {
             | "courseConversationVisibilityCourseConversationParticipations";
           pinned: number;
           title: string;
+        };
+        courseConversationMessage: {
+          id: number;
         };
       }[];
     };
@@ -353,29 +364,44 @@ export default async (application: Application): Promise<void> => {
             //   );
             //   attachments.push(feedEntryEnclosure);
             // }
+            const content = String(
+              (
+                await unified()
+                  .use(rehypeParse, { fragment: true })
+                  .use(rehypeRemark, { document: false })
+                  .use(remarkGfm, { singleTilde: false })
+                  .use(remarkMath)
+                  .use(remarkStringify)
+                  .process(
+                    typeof email.html === "string"
+                      ? email.html
+                      : typeof email.textAsHtml === "string"
+                        ? email.textAsHtml
+                        : html`<div></div>`,
+                  )
+              ).value,
+            );
             for (const state of session.states) {
+              const contentTextContent =
+                await application.partials.courseConversationMessageContentProcessor(
+                  {
+                    course: state.course,
+                    courseConversationMessageContent: content,
+                    mode: "textContent",
+                  },
+                );
               const contentSemanticSearch = await (
                 await fetch("http://localhost:19000/vector-embedding", {
                   method: "POST",
                   headers: { "CSRF-Protection": "true" },
-                  body: new URLSearchParams({
-                    text:
-                      typeof email.text === "string"
-                        ? email.text
-                        : "No content.",
-                  }),
+                  body: new URLSearchParams({ text: contentTextContent }),
                 })
               ).text();
               const contentSentimentAnalysis = await (
                 await fetch("http://localhost:19000/sentiment-analysis", {
                   method: "POST",
                   headers: { "CSRF-Protection": "true" },
-                  body: new URLSearchParams({
-                    text:
-                      typeof email.text === "string"
-                        ? email.text
-                        : "No content.",
-                  }),
+                  body: new URLSearchParams({ text: contentTextContent }),
                 })
               ).json();
               application.database.transaction(() => {
@@ -392,7 +418,7 @@ export default async (application: Application): Promise<void> => {
                       where "id" = ${state.courseConversation.id};
                     `,
                   );
-                const courseConversationMessage = application.database.get<{
+                state.courseConversationMessage = application.database.get<{
                   id: number;
                 }>(
                   sql`
@@ -431,10 +457,10 @@ export default async (application: Application): Promise<void> => {
                                   ? "courseConversationMessageTypeAnswer"
                                   : "courseConversationMessageTypeMessage"
                               },
-                              ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
-                              ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
-                              ${Number(false)},
-                              ${request.body.content!},
+                              ${"courseConversationMessageVisibilityEveryone"},
+                              ${"courseConversationMessageAnonymityNone"},
+                              ${Number(true)},
+                              ${content},
                               ${utilities
                                 .tokenize(contentTextContent, {
                                   stopWords:
@@ -465,8 +491,8 @@ export default async (application: Application): Promise<void> => {
                         "createdAt"
                       )
                       values (
-                        ${courseConversationMessage.id},
-                        ${request.state.courseParticipation!.id},
+                        ${state.courseConversationMessage.id},
+                        ${state.courseParticipation.id},
                         ${new Date().toISOString()}
                       );
                     `,
@@ -475,22 +501,29 @@ export default async (application: Application): Promise<void> => {
                   type: "courseConversationMessageEmailNotification",
                   startAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
                   parameters: {
-                    courseConversationMessageId: courseConversationMessage.id,
+                    courseConversationMessageId:
+                      state.courseConversationMessage.id,
                   },
                 });
               });
-              response.redirect!(
-                `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
-              );
               for (const port of application.applicationConfiguration.ports)
                 fetch(`http://localhost:${port}/__live-connections`, {
                   method: "POST",
                   headers: { "CSRF-Protection": "true" },
                   body: new URLSearchParams({
-                    pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+                    pathname: `^/courses/${state.course.publicId}/conversations/${state.courseConversation.publicId}(?:$|/)`,
                   }),
                 });
-              utilities.log("EMAIL", "SUCCESS");
+              utilities.log(
+                "EMAIL",
+                "SUCCESS",
+                JSON.stringify({
+                  course: state.course.id,
+                  courseParticipation: state.courseParticipation.id,
+                  courseConversation: state.courseConversation.id,
+                  courseConversationMessage: state.courseConversationMessage.id,
+                }),
+              );
             }
           } finally {
             emailStream.resume();
