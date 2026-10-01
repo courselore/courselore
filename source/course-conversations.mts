@@ -3360,6 +3360,7 @@ export default async (application: Application): Promise<void> => {
                     "courseConversationMessageType",
                     "courseConversationMessageVisibility",
                     "courseConversationMessageAnonymity",
+                    "sentViaEmail",
                     "content",
                     "contentLexicalSearch",
                     "contentSemanticSearch",
@@ -3375,6 +3376,7 @@ export default async (application: Application): Promise<void> => {
                     ${"courseConversationMessageTypeMessage"},
                     ${"courseConversationMessageVisibilityEveryone"},
                     ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
+                    ${Number(false)},
                     ${request.body.content!},
                     ${utilities
                       .tokenize(contentTextContent, {
