@@ -55,7 +55,7 @@ export type ApplicationUsers = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/",
     handler: (
@@ -188,7 +188,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/settings",
     handler: async (
@@ -1510,7 +1510,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: "/settings/general-settings",
     handler: async (
@@ -1575,7 +1575,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: "/settings/email-address",
     handler: (
@@ -1715,7 +1715,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: "/settings/password",
     handler: async (
@@ -1811,7 +1811,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/settings/two-factor-authentication",
     handler: async (
@@ -2104,7 +2104,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/settings/two-factor-authentication/enable",
     handler: async (
@@ -2222,7 +2222,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "DELETE",
     pathname: "/settings/two-factor-authentication",
     handler: async (
@@ -2380,7 +2380,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: "/settings/email-notifications",
     handler: (
@@ -2419,7 +2419,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/settings/delete-my-account",
     handler: (
@@ -2545,7 +2545,7 @@ export default async (application: Application): Promise<void> => {
       );
     });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
       "^/settings/delete-my-account/(?<deleteMyAccountNonce>[0-9]+)$",
@@ -2893,7 +2893,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "DELETE",
     pathname: new RegExp(
       "^/settings/delete-my-account/(?<deleteMyAccountNonce>[0-9]+)$",
@@ -3355,7 +3355,7 @@ export default async (application: Application): Promise<void> => {
     </div>
   `;
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: "/settings/anonymity-preferred",
     handler: async (

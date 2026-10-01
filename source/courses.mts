@@ -73,7 +73,7 @@ export type ApplicationCourses = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/courses/new",
     handler: (
@@ -189,7 +189,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/courses",
     handler: (
@@ -404,7 +404,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)(?:$|/)"),
     handler: (
       request: serverTypes.Request<
@@ -543,7 +543,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)$"),
     handler: (
@@ -697,7 +697,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/settings$"),
     handler: async (
@@ -3556,7 +3556,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/general-settings$",
@@ -3628,7 +3628,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/settings/tags$"),
     handler: (
@@ -3767,7 +3767,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/invitation-links$",
@@ -3808,7 +3808,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/invitation-links/renew$",
@@ -3868,7 +3868,7 @@ export default async (application: Application): Promise<void> => {
       "courseParticipationRoleInstructor" | "courseParticipationRoleStudent";
   };
 
-  application.server?.push({
+  application.webServer?.push({
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/invitations/(?<invitationLinkToken>[0-9]+)(?:$|/)",
     ),
@@ -3998,7 +3998,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/invitations/(?<invitationLinkToken>[0-9]+)(?:$|/)",
@@ -4111,7 +4111,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/invitations/(?<invitationLinkToken>[0-9]+)(?:$|/)",
@@ -4198,7 +4198,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/invitation-emails$",
@@ -4368,7 +4368,7 @@ export default async (application: Application): Promise<void> => {
       };
     };
 
-  application.server?.push({
+  application.webServer?.push({
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailToken>[0-9]+)(?:$|/)",
     ),
@@ -4470,7 +4470,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailToken>[0-9]+)(?:$|/)",
@@ -4588,7 +4588,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/invitation-emails/(?<coursePendingInvitationEmailToken>[0-9]+)(?:$|/)",
@@ -4672,7 +4672,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/invitation-emails$",
@@ -4785,7 +4785,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/participations$",
@@ -4948,7 +4948,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti$",
@@ -5019,7 +5019,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync$",
@@ -5360,7 +5360,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync/missing$",
@@ -5505,7 +5505,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "DELETE",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti$",
@@ -5551,7 +5551,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "DELETE",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/participation$",

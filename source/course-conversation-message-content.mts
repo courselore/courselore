@@ -1017,7 +1017,7 @@ ${courseConversationMessageContent}</textarea>
     </div>
   `;
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/messages/attachments$",
@@ -1147,7 +1147,7 @@ ${courseConversationMessageContent}</textarea>
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)(?:/conversations/(?<courseConversationPublicId>[0-9]+))?/messages(?:/(?<courseConversationMessagePublicId>[0-9]+))?/preview$",
@@ -1194,7 +1194,7 @@ ${courseConversationMessageContent}</textarea>
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/help/message-formatting$",
@@ -3051,7 +3051,7 @@ You may also use the buttons on the message content editor to ${
     }
   };
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/polls/(?<courseConversationMessageContentPollIndex>[0-9]+)$",

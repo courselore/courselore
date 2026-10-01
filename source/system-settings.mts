@@ -6,7 +6,7 @@ import javascript from "@radically-straightforward/javascript";
 import { Application } from "./application.mjs";
 
 export default async (application: Application): Promise<void> => {
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/system-settings",
     handler: async (
@@ -860,7 +860,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: "/system-settings/general-settings",
     handler: async (
@@ -903,7 +903,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "PATCH",
     pathname: "/system-settings/users",
     handler: (

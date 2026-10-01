@@ -86,7 +86,7 @@ export type Application = {
     secretKey: crypto.KeyObject;
   };
   database: Database;
-  server: undefined | ReturnType<typeof server>;
+  webServer: undefined | ReturnType<typeof server>;
   layouts: {};
   partials: {};
 } & ApplicationLayouts &
@@ -188,7 +188,7 @@ application.database = new Database(
   path.join(application.userConfiguration.dataDirectory, "courselore.db"),
 ).loadExtension(sqliteVec.getLoadablePath());
 if (application.commandLineArguments.values.type === "server")
-  application.server = server({
+  application.webServer = server({
     port: Number(application.commandLineArguments.values.port),
     csrfProtectionExceptionPathname: new RegExp(
       "(?:^/authentication/lti/initiate$)|(?:^/authentication/lti/callback$)|(?:^/authentication/saml/assertion-consumer-service$)",

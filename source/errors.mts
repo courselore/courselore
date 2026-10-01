@@ -3,7 +3,7 @@ import css from "@radically-straightforward/css";
 import { Application } from "./application.mjs";
 
 export default async (application: Application): Promise<void> => {
-  application.server?.push({
+  application.webServer?.push({
     handler: (request, response) => {
       response.statusCode = 404;
       response.send(
@@ -56,7 +56,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     error: true,
     handler: (request, response) => {
       response.send(

@@ -6,7 +6,7 @@ import * as caddy from "@radically-straightforward/caddy";
 import { Application } from "./application.mjs";
 
 export default async (application: Application): Promise<void> => {
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp("^/(?:homepage)?$"),
     handler: (

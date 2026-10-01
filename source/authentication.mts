@@ -86,7 +86,7 @@ export type ApplicationAuthentication = {
 
 export default async (application: Application): Promise<void> => {
   if (application.userConfiguration.environment === "development")
-    application.server?.push({
+    application.webServer?.push({
       handler: (
         request: serverTypes.Request<
           {},
@@ -143,7 +143,7 @@ export default async (application: Application): Promise<void> => {
       },
     });
 
-  application.server?.push({
+  application.webServer?.push({
     handler: (
       request: serverTypes.Request<
         {},
@@ -347,7 +347,7 @@ export default async (application: Application): Promise<void> => {
       );
     });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/authentication",
     handler: (
@@ -906,7 +906,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/authentication/sign-up",
     handler: async (
@@ -1243,7 +1243,7 @@ export default async (application: Application): Promise<void> => {
       );
     });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/authentication/email-verification",
     handler: (
@@ -1366,7 +1366,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/authentication/email-verification/resend",
     handler: (
@@ -1462,7 +1462,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
       "^/authentication/email-verification/(?<emailVerificationNonce>[0-9]+)$",
@@ -1681,7 +1681,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
       "^/authentication/email-verification/(?<emailVerificationNonce>[0-9]+)$",
@@ -1757,7 +1757,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/authentication/sign-in",
     handler: async (
@@ -1948,7 +1948,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/authentication/sign-in/two-factor-authentication",
     handler: (
@@ -2177,7 +2177,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/authentication/sign-in/two-factor-authentication",
     handler: async (
@@ -2349,7 +2349,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/authentication/reset-password",
     handler: (
@@ -2563,7 +2563,7 @@ export default async (application: Application): Promise<void> => {
       );
     });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
       "^/authentication/reset-password/(?<passwordResetNonce>[0-9]+)$",
@@ -2717,7 +2717,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
       "^/authentication/reset-password/(?<passwordResetNonce>[0-9]+)$",
@@ -2953,7 +2953,7 @@ export default async (application: Application): Promise<void> => {
           ltiLaunches.delete(launch);
     });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/authentication/lti/keyset",
     handler: async (request, response) => {
@@ -2978,7 +2978,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: /^GET|POST$/,
     pathname: "/authentication/lti/initiate",
     handler: (
@@ -3078,7 +3078,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/authentication/lti/callback",
     handler: async (
@@ -3896,7 +3896,7 @@ export default async (application: Application): Promise<void> => {
           samlFlows.delete(flow);
     });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/authentication/saml/metadata",
     handler: (request, response) => {
@@ -3917,7 +3917,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "GET",
     pathname: "/authentication/saml/initiate",
     handler: async (
@@ -3975,7 +3975,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/authentication/saml/assertion-consumer-service",
     handler: async (
@@ -4344,7 +4344,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.server?.push({
+  application.webServer?.push({
     method: "POST",
     pathname: "/authentication/sign-out",
     handler: async (
