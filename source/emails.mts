@@ -15,7 +15,7 @@ import { Application } from "./application.mjs";
 export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "emailServer") {
     type SMTPServerSessionState = {
-      state: {
+      states: {
         courseConversationMessageEmailNotificationReplyToken: {
           id: number;
           courseConversation: number;
@@ -80,7 +80,7 @@ export default async (application: Application): Promise<void> => {
           pinned: number;
           title: string;
         };
-      };
+      }[];
     };
     application.emailServer = new smtpServer.SMTPServer({
       name: application.userConfiguration.hostname,
@@ -99,7 +99,7 @@ export default async (application: Application): Promise<void> => {
           address: smtpServer.SMTPServerAddress,
           session: smtpServer.SMTPServerSession & SMTPServerSessionState,
         ) => {
-          session.state = {} as SMTPServerSessionState["state"];
+          session.states = [];
         },
       ),
       onRcptTo: util.callbackify(
@@ -121,7 +121,7 @@ export default async (application: Application): Promise<void> => {
           ] = address.address.split("@");
           if (hostname !== application.userConfiguration.email.receive.hostname)
             throw new Error();
-          session.state.courseConversationMessageEmailNotificationReplyToken =
+          const courseConversationMessageEmailNotificationReplyToken =
             application.database.get<{
               id: number;
               courseConversation: number;
@@ -141,7 +141,7 @@ export default async (application: Application): Promise<void> => {
             (() => {
               throw new Error();
             })();
-          session.state.courseParticipation =
+          const courseParticipation =
             application.database.get<{
               id: number;
               publicId: string;
@@ -175,13 +175,13 @@ export default async (application: Application): Promise<void> => {
                 "decorationColor",
                 "mostRecentlyVisitedCourseConversation"
               from "courseParticipations"
-              where "id" = ${session.state.courseConversationMessageEmailNotificationReplyToken.courseParticipation};
+              where "id" = ${courseConversationMessageEmailNotificationReplyToken.courseParticipation};
             `,
             ) ??
             (() => {
               throw new Error();
             })();
-          session.state.course =
+          const course =
             application.database.get<{
               id: number;
               publicId: string;
@@ -224,13 +224,13 @@ export default async (application: Application): Promise<void> => {
                 "ltiContextId",
                 "ltiNamesAndRoleProvisioningServicesURL"
               from "courses"
-              where "id" = ${session.state.courseParticipation.course};
+              where "id" = ${courseParticipation.course};
             `,
             ) ??
             (() => {
               throw new Error();
             })();
-          session.state.courseConversation =
+          const courseConversation =
             application.database.get<{
               id: number;
               publicId: string;
@@ -255,12 +255,11 @@ export default async (application: Application): Promise<void> => {
                   "title"
                 from "courseConversations"
                 where
-                  "course" = ${session.state.course.id} and
-                  "id" = ${session.state.courseConversationMessageEmailNotificationReplyToken.courseConversation} and (
+                  "course" = ${course.id} and
+                  "id" = ${courseConversationMessageEmailNotificationReplyToken.courseConversation} and (
                     "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
                     ${
-                      session.state.courseParticipation
-                        .courseParticipationRole ===
+                      courseParticipation.courseParticipationRole ===
                       "courseParticipationRoleInstructor"
                         ? sql`
                             or
@@ -273,7 +272,7 @@ export default async (application: Application): Promise<void> => {
                       from "courseConversationParticipations"
                       where
                         "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                        "courseConversationParticipations"."courseParticipation" = ${session.state.courseParticipation.id}
+                        "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                     )
                   );
               `,
@@ -281,6 +280,12 @@ export default async (application: Application): Promise<void> => {
             (() => {
               throw new Error();
             })();
+          session.states.push({
+            courseConversationMessageEmailNotificationReplyToken,
+            course,
+            courseParticipation,
+            courseConversation,
+          });
         },
       ),
       onData: util.callbackify(
@@ -347,7 +352,7 @@ export default async (application: Application): Promise<void> => {
               );
               feedEntryEnclosures.push(feedEntryEnclosure);
             }
-            for (const feed of session.state.feeds)
+            for (const feed of session.states.feeds)
               application.database.transaction(() => {
                 application.database.run(
                   sql`
