@@ -4,13 +4,12 @@ import { Application } from "./application.mjs";
 export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "backgroundJobWorker") {
     const nodemailerTransport = nodemailer.createTransport(
-      application.userConfiguration.email,
+      application.userConfiguration.email.send.nodemailerCreateTransportOptions,
     );
-    application.database.backgroundJobWorker<any>(
-      { type: "email" },
-      async (parameters) => {
-        await nodemailerTransport.sendMail(parameters);
-      },
-    );
+    application.database.backgroundJobWorker<
+      Parameters<typeof nodemailerTransport.sendMail>[0]
+    >({ type: "email" }, async (parameters) => {
+      await nodemailerTransport.sendMail(parameters);
+    });
   }
 };
