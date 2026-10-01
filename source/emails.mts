@@ -224,7 +224,9 @@ export default async (application: Application): Promise<void> => {
                   "ltiContextId",
                   "ltiNamesAndRoleProvisioningServicesURL"
                 from "courses"
-                where "id" = ${courseParticipation.course};
+                where
+                  "id" = ${courseParticipation.course} and
+                  "courseState" = 'courseStateActive';
               `,
             ) ??
             (() => {
@@ -352,10 +354,156 @@ export default async (application: Application): Promise<void> => {
             //   );
             //   attachments.push(feedEntryEnclosure);
             // }
-            for (const state of session.states)
+            for (const state of session.states) {
+              const contentTextContent =
+                await application.partials.courseConversationMessageContentProcessor(
+                  {
+                    course: state.course,
+                    courseConversationMessageContent: request.body.content,
+                    mode: "textContent",
+                  },
+                );
+              const contentSemanticSearch = await (
+                await fetch("http://localhost:19000/vector-embedding", {
+                  method: "POST",
+                  headers: { "CSRF-Protection": "true" },
+                  body: new URLSearchParams({ text: contentTextContent }),
+                })
+              ).text();
+              const contentSentimentAnalysis = await (
+                await fetch("http://localhost:19000/sentiment-analysis", {
+                  method: "POST",
+                  headers: { "CSRF-Protection": "true" },
+                  body: new URLSearchParams({ text: contentTextContent }),
+                })
+              ).json();
               application.database.transaction(() => {
-                utilities.log("EMAIL", "SUCCESS");
+                application.database.run(
+                  sql`
+                      delete from "courseConversationMessageDrafts"
+                      where
+                        "courseConversation" = ${request.state.courseConversation!.id} and
+                        "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
+                    `,
+                );
+                if (
+                  request.body.courseConversationMessageVisibility !==
+                  "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                ) {
+                  if (
+                    request.body.courseConversationMessageType ===
+                    "courseConversationMessageTypeAnswer"
+                  )
+                    application.database.run(
+                      sql`
+                        update "courseConversations"
+                        set "questionResolved" = ${Number(true)}
+                        where "id" = ${request.state.courseConversation!.id};
+                      `,
+                    );
+                  else if (
+                    request.body.courseConversationMessageType ===
+                    "courseConversationMessageTypeFollowUpQuestion"
+                  )
+                    application.database.run(
+                      sql`
+                        update "courseConversations"
+                        set "questionResolved" = ${Number(false)}
+                        where "id" = ${request.state.courseConversation!.id};
+                      `,
+                    );
+                }
+                const courseConversationMessage = application.database.get<{
+                  id: number;
+                }>(
+                  sql`
+                      select * from "courseConversationMessages" where "id" = ${
+                        application.database.run(
+                          sql`
+                            insert into "courseConversationMessages" (
+                              "publicId",
+                              "courseConversation",
+                              "createdByCourseParticipation",
+                              "createdAt",
+                              "updatedAt",
+                              "courseConversationMessageType",
+                              "courseConversationMessageVisibility",
+                              "courseConversationMessageAnonymity",
+                              "sentViaEmail",
+                              "content",
+                              "contentLexicalSearch",
+                              "contentSemanticSearch",
+                              "contentSentimentAnalysisType",
+                              "contentSentimentAnalysisIntensity"
+                            )
+                            values (
+                              ${cryptoRandomString({ length: 20, type: "numeric" })},
+                              ${request.state.courseConversation!.id},
+                              ${request.state.courseParticipation!.id},
+                              ${new Date().toISOString()},
+                              ${null},
+                              ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
+                              ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
+                              ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
+                              ${Number(false)},
+                              ${request.body.content!},
+                              ${utilities
+                                .tokenize(contentTextContent, {
+                                  stopWords:
+                                    application.applicationConfiguration
+                                      .stopWords,
+                                  stem: (token) =>
+                                    natural.PorterStemmer.stem(token),
+                                })
+                                .map(
+                                  (tokenWithPosition) =>
+                                    tokenWithPosition.token,
+                                )
+                                .join(" ")},
+                              vec_f32(${contentSemanticSearch}),
+                              ${contentSentimentAnalysis.label},
+                              ${contentSentimentAnalysis.score}
+                            );
+                          `,
+                        ).lastInsertRowid
+                      };
+                    `,
+                )!;
+                application.database.run(
+                  sql`
+                      insert into "courseConversationMessageViews" (
+                        "courseConversationMessage",
+                        "courseParticipation",
+                        "createdAt"
+                      )
+                      values (
+                        ${courseConversationMessage.id},
+                        ${request.state.courseParticipation!.id},
+                        ${new Date().toISOString()}
+                      );
+                    `,
+                );
+                application.database.backgroundJob({
+                  type: "courseConversationMessageEmailNotification",
+                  startAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+                  parameters: {
+                    courseConversationMessageId: courseConversationMessage.id,
+                  },
+                });
               });
+              response.redirect!(
+                `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+              );
+              for (const port of application.applicationConfiguration.ports)
+                fetch(`http://localhost:${port}/__live-connections`, {
+                  method: "POST",
+                  headers: { "CSRF-Protection": "true" },
+                  body: new URLSearchParams({
+                    pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+                  }),
+                });
+              utilities.log("EMAIL", "SUCCESS");
+            }
           } finally {
             emailStream.resume();
           }
