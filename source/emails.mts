@@ -21,7 +21,7 @@ import { Application } from "./application.mjs";
 
 export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "emailServer") {
-    type SMTPServerSessionState = {
+    type SMTPServerSessionStates = {
       states: {
         courseConversationMessageEmailNotificationReplyToken: {
           id: number;
@@ -107,7 +107,7 @@ export default async (application: Application): Promise<void> => {
       onMailFrom: util.callbackify(
         async (
           address: smtpServer.SMTPServerAddress,
-          session: smtpServer.SMTPServerSession & SMTPServerSessionState,
+          session: smtpServer.SMTPServerSession & SMTPServerSessionStates,
         ) => {
           session.states = [];
         },
@@ -115,7 +115,7 @@ export default async (application: Application): Promise<void> => {
       onRcptTo: util.callbackify(
         async (
           address: smtpServer.SMTPServerAddress,
-          session: smtpServer.SMTPServerSession & SMTPServerSessionState,
+          session: smtpServer.SMTPServerSession & SMTPServerSessionStates,
         ) => {
           if (
             address.address.match(utilities.emailRegExp) === null &&
@@ -297,13 +297,13 @@ export default async (application: Application): Promise<void> => {
             course,
             courseParticipation,
             courseConversation,
-          });
+          } as SMTPServerSessionStates["states"][0]);
         },
       ),
       onData: util.callbackify(
         async (
           emailStream: smtpServer.SMTPServerDataStream,
-          session: smtpServer.SMTPServerSession & SMTPServerSessionState,
+          session: smtpServer.SMTPServerSession & SMTPServerSessionStates,
         ) => {
           try {
             if (session.envelope.mailFrom === false) throw new Error();
