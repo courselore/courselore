@@ -48,7 +48,17 @@ export type Application = {
   userConfiguration: {
     hostname: string;
     systemAdministratorEmail: string | undefined;
-    email: Parameters<typeof nodemailer.createTransport>[0];
+    email: {
+      send: {
+        from: string;
+        nodemailerTransportOptions: Parameters<
+          typeof nodemailer.createTransport
+        >[0];
+      };
+      receive: {
+        hostname: string;
+      };
+    };
     secretKey: string;
     dataDirectory: string;
     environment: "production" | "development";

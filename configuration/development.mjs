@@ -1,10 +1,16 @@
 export default {
   hostname: process.env.HOSTNAME ?? "localhost",
   email: {
-    from: "courselore@courselore.org",
-    host: "localhost",
-    port: 17001,
-    receive: "localhost",
+    send: {
+      from: "courselore@courselore.org",
+      nodemailerTransportOptions: {
+        host: "localhost",
+        port: 17001,
+      },
+    },
+    receive: {
+      hostname: "localhost",
+    },
   },
   secretKey: "c3499fa3806312af850b7009c680725b01300fc1ee7806f455effb3213d20cf9",
   environment: "development",

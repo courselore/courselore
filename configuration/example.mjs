@@ -3,16 +3,21 @@ export default {
 
   systemAdministratorEmail: "system-administrator@example.com",
 
-  // Nodemailer email configuration: https://nodemailer.com/
   email: {
-    from: "courselore@example.com",
-    host: "smtp.example.com",
-    auth: {
-      user: "courselore@example.com",
-      pass: "example",
+    send: {
+      from: "courselore@example.com",
+      // https://nodemailer.com/smtp
+      nodemailerTransportOptions: {
+        host: "smtp.example.com",
+        auth: {
+          user: "courselore@example.com",
+          pass: "example",
+        },
+      },
     },
-    // The hostname used to receive emails.
-    receive: "receive.email.example.com",
+    receive: {
+      hostname: "receive.email.example.com",
+    },
   },
 
   // To generate this key, run Courselore.
