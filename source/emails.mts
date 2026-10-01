@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import fsCallback from "node:fs";
 import sql from "@radically-straightforward/sqlite";
 import * as utilities from "@radically-straightforward/utilities";
+import * as cryptography from "@radically-straightforward/cryptography";
 import * as node from "@radically-straightforward/node";
 import cryptoRandomString from "crypto-random-string";
 import smtpServer from "smtp-server";
@@ -14,7 +15,13 @@ import { Application } from "./application.mjs";
 export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "emailServer") {
     type SMTPServerSessionState = {
-      state: {};
+      state: {
+        courseConversationMessageEmailNotificationReplyToken: {
+          id: number;
+          courseConversation: number;
+          courseParticipation: number;
+        };
+      };
     };
     application.emailServer = new smtpServer.SMTPServer({
       name: application.userConfiguration.hostname,
@@ -49,19 +56,32 @@ export default async (application: Application): Promise<void> => {
             )
           )
             throw new Error();
-          const [feedPublicId, hostname] = address.address.split("@");
-          if (hostname !== application.userConfiguration.hostname)
+          const [
+            courseConversationMessageEmailNotificationReplyTokenToken,
+            hostname,
+          ] = address.address.split("@");
+          if (hostname !== application.userConfiguration.email.receive.hostname)
             throw new Error();
-          const feed = application.database.get<{
-            id: number;
-            publicId: string;
-          }>(
-            sql`
-            select "id", "publicId" from "feeds" where "publicId" = ${feedPublicId};
-          `,
-          );
-          if (feed === undefined) throw new Error();
-          session.state.feeds.push(feed);
+          session.state.courseConversationMessageEmailNotificationReplyToken =
+            application.database.get<{
+              id: number;
+              courseConversation: number;
+              courseParticipation: number;
+            }>(
+              sql`
+                select 
+                  "id",
+                  "courseConversation",
+                  "courseParticipation"
+                from "courseConversationMessageEmailNotificationReplyTokens"
+                where "tokenTokenHash" = ${cryptography.TokenHash.hash(
+                  courseConversationMessageEmailNotificationReplyTokenToken,
+                )};
+              `,
+            ) ??
+            (() => {
+              throw new Error();
+            })();
         },
       ),
       onData: util.callbackify(
