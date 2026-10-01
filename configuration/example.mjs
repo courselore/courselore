@@ -34,6 +34,9 @@ export default {
   //   www.example.com {
   //     redir https://example.com{uri}
   //   }
+  //   receive.email.example.com {
+  //     abort
+  //   }
   // `,
 
   // [Optional] LTI configuration
