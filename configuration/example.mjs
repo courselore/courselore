@@ -11,6 +11,8 @@ export default {
       user: "courselore@example.com",
       pass: "example",
     },
+    // The hostname used to receive emails.
+    receive: "receive.email.example.com",
   },
 
   // To generate this key, run Courselore.

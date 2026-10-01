@@ -1,5 +1,7 @@
 # Changelog
 
+- **Breaking change:** The configuration now needs an `email.receive` field. Please refer to [`configuration/example.mjs`](configuration/example.mjs).
+
 ## 10.2.8 · 2026-09-24
 
 - Added a feature in which some questions are shown to instructors as “high-priority” on the sidebar. What determines whether a question is high-priority is sentiment analysis.
