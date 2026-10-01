@@ -51,7 +51,7 @@ export type Application = {
     email: {
       send: {
         from: string;
-        nodemailerTransportOptions: Parameters<
+        nodemailerCreateTransportOptions: Parameters<
           typeof nodemailer.createTransport
         >[0];
       };

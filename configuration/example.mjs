@@ -7,7 +7,7 @@ export default {
     send: {
       from: "courselore@example.com",
       // https://nodemailer.com/smtp
-      nodemailerTransportOptions: {
+      nodemailerCreateTransportOptions: {
         host: "smtp.example.com",
         auth: {
           user: "courselore@example.com",

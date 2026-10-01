@@ -3,7 +3,7 @@ export default {
   email: {
     send: {
       from: "courselore@courselore.org",
-      nodemailerTransportOptions: {
+      nodemailerCreateTransportOptions: {
         host: "localhost",
         port: 17001,
       },
