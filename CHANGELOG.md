@@ -1,6 +1,6 @@
 # Changelog
 
-- **Breaking change:** The configuration now needs an `email.receive` field. Please refer to [`configuration/example.mjs`](configuration/example.mjs).
+- **Breaking change:** The configuration for `email` changed. Please refer to [`configuration/example.mjs`](configuration/example.mjs).
 
 ## 10.2.8 · 2026-09-24
 

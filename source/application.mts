@@ -14,6 +14,7 @@ import natural from "natural";
 import * as SAML from "@node-saml/node-saml";
 import selfsigned from "selfsigned";
 import * as sqliteVec from "sqlite-vec";
+import nodemailer from "nodemailer";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
@@ -47,7 +48,7 @@ export type Application = {
   userConfiguration: {
     hostname: string;
     systemAdministratorEmail: string | undefined;
-    email: any;
+    email: Parameters<typeof nodemailer.createTransport>[0];
     secretKey: string;
     dataDirectory: string;
     environment: "production" | "development";
