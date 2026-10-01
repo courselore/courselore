@@ -2944,7 +2944,7 @@ export default async (application: Application): Promise<void> => {
     createdAt: string;
   }>();
 
-  if (application.commandLineArguments.values.type === "server")
+  if (application.commandLineArguments.values.type === "webServer")
     node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
       for (const launch of ltiLaunches)
         if (
@@ -3889,7 +3889,7 @@ export default async (application: Application): Promise<void> => {
     createdAt: string;
   }>();
 
-  if (application.commandLineArguments.values.type === "server")
+  if (application.commandLineArguments.values.type === "webServer")
     node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
       for (const flow of samlFlows)
         if (flow.createdAt < new Date(Date.now() - 5 * 60 * 1000).toISOString())

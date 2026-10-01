@@ -39,7 +39,7 @@ export type Application = {
   version: string;
   commandLineArguments: {
     values: {
-      type: "initialize" | "server" | "backgroundJobWorker";
+      type: "initialize" | "webServer" | "backgroundJobWorker";
       port: undefined | string;
     };
     positionals: string[];
@@ -187,7 +187,7 @@ application.applicationConfiguration.secretKey =
 application.database = new Database(
   path.join(application.userConfiguration.dataDirectory, "courselore.db"),
 ).loadExtension(sqliteVec.getLoadablePath());
-if (application.commandLineArguments.values.type === "server")
+if (application.commandLineArguments.values.type === "webServer")
   application.webServer = server({
     port: Number(application.commandLineArguments.values.port),
     csrfProtectionExceptionPathname: new RegExp(
