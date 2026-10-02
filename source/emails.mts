@@ -315,59 +315,30 @@ export default async (application: Application): Promise<void> => {
             if (emailStream.sizeExceeded) throw new Error();
             const attachments = new Array<string>();
             for (const attachment of email.attachments) {
-              const content = Buffer.from(attachment.content as ArrayBuffer);
-              const feedEntryEnclosure = application.database.get<{
-                id: number;
-                publicId: string;
-                name: string;
-              }>(
-                sql`
-                select * from "feedEntryEnclosures" where "id" = ${
-                  application.database.run(
-                    sql`
-                      insert into "feedEntryEnclosures" (
-                        "publicId",
-                        "type",
-                        "length",
-                        "name"
-                      )
-                      values (
-                        ${cryptoRandomString({
-                          length: 40,
-                          characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-                        })},
-                        ${attachment.mimeType},
-                        ${content.length},
-                        ${
-                          attachment.filename?.replaceAll(
-                            /[^A-Za-z0-9_.-]/g,
-                            "-",
-                          ) ?? "untitled"
-                        }
-                      );
-                    `,
-                  ).lastInsertRowid
-                };
-              `,
-              )!;
+              const filename = path.join(
+                "files",
+                cryptoRandomString({
+                  length: 40,
+                  characters: "abcdefghijklmnopqrstuvwxyz0123456789",
+                }),
+                attachment.filename?.replaceAll(/[^A-Za-z0-9_.-]/g, "-") ??
+                  "untitled",
+              );
               await fs.mkdir(
                 path.join(
                   application.userConfiguration.dataDirectory,
-                  "files",
-                  feedEntryEnclosure.publicId,
+                  path.dirname(filename),
                 ),
                 { recursive: true },
               );
               await fs.writeFile(
                 path.join(
                   application.userConfiguration.dataDirectory,
-                  "files",
-                  feedEntryEnclosure.publicId,
-                  feedEntryEnclosure.name,
+                  filename,
                 ),
-                content,
+                Buffer.from(attachment.content as ArrayBuffer),
               );
-              feedEntryEnclosures.push(feedEntryEnclosure);
+              attachments.push(filename);
             }
             const content = String(
               (
