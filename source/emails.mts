@@ -340,21 +340,31 @@ export default async (application: Application): Promise<void> => {
               );
               attachments.push(filename);
             }
-            const content = String(
-              (
-                await unified()
-                  .use(rehypeParse, { fragment: true })
-                  .use(rehypeRemark, { document: false })
-                  .use(remarkGfm, { singleTilde: false })
-                  .use(remarkMath)
-                  .use(remarkStringify)
-                  .process(
-                    typeof email.html === "string"
-                      ? email.html
-                      : html`<pre>${email.text ?? ""}</pre>`,
-                  )
-              ).value,
-            );
+            const content =
+              String(
+                (
+                  await unified()
+                    .use(rehypeParse, { fragment: true })
+                    .use(rehypeRemark, { document: false })
+                    .use(remarkGfm, { singleTilde: false })
+                    .use(remarkMath)
+                    .use(remarkStringify)
+                    .process(
+                      typeof email.html === "string"
+                        ? email.html
+                        : html`<pre>${email.text ?? ""}</pre>`,
+                    )
+                ).value,
+              ) +
+              (0 < attachments.length
+                ? "\n\n" +
+                  attachments
+                    .map(
+                      (attachment) =>
+                        `[${path.basename(attachment)}](/${attachment})`,
+                    )
+                    .join("\n\n")
+                : "");
             for (const state of session.states) {
               const contentTextContent =
                 await application.partials.courseConversationMessageContentProcessor(
