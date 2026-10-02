@@ -1,4 +1,5 @@
 import util from "node:util";
+import path from "node:path";
 import fs from "node:fs/promises";
 import fsCallback from "node:fs";
 import stream from "node:stream";
@@ -313,60 +314,61 @@ export default async (application: Application): Promise<void> => {
             );
             if (emailStream.sizeExceeded) throw new Error();
             const attachments = new Array<string>();
-            // for (const attachment of email.attachments) {
-            //   const feedEntryEnclosure = application.database.get<{
-            //     id: number;
-            //     publicId: string;
-            //     name: string;
-            //   }>(
-            //     sql`
-            //     select * from "feedEntryEnclosures" where "id" = ${
-            //       application.database.run(
-            //         sql`
-            //           insert into "feedEntryEnclosures" (
-            //             "publicId",
-            //             "type",
-            //             "length",
-            //             "name"
-            //           )
-            //           values (
-            //             ${cryptoRandomString({
-            //               length: 40,
-            //               characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-            //             })},
-            //             ${attachment.contentType},
-            //             ${attachment.size},
-            //             ${
-            //               attachment.filename?.replaceAll(
-            //                 /[^A-Za-z0-9_.-]/g,
-            //                 "-",
-            //               ) ?? "untitled"
-            //             }
-            //           );
-            //         `,
-            //       ).lastInsertRowid
-            //     };
-            //   `,
-            //   )!;
-            //   await fs.mkdir(
-            //     path.join(
-            //       application.userConfiguration.dataDirectory,
-            //       "files",
-            //       feedEntryEnclosure.publicId,
-            //     ),
-            //     { recursive: true },
-            //   );
-            //   await fs.writeFile(
-            //     path.join(
-            //       application.userConfiguration.dataDirectory,
-            //       "files",
-            //       feedEntryEnclosure.publicId,
-            //       feedEntryEnclosure.name,
-            //     ),
-            //     attachment.content,
-            //   );
-            //   attachments.push(feedEntryEnclosure);
-            // }
+            for (const attachment of email.attachments) {
+              const content = Buffer.from(attachment.content as ArrayBuffer);
+              const feedEntryEnclosure = application.database.get<{
+                id: number;
+                publicId: string;
+                name: string;
+              }>(
+                sql`
+                select * from "feedEntryEnclosures" where "id" = ${
+                  application.database.run(
+                    sql`
+                      insert into "feedEntryEnclosures" (
+                        "publicId",
+                        "type",
+                        "length",
+                        "name"
+                      )
+                      values (
+                        ${cryptoRandomString({
+                          length: 40,
+                          characters: "abcdefghijklmnopqrstuvwxyz0123456789",
+                        })},
+                        ${attachment.mimeType},
+                        ${content.length},
+                        ${
+                          attachment.filename?.replaceAll(
+                            /[^A-Za-z0-9_.-]/g,
+                            "-",
+                          ) ?? "untitled"
+                        }
+                      );
+                    `,
+                  ).lastInsertRowid
+                };
+              `,
+              )!;
+              await fs.mkdir(
+                path.join(
+                  application.userConfiguration.dataDirectory,
+                  "files",
+                  feedEntryEnclosure.publicId,
+                ),
+                { recursive: true },
+              );
+              await fs.writeFile(
+                path.join(
+                  application.userConfiguration.dataDirectory,
+                  "files",
+                  feedEntryEnclosure.publicId,
+                  feedEntryEnclosure.name,
+                ),
+                content,
+              );
+              feedEntryEnclosures.push(feedEntryEnclosure);
+            }
             const content = String(
               (
                 await unified()
