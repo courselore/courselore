@@ -1,6 +1,7 @@
 import util from "node:util";
 import fs from "node:fs/promises";
 import fsCallback from "node:fs";
+import stream from "node:stream";
 import sql from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
 import * as utilities from "@radically-straightforward/utilities";
@@ -15,7 +16,7 @@ import remarkStringify from "remark-stringify";
 import cryptoRandomString from "crypto-random-string";
 import natural from "natural";
 import smtpServer from "smtp-server";
-import * as mailParser from "mailparser";
+import PostalMime from "postal-mime";
 import nodemailer from "nodemailer";
 import { Application } from "./application.mjs";
 
@@ -307,7 +308,9 @@ export default async (application: Application): Promise<void> => {
         ) => {
           try {
             if (session.envelope.mailFrom === false) throw new Error();
-            const email = await mailParser.simpleParser(emailStream);
+            const email = await PostalMime.parse(
+              stream.Readable.toWeb(emailStream) as ReadableStream,
+            );
             if (emailStream.sizeExceeded) throw new Error();
             const attachments = new Array<string>();
             // for (const attachment of email.attachments) {
@@ -375,9 +378,7 @@ export default async (application: Application): Promise<void> => {
                   .process(
                     typeof email.html === "string"
                       ? email.html
-                      : typeof email.textAsHtml === "string"
-                        ? email.textAsHtml
-                        : html`<div></div>`,
+                      : html`<pre>${email.text ?? ""}</pre>`,
                   )
               ).value,
             );
