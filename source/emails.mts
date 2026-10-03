@@ -19,6 +19,7 @@ import natural from "natural";
 import smtpServer from "smtp-server";
 import PostalMime from "postal-mime";
 import nodemailer from "nodemailer";
+import { DOMParser } from "linkedom";
 import { Application } from "./application.mjs";
 
 export default async (application: Application): Promise<void> => {
@@ -313,6 +314,25 @@ export default async (application: Application): Promise<void> => {
               stream.Readable.toWeb(emailStream) as ReadableStream,
             );
             if (emailStream.sizeExceeded) throw new Error();
+            const emailBody =
+              typeof email.html === "string"
+                ? email.html
+                : html`<pre>${email.text ?? ""}</pre>`;
+            const emailBodyDOM = new DOMParser()
+              .parseFromString(
+                emailBody.trim().startsWith(`<!doctype`)
+                  ? emailBody
+                  : html`
+                      <!doctype html>
+                      <html>
+                        <body>
+                          $${emailBody}
+                        </body>
+                      </html>
+                    `,
+                "text/html",
+              )
+              .querySelector("html")!;
             const attachments = new Array<string>();
             for (const attachment of email.attachments) {
               const filename = path.join(
@@ -338,7 +358,19 @@ export default async (application: Application): Promise<void> => {
                 ),
                 Buffer.from(attachment.content as ArrayBuffer),
               );
-              attachments.push(filename);
+              if (typeof attachment.contentId === "string") {
+                for (const element of emailBodyDOM.querySelectorAll(
+                  'img[src^="cid:"]',
+                ))
+                  if (
+                    attachment.contentId.replaceAll(/^<|>$/g, "") ===
+                    element
+                      .getAttribute("src")!
+                      .replace(/^cid:/, "")
+                      .replaceAll(/^<|>$/g, "")
+                  )
+                    element.setAttribute("src", `/${filename}`);
+              } else attachments.push(filename);
             }
             const content =
               String(
@@ -349,11 +381,10 @@ export default async (application: Application): Promise<void> => {
                     .use(remarkGfm, { singleTilde: false })
                     .use(remarkMath)
                     .use(remarkStringify)
-                    .process(
-                      typeof email.html === "string"
-                        ? email.html
-                        : html`<pre>${email.text ?? ""}</pre>`,
-                    )
+                    .process(html`
+                      <!doctype html>
+                      $${emailBodyDOM.outerHTML}
+                    `)
                 ).value,
               ) +
               (0 < attachments.length
