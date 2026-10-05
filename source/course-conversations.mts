@@ -3165,9 +3165,11 @@ export default async (application: Application): Promise<void> => {
         ) ||
         typeof request.body.content !== "string" ||
         request.body.content.trim() === "" ||
-        (typeof request.body.courseConversationMessageAnonymity === "string" &&
-          (request.state.courseParticipation.courseParticipationRole !==
-            "courseParticipationRoleStudent" ||
+        (request.body.courseConversationMessageAnonymity !== undefined &&
+          (typeof request.body.courseConversationMessageAnonymity !==
+            "string" ||
+            request.state.courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleStudent" ||
             (request.body.courseConversationMessageAnonymity !==
               "courseConversationMessageAnonymityNone" &&
               request.body.courseConversationMessageAnonymity !==

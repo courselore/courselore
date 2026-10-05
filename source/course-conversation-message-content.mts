@@ -3084,6 +3084,7 @@ You may also use the buttons on the message content editor to ${
         request.body.courseConversationMessageContentPollOptions.length === 0 ||
         request.body.courseConversationMessageContentPollOptions.some(
           (courseConversationMessageContentPollOption) =>
+            typeof courseConversationMessageContentPollOption !== "string" ||
             !courseConversationMessageContentPollOption.match(/^[0-9]+$/),
         )
       )

@@ -75,25 +75,30 @@ export default async (application: Application): Promise<void> => {
         return;
       if (
         typeof request.body.content !== "string" ||
-        (typeof request.body.courseConversationMessageType === "string" &&
-          (request.state.courseConversation.courseConversationType !==
-            "courseConversationTypeQuestion" ||
+        (request.body.courseConversationMessageType !== undefined &&
+          (typeof request.body.courseConversationMessageType !== "string" ||
+            request.state.courseConversation.courseConversationType !==
+              "courseConversationTypeQuestion" ||
             (request.body.courseConversationMessageType !==
               "courseConversationMessageTypeMessage" &&
               request.body.courseConversationMessageType !==
                 "courseConversationMessageTypeAnswer" &&
               request.body.courseConversationMessageType !==
                 "courseConversationMessageTypeFollowUpQuestion"))) ||
-        (typeof request.body.courseConversationMessageVisibility === "string" &&
-          (request.state.courseParticipation.courseParticipationRole !==
-            "courseParticipationRoleInstructor" ||
+        (request.body.courseConversationMessageVisibility !== undefined &&
+          (typeof request.body.courseConversationMessageVisibility !==
+            "string" ||
+            request.state.courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleInstructor" ||
             (request.body.courseConversationMessageVisibility !==
               "courseConversationMessageVisibilityEveryone" &&
               request.body.courseConversationMessageVisibility !==
                 "courseConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
-        (typeof request.body.courseConversationMessageAnonymity === "string" &&
-          (request.state.courseParticipation.courseParticipationRole !==
-            "courseParticipationRoleStudent" ||
+        (request.body.courseConversationMessageAnonymity !== undefined &&
+          (typeof request.body.courseConversationMessageAnonymity !==
+            "string" ||
+            request.state.courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleStudent" ||
             (request.body.courseConversationMessageAnonymity !==
               "courseConversationMessageAnonymityNone" &&
               request.body.courseConversationMessageAnonymity !==
@@ -217,25 +222,30 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.content !== "string" ||
         request.body.content.trim() === "" ||
-        (typeof request.body.courseConversationMessageType === "string" &&
-          (request.state.courseConversation.courseConversationType !==
-            "courseConversationTypeQuestion" ||
+        (request.body.courseConversationMessageType !== undefined &&
+          (typeof request.body.courseConversationMessageType !== "string" ||
+            request.state.courseConversation.courseConversationType !==
+              "courseConversationTypeQuestion" ||
             (request.body.courseConversationMessageType !==
               "courseConversationMessageTypeMessage" &&
               request.body.courseConversationMessageType !==
                 "courseConversationMessageTypeAnswer" &&
               request.body.courseConversationMessageType !==
                 "courseConversationMessageTypeFollowUpQuestion"))) ||
-        (typeof request.body.courseConversationMessageVisibility === "string" &&
-          (request.state.courseParticipation.courseParticipationRole !==
-            "courseParticipationRoleInstructor" ||
+        (request.body.courseConversationMessageVisibility !== undefined &&
+          (typeof request.body.courseConversationMessageVisibility !==
+            "string" ||
+            request.state.courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleInstructor" ||
             (request.body.courseConversationMessageVisibility !==
               "courseConversationMessageVisibilityEveryone" &&
               request.body.courseConversationMessageVisibility !==
                 "courseConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
-        (typeof request.body.courseConversationMessageAnonymity === "string" &&
-          (request.state.courseParticipation.courseParticipationRole !==
-            "courseParticipationRoleStudent" ||
+        (request.body.courseConversationMessageAnonymity !== undefined &&
+          (typeof request.body.courseConversationMessageAnonymity !==
+            "string" ||
+            request.state.courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleStudent" ||
             (request.body.courseConversationMessageAnonymity !==
               "courseConversationMessageAnonymityNone" &&
               request.body.courseConversationMessageAnonymity !==
@@ -1385,9 +1395,10 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.content !== "string" ||
         request.body.content.trim() === "" ||
-        (typeof request.body.courseConversationMessageType === "string" &&
-          (request.state.courseConversation.courseConversationType !==
-            "courseConversationTypeQuestion" ||
+        (request.body.courseConversationMessageType !== undefined &&
+          (typeof request.body.courseConversationMessageType !== "string" ||
+            request.state.courseConversation.courseConversationType !==
+              "courseConversationTypeQuestion" ||
             request.state.courseConversationMessage.id ===
               firstCourseConversationMessage.id ||
             (request.body.courseConversationMessageType !==
@@ -1396,18 +1407,22 @@ export default async (application: Application): Promise<void> => {
                 "courseConversationMessageTypeAnswer" &&
               request.body.courseConversationMessageType !==
                 "courseConversationMessageTypeFollowUpQuestion"))) ||
-        (typeof request.body.courseConversationMessageVisibility === "string" &&
-          (request.state.courseParticipation.courseParticipationRole !==
-            "courseParticipationRoleInstructor" ||
+        (request.body.courseConversationMessageVisibility !== undefined &&
+          (typeof request.body.courseConversationMessageVisibility !==
+            "string" ||
+            request.state.courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleInstructor" ||
             request.state.courseConversationMessage.id ===
               firstCourseConversationMessage.id ||
             (request.body.courseConversationMessageVisibility !==
               "courseConversationMessageVisibilityEveryone" &&
               request.body.courseConversationMessageVisibility !==
                 "courseConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
-        (typeof request.body.courseConversationMessageAnonymity === "string" &&
-          (request.state.courseParticipation.courseParticipationRole !==
-            "courseParticipationRoleStudent" ||
+        (request.body.courseConversationMessageAnonymity !== undefined &&
+          (typeof request.body.courseConversationMessageAnonymity !==
+            "string" ||
+            request.state.courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleStudent" ||
             (request.body.courseConversationMessageAnonymity !==
               "courseConversationMessageAnonymityNone" &&
               request.body.courseConversationMessageAnonymity !==
