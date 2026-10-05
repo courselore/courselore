@@ -1533,7 +1533,7 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.name !== "string" ||
         request.body.name.trim() === "" ||
-        (typeof request.body.avatarImage === "object" &&
+        (request.body.avatarImage?.file === true &&
           request.body.avatarImage.mimeType !== "image/jpeg" &&
           request.body.avatarImage.mimeType !== "image/png") ||
         (request.body.darkMode !== "userDarkModeSystem" &&
@@ -1542,7 +1542,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       let avatarImage: string | undefined;
-      if (typeof request.body.avatarImage === "object") {
+      if (request.body.avatarImage?.file === true) {
         const relativePath = `files/${cryptoRandomString({
           length: 20,
           characters: "abcdefghijklmnopqrstuvwxyz0123456789",

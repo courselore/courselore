@@ -1047,9 +1047,7 @@ ${courseConversationMessageContent}</textarea>
       request.body.attachments ??= [];
       if (
         !Array.isArray(request.body.attachments) ||
-        request.body.attachments.some(
-          (attachment) => typeof attachment !== "object",
-        )
+        request.body.attachments.some((attachment) => attachment.file !== true)
       )
         throw "validation";
       const markdown = new Array<string>();
