@@ -1,6 +1,9 @@
 # Changelog
 
-- **Breaking change:** The configuration for `email` changed. Please refer to [`configuration/example.mjs`](configuration/example.mjs).
+## 10.3.0 · 2026-10-05
+
+- Added a way for users to reply to an email notification for a message. The reply turns into a message in Courselore (https://courselore.org/courses/8537410611/conversations/55)
+  - **Breaking change:** The configuration for `email` changed. Please refer to [`configuration/example.mjs`](configuration/example.mjs).
 
 ## 10.2.8 · 2026-09-24
 
