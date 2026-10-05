@@ -333,6 +333,13 @@ export default async (application: Application): Promise<void> => {
                 "text/html",
               )
               .querySelector("html")!;
+            while (true) {
+              const element = emailBodyDOM.querySelector(
+                `blockquote.gmail_quote:last-child, blockquote.gmail_extra:last-child, div[type="cite"]:last-child, #divRplyFwdMsg:last-child, #appendonsend:last-child`,
+              );
+              if (element === null) break;
+              element.remove();
+            }
             const attachments = new Array<string>();
             for (const attachment of email.attachments) {
               const filename = path.join(
