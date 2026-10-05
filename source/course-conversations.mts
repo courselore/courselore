@@ -5208,6 +5208,7 @@ export default async (application: Application): Promise<void> => {
                         | "courseConversationMessageAnonymityNone"
                         | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                         | "courseConversationMessageAnonymityEveryone";
+                      sentViaEmail: number;
                       content: string;
                     }>(
                       sql`
@@ -5220,6 +5221,7 @@ export default async (application: Application): Promise<void> => {
                           "courseConversationMessageType",
                           "courseConversationMessageVisibility",
                           "courseConversationMessageAnonymity",
+                          "sentViaEmail",
                           "content"
                         from "courseConversationMessages"
                         where
@@ -5604,6 +5606,14 @@ export default async (application: Application): Promise<void> => {
                                         `}"
                                         >Liked by instructor</span
                                       >`,
+                                    );
+                                  if (
+                                    Boolean(
+                                      courseConversationMessage.sentViaEmail,
+                                    ) === true
+                                  )
+                                    courseConversationMessageMainHeaderBylineHTMLs.push(
+                                      html`<span>Sent via email</span>`,
                                     );
                                   return courseConversationMessageMainHeaderBylineHTMLs.join(
                                     " · ",
