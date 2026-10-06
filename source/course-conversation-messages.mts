@@ -715,7 +715,7 @@ export default async (application: Application): Promise<void> => {
                         application.userConfiguration.hostname
                       }/settings"
                       >Change email notification preferences</a
-                    >
+                    > · You may answer to this message by replying to this email
                   </small>
                 </p>
               `,
