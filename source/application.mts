@@ -93,6 +93,11 @@ export type Application = {
         };
       } & SAML.SamlConfig & { decryptionCert?: string })[];
     };
+    courseAI: {
+      domains: string[];
+      type: TODO;
+      apiKey: string;
+    }[];
   };
   applicationConfiguration: {
     ports: number[];
