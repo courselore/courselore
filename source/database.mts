@@ -1,5 +1,4 @@
 import path from "node:path";
-import fs from "node:fs/promises";
 import readline from "node:readline/promises";
 import sql from "@radically-straightforward/sqlite";
 import * as utilities from "@radically-straightforward/utilities";
