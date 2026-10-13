@@ -93,13 +93,21 @@ export type Application = {
         };
       } & SAML.SamlConfig & { decryptionCert?: string })[];
     };
-    courseAI: {
+    courseAI: ({
+      name: string;
       domains: string[];
-      type: "openai" | "anthropic" | "google" | "openai-compatible";
-      apiKey?: string;
-      url?: string;
-      model?: string;
-    }[];
+    } & (
+      | {
+          type: "openai" | "anthropic" | "google";
+          apiKey: string;
+        }
+      | {
+          type: "openai-compatible";
+          baseURL: string;
+          model: string;
+          apiKey?: string;
+        }
+    ))[];
   };
   applicationConfiguration: {
     ports: number[];
