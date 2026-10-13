@@ -7,10 +7,16 @@
     "backup": "ssh root@courselore.org \"rm -f /root/courselore/data/courselore--backup.db && sqlite3 /root/courselore/data/courselore.db \\\"vacuum into '/root/courselore/data/courselore--backup.db';\\\"\" && rsync -az --delete --progress root@courselore.org:/root/courselore/ /Volumes/leafac--hd/backups/courselore/"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.79",
+    "@ai-sdk/azure": "^4.0.100",
+    "@ai-sdk/google": "^4.0.94",
+    "@ai-sdk/openai": "^4.0.92",
+    "@ai-sdk/openai-compatible": "^3.0.68",
     "@huggingface/transformers": "^4.3.1",
     "@node-saml/node-saml": "^5.1.0",
     "@radically-straightforward/ffmpeg": "^1.0.2",
     "@radically-straightforward/production": "^1.0.84",
+    "ai": "^7.0.138",
     "crypto-random-string": "^6.0.0",
     "email-addresses": "^5.0.0",
     "github-slugger": "^2.0.0",
