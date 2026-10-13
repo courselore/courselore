@@ -95,8 +95,10 @@ export type Application = {
     };
     courseAI: {
       domains: string[];
-      type: TODO;
-      apiKey: string;
+      type: "openai" | "anthropic" | "google" | "openai-compatible";
+      apiKey?: string;
+      url?: string;
+      model?: string;
     }[];
   };
   applicationConfiguration: {
