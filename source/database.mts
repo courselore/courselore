@@ -8114,11 +8114,5 @@ export default async (application: Application): Promise<void> => {
         update "courseConversationMessages" set "sentViaEmail" = false;
         alter table "courseConversationMessages" alter column "sentViaEmail" set not null;
       `,
-
-      sql`
-        alter table "userSessions" add column "timezone" text null;
-        update "userSessions" set "timezone" = 'UTC';
-        alter table "userSessions" alter column "timezone" set not null;
-      `,
     );
 };
