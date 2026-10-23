@@ -28,6 +28,7 @@ export type ApplicationAuthentication = {
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
+          timeZone: string;
         };
         user: {
           id: number;
@@ -193,6 +194,7 @@ export default async (application: Application): Promise<void> => {
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
+        timeZone: string;
       }>(
         sql`
           select
@@ -200,7 +202,8 @@ export default async (application: Application): Promise<void> => {
             "tokenTokenHash",
             "user",
             "lastUsedAt",
-            "needsTwoFactorAuthentication"
+            "needsTwoFactorAuthentication",
+            "timeZone"
           from "userSessions"
           where "tokenTokenHash" = ${cryptography.TokenHash.hash(request.cookies.session)};
         `,
