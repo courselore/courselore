@@ -265,49 +265,91 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               $${await (async () => {
-                const courseConversations = application.database.all<{
-                  id: number;
-                  publicId: string;
-                  courseConversationType:
-                    | "courseConversationTypeNote"
-                    | "courseConversationTypeQuestion";
-                  questionResolved: number;
-                  pinned: number;
-                  title: string;
-                }>(
-                  sql`
-                    select
-                      "id",
-                      "publicId",
-                      "courseConversationType",
-                      "questionResolved",
-                      "pinned",
-                      "title"
-                    from "courseConversations"
-                    where
-                      "course" = ${request.state.course!.id} and (
-                        "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                        ${
-                          request.state.courseParticipation!
-                            .courseParticipationRole ===
-                          "courseParticipationRoleInstructor"
-                            ? sql`
-                                or
-                                "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                              `
-                            : sql``
-                        }
-                        or (
-                          select true
-                          from "courseConversationParticipations"
-                          where
-                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                            "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation!.id}
+                const courseConversations = application.database
+                  .all<{
+                    id: number;
+                    publicId: string;
+                    courseConversationType:
+                      | "courseConversationTypeNote"
+                      | "courseConversationTypeQuestion";
+                    questionResolved: number;
+                    pinned: number;
+                    title: string;
+                  }>(
+                    sql`
+                      select
+                        "id",
+                        "publicId",
+                        "courseConversationType",
+                        "questionResolved",
+                        "pinned",
+                        "title"
+                      from "courseConversations"
+                      where
+                        "course" = ${request.state.course!.id} and (
+                          "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                          ${
+                            request.state.courseParticipation!
+                              .courseParticipationRole ===
+                            "courseParticipationRoleInstructor"
+                              ? sql`
+                                  or
+                                  "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                `
+                              : sql``
+                          }
+                          or (
+                            select true
+                            from "courseConversationParticipations"
+                            where
+                              "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                              "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation!.id}
+                          )
                         )
-                      )
-                    order by "id" desc;
-                  `,
-                );
+                      order by "id" desc;
+                    `,
+                  )
+                  .map((courseConversation) => {
+                    const firstCourseConversationMessage =
+                      application.database.get<{
+                        id: number;
+                        publicId: string;
+                        createdByCourseParticipation: number | null;
+                        createdAt: string;
+                        updatedAt: string | null;
+                        courseConversationMessageAnonymity:
+                          | "courseConversationMessageAnonymityNone"
+                          | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                          | "courseConversationMessageAnonymityEveryone";
+                        content: string;
+                        contentSentimentAnalysisType:
+                          "positive" | "neutral" | "negative";
+                        contentSentimentAnalysisIntensity: number;
+                      }>(
+                        sql`
+                          select
+                            "id",
+                            "publicId",
+                            "createdByCourseParticipation",
+                            "createdAt",
+                            "updatedAt",
+                            "courseConversationMessageAnonymity",
+                            "content",
+                            "contentSentimentAnalysisType",
+                            "contentSentimentAnalysisIntensity"
+                          from "courseConversationMessages"
+                          where "courseConversation" = ${courseConversation.id}
+                          order by "id" asc
+                          limit 1;
+                        `,
+                      );
+                    if (firstCourseConversationMessage === undefined)
+                      throw new Error();
+                    return {
+                      ...courseConversation,
+                      firstCourseConversationMessage,
+                    };
+                  });
                 return html``;
               })()}
             </div>
