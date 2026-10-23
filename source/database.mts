@@ -8044,7 +8044,7 @@ export default async (application: Application): Promise<void> => {
           // process.stdout.write(
           //   `courseConversationMessage: ${++courseConversationMessagesIndex}/${courseConversationMessagesCount}\r`,
           // );
-          const contentSentimentAnalysis = await (
+          const contentSentimentAnalysis = (await (
             await fetch("http://localhost:19000/sentiment-analysis", {
               method: "POST",
               headers: { "CSRF-Protection": "true" },
@@ -8080,7 +8080,10 @@ export default async (application: Application): Promise<void> => {
                 ),
               }),
             })
-          ).json();
+          ).json()) as {
+            label: "positive" | "neutral" | "negative";
+            score: number;
+          };
           database.run(
             sql`
               update "courseConversationMessages"

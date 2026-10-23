@@ -3224,13 +3224,16 @@ export default async (application: Application): Promise<void> => {
           body: new URLSearchParams({ text: contentTextContent }),
         })
       ).text();
-      const contentSentimentAnalysis = await (
+      const contentSentimentAnalysis = (await (
         await fetch("http://localhost:19000/sentiment-analysis", {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({ text: contentTextContent }),
         })
-      ).json();
+      ).json()) as {
+        label: "positive" | "neutral" | "negative";
+        score: number;
+      };
       application.database.transaction(() => {
         courseConversation = application.database.get<{
           id: number;
