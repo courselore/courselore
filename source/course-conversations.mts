@@ -49,6 +49,7 @@ export default async (application: Application): Promise<void> => {
     body: HTML;
   }): Promise<HTML> => {
     if (
+      request.state.userSession === undefined ||
       request.state.user === undefined ||
       request.state.course === undefined ||
       request.state.courseParticipation === undefined ||
@@ -706,16 +707,13 @@ export default async (application: Application): Promise<void> => {
                               } ·
                               <span
                                 javascript="${javascript`
-                                  javascript.relativizeDateTimeElement(this, ${firstCourseConversationMessage.createdAt}, { capitalize: true });
-                                  javascript.popover({ element: this });
+                                   javascript.popover({ element: this });
                                 `}"
-                              ></span>
-                              <span
-                                type="popover"
-                                javascript="${javascript`
-                                  this.textContent = javascript.localizeDateTime(${firstCourseConversationMessage.createdAt});
-                                `}"
-                              ></span>
+                                >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                              >
+                              <span type="popover"
+                                >${utilities.formatDateTime(Temporal.Instant.from(firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                              >
                             </div>
                             <div
                               key="courseConversation--main--details"
@@ -5497,15 +5495,11 @@ export default async (application: Application): Promise<void> => {
                                   courseConversationMessageMainHeaderBylineHTMLs.push(
                                     html`<span
                                         javascript="${javascript`
-                                          javascript.relativizeDateTimeElement(this, ${courseConversationMessage.createdAt}, { capitalize: true });
                                           javascript.popover({ element: this });
                                         `}"
-                                      ></span
-                                      ><span
-                                        type="popover"
-                                        javascript="${javascript`
-                                          this.textContent = javascript.localizeDateTime(${courseConversationMessage.createdAt});
-                                        `}"
+                                        >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                      ><span type="popover"
+                                        >${utilities.formatDateTime(Temporal.Instant.from(courseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
                                       ></span
                                       >$${
                                         typeof courseConversationMessage.updatedAt ===
@@ -5513,16 +5507,11 @@ export default async (application: Application): Promise<void> => {
                                           ? html` (updated
                                               <span
                                                 javascript="${javascript`
-                                              javascript.relativizeDateTimeElement(this, ${courseConversationMessage.updatedAt}, { preposition: true });
-                                              javascript.popover({ element: this });
-                                            `}"
-                                              ></span
-                                              ><span
-                                                type="popover"
-                                                javascript="${javascript`
-                                                this.textContent = javascript.localizeDateTime(${courseConversationMessage.updatedAt});
-                                              `}"
-                                              ></span
+                                                  javascript.popover({ element: this });
+                                                `}"
+                                                >${utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseConversationMessage.updatedAt).toZonedDateTimeISO(request.state.userSession!.timeZone), { preposition: true })}</span
+                                              ><span type="popover"
+                                                >${utilities.formatDateTime(Temporal.Instant.from(courseConversationMessage.updatedAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
                                               >)`
                                           : html``
                                       }`,
