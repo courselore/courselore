@@ -308,6 +308,16 @@ export default async (application: Application): Promise<void> => {
               : css``
       }"
       javascript="${javascript`
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (${request.state.userSession?.timeZone} !== timeZone) {
+          await fetch("/settings/time-zone", {
+            method: "PATCH",
+            headers: { "CSRF-Protection": "true" },
+            body: new URLSearchParams({ timeZone }),
+          });
+          window.location.reload();
+          return;
+        }
         if (${response.mayStartLiveConnection()})
           javascript.liveConnection(${request.id}, { reloadOnReconnect: ${application.userConfiguration.environment === "development"} });
       `}"
