@@ -263,7 +263,54 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 flex: 1;
               `}"
-            ></div>
+            >
+              $${await (async () => {
+                const courseConversations = application.database.all<{
+                  id: number;
+                  publicId: string;
+                  courseConversationType:
+                    | "courseConversationTypeNote"
+                    | "courseConversationTypeQuestion";
+                  questionResolved: number;
+                  pinned: number;
+                  title: string;
+                }>(
+                  sql`
+                    select
+                      "id",
+                      "publicId",
+                      "courseConversationType",
+                      "questionResolved",
+                      "pinned",
+                      "title"
+                    from "courseConversations"
+                    where
+                      "course" = ${request.state.course!.id} and (
+                        "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                        ${
+                          request.state.courseParticipation!
+                            .courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                            ? sql`
+                                or
+                                "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              `
+                            : sql``
+                        }
+                        or (
+                          select true
+                          from "courseConversationParticipations"
+                          where
+                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                            "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation!.id}
+                        )
+                      )
+                    order by "id" desc;
+                  `,
+                );
+                return html``;
+              })()}
+            </div>
           </div>
           <div
             key="sidebar--backdrop"
