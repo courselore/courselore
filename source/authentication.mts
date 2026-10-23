@@ -116,6 +116,7 @@ export default async (application: Application): Promise<void> => {
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
+          timeZone: string;
         }>(
           sql`
             select * from "userSessions" where "id" = ${
@@ -666,6 +667,13 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--size--4);
                       `}"
                     >
+                      <input
+                        type="hidden"
+                        name="timeZone"
+                        javascript="${javascript`
+                          this.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                        `}"
+                      />
                       <label>
                         <div
                           css="${css`
@@ -1163,6 +1171,7 @@ export default async (application: Application): Promise<void> => {
           user: number;
           lastUsedAt: string;
           needsTwoFactorAuthentication: number;
+          timeZone: string;
         }>(
           sql`
             select * from "userSessions" where "id" = ${
@@ -1548,6 +1557,13 @@ export default async (application: Application): Promise<void> => {
                           gap: var(--size--4);
                         `}"
                       >
+                        <input
+                          type="hidden"
+                          name="timeZone"
+                          javascript="${javascript`
+                            this.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                          `}"
+                        />
                         <label>
                           <div
                             css="${css`
@@ -1779,7 +1795,11 @@ export default async (application: Application): Promise<void> => {
         {},
         { redirect: string },
         {},
-        { email: string; password: string },
+        {
+          timeZone: string;
+          email: string;
+          password: string;
+        },
         Application["types"]["states"]["Authentication"]
       >,
       response,
@@ -1791,6 +1811,8 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       if (
+        typeof request.body.timeZone !== "string" ||
+        !Intl.supportedValuesOf("timeZone").includes(request.body.timeZone) ||
         typeof request.body.email !== "string" ||
         !request.body.email.match(utilities.emailRegExp) ||
         typeof request.body.password !== "string" ||
@@ -1903,6 +1925,7 @@ export default async (application: Application): Promise<void> => {
         user: number;
         lastUsedAt: string;
         needsTwoFactorAuthentication: number;
+        timeZone: string;
       }>(
         sql`
           select * from "userSessions" where "id" = ${
@@ -1912,13 +1935,15 @@ export default async (application: Application): Promise<void> => {
                   "tokenTokenHash",
                   "user",
                   "lastUsedAt",
-                  "needsTwoFactorAuthentication"
+                  "needsTwoFactorAuthentication",
+                  "timeZone"
                 )
                 values (
                   ${cryptography.TokenHash.hash(userSessionToken)},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
-                  ${request.state.user.twoFactorAuthenticationEnabled}
+                  ${request.state.user.twoFactorAuthenticationEnabled},
+                  ${request.body.timeZone}
                 );
               `,
             ).lastInsertRowid
