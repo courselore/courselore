@@ -16,7 +16,7 @@ import remarkMath from "remark-math";
 import remarkStringify from "remark-stringify";
 import cryptoRandomString from "crypto-random-string";
 import natural from "natural";
-import smtpServer from "smtp-server";
+import * as smtpServer from "smtp-server";
 import PostalMime from "postal-mime";
 import nodemailer from "nodemailer";
 import { DOMParser } from "linkedom";

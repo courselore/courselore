@@ -15,7 +15,7 @@ import * as SAML from "@node-saml/node-saml";
 import selfsigned from "selfsigned";
 import * as sqliteVec from "sqlite-vec";
 import nodemailer from "nodemailer";
-import smtpServer from "smtp-server";
+import * as smtpServer from "smtp-server";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
