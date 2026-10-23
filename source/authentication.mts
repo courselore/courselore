@@ -2666,6 +2666,13 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--size--4);
                 `}"
               >
+                <input
+                  type="hidden"
+                  name="timeZone"
+                  javascript="${javascript`
+                    this.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                  `}"
+                />
                 <label>
                   <div
                     css="${css`
@@ -2766,7 +2773,10 @@ export default async (application: Application): Promise<void> => {
         { passwordResetNonce: string },
         { redirect: string },
         {},
-        { password: string },
+        {
+          timeZone: string;
+          password: string;
+        },
         Application["types"]["states"]["Authentication"]
       >,
       response,
@@ -2777,6 +2787,8 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       if (
+        typeof request.body.timeZone !== "string" ||
+        !Intl.supportedValuesOf("timeZone").includes(request.body.timeZone) ||
         typeof request.body.password !== "string" ||
         request.body.password.length < 8
       )
@@ -2920,13 +2932,15 @@ export default async (application: Application): Promise<void> => {
                   "tokenTokenHash",
                   "user",
                   "lastUsedAt",
-                  "needsTwoFactorAuthentication"
+                  "needsTwoFactorAuthentication",
+                  "timeZone"
                 )
                 values (
                   ${cryptography.TokenHash.hash(userSessionToken)},
                   ${request.state.user.id},
                   ${new Date().toISOString()},
-                  ${request.state.user.twoFactorAuthenticationEnabled}
+                  ${request.state.user.twoFactorAuthenticationEnabled},
+                  ${request.body.timeZone}
                 );
               `,
             ).lastInsertRowid
