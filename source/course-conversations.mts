@@ -3007,7 +3007,7 @@ export default async (application: Application): Promise<void> => {
         ];
         if (0 < courseConversations.length)
           for (const [courseConversationIndex, courseConversationReranking] of (
-            await (
+            (await (
               await fetch("http://localhost:19000/reranking", {
                 method: "POST",
                 headers: { "CSRF-Protection": "true" },
@@ -3019,7 +3019,7 @@ export default async (application: Application): Promise<void> => {
                   ]),
                 ]),
               })
-            ).json()
+            ).json()) as number[]
           ).entries())
             courseConversations[courseConversationIndex].reranking =
               courseConversationReranking;
