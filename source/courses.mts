@@ -5103,21 +5103,29 @@ export default async (application: Application): Promise<void> => {
         let ltiNamesAndRoleProvisioningServicesURL: string | undefined =
           request.state.course.ltiNamesAndRoleProvisioningServicesURL;
         while (typeof ltiNamesAndRoleProvisioningServicesURL === "string") {
-          const ltiNamesAndRoleProvisioningServicesResponse: Awaited<
-            ReturnType<typeof fetch>
-          > = await fetch(ltiNamesAndRoleProvisioningServicesURL, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              Accept:
-                "application/vnd.ims.lti-nrps.v2.membershipcontainer+json",
+          const ltiNamesAndRoleProvisioningServicesResponse = await fetch(
+            ltiNamesAndRoleProvisioningServicesURL,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                Accept:
+                  "application/vnd.ims.lti-nrps.v2.membershipcontainer+json",
+              },
             },
-          });
+          );
           ltiNamesAndRoleProvisioningServicesURL =
             ltiNamesAndRoleProvisioningServicesResponse.headers
               .get("Link")
               ?.match(/<(?<url>[^>]+)>;\s*rel="next"/)?.groups?.url;
           for (const ltiCourseMember of (
-            await ltiNamesAndRoleProvisioningServicesResponse.json()
+            (await ltiNamesAndRoleProvisioningServicesResponse.json()) as {
+              members: {
+                status: string;
+                email: string;
+                name: string;
+                roles: string[];
+              }[];
+            }
           ).members)
             if (
               typeof ltiCourseMember.status === "string" &&
