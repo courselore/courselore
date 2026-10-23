@@ -1366,11 +1366,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <p>
                             Wait until
-                            <span
-                              javascript="${javascript`
-                                this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationNonceCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
-                              `}"
-                            ></span>
+                            ${utilities.formatTime(Temporal.Instant.from(request.state.user.emailVerificationNonceCreatedAt).toZonedDateTimeISO(request.state.userSession!.timeZone).add({ minutes: 6 }))}
                             before you can request a new email verification.
                           </p>
                         `
