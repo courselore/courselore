@@ -969,6 +969,39 @@ export default async (application: Application): Promise<void> => {
     </html>
   `;
 
+  application.webServer?.push({
+    method: "PATCH",
+    pathname: "/settings/time-zone",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          timeZone: string;
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.userSession === undefined) return;
+      if (
+        typeof request.body.timeZone !== "string" ||
+        !Intl.supportedValuesOf("timeZone").includes(request.body.timeZone)
+      )
+        throw "validation";
+      request.state.userSession.timeZone = request.body.timeZone;
+      application.database.run(
+        sql`
+          update "userSessions"
+          set "timeZone" = ${request.state.userSession.timeZone}
+          where "id" = ${request.state.userSession.id};
+        `,
+      );
+      response.end();
+    },
+  });
+
   application.layouts.main = ({ request, response, head, body }) =>
     application.layouts.base({
       request,
