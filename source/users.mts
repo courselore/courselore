@@ -3384,7 +3384,7 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.userSession.id};
         `,
       );
-      response.end();
+      response.send();
     },
   });
 
