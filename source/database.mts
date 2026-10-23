@@ -8119,9 +8119,9 @@ export default async (application: Application): Promise<void> => {
       `,
 
       sql`
-        alter table "userSessions" add column "timezone" text null;
-        update "userSessions" set "timezone" = 'UTC';
-        alter table "userSessions" alter column "timezone" set not null;
+        alter table "userSessions" add column "timeZone" text null;
+        update "userSessions" set "timeZone" = 'UTC';
+        alter table "userSessions" alter column "timeZone" set not null;
       `,
     );
 };
