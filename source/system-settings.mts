@@ -1,4 +1,5 @@
 import * as serverTypes from "@radically-straightforward/server";
+import * as utilities from "@radically-straightforward/utilities";
 import sql from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
@@ -813,16 +814,12 @@ export default async (application: Application): Promise<void> => {
                                             >Most recent message:</span
                                           > <span
                                             javascript="${javascript`
-                                              javascript.relativizeDateTimeElement(this, ${mostRecentCourseConversationMessage.createdAt}, { capitalize: true });
                                               javascript.popover({ element: this });
                                             `}"
-                                          ></span
-                                          ><span
-                                            type="popover"
-                                            javascript="${javascript`
-                                              this.textContent = javascript.localizeDateTime(${mostRecentCourseConversationMessage.createdAt});
-                                            `}"
-                                          ></span>
+                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(mostRecentCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                          ><span type="popover"
+                                            >${utilities.formatDateTime(Temporal.Instant.from(mostRecentCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                                          >
                                         </div>
                                       `
                                     : html``;
