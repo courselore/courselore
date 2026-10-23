@@ -6273,17 +6273,13 @@ export default async (application: Application): Promise<void> => {
                                                           } ·
                                                           <span
                                                             javascript="${javascript`
-                                                              javascript.relativizeDateTimeElement(this, ${courseConversationMessageView.createdAt}, { capitalize: true });
                                                               javascript.popover({ element: this });
                                                             `}"
+                                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseConversationMessageView.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                                          ><span type="popover"
+                                                            >${utilities.formatDateTime(Temporal.Instant.from(courseConversationMessageView.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
                                                           ></span
-                                                          ><span
-                                                            type="popover"
-                                                            javascript="${javascript`
-                                                              this.textContent = javascript.localizeDateTime(${courseConversationMessageView.createdAt});
-                                                            `}"
-                                                          ></span
-                                                        ></span>
+                                                        >
                                                       </div>
                                                     </div>
                                                   `;
