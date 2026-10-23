@@ -309,7 +309,7 @@ export default async (application: Application): Promise<void> => {
       }"
       javascript="${javascript`
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (${request.state.userSession?.timeZone} !== timeZone) {
+        if (${request.state.userSession !== undefined} && ${request.state.userSession?.timeZone} !== timeZone) {
           await fetch("/settings/time-zone", {
             method: "PATCH",
             headers: { "CSRF-Protection": "true" },
@@ -968,39 +968,6 @@ export default async (application: Application): Promise<void> => {
       </body>
     </html>
   `;
-
-  application.webServer?.push({
-    method: "PATCH",
-    pathname: "/settings/time-zone",
-    handler: async (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {
-          timeZone: string;
-        },
-        Application["types"]["states"]["Authentication"]
-      >,
-      response,
-    ) => {
-      if (request.state.userSession === undefined) return;
-      if (
-        typeof request.body.timeZone !== "string" ||
-        !Intl.supportedValuesOf("timeZone").includes(request.body.timeZone)
-      )
-        throw "validation";
-      request.state.userSession.timeZone = request.body.timeZone;
-      application.database.run(
-        sql`
-          update "userSessions"
-          set "timeZone" = ${request.state.userSession.timeZone}
-          where "id" = ${request.state.userSession.id};
-        `,
-      );
-      response.end();
-    },
-  });
 
   application.layouts.main = ({ request, response, head, body }) =>
     application.layouts.base({
