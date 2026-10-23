@@ -5062,7 +5062,7 @@ export default async (application: Application): Promise<void> => {
       }[] = [];
       try {
         const accessToken = (
-          await (
+          (await (
             await fetch(platform.accessTokenURL, {
               method: "POST",
               body: new URLSearchParams({
@@ -5098,7 +5098,7 @@ export default async (application: Application): Promise<void> => {
                   ),
               }),
             })
-          ).json()
+          ).json()) as { access_token: string }
         ).access_token;
         let ltiNamesAndRoleProvisioningServicesURL: string | undefined =
           request.state.course.ltiNamesAndRoleProvisioningServicesURL;
