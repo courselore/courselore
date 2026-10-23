@@ -427,6 +427,13 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--size--4);
                   `}"
                 >
+                  <input
+                    type="hidden"
+                    name="timeZone"
+                    javascript="${javascript`
+                      this.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    `}"
+                  />
                   <label>
                     <div
                       css="${css`
@@ -917,6 +924,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
+          timeZone: string;
           name: string;
           email: string;
           password: string;
@@ -927,6 +935,8 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (request.state.user !== undefined) return;
       if (
+        typeof request.body.timeZone !== "string" ||
+        !Intl.supportedValuesOf("timeZone").includes(request.body.timeZone) ||
         typeof request.body.name !== "string" ||
         request.body.name.trim() === "" ||
         typeof request.body.email !== "string" ||
@@ -1162,13 +1172,15 @@ export default async (application: Application): Promise<void> => {
                     "tokenTokenHash",
                     "user",
                     "lastUsedAt",
-                    "needsTwoFactorAuthentication"
+                    "needsTwoFactorAuthentication",
+                    "timeZone"
                   )
                   values (
                     ${cryptography.TokenHash.hash(userSessionToken)},
                     ${request.state.user.id},
                     ${new Date().toISOString()},
-                    ${Number(false)}
+                    ${Number(false)},
+                    ${request.body.timeZone!}
                   );
                 `,
               ).lastInsertRowid
