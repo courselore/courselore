@@ -3464,13 +3464,15 @@ export default async (application: Application): Promise<void> => {
                     "tokenTokenHash",
                     "user",
                     "lastUsedAt",
-                    "needsTwoFactorAuthentication"
+                    "needsTwoFactorAuthentication",
+                    "timeZone"
                   )
                   values (
                     ${cryptography.TokenHash.hash(userSessionToken)},
                     ${request.state.user!.id},
                     ${new Date().toISOString()},
-                    ${Number(false)}
+                    ${Number(false)},
+                    ${"UTC"}
                   );
                 `,
               ).lastInsertRowid
