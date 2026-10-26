@@ -346,9 +346,115 @@ export default async (application: Application): Promise<void> => {
                         );
                       if (firstCourseConversationMessage === undefined)
                         throw new Error();
+                      const firstCourseConversationMessageAnonymous =
+                        firstCourseConversationMessage.createdByCourseParticipation !==
+                          request.state.courseParticipation!.id &&
+                        ((firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                          "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                          request.state.courseParticipation!
+                            .courseParticipationRole ===
+                            "courseParticipationRoleStudent") ||
+                          firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                            "courseConversationMessageAnonymityEveryone");
+                      const firstCourseConversationMessageCreatedByCourseParticipation =
+                        typeof firstCourseConversationMessage.createdByCourseParticipation ===
+                          "number" && !firstCourseConversationMessageAnonymous
+                          ? application.database.get<{
+                              user: number;
+                              courseParticipationRole:
+                                | "courseParticipationRoleInstructor"
+                                | "courseParticipationRoleStudent";
+                            }>(
+                              sql`
+                                select
+                                  "user",
+                                  "courseParticipationRole"
+                                from "courseParticipations"
+                                where "id" = ${firstCourseConversationMessage.createdByCourseParticipation};
+                              `,
+                            )
+                          : undefined;
+                      const firstCourseConversationMessageCreatedByCourseParticipationUser =
+                        typeof firstCourseConversationMessageCreatedByCourseParticipation ===
+                        "object"
+                          ? application.database.get<{
+                              id: number;
+                              publicId: string;
+                              name: string;
+                              avatarColor:
+                                | "red"
+                                | "orange"
+                                | "amber"
+                                | "yellow"
+                                | "lime"
+                                | "green"
+                                | "emerald"
+                                | "teal"
+                                | "cyan"
+                                | "sky"
+                                | "blue"
+                                | "indigo"
+                                | "violet"
+                                | "purple"
+                                | "fuchsia"
+                                | "pink"
+                                | "rose";
+                              avatarImage: string | null;
+                            }>(
+                              sql`
+                                select
+                                  "id",
+                                  "publicId",
+                                  "name",
+                                  "avatarColor",
+                                  "avatarImage"
+                                from "users"
+                                where "id" = ${firstCourseConversationMessageCreatedByCourseParticipation.user};
+                              `,
+                            )
+                          : undefined;
+                      const courseConversationMessagesCount =
+                        application.database.get<{ count: number }>(
+                          sql`
+                            select count(*) as "count"
+                            from "courseConversationMessages"
+                            where "courseConversation" = ${courseConversation.id};
+                          `,
+                        )!.count;
+                      const courseConversationMessageView =
+                        (request.state.courseConversation === undefined ||
+                          request.state.courseConversation.id !==
+                            courseConversation.id) &&
+                        application.database.get(
+                          sql`
+                            select true
+                            from "courseConversationMessages"
+                            left join "courseConversationMessageViews" on
+                              "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                              "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
+                            where
+                              "courseConversationMessages"."courseConversation" = ${courseConversation.id} ${
+                                request.state.courseParticipation!
+                                  .courseParticipationRole !==
+                                "courseParticipationRoleInstructor"
+                                  ? sql`
+                                      and
+                                      "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                    `
+                                  : sql``
+                              } and
+                              "courseConversationMessageViews"."id" is null
+                            limit 1;
+                          `,
+                        ) !== undefined;
                       return {
                         ...courseConversation,
                         firstCourseConversationMessage,
+                        firstCourseConversationMessageAnonymous,
+                        firstCourseConversationMessageCreatedByCourseParticipation,
+                        firstCourseConversationMessageCreatedByCourseParticipationUser,
+                        courseConversationMessagesCount,
+                        courseConversationMessageView,
                       };
                     }),
                   (courseConversation) => {
@@ -429,8 +535,7 @@ export default async (application: Application): Promise<void> => {
                                   var(--color--slate--700)
                                 );
                               }
-                              [key~="courseConversations--group"].current
-                                & {
+                              [key~="courseConversations--group"].current & {
                                 color: light-dark(
                                   var(--color--white),
                                   var(--color--white)
