@@ -499,7 +499,7 @@ export default async (application: Application): Promise<void> => {
                         return html`
                           <details
                             key="courseConversations--group ${courseConversationsGroupKey}"
-                            class="${courseConversationsCurrent ? "current" : ""}"
+                            $${courseConversationsCurrent ? html`class="current"` : html``}
                             $${
                               (courseConversationsGroupKey === "Pinned" &&
                                 courseConversations.some(
@@ -651,8 +651,10 @@ export default async (application: Application): Promise<void> => {
                                       request.state.course!.publicId
                                     }/conversations/${courseConversation.publicId}"
                                     $${
-                                      request.state.courseConversation?.id ===
-                                      courseConversation.id
+                                      request.state.courseConversation !==
+                                        undefined &&
+                                      request.state.courseConversation.id ===
+                                        courseConversation.id
                                         ? html`class="current"`
                                         : html``
                                     }
