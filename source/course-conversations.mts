@@ -421,7 +421,7 @@ export default async (application: Application): Promise<void> => {
                             where "courseConversation" = ${courseConversation.id};
                           `,
                         )!.count;
-                      const courseConversationMessageView =
+                      const includesUnviewedCourseConversationMessages =
                         (request.state.courseConversation === undefined ||
                           request.state.courseConversation.id !==
                             courseConversation.id) &&
@@ -454,7 +454,7 @@ export default async (application: Application): Promise<void> => {
                         firstCourseConversationMessageCreatedByCourseParticipation,
                         firstCourseConversationMessageCreatedByCourseParticipationUser,
                         courseConversationMessagesCount,
-                        courseConversationMessageView,
+                        includesUnviewedCourseConversationMessages,
                       };
                     }),
                   (courseConversation) => {
@@ -484,13 +484,33 @@ export default async (application: Application): Promise<void> => {
                       courseConversationsGroupKey,
                       courseConversationsGroupIndex,
                     ) => {
-                      const courseConversationsGroup =
+                      const courseConversations =
                         courseConversationsGroups[
                           courseConversationsGroupKey as any
-                        ];
+                        ]!;
+                      const courseConversationsCurrent =
+                        courseConversations.some(
+                          (courseConversation) =>
+                            request.state.courseConversation !== undefined &&
+                            request.state.courseConversation.id ===
+                              courseConversation.id,
+                        );
                       return html`
                         <details
                           key="courseConversations--group ${courseConversationsGroupKey}"
+                          class="${courseConversationsCurrent ? "current" : ""}"
+                          $${
+                            (courseConversationsGroupKey === "Pinned" &&
+                              courseConversations.some(
+                                (courseConversation) =>
+                                  courseConversation.includesUnviewedCourseConversationMessages,
+                              )) ||
+                            (courseConversationsGroupKey !== "Pinned" &&
+                              courseConversationsGroupIndex < 5) ||
+                            courseConversationsCurrent
+                              ? html`open`
+                              : html``
+                          }
                         >
                           <summary
                             css="${css`
@@ -579,11 +599,17 @@ export default async (application: Application): Promise<void> => {
                                 transition-timing-function: var(
                                   --transition-timing-function--ease-in-out
                                 );
-                                &:not(.visible) {
-                                  visibility: hidden;
-                                  opacity: var(--opacity--0);
-                                }
-                              `}"
+                              `} ${
+                                courseConversations.every(
+                                  (courseConversation) =>
+                                    !courseConversation.includesUnviewedCourseConversationMessages,
+                                )
+                                  ? css`
+                                      visibility: hidden;
+                                      opacity: var(--opacity--0);
+                                    `
+                                  : css``
+                              }"
                             >
                               <i class="bi bi-circle-fill"></i>
                             </div>
