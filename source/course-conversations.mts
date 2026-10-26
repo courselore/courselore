@@ -362,7 +362,157 @@ export default async (application: Application): Promise<void> => {
                       : `${courseConversationFirstCourseConversationMessageCreatedAt.subtract({ days: courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek - 1 }).toPlainDate()} — ${courseConversationFirstCourseConversationMessageCreatedAt.add({ days: 7 - courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek }).toPlainDate()}`;
                   },
                 );
-                return html``;
+                const courseConversationsGroupsKeys = Object.keys(
+                  courseConversationsGroups,
+                );
+                return html`
+                  $${[
+                    ...(courseConversationsGroupsKeys.includes("Pinned")
+                      ? ["Pinned"]
+                      : []),
+                    ...courseConversationsGroupsKeys.filter(
+                      (key) => key !== "Pinned",
+                    ),
+                  ].map(
+                    (
+                      courseConversationsGroupKey,
+                      courseConversationsGroupIndex,
+                    ) => {
+                      const courseConversationsGroup =
+                        courseConversationsGroups[
+                          courseConversationsGroupKey as any
+                        ];
+                      return html`
+                        <details
+                          key="courseConversations--groups--group ${courseConversationsGroupKey}"
+                        >
+                          <summary
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                              background-color: light-dark(
+                                var(--color--slate--100),
+                                var(--color--slate--900)
+                              );
+                              padding: var(--size--1-5) var(--size--4);
+                              border-bottom: var(--border-width--1) solid
+                                light-dark(
+                                  var(--color--slate--200),
+                                  var(--color--slate--800)
+                                );
+                              cursor: pointer;
+                              user-select: none;
+                              transition-property: var(
+                                --transition-property--colors
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              &:hover,
+                              &:focus-within {
+                                background-color: light-dark(
+                                  var(--color--slate--200),
+                                  var(--color--slate--800)
+                                );
+                              }
+                              &:active {
+                                background-color: light-dark(
+                                  var(--color--slate--300),
+                                  var(--color--slate--700)
+                                );
+                              }
+                              [key~="courseConversations--groups--group"].current
+                                & {
+                                color: light-dark(
+                                  var(--color--white),
+                                  var(--color--white)
+                                );
+                                background-color: light-dark(
+                                  var(--color--blue--500),
+                                  var(--color--blue--500)
+                                );
+                                &:hover,
+                                &:focus-within {
+                                  background-color: light-dark(
+                                    var(--color--blue--400),
+                                    var(--color--blue--400)
+                                  );
+                                }
+                                &:active {
+                                  background-color: light-dark(
+                                    var(--color--blue--600),
+                                    var(--color--blue--600)
+                                  );
+                                }
+                              }
+                            `}"
+                          >
+                            <div
+                              key="courseConversations--groups--group--view"
+                              css="${css`
+                                font-size: var(--size--1-5);
+                                color: light-dark(
+                                  var(--color--blue--500),
+                                  var(--color--blue--500)
+                                );
+                                position: absolute;
+                                translate: calc(-100% - var(--size--1));
+                                transition-property: var(
+                                  --transition-property--opacity
+                                );
+                                transition-duration: var(
+                                  --transition-duration--150
+                                );
+                                transition-timing-function: var(
+                                  --transition-timing-function--ease-in-out
+                                );
+                                &:not(.visible) {
+                                  visibility: hidden;
+                                  opacity: var(--opacity--0);
+                                }
+                              `}"
+                            >
+                              <i class="bi bi-circle-fill"></i>
+                            </div>
+                            <div>
+                              <span
+                                css="${css`
+                                  display: inline-block;
+                                  transition-property: var(
+                                    --transition-property--transform
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  [key~="courseConversations--groups--group"][open]
+                                    > summary
+                                    > div
+                                    > & {
+                                    rotate: var(--rotate--90);
+                                  }
+                                `}"
+                              >
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
+                              ${courseConversationsGroupKey}
+                            </div>
+                          </summary>
+                        </details>
+                      `;
+                    },
+                  )}
+                `;
               })()}
             </div>
           </div>
