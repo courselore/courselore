@@ -265,18 +265,19 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               $${await (async () => {
-                const courseConversations = application.database
-                  .all<{
-                    id: number;
-                    publicId: string;
-                    courseConversationType:
-                      | "courseConversationTypeNote"
-                      | "courseConversationTypeQuestion";
-                    questionResolved: number;
-                    pinned: number;
-                    title: string;
-                  }>(
-                    sql`
+                const courseConversationsGroups = Object.groupBy(
+                  application.database
+                    .all<{
+                      id: number;
+                      publicId: string;
+                      courseConversationType:
+                        | "courseConversationTypeNote"
+                        | "courseConversationTypeQuestion";
+                      questionResolved: number;
+                      pinned: number;
+                      title: string;
+                    }>(
+                      sql`
                       select
                         "id",
                         "publicId",
@@ -308,25 +309,25 @@ export default async (application: Application): Promise<void> => {
                         )
                       order by "id" desc;
                     `,
-                  )
-                  .map((courseConversation) => {
-                    const firstCourseConversationMessage =
-                      application.database.get<{
-                        id: number;
-                        publicId: string;
-                        createdByCourseParticipation: number | null;
-                        createdAt: string;
-                        updatedAt: string | null;
-                        courseConversationMessageAnonymity:
-                          | "courseConversationMessageAnonymityNone"
-                          | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-                          | "courseConversationMessageAnonymityEveryone";
-                        content: string;
-                        contentSentimentAnalysisType:
-                          "positive" | "neutral" | "negative";
-                        contentSentimentAnalysisIntensity: number;
-                      }>(
-                        sql`
+                    )
+                    .map((courseConversation) => {
+                      const firstCourseConversationMessage =
+                        application.database.get<{
+                          id: number;
+                          publicId: string;
+                          createdByCourseParticipation: number | null;
+                          createdAt: string;
+                          updatedAt: string | null;
+                          courseConversationMessageAnonymity:
+                            | "courseConversationMessageAnonymityNone"
+                            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                            | "courseConversationMessageAnonymityEveryone";
+                          content: string;
+                          contentSentimentAnalysisType:
+                            "positive" | "neutral" | "negative";
+                          contentSentimentAnalysisIntensity: number;
+                        }>(
+                          sql`
                           select
                             "id",
                             "publicId",
@@ -342,14 +343,25 @@ export default async (application: Application): Promise<void> => {
                           order by "id" asc
                           limit 1;
                         `,
-                      );
-                    if (firstCourseConversationMessage === undefined)
-                      throw new Error();
-                    return {
-                      ...courseConversation,
-                      firstCourseConversationMessage,
-                    };
-                  });
+                        );
+                      if (firstCourseConversationMessage === undefined)
+                        throw new Error();
+                      return {
+                        ...courseConversation,
+                        firstCourseConversationMessage,
+                      };
+                    }),
+                  (courseConversation) => {
+                    const courseConversationFirstCourseConversationMessageCreatedAt =
+                      Temporal.Instant.from(
+                        courseConversation.firstCourseConversationMessage
+                          .createdAt,
+                      ).toZonedDateTimeISO(request.state.userSession!.timeZone);
+                    return Boolean(courseConversation.pinned)
+                      ? "Pinned"
+                      : `${courseConversationFirstCourseConversationMessageCreatedAt.subtract({ days: courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek - 1 }).toPlainDate()} — ${courseConversationFirstCourseConversationMessageCreatedAt.add({ days: 7 - courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek }).toPlainDate()}`;
+                  },
+                );
                 return html``;
               })()}
             </div>
