@@ -384,7 +384,7 @@ export default async (application: Application): Promise<void> => {
                         ];
                       return html`
                         <details
-                          key="courseConversations--groups--group ${courseConversationsGroupKey}"
+                          key="courseConversations--group ${courseConversationsGroupKey}"
                         >
                           <summary
                             css="${css`
@@ -429,7 +429,7 @@ export default async (application: Application): Promise<void> => {
                                   var(--color--slate--700)
                                 );
                               }
-                              [key~="courseConversations--groups--group"].current
+                              [key~="courseConversations--group"].current
                                 & {
                                 color: light-dark(
                                   var(--color--white),
@@ -456,7 +456,7 @@ export default async (application: Application): Promise<void> => {
                             `}"
                           >
                             <div
-                              key="courseConversations--groups--group--view"
+                              key="courseConversations--group--view"
                               css="${css`
                                 font-size: var(--size--1-5);
                                 color: light-dark(
@@ -495,7 +495,7 @@ export default async (application: Application): Promise<void> => {
                                   transition-timing-function: var(
                                     --transition-timing-function--ease-in-out
                                   );
-                                  [key~="courseConversations--groups--group"][open]
+                                  [key~="courseConversations--group"][open]
                                     > summary
                                     > div
                                     > & {
