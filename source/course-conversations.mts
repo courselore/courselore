@@ -852,19 +852,20 @@ export default async (application: Application): Promise<void> => {
                                                 --font-size--3--line-height
                                               );
                                               font-weight: 500;
-                                              color: light-dark(
-                                                var(--color--slate--400),
-                                                var(--color--slate--600)
-                                              );
                                             `} ${
-                                              courseConversationCurrent
+                                              !courseConversationCurrent
                                                 ? css`
+                                                    color: light-dark(
+                                                      var(--color--slate--400),
+                                                      var(--color--slate--600)
+                                                    );
+                                                  `
+                                                : css`
                                                     color: light-dark(
                                                       var(--color--blue--300),
                                                       var(--color--blue--300)
                                                     );
                                                   `
-                                                : css``
                                             }"
                                           >
                                             #${courseConversation.publicId}
@@ -876,19 +877,20 @@ export default async (application: Application): Promise<void> => {
                                             line-height: var(
                                               --font-size--3--line-height
                                             );
-                                            color: light-dark(
-                                              var(--color--slate--600),
-                                              var(--color--slate--400)
-                                            );
                                           `} ${
-                                            courseConversationCurrent
+                                            !courseConversationCurrent
                                               ? css`
+                                                  color: light-dark(
+                                                    var(--color--slate--600),
+                                                    var(--color--slate--400)
+                                                  );
+                                                `
+                                              : css`
                                                   color: light-dark(
                                                     var(--color--blue--200),
                                                     var(--color--blue--200)
                                                   );
                                                 `
-                                              : css``
                                           }"
                                         >
                                           <span
@@ -943,19 +945,20 @@ export default async (application: Application): Promise<void> => {
                                             line-height: var(
                                               --font-size--3--line-height
                                             );
-                                            color: light-dark(
-                                              var(--color--slate--600),
-                                              var(--color--slate--400)
-                                            );
                                           `} ${
-                                            courseConversationCurrent
+                                            !courseConversationCurrent
                                               ? css`
+                                                  color: light-dark(
+                                                    var(--color--slate--600),
+                                                    var(--color--slate--400)
+                                                  );
+                                                `
+                                              : css`
                                                   color: light-dark(
                                                     var(--color--blue--200),
                                                     var(--color--blue--200)
                                                   );
                                                 `
-                                              : css``
                                           }"
                                         >
                                           $${(() => {
@@ -1062,13 +1065,19 @@ export default async (application: Application): Promise<void> => {
                                                       --font-size--3--line-height
                                                     );
                                                     font-weight: 600;
-                                                    color: light-dark(
-                                                      var(--color--green--500),
-                                                      var(--color--green--500)
-                                                    );
                                                   `} ${
-                                                    courseConversationCurrent
+                                                    !courseConversationCurrent
                                                       ? css`
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--green--500
+                                                            ),
+                                                            var(
+                                                              --color--green--500
+                                                            )
+                                                          );
+                                                        `
+                                                      : css`
                                                           color: light-dark(
                                                             var(
                                                               --color--blue--200
@@ -1078,7 +1087,6 @@ export default async (application: Application): Promise<void> => {
                                                             )
                                                           );
                                                         `
-                                                      : css``
                                                   }"
                                                 >
                                                   Liked by instructor
@@ -1092,22 +1100,23 @@ export default async (application: Application): Promise<void> => {
                                             line-height: var(
                                               --font-size--3--line-height
                                             );
-                                            color: light-dark(
-                                              var(--color--slate--400),
-                                              var(--color--slate--600)
-                                            );
                                             white-space: nowrap;
                                             overflow: hidden;
                                             text-overflow: ellipsis;
                                           `} ${
-                                            courseConversationCurrent
+                                            !courseConversationCurrent
                                               ? css`
+                                                  color: light-dark(
+                                                    var(--color--slate--400),
+                                                    var(--color--slate--600)
+                                                  );
+                                                `
+                                              : css`
                                                   color: light-dark(
                                                     var(--color--blue--300),
                                                     var(--color--blue--300)
                                                   );
                                                 `
-                                              : css``
                                           }"
                                         >
                                           ${(
