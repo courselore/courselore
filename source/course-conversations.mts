@@ -986,12 +986,8 @@ export default async (application: Application): Promise<void> => {
                                                         ) === false
                                                         ? html` <span
                                                             css="${
-                                                              request.state
-                                                                .courseConversation
-                                                                ?.id ===
-                                                              courseConversation.id
-                                                                ? css``
-                                                                : css`
+                                                              !courseConversationCurrent
+                                                                ? css`
                                                                     color: light-dark(
                                                                       var(
                                                                         --color--red--500
@@ -1001,17 +997,14 @@ export default async (application: Application): Promise<void> => {
                                                                       )
                                                                     );
                                                                   `
+                                                                : css``
                                                             }"
                                                             >(unresolved)</span
                                                           >`
                                                         : html` <span
                                                             css="${
-                                                              request.state
-                                                                .courseConversation
-                                                                ?.id ===
-                                                              courseConversation.id
-                                                                ? css``
-                                                                : css`
+                                                              !courseConversationCurrent
+                                                                ? css`
                                                                     color: light-dark(
                                                                       var(
                                                                         --color--green--500
@@ -1021,6 +1014,7 @@ export default async (application: Application): Promise<void> => {
                                                                       )
                                                                     );
                                                                   `
+                                                                : css``
                                                             }"
                                                             >(resolved)</span
                                                           >`
@@ -1056,7 +1050,7 @@ export default async (application: Application): Promise<void> => {
                                               join "courseParticipations" on
                                                 "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
                                                 "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                              where "courseConversationMessageLikes"."courseConversationMessage" = ${firstCourseConversationMessage.id}
+                                              where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversation.firstCourseConversationMessage.id}
                                               limit 1;
                                             `,
                                           ) !== undefined
@@ -1070,11 +1064,12 @@ export default async (application: Application): Promise<void> => {
                                                       --font-size--3--line-height
                                                     );
                                                     font-weight: 600;
+                                                    color: light-dark(
+                                                      var(--color--green--500),
+                                                      var(--color--green--500)
+                                                    );
                                                   `} ${
-                                                    request.state
-                                                      .courseConversation
-                                                      ?.id ===
-                                                    courseConversation.id
+                                                    courseConversationCurrent
                                                       ? css`
                                                           color: light-dark(
                                                             var(
@@ -1085,16 +1080,7 @@ export default async (application: Application): Promise<void> => {
                                                             )
                                                           );
                                                         `
-                                                      : css`
-                                                          color: light-dark(
-                                                            var(
-                                                              --color--green--500
-                                                            ),
-                                                            var(
-                                                              --color--green--500
-                                                            )
-                                                          );
-                                                        `
+                                                      : css``
                                                   }"
                                                 >
                                                   Liked by instructor
@@ -1108,24 +1094,22 @@ export default async (application: Application): Promise<void> => {
                                             line-height: var(
                                               --font-size--3--line-height
                                             );
+                                            color: light-dark(
+                                              var(--color--slate--400),
+                                              var(--color--slate--600)
+                                            );
                                             white-space: nowrap;
                                             overflow: hidden;
                                             text-overflow: ellipsis;
                                           `} ${
-                                            request.state.courseConversation
-                                              ?.id === courseConversation.id
+                                            courseConversationCurrent
                                               ? css`
                                                   color: light-dark(
                                                     var(--color--blue--300),
                                                     var(--color--blue--300)
                                                   );
                                                 `
-                                              : css`
-                                                  color: light-dark(
-                                                    var(--color--slate--400),
-                                                    var(--color--slate--600)
-                                                  );
-                                                `
+                                              : css``
                                           }"
                                         >
                                           ${(
@@ -1137,7 +1121,7 @@ export default async (application: Application): Promise<void> => {
                                                     .courseParticipation,
                                                 courseConversation,
                                                 courseConversationMessage:
-                                                  firstCourseConversationMessage,
+                                                  courseConversation.firstCourseConversationMessage,
                                                 mode: "textContent",
                                               },
                                             )
