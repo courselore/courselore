@@ -727,39 +727,46 @@ export default async (application: Application): Promise<void> => {
                                             align-items: center;
                                           `}"
                                         >
-                                          $${
-                                            ___
-                                              ? html`
-                                                  <div
-                                                    key="courseConversation--sidebar--courseConversationMessageViews"
-                                                    css="${css`
-                                                      font-size: var(
-                                                        --size--1-5
-                                                      );
-                                                      color: light-dark(
-                                                        var(--color--blue--500),
-                                                        var(--color--blue--500)
-                                                      );
-                                                      position: absolute;
-                                                      translate: calc(
-                                                        -100% - var(--size--1)
-                                                      );
-                                                    `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-circle-fill"
-                                                    ></i>
-                                                  </div>
-                                                `
-                                              : html``
-                                          }
+                                          <div
+                                            key="courseConversation--sidebar--courseConversationMessageViews"
+                                            css="${css`
+                                              font-size: var(--size--1-5);
+                                              color: light-dark(
+                                                var(--color--blue--500),
+                                                var(--color--blue--500)
+                                              );
+                                              position: absolute;
+                                              translate: calc(
+                                                -100% - var(--size--1)
+                                              );
+                                              transition-property: var(
+                                                --transition-property--opacity
+                                              );
+                                              transition-duration: var(
+                                                --transition-duration--150
+                                              );
+                                              transition-timing-function: var(
+                                                --transition-timing-function--ease-in-out
+                                              );
+                                            `} ${
+                                              courseConversationCurrent ||
+                                              !courseConversation.includesUnviewedCourseConversationMessages
+                                                ? css`
+                                                    visibility: hidden;
+                                                    opacity: var(--opacity--0);
+                                                  `
+                                                : css``
+                                            }"
+                                          >
+                                            <i class="bi bi-circle-fill"></i>
+                                          </div>
                                           <div
                                             key="courseConversation--sidebar--userAvatar"
                                           >
                                             $${application.partials.userAvatar({
-                                              user: firstCourseConversationMessageAnonymous
+                                              user: courseConversation.firstCourseConversationMessageAnonymous
                                                 ? "anonymous"
-                                                : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
+                                                : (courseConversation.firstCourseConversationMessageCreatedByCourseParticipationUser ??
                                                   "courseParticipationDeleted"),
                                               size: 9,
                                             })}
@@ -797,12 +804,16 @@ export default async (application: Application): Promise<void> => {
                                               Boolean(
                                                 courseConversation.questionResolved,
                                               ) === false &&
-                                              courseConversationMessagesCount ===
+                                              courseConversation.courseConversationMessagesCount ===
                                                 1 &&
-                                              firstCourseConversationMessage.contentSentimentAnalysisType ===
+                                              courseConversation
+                                                .firstCourseConversationMessage
+                                                .contentSentimentAnalysisType ===
                                                 "negative" &&
                                               0.6 <
-                                                firstCourseConversationMessage.contentSentimentAnalysisIntensity
+                                                courseConversation
+                                                  .firstCourseConversationMessage
+                                                  .contentSentimentAnalysisIntensity
                                                 ? html`
                                                     <span
                                                       css="${
@@ -830,10 +841,10 @@ export default async (application: Application): Promise<void> => {
                                                         class="bi bi-exclamation-diamond-fill"
                                                       ></i>
                                                     </span>
-                                                    <span type="popover"
-                                                      >This is a high-priority
-                                                      question.</span
-                                                    >
+                                                    <span type="popover">
+                                                      This is a high-priority
+                                                      question.
+                                                    </span>
                                                   `
                                                 : html``
                                             }
