@@ -601,6 +601,7 @@ export default async (application: Application): Promise<void> => {
                                     --transition-timing-function--ease-in-out
                                   );
                                 `} ${
+                                  courseConversationsCurrent ||
                                   courseConversations.every(
                                     (courseConversation) =>
                                       !courseConversation.includesUnviewedCourseConversationMessages,
@@ -642,209 +643,469 @@ export default async (application: Application): Promise<void> => {
                             </summary>
                             $${await Promise.all(
                               courseConversations.map(
-                                async (courseConversation) => html`
-                                  <a
-                                    key="courseConversation /courses/${
-                                      request.state.course!.publicId
-                                    }/conversations/${courseConversation.publicId}"
-                                    href="/courses/${
-                                      request.state.course!.publicId
-                                    }/conversations/${courseConversation.publicId}"
-                                    $${
-                                      request.state.courseConversation !==
-                                        undefined &&
-                                      request.state.courseConversation.id ===
-                                        courseConversation.id
-                                        ? html`class="current"`
-                                        : html``
-                                    }
-                                    css="${css`
-                                      padding: var(--size--2) var(--size--4);
-                                      border-bottom: var(--border-width--1)
-                                        solid
-                                        light-dark(
-                                          var(--color--slate--200),
-                                          var(--color--slate--800)
-                                        );
-                                      display: flex;
-                                      gap: var(--size--2);
-                                      cursor: pointer;
-                                      transition-property: var(
-                                        --transition-property--colors
-                                      );
-                                      transition-duration: var(
-                                        --transition-duration--150
-                                      );
-                                      transition-timing-function: var(
-                                        --transition-timing-function--ease-in-out
-                                      );
-                                      &:hover,
-                                      &:focus-within {
-                                        background-color: light-dark(
-                                          var(--color--slate--50),
-                                          var(--color--slate--950)
-                                        );
+                                async (courseConversation) => {
+                                  const courseConversationCurrent =
+                                    request.state.courseConversation !==
+                                      undefined &&
+                                    request.state.courseConversation.id ===
+                                      courseConversation.id;
+                                  return html`
+                                    <a
+                                      key="courseConversation /courses/${
+                                        request.state.course!.publicId
+                                      }/conversations/${courseConversation.publicId}"
+                                      href="/courses/${
+                                        request.state.course!.publicId
+                                      }/conversations/${courseConversation.publicId}"
+                                      $${
+                                        courseConversationCurrent
+                                          ? html`class="current"`
+                                          : html``
                                       }
-                                      &:active {
-                                        background-color: light-dark(
-                                          var(--color--slate--100),
-                                          var(--color--slate--900)
+                                      css="${css`
+                                        padding: var(--size--2) var(--size--4);
+                                        border-bottom: var(--border-width--1)
+                                          solid
+                                          light-dark(
+                                            var(--color--slate--200),
+                                            var(--color--slate--800)
+                                          );
+                                        display: flex;
+                                        gap: var(--size--2);
+                                        cursor: pointer;
+                                        transition-property: var(
+                                          --transition-property--colors
                                         );
-                                      }
-                                      &.current {
-                                        color: light-dark(
-                                          var(--color--white),
-                                          var(--color--white)
+                                        transition-duration: var(
+                                          --transition-duration--150
                                         );
-                                        background-color: light-dark(
-                                          var(--color--blue--500),
-                                          var(--color--blue--500)
+                                        transition-timing-function: var(
+                                          --transition-timing-function--ease-in-out
                                         );
                                         &:hover,
                                         &:focus-within {
                                           background-color: light-dark(
-                                            var(--color--blue--400),
-                                            var(--color--blue--400)
+                                            var(--color--slate--50),
+                                            var(--color--slate--950)
                                           );
                                         }
                                         &:active {
                                           background-color: light-dark(
-                                            var(--color--blue--600),
-                                            var(--color--blue--600)
+                                            var(--color--slate--100),
+                                            var(--color--slate--900)
                                           );
                                         }
-                                      }
-                                    `}"
-                                    javascript="${javascript`
-                                      this.pinned = ${Boolean(courseConversation.pinned)};
-                                      this.firstCourseConversationMessageCreatedAt = ${firstCourseConversationMessage.createdAt};
-                                    `}"
-                                  >
-                                    <div key="courseConversation--sidebar">
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          align-items: center;
-                                        `}"
-                                      >
-                                        $${
-                                          ___
-                                            ? html`
-                                                <div
-                                                  key="courseConversation--sidebar--courseConversationMessageViews"
-                                                  css="${css`
-                                                    font-size: var(--size--1-5);
-                                                    color: light-dark(
-                                                      var(--color--blue--500),
-                                                      var(--color--blue--500)
-                                                    );
-                                                    position: absolute;
-                                                    translate: calc(
-                                                      -100% - var(--size--1)
-                                                    );
-                                                  `}"
-                                                >
-                                                  <i
-                                                    class="bi bi-circle-fill"
-                                                  ></i>
-                                                </div>
-                                              `
-                                            : html``
+                                        &.current {
+                                          color: light-dark(
+                                            var(--color--white),
+                                            var(--color--white)
+                                          );
+                                          background-color: light-dark(
+                                            var(--color--blue--500),
+                                            var(--color--blue--500)
+                                          );
+                                          &:hover,
+                                          &:focus-within {
+                                            background-color: light-dark(
+                                              var(--color--blue--400),
+                                              var(--color--blue--400)
+                                            );
+                                          }
+                                          &:active {
+                                            background-color: light-dark(
+                                              var(--color--blue--600),
+                                              var(--color--blue--600)
+                                            );
+                                          }
                                         }
-                                        <div
-                                          key="courseConversation--sidebar--userAvatar"
-                                        >
-                                          $${application.partials.userAvatar({
-                                            user: firstCourseConversationMessageAnonymous
-                                              ? "anonymous"
-                                              : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
-                                                "courseParticipationDeleted"),
-                                            size: 9,
-                                          })}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div
-                                      key="courseConversation--main"
-                                      css="${css`
-                                        flex: 1;
-                                        min-width: var(--size--0);
                                       `}"
                                     >
-                                      <div
-                                        key="courseConversation--main--header"
-                                        css="${css`
-                                          display: flex;
-                                          align-items: baseline;
-                                          gap: var(--size--2);
-                                        `}"
-                                      >
+                                      <div key="courseConversation--sidebar">
                                         <div
-                                          key="courseConversation--main--header--title"
                                           css="${css`
-                                            flex: 1;
-                                            font-weight: 600;
+                                            display: flex;
+                                            align-items: center;
                                           `}"
                                         >
                                           $${
-                                            request.state.courseParticipation!
-                                              .courseParticipationRole ===
-                                              "courseParticipationRoleInstructor" &&
-                                            courseConversation.courseConversationType ===
-                                              "courseConversationTypeQuestion" &&
-                                            Boolean(
-                                              courseConversation.questionResolved,
-                                            ) === false &&
-                                            courseConversationMessagesCount ===
-                                              1 &&
-                                            firstCourseConversationMessage.contentSentimentAnalysisType ===
-                                              "negative" &&
-                                            0.6 <
-                                              firstCourseConversationMessage.contentSentimentAnalysisIntensity
+                                            ___
                                               ? html`
-                                                  <span
-                                                    css="${
-                                                      request.state
-                                                        .courseConversation
-                                                        ?.id ===
-                                                      courseConversation.id
-                                                        ? css``
-                                                        : css`
-                                                            color: light-dark(
-                                                              var(
-                                                                --color--red--400
-                                                              ),
-                                                              var(
-                                                                --color--red--600
-                                                              )
-                                                            );
-                                                          `
-                                                    }"
-                                                    javascript="${javascript`
-                                                      javascript.popover({ element: this });
+                                                  <div
+                                                    key="courseConversation--sidebar--courseConversationMessageViews"
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --size--1-5
+                                                      );
+                                                      color: light-dark(
+                                                        var(--color--blue--500),
+                                                        var(--color--blue--500)
+                                                      );
+                                                      position: absolute;
+                                                      translate: calc(
+                                                        -100% - var(--size--1)
+                                                      );
                                                     `}"
                                                   >
                                                     <i
-                                                      class="bi bi-exclamation-diamond-fill"
+                                                      class="bi bi-circle-fill"
                                                     ></i>
-                                                  </span>
-                                                  <span type="popover"
-                                                    >This is a high-priority
-                                                    question.</span
-                                                  >
+                                                  </div>
                                                 `
                                               : html``
                                           }
-                                          ${courseConversation.title}
+                                          <div
+                                            key="courseConversation--sidebar--userAvatar"
+                                          >
+                                            $${application.partials.userAvatar({
+                                              user: firstCourseConversationMessageAnonymous
+                                                ? "anonymous"
+                                                : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
+                                                  "courseParticipationDeleted"),
+                                              size: 9,
+                                            })}
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div
+                                        key="courseConversation--main"
+                                        css="${css`
+                                          flex: 1;
+                                          min-width: var(--size--0);
+                                        `}"
+                                      >
+                                        <div
+                                          key="courseConversation--main--header"
+                                          css="${css`
+                                            display: flex;
+                                            align-items: baseline;
+                                            gap: var(--size--2);
+                                          `}"
+                                        >
+                                          <div
+                                            key="courseConversation--main--header--title"
+                                            css="${css`
+                                              flex: 1;
+                                              font-weight: 600;
+                                            `}"
+                                          >
+                                            $${
+                                              request.state.courseParticipation!
+                                                .courseParticipationRole ===
+                                                "courseParticipationRoleInstructor" &&
+                                              courseConversation.courseConversationType ===
+                                                "courseConversationTypeQuestion" &&
+                                              Boolean(
+                                                courseConversation.questionResolved,
+                                              ) === false &&
+                                              courseConversationMessagesCount ===
+                                                1 &&
+                                              firstCourseConversationMessage.contentSentimentAnalysisType ===
+                                                "negative" &&
+                                              0.6 <
+                                                firstCourseConversationMessage.contentSentimentAnalysisIntensity
+                                                ? html`
+                                                    <span
+                                                      css="${
+                                                        request.state
+                                                          .courseConversation
+                                                          ?.id ===
+                                                        courseConversation.id
+                                                          ? css``
+                                                          : css`
+                                                              color: light-dark(
+                                                                var(
+                                                                  --color--red--400
+                                                                ),
+                                                                var(
+                                                                  --color--red--600
+                                                                )
+                                                              );
+                                                            `
+                                                      }"
+                                                      javascript="${javascript`
+                                                        javascript.popover({ element: this });
+                                                      `}"
+                                                    >
+                                                      <i
+                                                        class="bi bi-exclamation-diamond-fill"
+                                                      ></i>
+                                                    </span>
+                                                    <span type="popover"
+                                                      >This is a high-priority
+                                                      question.</span
+                                                    >
+                                                  `
+                                                : html``
+                                            }
+                                            ${courseConversation.title}
+                                          </div>
+                                          <div
+                                            key="courseConversation--main--header--publicId"
+                                            css="${css`
+                                              font-size: var(--font-size--3);
+                                              line-height: var(
+                                                --font-size--3--line-height
+                                              );
+                                              font-weight: 500;
+                                            `} ${
+                                              request.state.courseConversation
+                                                ?.id === courseConversation.id
+                                                ? css`
+                                                    color: light-dark(
+                                                      var(--color--blue--300),
+                                                      var(--color--blue--300)
+                                                    );
+                                                  `
+                                                : css`
+                                                    color: light-dark(
+                                                      var(--color--slate--400),
+                                                      var(--color--slate--600)
+                                                    );
+                                                  `
+                                            }"
+                                          >
+                                            #${courseConversation.publicId}
+                                          </div>
                                         </div>
                                         <div
-                                          key="courseConversation--main--header--publicId"
+                                          key="courseConversation--main--byline"
                                           css="${css`
                                             font-size: var(--font-size--3);
                                             line-height: var(
                                               --font-size--3--line-height
                                             );
-                                            font-weight: 500;
+                                          `} ${
+                                            request.state.courseConversation
+                                              ?.id === courseConversation.id
+                                              ? css`
+                                                  color: light-dark(
+                                                    var(--color--blue--200),
+                                                    var(--color--blue--200)
+                                                  );
+                                                `
+                                              : css`
+                                                  color: light-dark(
+                                                    var(--color--slate--600),
+                                                    var(--color--slate--400)
+                                                  );
+                                                `
+                                          }"
+                                        >
+                                          <span
+                                            css="${css`
+                                              font-weight: 600;
+                                            `}"
+                                            >${
+                                              firstCourseConversationMessageAnonymous
+                                                ? "Anonymous"
+                                                : (firstCourseConversationMessageCreatedByCourseParticipationUser?.name ??
+                                                  "Deleted course participant")
+                                            }</span
+                                          >${
+                                            !firstCourseConversationMessageAnonymous
+                                              ? `${
+                                                  firstCourseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                                  "courseParticipationRoleInstructor"
+                                                    ? " (instructor)"
+                                                    : ""
+                                                }${
+                                                  firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                                  "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                                                    ? " (anonymous to students)"
+                                                    : firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                                        "courseConversationMessageAnonymityEveryone"
+                                                      ? " (anonymous to everyone)"
+                                                      : ""
+                                                }`
+                                              : ``
+                                          } ·
+                                          <span
+                                            javascript="${javascript`
+                                              javascript.popover({ element: this });
+                                            `}"
+                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                          >
+                                          <span type="popover"
+                                            >${utilities.formatDateTime(Temporal.Instant.from(firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                                          >
+                                        </div>
+                                        <div
+                                          key="courseConversation--main--details"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `} ${
+                                            request.state.courseConversation
+                                              ?.id === courseConversation.id
+                                              ? css`
+                                                  color: light-dark(
+                                                    var(--color--blue--200),
+                                                    var(--color--blue--200)
+                                                  );
+                                                `
+                                              : css`
+                                                  color: light-dark(
+                                                    var(--color--slate--600),
+                                                    var(--color--slate--400)
+                                                  );
+                                                `
+                                          }"
+                                        >
+                                          $${(() => {
+                                            const courseConversationMainDetails =
+                                              [
+                                                html`<span
+                                                    css="${css`
+                                                      font-weight: 600;
+                                                    `}"
+                                                    >${
+                                                      courseConversation.courseConversationType ===
+                                                      "courseConversationTypeNote"
+                                                        ? "Note"
+                                                        : courseConversation.courseConversationType ===
+                                                            "courseConversationTypeQuestion"
+                                                          ? "Question"
+                                                          : (() => {
+                                                              throw new Error();
+                                                            })()
+                                                    }</span
+                                                  >$${
+                                                    courseConversation.courseConversationType ===
+                                                    "courseConversationTypeQuestion"
+                                                      ? Boolean(
+                                                          courseConversation.questionResolved,
+                                                        ) === false
+                                                        ? html` <span
+                                                            css="${
+                                                              request.state
+                                                                .courseConversation
+                                                                ?.id ===
+                                                              courseConversation.id
+                                                                ? css``
+                                                                : css`
+                                                                    color: light-dark(
+                                                                      var(
+                                                                        --color--red--500
+                                                                      ),
+                                                                      var(
+                                                                        --color--red--500
+                                                                      )
+                                                                    );
+                                                                  `
+                                                            }"
+                                                            >(unresolved)</span
+                                                          >`
+                                                        : html` <span
+                                                            css="${
+                                                              request.state
+                                                                .courseConversation
+                                                                ?.id ===
+                                                              courseConversation.id
+                                                                ? css``
+                                                                : css`
+                                                                    color: light-dark(
+                                                                      var(
+                                                                        --color--green--500
+                                                                      ),
+                                                                      var(
+                                                                        --color--green--500
+                                                                      )
+                                                                    );
+                                                                  `
+                                                            }"
+                                                            >(resolved)</span
+                                                          >`
+                                                      : ""
+                                                  }`,
+                                              ];
+                                            for (const courseConversationsTag of request
+                                              .state.courseConversationsTags!)
+                                              if (
+                                                application.database.get(
+                                                  sql`
+                                                    select true
+                                                    from "courseConversationTaggings"
+                                                    where
+                                                      "courseConversation" = ${courseConversation.id} and
+                                                      "courseConversationsTag" = ${courseConversationsTag.id};
+                                                  `,
+                                                ) !== undefined
+                                              )
+                                                courseConversationMainDetails.push(
+                                                  html`${courseConversationsTag.name}`,
+                                                );
+                                            return courseConversationMainDetails.join(
+                                              " · ",
+                                            );
+                                          })()}
+                                        </div>
+                                        $${
+                                          application.database.get(
+                                            sql`
+                                              select true
+                                              from "courseConversationMessageLikes"
+                                              join "courseParticipations" on
+                                                "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                                "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
+                                              where "courseConversationMessageLikes"."courseConversationMessage" = ${firstCourseConversationMessage.id}
+                                              limit 1;
+                                            `,
+                                          ) !== undefined
+                                            ? html`
+                                                <div
+                                                  key="courseConversation--main--firstCourseConversationMessageLikedByInstructor"
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--3
+                                                    );
+                                                    line-height: var(
+                                                      --font-size--3--line-height
+                                                    );
+                                                    font-weight: 600;
+                                                  `} ${
+                                                    request.state
+                                                      .courseConversation
+                                                      ?.id ===
+                                                    courseConversation.id
+                                                      ? css`
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--blue--200
+                                                            ),
+                                                            var(
+                                                              --color--blue--200
+                                                            )
+                                                          );
+                                                        `
+                                                      : css`
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--green--500
+                                                            ),
+                                                            var(
+                                                              --color--green--500
+                                                            )
+                                                          );
+                                                        `
+                                                  }"
+                                                >
+                                                  Liked by instructor
+                                                </div>
+                                              `
+                                            : html``
+                                        }
+                                        <div
+                                          key="courseConversation--main--firstCourseConversationMessageContent"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            white-space: nowrap;
+                                            overflow: hidden;
+                                            text-overflow: ellipsis;
                                           `} ${
                                             request.state.courseConversation
                                               ?.id === courseConversation.id
@@ -862,282 +1123,25 @@ export default async (application: Application): Promise<void> => {
                                                 `
                                           }"
                                         >
-                                          #${courseConversation.publicId}
+                                          ${(
+                                            await application.partials.courseConversationMessageContentProcessor(
+                                              {
+                                                course: request.state.course!,
+                                                courseParticipation:
+                                                  request.state
+                                                    .courseParticipation,
+                                                courseConversation,
+                                                courseConversationMessage:
+                                                  firstCourseConversationMessage,
+                                                mode: "textContent",
+                                              },
+                                            )
+                                          ).slice(0, 1000)}
                                         </div>
                                       </div>
-                                      <div
-                                        key="courseConversation--main--byline"
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                        `} ${
-                                          request.state.courseConversation
-                                            ?.id === courseConversation.id
-                                            ? css`
-                                                color: light-dark(
-                                                  var(--color--blue--200),
-                                                  var(--color--blue--200)
-                                                );
-                                              `
-                                            : css`
-                                                color: light-dark(
-                                                  var(--color--slate--600),
-                                                  var(--color--slate--400)
-                                                );
-                                              `
-                                        }"
-                                      >
-                                        <span
-                                          css="${css`
-                                            font-weight: 600;
-                                          `}"
-                                          >${
-                                            firstCourseConversationMessageAnonymous
-                                              ? "Anonymous"
-                                              : (firstCourseConversationMessageCreatedByCourseParticipationUser?.name ??
-                                                "Deleted course participant")
-                                          }</span
-                                        >${
-                                          !firstCourseConversationMessageAnonymous
-                                            ? `${
-                                                firstCourseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                                "courseParticipationRoleInstructor"
-                                                  ? " (instructor)"
-                                                  : ""
-                                              }${
-                                                firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                                                "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-                                                  ? " (anonymous to students)"
-                                                  : firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                                                      "courseConversationMessageAnonymityEveryone"
-                                                    ? " (anonymous to everyone)"
-                                                    : ""
-                                              }`
-                                            : ``
-                                        } ·
-                                        <span
-                                          javascript="${javascript`
-                                            javascript.popover({ element: this });
-                                          `}"
-                                          >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
-                                        >
-                                        <span type="popover"
-                                          >${utilities.formatDateTime(Temporal.Instant.from(firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
-                                        >
-                                      </div>
-                                      <div
-                                        key="courseConversation--main--details"
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                        `} ${
-                                          request.state.courseConversation
-                                            ?.id === courseConversation.id
-                                            ? css`
-                                                color: light-dark(
-                                                  var(--color--blue--200),
-                                                  var(--color--blue--200)
-                                                );
-                                              `
-                                            : css`
-                                                color: light-dark(
-                                                  var(--color--slate--600),
-                                                  var(--color--slate--400)
-                                                );
-                                              `
-                                        }"
-                                      >
-                                        $${(() => {
-                                          const courseConversationMainDetails =
-                                            [
-                                              html`<span
-                                                  css="${css`
-                                                    font-weight: 600;
-                                                  `}"
-                                                  >${
-                                                    courseConversation.courseConversationType ===
-                                                    "courseConversationTypeNote"
-                                                      ? "Note"
-                                                      : courseConversation.courseConversationType ===
-                                                          "courseConversationTypeQuestion"
-                                                        ? "Question"
-                                                        : (() => {
-                                                            throw new Error();
-                                                          })()
-                                                  }</span
-                                                >$${
-                                                  courseConversation.courseConversationType ===
-                                                  "courseConversationTypeQuestion"
-                                                    ? Boolean(
-                                                        courseConversation.questionResolved,
-                                                      ) === false
-                                                      ? html` <span
-                                                          css="${
-                                                            request.state
-                                                              .courseConversation
-                                                              ?.id ===
-                                                            courseConversation.id
-                                                              ? css``
-                                                              : css`
-                                                                  color: light-dark(
-                                                                    var(
-                                                                      --color--red--500
-                                                                    ),
-                                                                    var(
-                                                                      --color--red--500
-                                                                    )
-                                                                  );
-                                                                `
-                                                          }"
-                                                          >(unresolved)</span
-                                                        >`
-                                                      : html` <span
-                                                          css="${
-                                                            request.state
-                                                              .courseConversation
-                                                              ?.id ===
-                                                            courseConversation.id
-                                                              ? css``
-                                                              : css`
-                                                                  color: light-dark(
-                                                                    var(
-                                                                      --color--green--500
-                                                                    ),
-                                                                    var(
-                                                                      --color--green--500
-                                                                    )
-                                                                  );
-                                                                `
-                                                          }"
-                                                          >(resolved)</span
-                                                        >`
-                                                    : ""
-                                                }`,
-                                            ];
-                                          for (const courseConversationsTag of request
-                                            .state.courseConversationsTags!)
-                                            if (
-                                              application.database.get(
-                                                sql`
-                                                  select true
-                                                  from "courseConversationTaggings"
-                                                  where
-                                                    "courseConversation" = ${courseConversation.id} and
-                                                    "courseConversationsTag" = ${courseConversationsTag.id};
-                                                `,
-                                              ) !== undefined
-                                            )
-                                              courseConversationMainDetails.push(
-                                                html`${courseConversationsTag.name}`,
-                                              );
-                                          return courseConversationMainDetails.join(
-                                            " · ",
-                                          );
-                                        })()}
-                                      </div>
-                                      $${
-                                        application.database.get(
-                                          sql`
-                                            select true
-                                            from "courseConversationMessageLikes"
-                                            join "courseParticipations" on
-                                              "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
-                                              "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                            where "courseConversationMessageLikes"."courseConversationMessage" = ${firstCourseConversationMessage.id}
-                                            limit 1;
-                                          `,
-                                        ) !== undefined
-                                          ? html`
-                                              <div
-                                                key="courseConversation--main--firstCourseConversationMessageLikedByInstructor"
-                                                css="${css`
-                                                  font-size: var(
-                                                    --font-size--3
-                                                  );
-                                                  line-height: var(
-                                                    --font-size--3--line-height
-                                                  );
-                                                  font-weight: 600;
-                                                `} ${
-                                                  request.state
-                                                    .courseConversation?.id ===
-                                                  courseConversation.id
-                                                    ? css`
-                                                        color: light-dark(
-                                                          var(
-                                                            --color--blue--200
-                                                          ),
-                                                          var(
-                                                            --color--blue--200
-                                                          )
-                                                        );
-                                                      `
-                                                    : css`
-                                                        color: light-dark(
-                                                          var(
-                                                            --color--green--500
-                                                          ),
-                                                          var(
-                                                            --color--green--500
-                                                          )
-                                                        );
-                                                      `
-                                                }"
-                                              >
-                                                Liked by instructor
-                                              </div>
-                                            `
-                                          : html``
-                                      }
-                                      <div
-                                        key="courseConversation--main--firstCourseConversationMessageContent"
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                          white-space: nowrap;
-                                          overflow: hidden;
-                                          text-overflow: ellipsis;
-                                        `} ${
-                                          request.state.courseConversation
-                                            ?.id === courseConversation.id
-                                            ? css`
-                                                color: light-dark(
-                                                  var(--color--blue--300),
-                                                  var(--color--blue--300)
-                                                );
-                                              `
-                                            : css`
-                                                color: light-dark(
-                                                  var(--color--slate--400),
-                                                  var(--color--slate--600)
-                                                );
-                                              `
-                                        }"
-                                      >
-                                        ${(
-                                          await application.partials.courseConversationMessageContentProcessor(
-                                            {
-                                              course: request.state.course!,
-                                              courseParticipation:
-                                                request.state
-                                                  .courseParticipation,
-                                              courseConversation,
-                                              courseConversationMessage:
-                                                firstCourseConversationMessage,
-                                              mode: "textContent",
-                                            },
-                                          )
-                                        ).slice(0, 1000)}
-                                      </div>
-                                    </div>
-                                  </a>
-                                `,
+                                    </a>
+                                  `;
+                                },
                               ),
                             )}
                           </details>
