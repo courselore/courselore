@@ -721,6 +721,17 @@ export default async (application: Application): Promise<void> => {
                                               }
                                             `
                                       }"
+                                      javascript="${javascript`
+                                        if (${request.liveConnection}) return;
+                                        if (${!courseConversationCurrent}) delete this.scrolled;
+                                        else if (this.scrolled === undefined) {
+                                          this.closest('[key~="courseConversations--group"]').open = true;
+                                          this.scrollIntoView({
+                                            block: previousCourseConversation === null ? "center" : "nearest",
+                                          });
+                                          this.scrolled = true;
+                                        }
+                                      `}"
                                     >
                                       <div>
                                         <div
