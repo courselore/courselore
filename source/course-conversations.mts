@@ -762,9 +762,7 @@ export default async (application: Application): Promise<void> => {
                                                 `
                                               : html``
                                           }
-                                          <div
-                                            key="courseConversation--sidebar--userAvatar"
-                                          >
+                                          <div>
                                             $${application.partials.userAvatar({
                                               user: courseConversation.firstCourseConversationMessageAnonymous
                                                 ? "anonymous"
@@ -776,14 +774,12 @@ export default async (application: Application): Promise<void> => {
                                         </div>
                                       </div>
                                       <div
-                                        key="courseConversation--main"
                                         css="${css`
                                           flex: 1;
                                           min-width: var(--size--0);
                                         `}"
                                       >
                                         <div
-                                          key="courseConversation--main--header"
                                           css="${css`
                                             display: flex;
                                             align-items: baseline;
@@ -791,7 +787,6 @@ export default async (application: Application): Promise<void> => {
                                           `}"
                                         >
                                           <div
-                                            key="courseConversation--main--header--title"
                                             css="${css`
                                               flex: 1;
                                               font-weight: 600;
@@ -853,7 +848,6 @@ export default async (application: Application): Promise<void> => {
                                             ${courseConversation.title}
                                           </div>
                                           <div
-                                            key="courseConversation--main--header--publicId"
                                             css="${css`
                                               font-size: var(--font-size--3);
                                               line-height: var(
@@ -881,7 +875,6 @@ export default async (application: Application): Promise<void> => {
                                           </div>
                                         </div>
                                         <div
-                                          key="courseConversation--main--byline"
                                           css="${css`
                                             font-size: var(--font-size--3);
                                             line-height: var(
@@ -943,7 +936,6 @@ export default async (application: Application): Promise<void> => {
                                           >
                                         </div>
                                         <div
-                                          key="courseConversation--main--details"
                                           css="${css`
                                             font-size: var(--font-size--3);
                                             line-height: var(
@@ -1068,7 +1060,6 @@ export default async (application: Application): Promise<void> => {
                                           ) !== undefined
                                             ? html`
                                                 <div
-                                                  key="courseConversation--main--firstCourseConversationMessageLikedByInstructor"
                                                   css="${css`
                                                     font-size: var(
                                                       --font-size--3
@@ -1110,7 +1101,6 @@ export default async (application: Application): Promise<void> => {
                                             : html``
                                         }
                                         <div
-                                          key="courseConversation--main--firstCourseConversationMessageContent"
                                           css="${css`
                                             font-size: var(--font-size--3);
                                             line-height: var(
