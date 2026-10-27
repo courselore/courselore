@@ -679,22 +679,24 @@ export default async (application: Application): Promise<void> => {
                                         transition-timing-function: var(
                                           --transition-timing-function--ease-in-out
                                         );
-                                        &:hover,
-                                        &:focus-within {
-                                          background-color: light-dark(
-                                            var(--color--slate--50),
-                                            var(--color--slate--950)
-                                          );
-                                        }
-                                        &:active {
-                                          background-color: light-dark(
-                                            var(--color--slate--100),
-                                            var(--color--slate--900)
-                                          );
-                                        }
                                       `} ${
-                                        courseConversationCurrent
+                                        !courseConversationCurrent
                                           ? css`
+                                              &:hover,
+                                              &:focus-within {
+                                                background-color: light-dark(
+                                                  var(--color--slate--50),
+                                                  var(--color--slate--950)
+                                                );
+                                              }
+                                              &:active {
+                                                background-color: light-dark(
+                                                  var(--color--slate--100),
+                                                  var(--color--slate--900)
+                                                );
+                                              }
+                                            `
+                                          : css`
                                               color: light-dark(
                                                 var(--color--white),
                                                 var(--color--white)
@@ -717,7 +719,6 @@ export default async (application: Application): Promise<void> => {
                                                 );
                                               }
                                             `
-                                          : css``
                                       }"
                                     >
                                       <div>
