@@ -854,21 +854,19 @@ export default async (application: Application): Promise<void> => {
                                                 --font-size--3--line-height
                                               );
                                               font-weight: 500;
+                                              color: light-dark(
+                                                var(--color--slate--400),
+                                                var(--color--slate--600)
+                                              );
                                             `} ${
-                                              request.state.courseConversation
-                                                ?.id === courseConversation.id
+                                              courseConversationCurrent
                                                 ? css`
                                                     color: light-dark(
                                                       var(--color--blue--300),
                                                       var(--color--blue--300)
                                                     );
                                                   `
-                                                : css`
-                                                    color: light-dark(
-                                                      var(--color--slate--400),
-                                                      var(--color--slate--600)
-                                                    );
-                                                  `
+                                                : css``
                                             }"
                                           >
                                             #${courseConversation.publicId}
@@ -880,21 +878,19 @@ export default async (application: Application): Promise<void> => {
                                             line-height: var(
                                               --font-size--3--line-height
                                             );
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
                                           `} ${
-                                            request.state.courseConversation
-                                              ?.id === courseConversation.id
+                                            courseConversationCurrent
                                               ? css`
                                                   color: light-dark(
                                                     var(--color--blue--200),
                                                     var(--color--blue--200)
                                                   );
                                                 `
-                                              : css`
-                                                  color: light-dark(
-                                                    var(--color--slate--600),
-                                                    var(--color--slate--400)
-                                                  );
-                                                `
+                                              : css``
                                           }"
                                         >
                                           <span
@@ -902,23 +898,31 @@ export default async (application: Application): Promise<void> => {
                                               font-weight: 600;
                                             `}"
                                             >${
-                                              firstCourseConversationMessageAnonymous
+                                              courseConversation.firstCourseConversationMessageAnonymous
                                                 ? "Anonymous"
-                                                : (firstCourseConversationMessageCreatedByCourseParticipationUser?.name ??
+                                                : (courseConversation
+                                                    .firstCourseConversationMessageCreatedByCourseParticipationUser
+                                                    ?.name ??
                                                   "Deleted course participant")
                                             }</span
                                           >${
-                                            !firstCourseConversationMessageAnonymous
+                                            !courseConversation.firstCourseConversationMessageAnonymous
                                               ? `${
-                                                  firstCourseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                                  courseConversation
+                                                    .firstCourseConversationMessageCreatedByCourseParticipation
+                                                    ?.courseParticipationRole ===
                                                   "courseParticipationRoleInstructor"
                                                     ? " (instructor)"
                                                     : ""
                                                 }${
-                                                  firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                                  courseConversation
+                                                    .firstCourseConversationMessage
+                                                    .courseConversationMessageAnonymity ===
                                                   "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                                                     ? " (anonymous to students)"
-                                                    : firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                                    : courseConversation
+                                                          .firstCourseConversationMessage
+                                                          .courseConversationMessageAnonymity ===
                                                         "courseConversationMessageAnonymityEveryone"
                                                       ? " (anonymous to everyone)"
                                                       : ""
@@ -929,10 +933,10 @@ export default async (application: Application): Promise<void> => {
                                             javascript="${javascript`
                                               javascript.popover({ element: this });
                                             `}"
-                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseConversation.firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
                                           >
                                           <span type="popover"
-                                            >${utilities.formatDateTime(Temporal.Instant.from(firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                                            >${utilities.formatDateTime(Temporal.Instant.from(courseConversation.firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
                                           >
                                         </div>
                                         <div
@@ -941,21 +945,19 @@ export default async (application: Application): Promise<void> => {
                                             line-height: var(
                                               --font-size--3--line-height
                                             );
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
                                           `} ${
-                                            request.state.courseConversation
-                                              ?.id === courseConversation.id
+                                            courseConversationCurrent
                                               ? css`
                                                   color: light-dark(
                                                     var(--color--blue--200),
                                                     var(--color--blue--200)
                                                   );
                                                 `
-                                              : css`
-                                                  color: light-dark(
-                                                    var(--color--slate--600),
-                                                    var(--color--slate--400)
-                                                  );
-                                                `
+                                              : css``
                                           }"
                                         >
                                           $${(() => {
