@@ -517,14 +517,6 @@ export default async (application: Application): Promise<void> => {
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
                                 font-weight: 600;
-                                color: light-dark(
-                                  var(--color--slate--500),
-                                  var(--color--slate--500)
-                                );
-                                background-color: light-dark(
-                                  var(--color--slate--100),
-                                  var(--color--slate--900)
-                                );
                                 padding: var(--size--1-5) var(--size--4);
                                 border-bottom: var(--border-width--1) solid
                                   light-dark(
@@ -542,22 +534,32 @@ export default async (application: Application): Promise<void> => {
                                 transition-timing-function: var(
                                   --transition-timing-function--ease-in-out
                                 );
-                                &:hover,
-                                &:focus-within {
-                                  background-color: light-dark(
-                                    var(--color--slate--200),
-                                    var(--color--slate--800)
-                                  );
-                                }
-                                &:active {
-                                  background-color: light-dark(
-                                    var(--color--slate--300),
-                                    var(--color--slate--700)
-                                  );
-                                }
                               `} ${
-                                courseConversationsCurrent
+                                !courseConversationsCurrent
                                   ? css`
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
+                                      background-color: light-dark(
+                                        var(--color--slate--100),
+                                        var(--color--slate--900)
+                                      );
+                                      &:hover,
+                                      &:focus-within {
+                                        background-color: light-dark(
+                                          var(--color--slate--200),
+                                          var(--color--slate--800)
+                                        );
+                                      }
+                                      &:active {
+                                        background-color: light-dark(
+                                          var(--color--slate--300),
+                                          var(--color--slate--700)
+                                        );
+                                      }
+                                    `
+                                  : css`
                                       color: light-dark(
                                         var(--color--white),
                                         var(--color--white)
@@ -580,7 +582,6 @@ export default async (application: Application): Promise<void> => {
                                         );
                                       }
                                     `
-                                  : css``
                               }"
                             >
                               $${
