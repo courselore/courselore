@@ -816,12 +816,8 @@ export default async (application: Application): Promise<void> => {
                                                 ? html`
                                                     <span
                                                       css="${
-                                                        request.state
-                                                          .courseConversation
-                                                          ?.id ===
-                                                        courseConversation.id
-                                                          ? css``
-                                                          : css`
+                                                        !courseConversationCurrent
+                                                          ? css`
                                                               color: light-dark(
                                                                 var(
                                                                   --color--red--400
@@ -831,6 +827,7 @@ export default async (application: Application): Promise<void> => {
                                                                 )
                                                               );
                                                             `
+                                                          : css``
                                                       }"
                                                       javascript="${javascript`
                                                         javascript.popover({ element: this });
@@ -841,8 +838,7 @@ export default async (application: Application): Promise<void> => {
                                                       ></i>
                                                     </span>
                                                     <span type="popover">
-                                                      This is a high-priority
-                                                      question.
+                                                      High-priority question
                                                     </span>
                                                   `
                                                 : html``
