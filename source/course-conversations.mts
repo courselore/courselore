@@ -499,7 +499,6 @@ export default async (application: Application): Promise<void> => {
                         return html`
                           <details
                             key="courseConversations--group ${courseConversationsGroupKey}"
-                            $${courseConversationsCurrent ? html`class="current"` : html``}
                             $${
                               (courseConversationsGroupKey === "Pinned" &&
                                 courseConversations.some(
@@ -556,65 +555,68 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--slate--700)
                                   );
                                 }
-                                [key~="courseConversations--group"].current & {
-                                  color: light-dark(
-                                    var(--color--white),
-                                    var(--color--white)
-                                  );
-                                  background-color: light-dark(
-                                    var(--color--blue--500),
-                                    var(--color--blue--500)
-                                  );
-                                  &:hover,
-                                  &:focus-within {
-                                    background-color: light-dark(
-                                      var(--color--blue--400),
-                                      var(--color--blue--400)
-                                    );
-                                  }
-                                  &:active {
-                                    background-color: light-dark(
-                                      var(--color--blue--600),
-                                      var(--color--blue--600)
-                                    );
-                                  }
-                                }
-                              `}"
+                              `} ${
+                                courseConversationsCurrent
+                                  ? css`
+                                      color: light-dark(
+                                        var(--color--white),
+                                        var(--color--white)
+                                      );
+                                      background-color: light-dark(
+                                        var(--color--blue--500),
+                                        var(--color--blue--500)
+                                      );
+                                      &:hover,
+                                      &:focus-within {
+                                        background-color: light-dark(
+                                          var(--color--blue--400),
+                                          var(--color--blue--400)
+                                        );
+                                      }
+                                      &:active {
+                                        background-color: light-dark(
+                                          var(--color--blue--600),
+                                          var(--color--blue--600)
+                                        );
+                                      }
+                                    `
+                                  : css``
+                              }"
                             >
-                              <div
-                                key="courseConversations--group--view"
-                                css="${css`
-                                  font-size: var(--size--1-5);
-                                  color: light-dark(
-                                    var(--color--blue--500),
-                                    var(--color--blue--500)
-                                  );
-                                  position: absolute;
-                                  translate: calc(-100% - var(--size--1));
-                                  transition-property: var(
-                                    --transition-property--opacity
-                                  );
-                                  transition-duration: var(
-                                    --transition-duration--150
-                                  );
-                                  transition-timing-function: var(
-                                    --transition-timing-function--ease-in-out
-                                  );
-                                `} ${
-                                  courseConversationsCurrent ||
-                                  courseConversations.every(
-                                    (courseConversation) =>
-                                      !courseConversation.includesUnviewedCourseConversationMessages,
-                                  )
-                                    ? css`
-                                        visibility: hidden;
-                                        opacity: var(--opacity--0);
-                                      `
-                                    : css``
-                                }"
-                              >
-                                <i class="bi bi-circle-fill"></i>
-                              </div>
+                              $${
+                                !courseConversationsCurrent &&
+                                courseConversations.some(
+                                  (courseConversation) =>
+                                    courseConversation.includesUnviewedCourseConversationMessages,
+                                )
+                                  ? html`
+                                      <div
+                                        css="${css`
+                                          font-size: var(--size--1-5);
+                                          color: light-dark(
+                                            var(--color--blue--500),
+                                            var(--color--blue--500)
+                                          );
+                                          position: absolute;
+                                          translate: calc(
+                                            -100% - var(--size--1)
+                                          );
+                                          transition-property: var(
+                                            --transition-property--opacity
+                                          );
+                                          transition-duration: var(
+                                            --transition-duration--150
+                                          );
+                                          transition-timing-function: var(
+                                            --transition-timing-function--ease-in-out
+                                          );
+                                        `}"
+                                      >
+                                        <i class="bi bi-circle-fill"></i>
+                                      </div>
+                                    `
+                                  : html``
+                              }
                               <div>
                                 <span
                                   css="${css`
@@ -657,11 +659,6 @@ export default async (application: Application): Promise<void> => {
                                       href="/courses/${
                                         request.state.course!.publicId
                                       }/conversations/${courseConversation.publicId}"
-                                      $${
-                                        courseConversationCurrent
-                                          ? html`class="current"`
-                                          : html``
-                                      }
                                       css="${css`
                                         padding: var(--size--2) var(--size--4);
                                         border-bottom: var(--border-width--1)
@@ -695,71 +692,76 @@ export default async (application: Application): Promise<void> => {
                                             var(--color--slate--900)
                                           );
                                         }
-                                        &.current {
-                                          color: light-dark(
-                                            var(--color--white),
-                                            var(--color--white)
-                                          );
-                                          background-color: light-dark(
-                                            var(--color--blue--500),
-                                            var(--color--blue--500)
-                                          );
-                                          &:hover,
-                                          &:focus-within {
-                                            background-color: light-dark(
-                                              var(--color--blue--400),
-                                              var(--color--blue--400)
-                                            );
-                                          }
-                                          &:active {
-                                            background-color: light-dark(
-                                              var(--color--blue--600),
-                                              var(--color--blue--600)
-                                            );
-                                          }
-                                        }
-                                      `}"
+                                      `} ${
+                                        courseConversationCurrent
+                                          ? css`
+                                              color: light-dark(
+                                                var(--color--white),
+                                                var(--color--white)
+                                              );
+                                              background-color: light-dark(
+                                                var(--color--blue--500),
+                                                var(--color--blue--500)
+                                              );
+                                              &:hover,
+                                              &:focus-within {
+                                                background-color: light-dark(
+                                                  var(--color--blue--400),
+                                                  var(--color--blue--400)
+                                                );
+                                              }
+                                              &:active {
+                                                background-color: light-dark(
+                                                  var(--color--blue--600),
+                                                  var(--color--blue--600)
+                                                );
+                                              }
+                                            `
+                                          : css``
+                                      }"
                                     >
-                                      <div key="courseConversation--sidebar">
+                                      <div>
                                         <div
                                           css="${css`
                                             display: flex;
                                             align-items: center;
                                           `}"
                                         >
-                                          <div
-                                            key="courseConversation--sidebar--courseConversationMessageViews"
-                                            css="${css`
-                                              font-size: var(--size--1-5);
-                                              color: light-dark(
-                                                var(--color--blue--500),
-                                                var(--color--blue--500)
-                                              );
-                                              position: absolute;
-                                              translate: calc(
-                                                -100% - var(--size--1)
-                                              );
-                                              transition-property: var(
-                                                --transition-property--opacity
-                                              );
-                                              transition-duration: var(
-                                                --transition-duration--150
-                                              );
-                                              transition-timing-function: var(
-                                                --transition-timing-function--ease-in-out
-                                              );
-                                            `} ${
-                                              courseConversationCurrent ||
-                                              !courseConversation.includesUnviewedCourseConversationMessages
-                                                ? css`
-                                                    visibility: hidden;
-                                                    opacity: var(--opacity--0);
-                                                  `
-                                                : css``
-                                            }"
-                                          >
-                                            <i class="bi bi-circle-fill"></i>
-                                          </div>
+                                          $${
+                                            !courseConversationCurrent &&
+                                            courseConversation.includesUnviewedCourseConversationMessages
+                                              ? html`
+                                                  <div
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --size--1-5
+                                                      );
+                                                      color: light-dark(
+                                                        var(--color--blue--500),
+                                                        var(--color--blue--500)
+                                                      );
+                                                      position: absolute;
+                                                      translate: calc(
+                                                        -100% - var(--size--1)
+                                                      );
+                                                      transition-property: var(
+                                                        --transition-property--opacity
+                                                      );
+                                                      transition-duration: var(
+                                                        --transition-duration--150
+                                                      );
+                                                      transition-timing-function: var(
+                                                        --transition-timing-function--ease-in-out
+                                                      );
+                                                    `}"
+                                                  >
+                                                    <i
+                                                      class="bi bi-circle-fill"
+                                                    ></i>
+                                                  </div>
+                                                `
+                                              : html``
+                                          }
                                           <div
                                             key="courseConversation--sidebar--userAvatar"
                                           >
