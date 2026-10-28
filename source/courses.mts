@@ -3109,7 +3109,7 @@ export default async (application: Application): Promise<void> => {
                                             from "userSessions"
                                             where
                                               "user" = ${courseParticipation.user} and
-                                              ${new Date(Date.now() - 6 * 60 * 1000).toISOString()} < "lastUsedAt";
+                                              ${Temporal.Now.instant().subtract({ minutes: 6 }).toString()} < "lastUsedAt";
                                           `,
                                         ) !== undefined,
                                     ).length,

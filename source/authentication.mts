@@ -133,7 +133,7 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${cryptography.TokenHash.hash(userSessionToken)},
                     ${1},
-                    ${new Date().toISOString()},
+                    ${Temporal.Now.instant().toString()},
                     ${Number(false)},
                     ${Temporal.Now.timeZoneId()}
                   );
@@ -333,7 +333,7 @@ export default async (application: Application): Promise<void> => {
           );
         return;
       }
-      request.state.userSession.lastUsedAt = new Date().toISOString();
+      request.state.userSession.lastUsedAt = Temporal.Now.instant().toString();
       application.database.run(
         sql`
           update "userSessions"
@@ -348,7 +348,7 @@ export default async (application: Application): Promise<void> => {
     node.setInterval({ duration: 60 * 60 * 1000 }, () => {
       application.database.run(
         sql`
-          delete from "userSessions" where "lastUsedAt" < ${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()};
+          delete from "userSessions" where "lastUsedAt" < ${Temporal.Now.zonedDateTimeISO().subtract({ days: 30 }).toInstant().toString()};
         `,
       );
     });
@@ -1110,7 +1110,7 @@ export default async (application: Application): Promise<void> => {
                     ${request.body.email!},
                     ${request.body.email!},
                     ${emailVerificationNonceTokenHash},
-                    ${new Date().toISOString()},
+                    ${Temporal.Now.instant().toString()},
                     ${passwordPasswordHash},
                     ${null},
                     ${null},
@@ -1190,7 +1190,7 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${cryptography.TokenHash.hash(userSessionToken)},
                     ${request.state.user.id},
-                    ${new Date().toISOString()},
+                    ${Temporal.Now.instant().toString()},
                     ${Number(false)},
                     ${request.body.timeZone!}
                   );
@@ -1264,7 +1264,7 @@ export default async (application: Application): Promise<void> => {
           set
             "emailVerificationNonceTokenHash" = null,
             "emailVerificationNonceCreatedAt" = null
-          where "emailVerificationNonceCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
+          where "emailVerificationNonceCreatedAt" < ${Temporal.Now.instant().subtract({ minutes: 15 }).toString()};
         `,
       );
     });
@@ -1361,7 +1361,7 @@ export default async (application: Application): Promise<void> => {
                   $${
                     typeof request.state.user
                       .emailVerificationNonceCreatedAt === "string" &&
-                    new Date(Date.now() - 5 * 60 * 1000).toISOString() <
+                    Temporal.Now.instant().subtract({ minutes: 5 }).toString() <
                       request.state.user.emailVerificationNonceCreatedAt
                       ? html`
                           <p>
@@ -1409,7 +1409,7 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.state.user.emailVerificationNonceCreatedAt ===
           "string" &&
-        new Date(Date.now() - 5 * 60 * 1000).toISOString() <
+        Temporal.Now.instant().subtract({ minutes: 5 }).toString() <
           request.state.user.emailVerificationNonceCreatedAt
       )
         throw "validation";
@@ -1420,7 +1420,7 @@ export default async (application: Application): Promise<void> => {
       request.state.user.emailVerificationNonceTokenHash =
         cryptography.TokenHash.hash(emailVerificationNonce);
       request.state.user.emailVerificationNonceCreatedAt =
-        new Date().toISOString();
+        Temporal.Now.instant().toString();
       application.database.run(
         sql`
           update "users"
@@ -1940,7 +1940,7 @@ export default async (application: Application): Promise<void> => {
                 values (
                   ${cryptography.TokenHash.hash(userSessionToken)},
                   ${request.state.user.id},
-                  ${new Date().toISOString()},
+                  ${Temporal.Now.instant().toString()},
                   ${request.state.user.twoFactorAuthenticationEnabled},
                   ${request.body.timeZone}
                 );
@@ -2498,12 +2498,12 @@ export default async (application: Application): Promise<void> => {
         request.state.user !== undefined &&
         (request.state.user.passwordResetNonceCreatedAt === null ||
           request.state.user.passwordResetNonceCreatedAt <
-            new Date(Date.now() - 5 * 60 * 1000).toISOString())
+            Temporal.Now.instant().subtract({ minutes: 5 }).toString())
       ) {
         request.state.user.passwordResetNonceTokenHash =
           passwordResetNonceTokenHash;
         request.state.user.passwordResetNonceCreatedAt =
-          new Date().toISOString();
+          Temporal.Now.instant().toString();
         application.database.run(
           sql`
             update "users"
@@ -2596,7 +2596,7 @@ export default async (application: Application): Promise<void> => {
           set
             "passwordResetNonceTokenHash" = null,
             "passwordResetNonceCreatedAt" = null
-          where "passwordResetNonceCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
+          where "passwordResetNonceCreatedAt" < ${Temporal.Now.instant().subtract({ minutes: 15 }).toString()};
         `,
       );
     });
@@ -2938,7 +2938,7 @@ export default async (application: Application): Promise<void> => {
                 values (
                   ${cryptography.TokenHash.hash(userSessionToken)},
                   ${request.state.user.id},
-                  ${new Date().toISOString()},
+                  ${Temporal.Now.instant().toString()},
                   ${request.state.user.twoFactorAuthenticationEnabled},
                   ${request.body.timeZone}
                 );
@@ -3001,7 +3001,8 @@ export default async (application: Application): Promise<void> => {
     node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
       for (const launch of ltiLaunches)
         if (
-          launch.createdAt < new Date(Date.now() - 5 * 60 * 1000).toISOString()
+          launch.createdAt <
+          Temporal.Now.instant().subtract({ minutes: 5 }).toString()
         )
           ltiLaunches.delete(launch);
     });
@@ -3090,7 +3091,7 @@ export default async (application: Application): Promise<void> => {
         platform,
         stateTokenHash: cryptography.TokenHash.hash(state),
         nonceTokenHash: cryptography.TokenHash.hash(nonce),
-        createdAt: new Date().toISOString(),
+        createdAt: Temporal.Now.instant().toString(),
       });
       const redirect = `${platform.authenticationRequestURL}?${new URLSearchParams(
         {
@@ -3471,7 +3472,7 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${cryptography.TokenHash.hash(userSessionToken)},
                     ${request.state.user!.id},
-                    ${new Date().toISOString()},
+                    ${Temporal.Now.instant().toString()},
                     ${Number(false)},
                     ${"UTC"}
                   );
@@ -3948,7 +3949,10 @@ export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "webServer")
     node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
       for (const flow of samlFlows)
-        if (flow.createdAt < new Date(Date.now() - 5 * 60 * 1000).toISOString())
+        if (
+          flow.createdAt <
+          Temporal.Now.instant().subtract({ minutes: 5 }).toString()
+        )
           samlFlows.delete(flow);
     });
 
@@ -4019,7 +4023,7 @@ export default async (application: Application): Promise<void> => {
         identityProviderSAML,
         relayStateTokenHash: cryptography.TokenHash.hash(relayState),
         requestSearch: request.search as any,
-        createdAt: new Date().toISOString(),
+        createdAt: Temporal.Now.instant().toString(),
       });
       response.redirect!(
         await identityProviderSAML.getAuthorizeUrlAsync(
@@ -4357,7 +4361,7 @@ export default async (application: Application): Promise<void> => {
                 values (
                   ${cryptography.TokenHash.hash(userSessionToken)},
                   ${request.state.user!.id},
-                  ${new Date().toISOString()},
+                  ${Temporal.Now.instant().toString()},
                   ${Number(false)},
                   ${"UTC"}
                 );

@@ -161,7 +161,7 @@ export default async (application: Application): Promise<void> => {
             values (
               ${request.state.courseConversation!.id},
               ${request.state.courseParticipation!.id},
-              ${new Date().toISOString()},
+              ${Temporal.Now.instant().toString()},
               ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
               ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
               ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
@@ -353,7 +353,7 @@ export default async (application: Application): Promise<void> => {
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
                     ${request.state.courseConversation!.id},
                     ${request.state.courseParticipation!.id},
-                    ${new Date().toISOString()},
+                    ${Temporal.Now.instant().toString()},
                     ${null},
                     ${request.body.courseConversationMessageType ?? "courseConversationMessageTypeMessage"},
                     ${request.body.courseConversationMessageVisibility ?? "courseConversationMessageVisibilityEveryone"},
@@ -387,13 +387,13 @@ export default async (application: Application): Promise<void> => {
             values (
               ${courseConversationMessage.id},
               ${request.state.courseParticipation!.id},
-              ${new Date().toISOString()}
+              ${Temporal.Now.instant().toString()}
             );
           `,
         );
         application.database.backgroundJob({
           type: "courseConversationMessageEmailNotification",
-          startAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+          startAt: Temporal.Now.instant().add({ minutes: 5 }).toString(),
           parameters: {
             courseConversationMessageId: courseConversationMessage.id,
           },
@@ -1474,7 +1474,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           update "courseConversationMessages"
           set
-            "updatedAt" = ${new Date().toISOString()},
+            "updatedAt" = ${Temporal.Now.instant().toString()},
             ${typeof request.body.courseConversationMessageType === "string" ? sql`"courseConversationMessageType" = ${request.body.courseConversationMessageType},` : sql``}
             ${typeof request.body.courseConversationMessageVisibility === "string" ? sql`"courseConversationMessageVisibility" = ${request.body.courseConversationMessageVisibility},` : sql``}
             ${typeof request.body.courseConversationMessageAnonymity === "string" ? sql`"courseConversationMessageAnonymity" = ${request.body.courseConversationMessageAnonymity},` : sql``}
@@ -1622,7 +1622,7 @@ export default async (application: Application): Promise<void> => {
               values (
                 ${request.state.courseConversationMessage!.id},
                 ${request.state.courseParticipation!.id},
-                ${new Date().toISOString()}
+                ${Temporal.Now.instant().toString()}
               );
             `,
           );

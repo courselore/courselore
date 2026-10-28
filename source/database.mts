@@ -755,22 +755,22 @@ export default async (application: Application): Promise<void> => {
                 ${user.biographyPreprocessed},
                 ${
                   user.emailNotifications === "all-messages"
-                    ? new Date().toISOString()
+                    ? Temporal.Now.instant().toString()
                     : null
                 },
                 ${
                   user.emailNotifications !== "none"
-                    ? new Date().toISOString()
+                    ? Temporal.Now.instant().toString()
                     : null
                 },
                 ${
                   user.emailNotifications !== "none"
-                    ? new Date().toISOString()
+                    ? Temporal.Now.instant().toString()
                     : null
                 },
                 ${
                   user.emailNotifications !== "none"
-                    ? new Date().toISOString()
+                    ? Temporal.Now.instant().toString()
                     : null
                 },
                 ${user.emailNotifications === "mentions" ? "daily" : null}
@@ -1011,10 +1011,13 @@ export default async (application: Application): Promise<void> => {
             );
           `,
         );
-        const hour = new Date();
-        hour.setUTCMinutes(0, 0, 0);
-        const day = new Date();
-        day.setUTCHours(0, 0, 0, 0);
+        const hour = Temporal.Now.instant().round({
+          smallestUnit: "hour",
+          roundingMode: "floor",
+        });
+        const day = Temporal.Now.zonedDateTimeISO("UTC")
+          .startOfDay()
+          .toInstant();
         for (const user of database.all<{
           id: number;
           createdAt: string;
@@ -1117,9 +1120,9 @@ export default async (application: Application): Promise<void> => {
                     : user.emailNotificationsDigestsFrequency === null
                       ? null
                       : user.emailNotificationsDigestsFrequency === "hourly"
-                        ? hour.toISOString()
+                        ? hour.toString()
                         : user.emailNotificationsDigestsFrequency === "daily"
-                          ? day.toISOString()
+                          ? day.toString()
                           : null
                 },
                 ${user.emailNotificationsForMentionsAt},
@@ -1313,7 +1316,7 @@ export default async (application: Application): Promise<void> => {
                     "enrollment"
                   )
                   VALUES (
-                    ${new Date().toISOString()},
+                    ${Temporal.Now.instant().toString()},
                     ${conversation.id},
                     ${enrollment.id}
                   )
@@ -1626,7 +1629,7 @@ export default async (application: Application): Promise<void> => {
         database.run(
           sql`
             UPDATE "courses"
-            SET "studentsMayCreatePollsAt" = ${new Date().toISOString()};
+            SET "studentsMayCreatePollsAt" = ${Temporal.Now.instant().toString()};
           `,
         );
       },
@@ -3321,7 +3324,13 @@ export default async (application: Application): Promise<void> => {
                               : null
                           },
                           ${userIndex === 0 || Math.random() < 0.05 ? "userRoleSystemAdministrator" : Math.random() < 0.2 ? "userRoleStaff" : "userRoleUser"},
-                          ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
+                          ${Temporal.Now.instant()
+                            .subtract({
+                              milliseconds: Math.floor(
+                                Math.random() * 24 * 60 * 60 * 1000,
+                              ),
+                            })
+                            .toString()},
                           ${"userDarkModeSystem"},
                           ${80 * 4},
                           ${Number(Math.random() < 0.1)},
@@ -3406,7 +3415,8 @@ export default async (application: Application): Promise<void> => {
             {
               name: "Principles of Programming Languages",
               information: `${String(
-                new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).getFullYear(),
+                Temporal.Now.zonedDateTimeISO("UTC").subtract({ years: 1 })
+                  .year,
               )} / Spring / EN.601.426/626`,
               courseState: "courseStateArchived",
               courseParticipationRole: "courseParticipationRoleInstructor",
@@ -3806,7 +3816,7 @@ export default async (application: Application): Promise<void> => {
             },
             {
               name: "Full-Stack JavaScript",
-              information: `${String(new Date().getFullYear())} / Spring`,
+              information: `${String(Temporal.Now.plainDateISO().year)} / Spring`,
               courseParticipationRole: "courseParticipationRoleStudent",
               courseConversations: [
                 {
@@ -4206,7 +4216,7 @@ export default async (application: Application): Promise<void> => {
             },
             {
               name: "Principles of Programming Languages",
-              information: `${String(new Date().getFullYear())} / ${new Date().getMonth() < 6 ? "Spring" : "Fall"} / EN.601.426/626`,
+              information: `${String(Temporal.Now.plainDateISO().year)} / ${Temporal.Now.plainDateISO().month <= 6 ? "Spring" : "Fall"} / EN.601.426/626`,
               courseParticipationRole: "courseParticipationRoleInstructor",
               courseConversations: [
                 {
@@ -6975,9 +6985,9 @@ export default async (application: Application): Promise<void> => {
                     );
                   `,
                 );
-              const firstCourseConversationMessageCreatedAt = new Date(
-                Date.now() -
-                  Math.floor(
+              const firstCourseConversationMessageCreatedAt =
+                Temporal.Now.instant().subtract({
+                  milliseconds: Math.floor(
                     (course.courseConversationsNextPublicId -
                       (courseConversationIndex + 1) +
                       Math.random()) *
@@ -6987,7 +6997,7 @@ export default async (application: Application): Promise<void> => {
                       60 *
                       1000,
                   ),
-              );
+                });
               let courseConversationMessageForCourseConversationMessageDraft: {
                 publicId: string;
               };
@@ -7038,8 +7048,15 @@ export default async (application: Application): Promise<void> => {
                                   ].id
                                 : null
                             },
-                            ${new Date(firstCourseConversationMessageCreatedAt.valueOf() + Math.floor((courseConversationMessageIndex + Math.random()) * 60 * 60 * 1000)).toISOString()},
-                            ${Math.random() < 0.1 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
+                            ${firstCourseConversationMessageCreatedAt.add({ milliseconds: Math.floor((courseConversationMessageIndex + Math.random()) * 60 * 60 * 1000) }).toString()},
+                            ${
+                              Math.random() < 0.1
+                                ? Temporal.Now.zonedDateTimeISO()
+                                    .subtract({ days: 5 })
+                                    .toInstant()
+                                    .toString()
+                                : null
+                            },
                             ${
                               courseConversationMessageIndex === 0 ||
                               Math.random() < 0.7
@@ -7119,7 +7136,7 @@ export default async (application: Application): Promise<void> => {
                     values (
                       ${courseConversation.id},
                       ${courseParticipation.id},
-                      ${new Date().toISOString()},
+                      ${Temporal.Now.instant().toString()},
                       ${"courseConversationMessageTypeMessage"},
                       ${"courseConversationMessageVisibilityEveryone"},
                       ${"courseConversationMessageAnonymityNone"},

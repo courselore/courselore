@@ -3433,7 +3433,7 @@ export default async (application: Application): Promise<void> => {
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
                     ${courseConversation.id},
                     ${request.state.courseParticipation!.id},
-                    ${new Date().toISOString()},
+                    ${Temporal.Now.instant().toString()},
                     ${null},
                     ${"courseConversationMessageTypeMessage"},
                     ${"courseConversationMessageVisibilityEveryone"},
@@ -3467,13 +3467,13 @@ export default async (application: Application): Promise<void> => {
             values (
               ${courseConversationMessage.id},
               ${request.state.courseParticipation!.id},
-              ${new Date().toISOString()}
+              ${Temporal.Now.instant().toString()}
             );
           `,
         );
         application.database.backgroundJob({
           type: "courseConversationMessageEmailNotification",
-          startAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+          startAt: Temporal.Now.instant().add({ minutes: 5 }).toString(),
           parameters: {
             courseConversationMessageId: courseConversationMessage.id,
             announcement: request.body.announcement === "on",
@@ -6588,7 +6588,7 @@ export default async (application: Application): Promise<void> => {
                                   where
                                     "courseConversation" = ${request.state.courseConversation.id} and
                                     "createdByCourseParticipation" != ${request.state.courseParticipation.id} and
-                                    ${new Date(Date.now() - 2 * 60 * 1000).toISOString()} < "createdAt" and
+                                    ${Temporal.Now.instant().subtract({ minutes: 2 }).toString()} < "createdAt" and
                                     trim("content") != ''
                                   order by "createdAt" asc;
                                 `,

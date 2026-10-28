@@ -470,7 +470,7 @@ export default async (application: Application): Promise<void> => {
                             ${cryptoRandomString({ length: 20, type: "numeric" })},
                             ${state.courseConversation.id},
                             ${state.courseParticipation.id},
-                            ${new Date().toISOString()},
+                            ${Temporal.Now.instant().toString()},
                             ${null},
                             ${
                               state.courseConversation
@@ -517,13 +517,13 @@ export default async (application: Application): Promise<void> => {
                     values (
                       ${state.courseConversationMessage.id},
                       ${state.courseParticipation.id},
-                      ${new Date().toISOString()}
+                      ${Temporal.Now.instant().toString()}
                     );
                   `,
                 );
                 application.database.backgroundJob({
                   type: "courseConversationMessageEmailNotification",
-                  startAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+                  startAt: Temporal.Now.instant().add({ minutes: 5 }).toString(),
                   parameters: {
                     courseConversationMessageId:
                       state.courseConversationMessage.id,

@@ -1607,7 +1607,7 @@ export default async (application: Application): Promise<void> => {
       request.state.user.emailVerificationNonceTokenHash =
         cryptography.TokenHash.hash(emailVerificationNonce);
       request.state.user.emailVerificationNonceCreatedAt =
-        new Date().toISOString();
+        Temporal.Now.instant().toString();
       application.database.run(
         sql`
           update "users"
@@ -2442,12 +2442,12 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.user.deleteMyAccountNonceCreatedAt === null ||
         request.state.user.deleteMyAccountNonceCreatedAt <
-          new Date(Date.now() - 5 * 60 * 1000).toISOString()
+          Temporal.Now.instant().subtract({ minutes: 5 }).toString()
       ) {
         request.state.user.deleteMyAccountNonceTokenHash =
           deleteMyAccountNonceTokenHash;
         request.state.user.deleteMyAccountNonceCreatedAt =
-          new Date().toISOString();
+          Temporal.Now.instant().toString();
         application.database.run(
           sql`
             update "users"
@@ -2540,7 +2540,7 @@ export default async (application: Application): Promise<void> => {
             set
               "deleteMyAccountNonceTokenHash" = null,
               "deleteMyAccountNonceCreatedAt" = null
-            where "deleteMyAccountNonceCreatedAt" < ${new Date(Date.now() - 15 * 60 * 1000).toISOString()};
+            where "deleteMyAccountNonceCreatedAt" < ${Temporal.Now.instant().subtract({ minutes: 15 }).toString()};
           `,
       );
     });
@@ -3338,7 +3338,7 @@ export default async (application: Application): Promise<void> => {
                       from "userSessions"
                       where
                         "user" = ${user.id} and
-                        ${new Date(Date.now() - 6 * 60 * 1000).toISOString()} < "lastUsedAt";
+                        ${Temporal.Now.instant().subtract({ minutes: 6 }).toString()} < "lastUsedAt";
                     `,
                   ) === undefined
                     ? css`

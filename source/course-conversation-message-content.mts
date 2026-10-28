@@ -3190,7 +3190,7 @@ You may also use the buttons on the message content editor to ${
         sql`
           update "courseConversationMessages"
           set
-            "updatedAt" = ${new Date().toISOString()},
+            "updatedAt" = ${Temporal.Now.instant().toString()},
             "content" = ${request.state.courseConversationMessage.content},
             "contentLexicalSearch" = ${utilities
               .tokenize(contentTextContent, {
