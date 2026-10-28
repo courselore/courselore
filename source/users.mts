@@ -2533,17 +2533,22 @@ export default async (application: Application): Promise<void> => {
   });
 
   if (application.commandLineArguments.values.type === "backgroundJobWorker")
-    node.setInterval({ duration: 60 * 1000 }, () => {
-      application.database.run(
-        sql`
+    node.setInterval(
+      {
+        duration: Temporal.Duration.from({ minutes: 1 }).total("milliseconds"),
+      },
+      () => {
+        application.database.run(
+          sql`
             update "users"
             set
               "deleteMyAccountNonceTokenHash" = null,
               "deleteMyAccountNonceCreatedAt" = null
             where "deleteMyAccountNonceCreatedAt" < ${Temporal.Now.instant().subtract({ minutes: 15 }).toString()};
           `,
-      );
-    });
+        );
+      },
+    );
 
   application.webServer?.push({
     method: "GET",

@@ -360,17 +360,6 @@ export default async (application: Application): Promise<void> => {
                 <div
                   key="flash"
                   css="${css`
-                    transition-property: var(--transition-property--opacity);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--ease-in-out
-                    );
-
-                    &[state~="hidden"] {
-                      visibility: hidden;
-                      opacity: var(--opacity--0);
-                    }
-
                     & > * {
                       width: max-content;
                       max-width: min(
@@ -428,18 +417,8 @@ export default async (application: Application): Promise<void> => {
                   `}"
                   javascript="${javascript`
                     this.morph = false;
-                    window.setTimeout(() => {
-                      javascript.stateAdd(this, "hidden");
-                      this.ontransitionend = (event) => {
-                        if (
-                          event.target === this &&
-                          event.propertyName === "visibility" &&
-                          window.getComputedStyle(this).visibility === "hidden" &&
-                          this.matches('[state~="hidden"]')
-                        )
-                          this.remove();
-                      };
-                    }, 5 * 1000);
+                    await utilities.sleep(5 * 1000);
+                    this.remove();
                   `}"
                 >
                   $${flash}

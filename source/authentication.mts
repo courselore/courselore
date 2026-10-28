@@ -345,13 +345,16 @@ export default async (application: Application): Promise<void> => {
   });
 
   if (application.commandLineArguments.values.type === "backgroundJobWorker")
-    node.setInterval({ duration: 60 * 60 * 1000 }, () => {
-      application.database.run(
-        sql`
-          delete from "userSessions" where "lastUsedAt" < ${Temporal.Now.zonedDateTimeISO().subtract({ days: 30 }).toInstant().toString()};
-        `,
-      );
-    });
+    node.setInterval(
+      { duration: Temporal.Duration.from({ hours: 1 }).total("milliseconds") },
+      () => {
+        application.database.run(
+          sql`
+            delete from "userSessions" where "lastUsedAt" < ${Temporal.Now.zonedDateTimeISO().subtract({ days: 30 }).toInstant().toString()};
+          `,
+        );
+      },
+    );
 
   application.webServer?.push({
     method: "GET",
@@ -1257,17 +1260,22 @@ export default async (application: Application): Promise<void> => {
   });
 
   if (application.commandLineArguments.values.type === "backgroundJobWorker")
-    node.setInterval({ duration: 60 * 1000 }, () => {
-      application.database.run(
-        sql`
-          update "users"
-          set
-            "emailVerificationNonceTokenHash" = null,
-            "emailVerificationNonceCreatedAt" = null
-          where "emailVerificationNonceCreatedAt" < ${Temporal.Now.instant().subtract({ minutes: 15 }).toString()};
-        `,
-      );
-    });
+    node.setInterval(
+      {
+        duration: Temporal.Duration.from({ minutes: 1 }).total("milliseconds"),
+      },
+      () => {
+        application.database.run(
+          sql`
+            update "users"
+            set
+              "emailVerificationNonceTokenHash" = null,
+              "emailVerificationNonceCreatedAt" = null
+            where "emailVerificationNonceCreatedAt" < ${Temporal.Now.instant().subtract({ minutes: 15 }).toString()};
+          `,
+        );
+      },
+    );
 
   application.webServer?.push({
     method: "GET",
@@ -2589,17 +2597,22 @@ export default async (application: Application): Promise<void> => {
   });
 
   if (application.commandLineArguments.values.type === "backgroundJobWorker")
-    node.setInterval({ duration: 60 * 1000 }, () => {
-      application.database.run(
-        sql`
-          update "users"
-          set
-            "passwordResetNonceTokenHash" = null,
-            "passwordResetNonceCreatedAt" = null
-          where "passwordResetNonceCreatedAt" < ${Temporal.Now.instant().subtract({ minutes: 15 }).toString()};
-        `,
-      );
-    });
+    node.setInterval(
+      {
+        duration: Temporal.Duration.from({ minutes: 1 }).total("milliseconds"),
+      },
+      () => {
+        application.database.run(
+          sql`
+            update "users"
+            set
+              "passwordResetNonceTokenHash" = null,
+              "passwordResetNonceCreatedAt" = null
+            where "passwordResetNonceCreatedAt" < ${Temporal.Now.instant().subtract({ minutes: 15 }).toString()};
+          `,
+        );
+      },
+    );
 
   application.webServer?.push({
     method: "GET",
@@ -2998,14 +3011,20 @@ export default async (application: Application): Promise<void> => {
   }>();
 
   if (application.commandLineArguments.values.type === "webServer")
-    node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
-      for (const launch of ltiLaunches)
-        if (
-          launch.createdAt <
-          Temporal.Now.instant().subtract({ minutes: 5 }).toString()
-        )
-          ltiLaunches.delete(launch);
-    });
+    node.setInterval(
+      {
+        duration: Temporal.Duration.from({ minutes: 5 }).total("milliseconds"),
+        firstRun: "delayed",
+      },
+      () => {
+        for (const launch of ltiLaunches)
+          if (
+            launch.createdAt <
+            Temporal.Now.instant().subtract({ minutes: 5 }).toString()
+          )
+            ltiLaunches.delete(launch);
+      },
+    );
 
   application.webServer?.push({
     method: "GET",
@@ -3947,14 +3966,20 @@ export default async (application: Application): Promise<void> => {
   }>();
 
   if (application.commandLineArguments.values.type === "webServer")
-    node.setInterval({ duration: 5 * 60 * 1000, firstRun: "delayed" }, () => {
-      for (const flow of samlFlows)
-        if (
-          flow.createdAt <
-          Temporal.Now.instant().subtract({ minutes: 5 }).toString()
-        )
-          samlFlows.delete(flow);
-    });
+    node.setInterval(
+      {
+        duration: Temporal.Duration.from({ minutes: 5 }).total("milliseconds"),
+        firstRun: "delayed",
+      },
+      () => {
+        for (const flow of samlFlows)
+          if (
+            flow.createdAt <
+            Temporal.Now.instant().subtract({ minutes: 5 }).toString()
+          )
+            samlFlows.delete(flow);
+      },
+    );
 
   application.webServer?.push({
     method: "GET",

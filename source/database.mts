@@ -3327,7 +3327,10 @@ export default async (application: Application): Promise<void> => {
                           ${Temporal.Now.instant()
                             .subtract({
                               milliseconds: Math.floor(
-                                Math.random() * 24 * 60 * 60 * 1000,
+                                Math.random() *
+                                  Temporal.Duration.from({ days: 1 }).total(
+                                    "milliseconds",
+                                  ),
                               ),
                             })
                             .toString()},
@@ -6991,11 +6994,7 @@ export default async (application: Application): Promise<void> => {
                     (course.courseConversationsNextPublicId -
                       (courseConversationIndex + 1) +
                       Math.random()) *
-                      2 *
-                      24 *
-                      60 *
-                      60 *
-                      1000,
+                      Temporal.Duration.from({ days: 2 }).total("milliseconds"),
                   ),
                 });
               let courseConversationMessageForCourseConversationMessageDraft: {
@@ -7048,7 +7047,7 @@ export default async (application: Application): Promise<void> => {
                                   ].id
                                 : null
                             },
-                            ${firstCourseConversationMessageCreatedAt.add({ milliseconds: Math.floor((courseConversationMessageIndex + Math.random()) * 60 * 60 * 1000) }).toString()},
+                            ${firstCourseConversationMessageCreatedAt.add({ milliseconds: Math.floor((courseConversationMessageIndex + Math.random()) * Temporal.Duration.from({ hours: 1 }).total("milliseconds")) }).toString()},
                             ${
                               Math.random() < 0.1
                                 ? Temporal.Now.zonedDateTimeISO()
