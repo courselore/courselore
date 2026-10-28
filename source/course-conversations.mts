@@ -602,15 +602,6 @@ export default async (application: Application): Promise<void> => {
                                           translate: calc(
                                             -100% - var(--size--1)
                                           );
-                                          transition-property: var(
-                                            --transition-property--opacity
-                                          );
-                                          transition-duration: var(
-                                            --transition-duration--150
-                                          );
-                                          transition-timing-function: var(
-                                            --transition-timing-function--ease-in-out
-                                          );
                                         `}"
                                       >
                                         <i class="bi bi-circle-fill"></i>
@@ -754,15 +745,6 @@ export default async (application: Application): Promise<void> => {
                                                       position: absolute;
                                                       translate: calc(
                                                         -100% - var(--size--1)
-                                                      );
-                                                      transition-property: var(
-                                                        --transition-property--opacity
-                                                      );
-                                                      transition-duration: var(
-                                                        --transition-duration--150
-                                                      );
-                                                      transition-timing-function: var(
-                                                        --transition-timing-function--ease-in-out
                                                       );
                                                     `}"
                                                   >
