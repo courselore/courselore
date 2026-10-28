@@ -726,9 +726,7 @@ export default async (application: Application): Promise<void> => {
                                         if (${!courseConversationCurrent}) delete this.scrolled;
                                         else if (this.scrolled === undefined) {
                                           this.closest('[key~="courseConversations--group"]').open = true;
-                                          this.scrollIntoView({
-                                            block: previousCourseConversation === null ? "center" : "nearest",
-                                          });
+                                          this.scrollIntoView({ block: "nearest" });
                                           this.scrolled = true;
                                         }
                                       `}"
