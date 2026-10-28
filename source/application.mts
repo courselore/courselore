@@ -197,7 +197,8 @@ if (
                 keyPair: samlKeyPair,
                 algorithm: "sha256",
                 notAfterDate: new Date(
-                  Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
+                  Temporal.Now.zonedDateTimeISO().add({ years: 1000 })
+                    .epochMilliseconds,
                 ),
               },
             )

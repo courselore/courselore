@@ -465,7 +465,7 @@ export default async (application: Application): Promise<void> => {
                       ).toZonedDateTimeISO(request.state.userSession!.timeZone);
                     return Boolean(courseConversation.pinned)
                       ? "Pinned"
-                      : `${courseConversationFirstCourseConversationMessageCreatedAt.subtract({ days: courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek - 1 }).toPlainDate()} — ${courseConversationFirstCourseConversationMessageCreatedAt.add({ days: 7 - courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek }).toPlainDate()}`;
+                      : `${utilities.formatDate(courseConversationFirstCourseConversationMessageCreatedAt.subtract({ days: courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek - 1 }))} — ${utilities.formatDate(courseConversationFirstCourseConversationMessageCreatedAt.add({ days: 7 - courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek }))}`;
                   },
                 );
                 const courseConversationsGroupsKeys = Object.keys(
