@@ -1487,6 +1487,20 @@ export default async (application: Application): Promise<void> => {
                     flex-direction: column;
                     gap: var(--size--4);
                   `}"
+                  javascript="${javascript`
+                    this.oninput = () => {
+                      const enabled = this.querySelector('[name="courseAIEnabled"]').checked;
+                      const type = this.querySelector('[name="courseAIType"]:checked')?.value;
+                      this.querySelector('[key~="courseAI--provider"]').hidden = !enabled;
+                      this.querySelector('[key~="courseAI--apiKey"]').hidden = !enabled;
+                      this.querySelector('[key~="courseAI--openAICompatible"]').hidden = !enabled || type !== "openAICompatible";
+                      for (const element of this.querySelectorAll('input:not([name="courseAIEnabled"])'))
+                        element.disabled = !enabled;
+                      for (const element of this.querySelectorAll('[key~="courseAI--openAICompatible"] input'))
+                        element.required = enabled && type === "openAICompatible";
+                    };
+                    this.oninput();
+                  `}"
                 >
                   <div
                     css="${css`
@@ -1498,10 +1512,30 @@ export default async (application: Application): Promise<void> => {
                       );
                     `}"
                   >
-                    Bring your own API key to use in all your courses that have
-                    Course AI enabled.
+                    Bring your own LLM API key to use in all your courses that
+                    have Course AI enabled.
                   </div>
-                  <label>
+                  <label class="button button--rectangle button--transparent">
+                    <input
+                      type="checkbox"
+                      name="courseAIEnabled"
+                      $${
+                        typeof request.state.user.courseAIType === "string"
+                          ? html`checked`
+                          : html``
+                      }
+                      class="input--checkbox"
+                    />
+                    Enable
+                  </label>
+                  <div
+                    key="courseAI--provider"
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--1);
+                    `}"
+                  >
                     <div
                       css="${css`
                         font-size: var(--font-size--3);
@@ -1515,69 +1549,42 @@ export default async (application: Application): Promise<void> => {
                     >
                       Provider
                     </div>
-                    <div
+                    <form
                       css="${css`
                         display: flex;
+                        flex-direction: column;
+                        gap: var(--size--2);
                       `}"
                     >
-                      <select
-                        name="courseAIType"
-                        class="input--text"
-                        css="${css`
-                          flex: 1;
-                        `}"
-                        javascript="${javascript`
-                          this.onchange = () => {
-                            const form = this.closest('[type~="form"]');
-                            form.querySelector('[key~="courseAI--apiKey"]').hidden = this.value === "";
-                            form.querySelector('[key~="courseAI--openAICompatible"]').hidden = this.value !== "openAICompatible";
-                            for (const element of form.querySelectorAll('[key~="courseAI--openAICompatible"] input'))
-                              element.required = this.value === "openAICompatible";
-                          };
-                        `}"
-                      >
-                        <option
-                          value=""
-                          $${
-                            request.state.user?.courseAIType === undefined ||
-                            request.state.user.courseAIType === null
-                              ? html`selected`
-                              : html``
-                          }
-                        >
-                          None
-                        </option>
-                        $${[
-                          ["openAI", "OpenAI"],
-                          ["anthropic", "Anthropic"],
-                          ["google", "Google"],
-                          ["openAICompatible", "OpenAI-compatible"],
-                        ].map(
-                          ([value, label]) => html`
-                            <option
+                      $${[
+                        ["openAI", "OpenAI"],
+                        ["anthropic", "Anthropic"],
+                        ["google", "Google"],
+                        ["openAICompatible", "OpenAI compatible"],
+                      ].map(
+                        ([value, label]) => html`
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="courseAIType"
                               value="${value}"
                               $${
-                                request.state.user?.courseAIType === value
-                                  ? html`selected`
+                                (request.state.user?.courseAIType ??
+                                  "openAI") === value
+                                  ? html`checked`
                                   : html``
                               }
-                            >
-                              ${label}
-                            </option>
-                          `,
-                        )}
-                      </select>
-                    </div>
-                  </label>
-                  <label
-                    key="courseAI--apiKey"
-                    $${
-                      request.state.user?.courseAIType === undefined ||
-                      request.state.user.courseAIType === null
-                        ? html`hidden`
-                        : html``
-                    }
-                  >
+                              class="input--radio"
+                            />
+                            ${label}
+                          </label>
+                        `,
+                      )}
+                    </form>
+                  </div>
+                  <label key="courseAI--apiKey">
                     <div
                       css="${css`
                         font-size: var(--font-size--3);
@@ -2700,6 +2707,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
+          courseAIEnabled: "on";
           courseAIType: string;
           courseAIAPIKey: string;
           courseAIBaseURL: string;
@@ -2710,7 +2718,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (request.state.user === undefined) return;
-      if (request.body.courseAIType === "") {
+      if (request.body.courseAIEnabled !== "on") {
         application.database.run(
           sql`
             update "users"
