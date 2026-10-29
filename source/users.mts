@@ -1696,8 +1696,9 @@ export default async (application: Application): Promise<void> => {
                           typeof request.state.user.courseAIAPIKeyEncrypted !==
                           "string"
                             ? html`required`
-                            : html`placeholder="Leave blank to keep the current
-                              API key"`
+                            : /* prettier-ignore */ html`
+                                placeholder="Leave blank to keep the current API key"
+                              `
                         }
                         maxlength="2000"
                         class="input--text"
