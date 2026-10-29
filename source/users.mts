@@ -1744,6 +1744,17 @@ export default async (application: Application): Promise<void> => {
                         css="${css`
                           flex: 1;
                         `}"
+                        javascript="${javascript`
+                          this.onvalidate = () => {
+                            try {
+                              const url = new URL(this.value);
+                              if (url.protocol !== "https:" || url.hostname === "localhost" || url.hostname === "127.0.0.1")
+                                throw new Error();
+                            } catch {
+                              throw new javascript.ValidationError("Invalid URL.");
+                            }
+                          };
+                        `}"
                       />
                     </div>
                   </label>
