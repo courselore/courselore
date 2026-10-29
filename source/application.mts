@@ -94,7 +94,6 @@ export type Application = {
       } & SAML.SamlConfig & { decryptionCert?: string })[];
     };
     courseAIProviders?: ({
-      name: string;
       domains: string[];
     } & (
       | {
