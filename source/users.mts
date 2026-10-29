@@ -1470,7 +1470,7 @@ export default async (application: Application): Promise<void> => {
                   >
                     <i class="bi bi-chevron-right"></i>
                   </span>
-                  Course AI
+                  Course AI Provider
                 </summary>
                 <div
                   type="form"
@@ -1820,7 +1820,7 @@ export default async (application: Application): Promise<void> => {
                       type="submit"
                       class="button button--rectangle button--blue"
                     >
-                      Update Course AI
+                      Update Course AI Provider
                     </button>
                   </div>
                 </div>
@@ -2880,7 +2880,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       response.setFlash!(html`
-        <div class="flash--green">Course AI updated successfully.</div>
+        <div class="flash--green">Course AI provider updated successfully.</div>
       `);
       response.redirect!("/settings");
     },
