@@ -1509,7 +1509,7 @@ export default async (application: Application): Promise<void> => {
                   <label class="button button--rectangle button--transparent">
                     <input
                       type="checkbox"
-                      name="courseAIEnabled"
+                      name="courseAIProviderEnabled"
                       $${
                         typeof request.state.user.courseAIProviderType ===
                         "string"
@@ -2807,7 +2807,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
-          courseAIEnabled: "on";
+          courseAIProviderEnabled: "on";
           courseAIProviderType: string;
           courseAIProviderAPIKey: string;
           courseAIProviderBaseURL: string;
@@ -2818,7 +2818,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (request.state.user === undefined) return;
-      if (request.body.courseAIEnabled === "on") {
+      if (request.body.courseAIProviderEnabled === "on") {
         if (
           (request.body.courseAIProviderType !== "openAI" &&
             request.body.courseAIProviderType !== "anthropic" &&
