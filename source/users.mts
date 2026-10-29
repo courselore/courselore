@@ -1511,10 +1511,34 @@ export default async (application: Application): Promise<void> => {
                           : html``
                       }
                       class="input--checkbox"
+                      javascript="${javascript`
+                        this.oninput = () => {
+                          if (this.checked) {
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').disabled = false;
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').hidden = false;
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').disabled = false;
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").hidden = false;
+                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
+                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
+                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
+                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
+                          } else {
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').disabled = true;
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').hidden = true;
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').disabled = true;
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").hidden = true;
+                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = true;
+                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = true;
+                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = true;
+                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = true;
+                          }
+                        };
+                      `}"
                     />
                     Enable
                   </label>
                   <div
+                    key="courseAIType"
                     css="${css`
                       display: flex;
                       flex-direction: column;
@@ -1554,7 +1578,16 @@ export default async (application: Application): Promise<void> => {
                               ? html`checked`
                               : html``
                           }
+                          required
                           class="input--radio"
+                          javascript="${javascript`
+                            this.oninput = () => {
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = true;
+                            };
+                          `}"
                         />  OpenAI
                       </label>
                       <label
@@ -1569,7 +1602,16 @@ export default async (application: Application): Promise<void> => {
                               ? html`checked`
                               : html``
                           }
+                          required
                           class="input--radio"
+                          javascript="${javascript`
+                            this.oninput = () => {
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = true;
+                            };
+                          `}"
                         />  Anthropic
                       </label>
                       <label
@@ -1584,7 +1626,16 @@ export default async (application: Application): Promise<void> => {
                               ? html`checked`
                               : html``
                           }
+                          required
                           class="input--radio"
+                          javascript="${javascript`
+                            this.oninput = () => {
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = true;
+                            };
+                          `}"
                         />  Google
                       </label>
                       <label
@@ -1600,7 +1651,16 @@ export default async (application: Application): Promise<void> => {
                               ? html`checked`
                               : html``
                           }
+                          required
                           class="input--radio"
+                          javascript="${javascript`
+                            this.oninput = () => {
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = false;
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = false;
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = false;
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = false;
+                            };
+                          `}"
                         />  OpenAI Compatible
                       </label>
                     </form>
