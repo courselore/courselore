@@ -1470,7 +1470,7 @@ export default async (application: Application): Promise<void> => {
                   >
                     <i class="bi bi-chevron-right"></i>
                   </span>
-                  Course AI Provider
+                  Course AI provider
                 </summary>
                 <div
                   type="form"
@@ -1820,7 +1820,7 @@ export default async (application: Application): Promise<void> => {
                       type="submit"
                       class="button button--rectangle button--blue"
                     >
-                      Update Course AI Provider
+                      Update Course AI provider
                     </button>
                   </div>
                 </div>
