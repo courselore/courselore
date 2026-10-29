@@ -223,4 +223,16 @@ export default {
   //     },
   //   ],
   // },
+
+  // [Optional] Course AI providers configuration
+  // courseAIProviders: [
+  //   {
+  //     domains: ["example-university.edu", "example-university.com"],
+  //     type: "openAI", // "openAI" | "anthropic" | "google" | "openAICompatible"
+  //     apiKey: "example-api-key",
+  //     // If `type: "openAICompatible"`:
+  //     baseURL: "https://api.example.com/v1",
+  //     model: "meta-llama/Llama-3-70b-chat-hf",
+  //   },
+  // ],
 };
