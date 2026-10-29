@@ -1470,6 +1470,278 @@ export default async (application: Application): Promise<void> => {
                   >
                     <i class="bi bi-chevron-right"></i>
                   </span>
+                  Course AI
+                </summary>
+                <div
+                  type="form"
+                  method="PATCH"
+                  action="/settings/course-ai"
+                  css="${css`
+                    padding: var(--size--2) var(--size--0);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      color: light-dark(
+                        var(--color--slate--600),
+                        var(--color--slate--400)
+                      );
+                    `}"
+                  >
+                    Bring your own API key to use in all your courses that have
+                    Course AI enabled.
+                  </div>
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Provider
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <select
+                        name="courseAIType"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                        javascript="${javascript`
+                          this.onchange = () => {
+                            const form = this.closest('[type~="form"]');
+                            form.querySelector('[key~="courseAI--apiKey"]').hidden = this.value === "";
+                            form.querySelector('[key~="courseAI--openAICompatible"]').hidden = this.value !== "openAICompatible";
+                            for (const element of form.querySelectorAll('[key~="courseAI--openAICompatible"] input'))
+                              element.required = this.value === "openAICompatible";
+                          };
+                        `}"
+                      >
+                        <option
+                          value=""
+                          $${
+                            request.state.user?.courseAIType === undefined ||
+                            request.state.user.courseAIType === null
+                              ? html`selected`
+                              : html``
+                          }
+                        >
+                          None
+                        </option>
+                        $${[
+                          ["openAI", "OpenAI"],
+                          ["anthropic", "Anthropic"],
+                          ["google", "Google"],
+                          ["openAICompatible", "OpenAI-compatible"],
+                        ].map(
+                          ([value, label]) => html`
+                            <option
+                              value="${value}"
+                              $${
+                                request.state.user?.courseAIType === value
+                                  ? html`selected`
+                                  : html``
+                              }
+                            >
+                              ${label}
+                            </option>
+                          `,
+                        )}
+                      </select>
+                    </div>
+                  </label>
+                  <label
+                    key="courseAI--apiKey"
+                    $${
+                      request.state.user?.courseAIType === undefined ||
+                      request.state.user.courseAIType === null
+                        ? html`hidden`
+                        : html``
+                    }
+                  >
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      API key
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="password"
+                        name="courseAIAPIKey"
+                        autocomplete="off"
+                        maxlength="2000"
+                        placeholder="${
+                          typeof request.state.user?.courseAIAPIKeyEncrypted ===
+                          "string"
+                            ? "Leave blank to keep the current API key"
+                            : ""
+                        }"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <div
+                    key="courseAI--openAICompatible"
+                    $${
+                      request.state.user?.courseAIType === "openAICompatible"
+                        ? html``
+                        : html`hidden`
+                    }
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--4);
+                    `}"
+                  >
+                    <label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                        `}"
+                      >
+                        Base URL
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <input
+                          type="url"
+                          name="courseAIBaseURL"
+                          value="${request.state.user?.courseAIBaseURL ?? ""}"
+                          placeholder="https://example.com/v1"
+                          maxlength="2000"
+                          $${
+                            request.state.user?.courseAIType ===
+                            "openAICompatible"
+                              ? html`required`
+                              : html``
+                          }
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                          `}"
+                        />
+                      </div>
+                    </label>
+                    <label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                        `}"
+                      >
+                        Model
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <input
+                          type="text"
+                          name="courseAIModel"
+                          value="${request.state.user?.courseAIModel ?? ""}"
+                          maxlength="2000"
+                          $${
+                            request.state.user?.courseAIType ===
+                            "openAICompatible"
+                              ? html`required`
+                              : html``
+                          }
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                          `}"
+                        />
+                      </div>
+                    </label>
+                  </div>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                    `}"
+                  >
+                    <button
+                      type="submit"
+                      class="button button--rectangle button--blue"
+                    >
+                      Update Course AI
+                    </button>
+                  </div>
+                </div>
+              </details>
+              <details>
+                <summary
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    font-weight: 500;
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] > summary > & {
+                        rotate: var(--rotate--90);
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
                   Danger zone
                 </summary>
                 <div
@@ -2414,6 +2686,97 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">
           Email notifications updated successfully.
         </div>
+      `);
+      response.redirect!("/settings");
+    },
+  });
+
+  application.webServer?.push({
+    method: "PATCH",
+    pathname: "/settings/course-ai",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseAIType: string;
+          courseAIAPIKey: string;
+          courseAIBaseURL: string;
+          courseAIModel: string;
+        },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      if (request.body.courseAIType === "") {
+        application.database.run(
+          sql`
+            update "users"
+            set
+              "courseAIType" = null,
+              "courseAIAPIKeyEncrypted" = null,
+              "courseAIBaseURL" = null,
+              "courseAIModel" = null
+            where "id" = ${request.state.user.id};
+          `,
+        );
+        response.setFlash!(html`
+          <div class="flash--green">Course AI updated successfully.</div>
+        `);
+        response.redirect!("/settings");
+        return;
+      }
+      if (
+        (request.body.courseAIType !== "openAI" &&
+          request.body.courseAIType !== "anthropic" &&
+          request.body.courseAIType !== "google" &&
+          request.body.courseAIType !== "openAICompatible") ||
+        typeof request.body.courseAIAPIKey !== "string" ||
+        request.body.courseAIAPIKey.length > 2000
+      )
+        throw "validation";
+      const apiKey = request.body.courseAIAPIKey.trim();
+      if (
+        apiKey === "" &&
+        typeof request.state.user.courseAIAPIKeyEncrypted !== "string"
+      )
+        throw "validation";
+      let baseURL: string | null = null;
+      let model: string | null = null;
+      if (request.body.courseAIType === "openAICompatible") {
+        if (
+          typeof request.body.courseAIBaseURL !== "string" ||
+          typeof request.body.courseAIModel !== "string" ||
+          request.body.courseAIModel.trim() === "" ||
+          request.body.courseAIBaseURL.length > 2000 ||
+          request.body.courseAIModel.length > 2000
+        )
+          throw "validation";
+        try {
+          const url = new URL(request.body.courseAIBaseURL.trim());
+          if (url.protocol !== "https:" && url.protocol !== "http:")
+            throw "validation";
+          baseURL = url.href;
+        } catch {
+          throw "validation";
+        }
+        model = request.body.courseAIModel.trim();
+      }
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "courseAIType" = ${request.body.courseAIType},
+            ${apiKey === "" ? sql`` : sql`"courseAIAPIKeyEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, apiKey)},`}
+            "courseAIBaseURL" = ${baseURL},
+            "courseAIModel" = ${model}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      response.setFlash!(html`
+        <div class="flash--green">Course AI updated successfully.</div>
       `);
       response.redirect!("/settings");
     },

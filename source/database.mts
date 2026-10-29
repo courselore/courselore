@@ -8139,5 +8139,12 @@ export default async (application: Application): Promise<void> => {
         update "userSessions" set "timeZone" = 'UTC';
         alter table "userSessions" alter column "timeZone" set not null;
       `,
+
+      sql`
+        alter table "users" add column "courseAIType" text null;
+        alter table "users" add column "courseAIAPIKeyEncrypted" text null;
+        alter table "users" add column "courseAIBaseURL" text null;
+        alter table "users" add column "courseAIModel" text null;
+      `,
     );
 };
