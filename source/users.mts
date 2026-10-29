@@ -1514,15 +1514,25 @@ export default async (application: Application): Promise<void> => {
                       javascript="${javascript`
                         this.oninput = () => {
                           if (this.checked) {
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').disabled = this.closest('[type="form"]').querySelector('[key~="courseAIType"]').hidden = false;
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").hidden = false;
-                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
-                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').removeAttribute("disabled");
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').removeAttribute("hidden");
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").removeAttribute("disabled");
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").removeAttribute("hidden");
+                            if (this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value === "openAICompatible") {
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").removeAttribute("disabled");
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").removeAttribute("hidden");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").removeAttribute("disabled");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").removeAttribute("hidden");
+                            }
                           } else {
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').disabled = this.closest('[type="form"]').querySelector('[key~="courseAIType"]').hidden = true;
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").hidden = true;
-                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden =true;
-                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden =true;
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').setAttribute("disabled", "");
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').setAttribute("hidden", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").setAttribute("disabled", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").setAttribute("hidden", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("disabled", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("hidden", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("disabled", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("hidden", "");
                           }
                         };
                       `}"
@@ -1575,10 +1585,10 @@ export default async (application: Application): Promise<void> => {
                           class="input--radio"
                           javascript="${javascript`
                             this.oninput = () => {
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = true;
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = true;
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = true;
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("hidden", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("hidden", "");
                             };
                           `}"
                         />  OpenAI
@@ -1599,10 +1609,10 @@ export default async (application: Application): Promise<void> => {
                           class="input--radio"
                           javascript="${javascript`
                             this.oninput = () => {
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = true;
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = true;
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = true;
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("hidden", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("hidden", "");
                             };
                           `}"
                         />  Anthropic
@@ -1623,10 +1633,10 @@ export default async (application: Application): Promise<void> => {
                           class="input--radio"
                           javascript="${javascript`
                             this.oninput = () => {
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = true;
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = true;
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = true;
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = true;
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("hidden", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("hidden", "");
                             };
                           `}"
                         />  Google
@@ -1648,10 +1658,10 @@ export default async (application: Application): Promise<void> => {
                           class="input--radio"
                           javascript="${javascript`
                             this.oninput = () => {
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = false;
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = false;
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = false;
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = false;
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").removeAttribute("disabled");
+                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").removeAttribute("hidden");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").removeAttribute("disabled");
+                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").removeAttribute("hidden");
                             };
                           `}"
                         />  OpenAI Compatible
