@@ -1489,7 +1489,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                   javascript="${javascript`
                     this.onsubmit = () => {
-                      this.querySelector('[name="courseAIAPIKey"]').value = "";
+                      this.querySelector('[name="courseAIProviderAPIKey"]').value = "";
                     };
                   `}"
                 >
@@ -1511,7 +1511,8 @@ export default async (application: Application): Promise<void> => {
                       type="checkbox"
                       name="courseAIEnabled"
                       $${
-                        typeof request.state.user.courseAIType === "string"
+                        typeof request.state.user.courseAIProviderType ===
+                        "string"
                           ? html`checked`
                           : html``
                       }
@@ -1519,25 +1520,25 @@ export default async (application: Application): Promise<void> => {
                       javascript="${javascript`
                         this.oninput = () => {
                           if (this.checked) {
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').removeAttribute("disabled");
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').removeAttribute("hidden");
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").removeAttribute("disabled");
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").removeAttribute("hidden");
-                            if (this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value === "openAICompatible") {
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").removeAttribute("disabled");
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").removeAttribute("hidden");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").removeAttribute("disabled");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").removeAttribute("hidden");
+                            this.closest('[type="form"]').querySelector('[key~="courseAIProviderType"]').removeAttribute("disabled");
+                            this.closest('[type="form"]').querySelector('[key~="courseAIProviderType"]').removeAttribute("hidden");
+                            this.closest('[type="form"]').querySelector('[name="courseAIProviderAPIKey"]').closest("label").removeAttribute("disabled");
+                            this.closest('[type="form"]').querySelector('[name="courseAIProviderAPIKey"]').closest("label").removeAttribute("hidden");
+                            if (this.closest('[type="form"]').querySelector('[name="courseAIProviderType"]:checked').value === "openAICompatible") {
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").removeAttribute("disabled");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").removeAttribute("hidden");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").removeAttribute("disabled");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").removeAttribute("hidden");
                             }
                           } else {
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').setAttribute("disabled", "");
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').setAttribute("hidden", "");
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").setAttribute("disabled", "");
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").setAttribute("hidden", "");
-                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("disabled", "");
-                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("hidden", "");
-                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("disabled", "");
-                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("hidden", "");
+                            this.closest('[type="form"]').querySelector('[key~="courseAIProviderType"]').setAttribute("disabled", "");
+                            this.closest('[type="form"]').querySelector('[key~="courseAIProviderType"]').setAttribute("hidden", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIProviderAPIKey"]').closest("label").setAttribute("disabled", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIProviderAPIKey"]').closest("label").setAttribute("hidden", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("disabled", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("hidden", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("disabled", "");
+                            this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                           }
                         };
                       `}"
@@ -1545,13 +1546,13 @@ export default async (application: Application): Promise<void> => {
                     Enable
                   </label>
                   <div
-                    key="courseAIType"
+                    key="courseAIProviderType"
                     css="${css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--size--1);
                     `}"
-                    $${typeof request.state.user.courseAIType !== "string" ? html`disabled hidden` : html``}
+                    $${typeof request.state.user.courseAIProviderType !== "string" ? html`disabled hidden` : html``}
                   >
                     <div
                       css="${css`
@@ -1578,11 +1579,11 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="radio"
-                          name="courseAIType"
+                          name="courseAIProviderType"
                           value="openAI"
                           $${
-                            request.state.user.courseAIType === null ||
-                            request.state.user.courseAIType === "openAI"
+                            request.state.user.courseAIProviderType === null ||
+                            request.state.user.courseAIProviderType === "openAI"
                               ? html`checked`
                               : html``
                           }
@@ -1590,10 +1591,10 @@ export default async (application: Application): Promise<void> => {
                           class="input--radio"
                           javascript="${javascript`
                             this.oninput = () => {
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("disabled", "");
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("hidden", "");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("disabled", "");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("hidden", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("hidden", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                             };
                           `}"
                         />  OpenAI
@@ -1603,10 +1604,11 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="radio"
-                          name="courseAIType"
+                          name="courseAIProviderType"
                           value="anthropic"
                           $${
-                            request.state.user.courseAIType === "anthropic"
+                            request.state.user.courseAIProviderType ===
+                            "anthropic"
                               ? html`checked`
                               : html``
                           }
@@ -1614,10 +1616,10 @@ export default async (application: Application): Promise<void> => {
                           class="input--radio"
                           javascript="${javascript`
                             this.oninput = () => {
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("disabled", "");
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("hidden", "");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("disabled", "");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("hidden", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("hidden", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                             };
                           `}"
                         />  Anthropic
@@ -1627,10 +1629,10 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="radio"
-                          name="courseAIType"
+                          name="courseAIProviderType"
                           value="google"
                           $${
-                            request.state.user.courseAIType === "google"
+                            request.state.user.courseAIProviderType === "google"
                               ? html`checked`
                               : html``
                           }
@@ -1638,10 +1640,10 @@ export default async (application: Application): Promise<void> => {
                           class="input--radio"
                           javascript="${javascript`
                             this.oninput = () => {
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("disabled", "");
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").setAttribute("hidden", "");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("disabled", "");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").setAttribute("hidden", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("hidden", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("disabled", "");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                             };
                           `}"
                         />  Google
@@ -1651,10 +1653,10 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="radio"
-                          name="courseAIType"
+                          name="courseAIProviderType"
                           value="openAICompatible"
                           $${
-                            request.state.user.courseAIType ===
+                            request.state.user.courseAIProviderType ===
                             "openAICompatible"
                               ? html`checked`
                               : html``
@@ -1663,10 +1665,10 @@ export default async (application: Application): Promise<void> => {
                           class="input--radio"
                           javascript="${javascript`
                             this.oninput = () => {
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").removeAttribute("disabled");
-                              this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").removeAttribute("hidden");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").removeAttribute("disabled");
-                              this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").removeAttribute("hidden");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").removeAttribute("disabled");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").removeAttribute("hidden");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").removeAttribute("disabled");
+                              this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").removeAttribute("hidden");
                             };
                           `}"
                         />  OpenAI Compatible
@@ -1674,7 +1676,7 @@ export default async (application: Application): Promise<void> => {
                     </form>
                   </div>
                   <label
-                    $${typeof request.state.user.courseAIAPIKeyEncrypted !== "string" ? html`disabled hidden` : html``}
+                    $${typeof request.state.user.courseAIProviderAPIKeyEncrypted !== "string" ? html`disabled hidden` : html``}
                   >
                     <div
                       css="${css`
@@ -1696,10 +1698,10 @@ export default async (application: Application): Promise<void> => {
                     >
                       <input
                         type="password"
-                        name="courseAIAPIKey"
+                        name="courseAIProviderAPIKey"
                         $${
-                          typeof request.state.user.courseAIAPIKeyEncrypted !==
-                          "string"
+                          typeof request.state.user
+                            .courseAIProviderAPIKeyEncrypted !== "string"
                             ? html`required`
                             : /* prettier-ignore */ html`
                                 placeholder="Leave blank to keep the current API key"
@@ -1714,7 +1716,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   </label>
                   <label
-                    $${typeof request.state.user.courseAIBaseURL !== "string" ? html`disabled hidden` : html``}
+                    $${typeof request.state.user.courseAIProviderBaseURL !== "string" ? html`disabled hidden` : html``}
                   >
                     <div
                       css="${css`
@@ -1740,11 +1742,12 @@ export default async (application: Application): Promise<void> => {
                         autocapitalize="off"
                         autocorrect="off"
                         spellcheck="false"
-                        name="courseAIBaseURL"
+                        name="courseAIProviderBaseURL"
                         placeholder="https://api.example.com/v1"
                         $${
-                          typeof request.state.user.courseAIBaseURL === "string"
-                            ? html`value="${request.state.user.courseAIBaseURL}"`
+                          typeof request.state.user.courseAIProviderBaseURL ===
+                          "string"
+                            ? html`value="${request.state.user.courseAIProviderBaseURL}"`
                             : html``
                         }
                         maxlength="2000"
@@ -1768,7 +1771,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   </label>
                   <label
-                    $${typeof request.state.user.courseAIModel !== "string" ? html`disabled hidden` : html``}
+                    $${typeof request.state.user.courseAIProviderModel !== "string" ? html`disabled hidden` : html``}
                   >
                     <div
                       css="${css`
@@ -1790,11 +1793,12 @@ export default async (application: Application): Promise<void> => {
                     >
                       <input
                         type="text"
-                        name="courseAIModel"
+                        name="courseAIProviderModel"
                         placeholder="meta-llama/Llama-3-70b-chat-hf"
                         $${
-                          typeof request.state.user.courseAIModel === "string"
-                            ? html`value="${request.state.user.courseAIModel}"`
+                          typeof request.state.user.courseAIProviderModel ===
+                          "string"
+                            ? html`value="${request.state.user.courseAIProviderModel}"`
                             : html``
                         }
                         maxlength="2000"
@@ -2804,10 +2808,10 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           courseAIEnabled: "on";
-          courseAIType: string;
-          courseAIAPIKey: string;
-          courseAIBaseURL: string;
-          courseAIModel: string;
+          courseAIProviderType: string;
+          courseAIProviderAPIKey: string;
+          courseAIProviderBaseURL: string;
+          courseAIProviderModel: string;
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -2816,19 +2820,20 @@ export default async (application: Application): Promise<void> => {
       if (request.state.user === undefined) return;
       if (request.body.courseAIEnabled === "on") {
         if (
-          (request.body.courseAIType !== "openAI" &&
-            request.body.courseAIType !== "anthropic" &&
-            request.body.courseAIType !== "google" &&
-            request.body.courseAIType !== "openAICompatible") ||
-          (typeof request.state.user.courseAIAPIKeyEncrypted !== "string" &&
-            (typeof request.body.courseAIAPIKey !== "string" ||
-              request.body.courseAIAPIKey.trim().length === 0)) ||
-          (request.body.courseAIType === "openAICompatible" &&
-            (typeof request.body.courseAIBaseURL !== "string" ||
-              request.body.courseAIBaseURL.trim() === "" ||
+          (request.body.courseAIProviderType !== "openAI" &&
+            request.body.courseAIProviderType !== "anthropic" &&
+            request.body.courseAIProviderType !== "google" &&
+            request.body.courseAIProviderType !== "openAICompatible") ||
+          (typeof request.state.user.courseAIProviderAPIKeyEncrypted !==
+            "string" &&
+            (typeof request.body.courseAIProviderAPIKey !== "string" ||
+              request.body.courseAIProviderAPIKey.trim().length === 0)) ||
+          (request.body.courseAIProviderType === "openAICompatible" &&
+            (typeof request.body.courseAIProviderBaseURL !== "string" ||
+              request.body.courseAIProviderBaseURL.trim() === "" ||
               (() => {
                 try {
-                  const url = new URL(request.body.courseAIBaseURL);
+                  const url = new URL(request.body.courseAIProviderBaseURL);
                   if (
                     url.protocol !== "https:" ||
                     url.hostname === "localhost" ||
@@ -2840,25 +2845,25 @@ export default async (application: Application): Promise<void> => {
                   return true;
                 }
               })() ||
-              typeof request.body.courseAIModel !== "string" ||
-              request.body.courseAIModel.trim() === ""))
+              typeof request.body.courseAIProviderModel !== "string" ||
+              request.body.courseAIProviderModel.trim() === ""))
         )
           throw "validation";
         application.database.run(
           sql`
             update "users"
             set
-              "courseAIType" = ${request.body.courseAIType},
+              "courseAIProviderType" = ${request.body.courseAIProviderType},
               ${
-                typeof request.body.courseAIAPIKey === "string" &&
-                0 < request.body.courseAIAPIKey.trim().length
+                typeof request.body.courseAIProviderAPIKey === "string" &&
+                0 < request.body.courseAIProviderAPIKey.trim().length
                   ? sql`
-                      "courseAIAPIKeyEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, request.body.courseAIAPIKey)},
+                      "courseAIProviderAPIKeyEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, request.body.courseAIProviderAPIKey)},
                     `
                   : sql``
               }
-              "courseAIBaseURL" = ${request.body.courseAIType === "openAICompatible" ? request.body.courseAIBaseURL! : null},
-              "courseAIModel" = ${request.body.courseAIType === "openAICompatible" ? request.body.courseAIModel! : null}
+              "courseAIProviderBaseURL" = ${request.body.courseAIProviderType === "openAICompatible" ? request.body.courseAIProviderBaseURL! : null},
+              "courseAIProviderModel" = ${request.body.courseAIProviderType === "openAICompatible" ? request.body.courseAIProviderModel! : null}
             where "id" = ${request.state.user.id};
           `,
         );
@@ -2867,10 +2872,10 @@ export default async (application: Application): Promise<void> => {
           sql`
             update "users"
             set
-              "courseAIType" = null,
-              "courseAIAPIKeyEncrypted" = null,
-              "courseAIBaseURL" = null,
-              "courseAIModel" = null
+              "courseAIProviderType" = null,
+              "courseAIProviderAPIKeyEncrypted" = null,
+              "courseAIProviderBaseURL" = null,
+              "courseAIProviderModel" = null
             where "id" = ${request.state.user.id};
           `,
         );

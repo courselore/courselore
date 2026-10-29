@@ -8141,10 +8141,10 @@ export default async (application: Application): Promise<void> => {
       `,
 
       sql`
-        alter table "users" add column "courseAIType" text null;
-        alter table "users" add column "courseAIAPIKeyEncrypted" text null;
-        alter table "users" add column "courseAIBaseURL" text null;
-        alter table "users" add column "courseAIModel" text null;
+        alter table "users" add column "courseAIProviderType" text null;
+        alter table "users" add column "courseAIProviderAPIKeyEncrypted" text null;
+        alter table "users" add column "courseAIProviderBaseURL" text null;
+        alter table "users" add column "courseAIProviderModel" text null;
       `,
     );
 };

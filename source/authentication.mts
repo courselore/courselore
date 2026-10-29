@@ -79,11 +79,11 @@ export type ApplicationAuthentication = {
           mostRecentlyVisitedCourseParticipation: number | null;
           deleteMyAccountNonceTokenHash: string | null;
           deleteMyAccountNonceCreatedAt: string | null;
-          courseAIType:
+          courseAIProviderType:
             "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-          courseAIAPIKeyEncrypted: string | null;
-          courseAIBaseURL: string | null;
-          courseAIModel: string | null;
+          courseAIProviderAPIKeyEncrypted: string | null;
+          courseAIProviderBaseURL: string | null;
+          courseAIProviderModel: string | null;
         };
       };
     };
@@ -271,11 +271,11 @@ export default async (application: Application): Promise<void> => {
         mostRecentlyVisitedCourseParticipation: number | null;
         deleteMyAccountNonceTokenHash: string | null;
         deleteMyAccountNonceCreatedAt: string | null;
-        courseAIType:
+        courseAIProviderType:
           "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-        courseAIAPIKeyEncrypted: string | null;
-        courseAIBaseURL: string | null;
-        courseAIModel: string | null;
+        courseAIProviderAPIKeyEncrypted: string | null;
+        courseAIProviderBaseURL: string | null;
+        courseAIProviderModel: string | null;
       }>(
         sql`
           select
@@ -305,10 +305,10 @@ export default async (application: Application): Promise<void> => {
             "mostRecentlyVisitedCourseParticipation",
             "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt",
-            "courseAIType",
-            "courseAIAPIKeyEncrypted",
-            "courseAIBaseURL",
-            "courseAIModel"
+            "courseAIProviderType",
+            "courseAIProviderAPIKeyEncrypted",
+            "courseAIProviderBaseURL",
+            "courseAIProviderModel"
           from "users"
           where "id" = ${request.state.userSession.user};
         `,
@@ -1089,11 +1089,11 @@ export default async (application: Application): Promise<void> => {
           mostRecentlyVisitedCourseParticipation: number | null;
           deleteMyAccountNonceTokenHash: string | null;
           deleteMyAccountNonceCreatedAt: string | null;
-          courseAIType:
+          courseAIProviderType:
             "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-          courseAIAPIKeyEncrypted: string | null;
-          courseAIBaseURL: string | null;
-          courseAIModel: string | null;
+          courseAIProviderAPIKeyEncrypted: string | null;
+          courseAIProviderBaseURL: string | null;
+          courseAIProviderModel: string | null;
         }>(
           sql`
             select * from "users" where "id" = ${
@@ -1894,11 +1894,11 @@ export default async (application: Application): Promise<void> => {
         mostRecentlyVisitedCourseParticipation: number | null;
         deleteMyAccountNonceTokenHash: string | null;
         deleteMyAccountNonceCreatedAt: string | null;
-        courseAIType:
+        courseAIProviderType:
           "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-        courseAIAPIKeyEncrypted: string | null;
-        courseAIBaseURL: string | null;
-        courseAIModel: string | null;
+        courseAIProviderAPIKeyEncrypted: string | null;
+        courseAIProviderBaseURL: string | null;
+        courseAIProviderModel: string | null;
       }>(
         sql`
           select
@@ -1928,10 +1928,10 @@ export default async (application: Application): Promise<void> => {
             "mostRecentlyVisitedCourseParticipation",
             "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt",
-            "courseAIType",
-            "courseAIAPIKeyEncrypted",
-            "courseAIBaseURL",
-            "courseAIModel"
+            "courseAIProviderType",
+            "courseAIProviderAPIKeyEncrypted",
+            "courseAIProviderBaseURL",
+            "courseAIProviderModel"
           from "users"
           where "email" = ${request.body.email};
         `,
@@ -2497,11 +2497,11 @@ export default async (application: Application): Promise<void> => {
         mostRecentlyVisitedCourseParticipation: number | null;
         deleteMyAccountNonceTokenHash: string | null;
         deleteMyAccountNonceCreatedAt: string | null;
-        courseAIType:
+        courseAIProviderType:
           "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-        courseAIAPIKeyEncrypted: string | null;
-        courseAIBaseURL: string | null;
-        courseAIModel: string | null;
+        courseAIProviderAPIKeyEncrypted: string | null;
+        courseAIProviderBaseURL: string | null;
+        courseAIProviderModel: string | null;
       }>(
         sql`
           select
@@ -2531,10 +2531,10 @@ export default async (application: Application): Promise<void> => {
             "mostRecentlyVisitedCourseParticipation",
             "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt",
-            "courseAIType",
-            "courseAIAPIKeyEncrypted",
-            "courseAIBaseURL",
-            "courseAIModel"
+            "courseAIProviderType",
+            "courseAIProviderAPIKeyEncrypted",
+            "courseAIProviderBaseURL",
+            "courseAIProviderModel"
           from "users"
           where "email" = ${request.body.email};
         `,
@@ -2899,11 +2899,11 @@ export default async (application: Application): Promise<void> => {
         mostRecentlyVisitedCourseParticipation: number | null;
         deleteMyAccountNonceTokenHash: string | null;
         deleteMyAccountNonceCreatedAt: string | null;
-        courseAIType:
+        courseAIProviderType:
           "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-        courseAIAPIKeyEncrypted: string | null;
-        courseAIBaseURL: string | null;
-        courseAIModel: string | null;
+        courseAIProviderAPIKeyEncrypted: string | null;
+        courseAIProviderBaseURL: string | null;
+        courseAIProviderModel: string | null;
       }>(
         sql`
           select
@@ -2933,10 +2933,10 @@ export default async (application: Application): Promise<void> => {
             "mostRecentlyVisitedCourseParticipation",
             "deleteMyAccountNonceTokenHash",
             "deleteMyAccountNonceCreatedAt",
-            "courseAIType",
-            "courseAIAPIKeyEncrypted",
-            "courseAIBaseURL",
-            "courseAIModel"
+            "courseAIProviderType",
+            "courseAIProviderAPIKeyEncrypted",
+            "courseAIProviderBaseURL",
+            "courseAIProviderModel"
           from "users"
           where "passwordResetNonceTokenHash" = ${cryptography.TokenHash.hash(
             request.pathname.passwordResetNonce,
@@ -3334,11 +3334,11 @@ export default async (application: Application): Promise<void> => {
               mostRecentlyVisitedCourseParticipation: number | null;
               deleteMyAccountNonceTokenHash: string | null;
               deleteMyAccountNonceCreatedAt: string | null;
-              courseAIType:
+              courseAIProviderType:
                 "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-              courseAIAPIKeyEncrypted: string | null;
-              courseAIBaseURL: string | null;
-              courseAIModel: string | null;
+              courseAIProviderAPIKeyEncrypted: string | null;
+              courseAIProviderBaseURL: string | null;
+              courseAIProviderModel: string | null;
             }>(
               sql`
                 select
@@ -3368,10 +3368,10 @@ export default async (application: Application): Promise<void> => {
                   "mostRecentlyVisitedCourseParticipation",
                   "deleteMyAccountNonceTokenHash",
                   "deleteMyAccountNonceCreatedAt",
-                  "courseAIType",
-                  "courseAIAPIKeyEncrypted",
-                  "courseAIBaseURL",
-                  "courseAIModel"
+                  "courseAIProviderType",
+                  "courseAIProviderAPIKeyEncrypted",
+                  "courseAIProviderBaseURL",
+                  "courseAIProviderModel"
                 from "users"
                 where "email" = ${idToken.email as string};
               `,
@@ -3427,11 +3427,11 @@ export default async (application: Application): Promise<void> => {
               mostRecentlyVisitedCourseParticipation: number | null;
               deleteMyAccountNonceTokenHash: string | null;
               deleteMyAccountNonceCreatedAt: string | null;
-              courseAIType:
+              courseAIProviderType:
                 "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-              courseAIAPIKeyEncrypted: string | null;
-              courseAIBaseURL: string | null;
-              courseAIModel: string | null;
+              courseAIProviderAPIKeyEncrypted: string | null;
+              courseAIProviderBaseURL: string | null;
+              courseAIProviderModel: string | null;
             }>(
               sql`
                 select * from "users" where "id" = ${
@@ -4245,11 +4245,11 @@ export default async (application: Application): Promise<void> => {
             mostRecentlyVisitedCourseParticipation: number | null;
             deleteMyAccountNonceTokenHash: string | null;
             deleteMyAccountNonceCreatedAt: string | null;
-            courseAIType:
+            courseAIProviderType:
               "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-            courseAIAPIKeyEncrypted: string | null;
-            courseAIBaseURL: string | null;
-            courseAIModel: string | null;
+            courseAIProviderAPIKeyEncrypted: string | null;
+            courseAIProviderBaseURL: string | null;
+            courseAIProviderModel: string | null;
           }>(
             sql`
               select
@@ -4279,10 +4279,10 @@ export default async (application: Application): Promise<void> => {
                 "mostRecentlyVisitedCourseParticipation",
                 "deleteMyAccountNonceTokenHash",
                 "deleteMyAccountNonceCreatedAt",
-                "courseAIType",
-                "courseAIAPIKeyEncrypted",
-                "courseAIBaseURL",
-                "courseAIModel"
+                "courseAIProviderType",
+                "courseAIProviderAPIKeyEncrypted",
+                "courseAIProviderBaseURL",
+                "courseAIProviderModel"
               from "users"
               where "email" = ${userData.email};
             `,
@@ -4336,11 +4336,11 @@ export default async (application: Application): Promise<void> => {
             mostRecentlyVisitedCourseParticipation: number | null;
             deleteMyAccountNonceTokenHash: string | null;
             deleteMyAccountNonceCreatedAt: string | null;
-            courseAIType:
+            courseAIProviderType:
               "openAI" | "anthropic" | "google" | "openAICompatible" | null;
-            courseAIAPIKeyEncrypted: string | null;
-            courseAIBaseURL: string | null;
-            courseAIModel: string | null;
+            courseAIProviderAPIKeyEncrypted: string | null;
+            courseAIProviderBaseURL: string | null;
+            courseAIProviderModel: string | null;
           }>(
             sql`
               select * from "users" where "id" = ${
