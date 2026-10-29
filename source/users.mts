@@ -2814,7 +2814,54 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (request.state.user === undefined) return;
-      if (request.body.courseAIEnabled !== "on") {
+      if (request.body.courseAIEnabled === "on") {
+        if (
+          (request.body.courseAIType !== "openAI" &&
+            request.body.courseAIType !== "anthropic" &&
+            request.body.courseAIType !== "google" &&
+            request.body.courseAIType !== "openAICompatible") ||
+          (typeof request.state.user.courseAIAPIKeyEncrypted !== "string" &&
+            (typeof request.body.courseAIAPIKey !== "string" ||
+              request.body.courseAIAPIKey.trim().length === 0)) ||
+          (request.body.courseAIType === "openAICompatible" &&
+            (typeof request.body.courseAIBaseURL !== "string" ||
+              request.body.courseAIBaseURL.trim() === "" ||
+              (() => {
+                try {
+                  const url = new URL(request.body.courseAIBaseURL);
+                  if (
+                    url.protocol !== "https:" ||
+                    url.hostname === "localhost" ||
+                    url.hostname === "127.0.0.1"
+                  )
+                    throw new Error();
+                  return true;
+                } catch {
+                  return false;
+                }
+              })() ||
+              typeof request.body.courseAIModel !== "string" ||
+              request.body.courseAIModel.trim() === ""))
+        )
+          throw "validation";
+        application.database.run(
+          sql`
+            update "users"
+            set
+              "courseAIType" = ${request.body.courseAIType},
+              ${
+                typeof request.body.courseAIAPIKey === "string"
+                  ? sql`
+                      "courseAIAPIKeyEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, request.body.courseAIAPIKey)},
+                    `
+                  : sql``
+              }
+              "courseAIBaseURL" = ${request.body.courseAIType === "openAICompatible" ? request.body.courseAIBaseURL! : null},
+              "courseAIModel" = ${request.body.courseAIType === "openAICompatible" ? request.body.courseAIModel! : null}
+            where "id" = ${request.state.user.id};
+          `,
+        );
+      } else
         application.database.run(
           sql`
             update "users"
@@ -2826,59 +2873,6 @@ export default async (application: Application): Promise<void> => {
             where "id" = ${request.state.user.id};
           `,
         );
-        response.setFlash!(html`
-          <div class="flash--green">Course AI updated successfully.</div>
-        `);
-        response.redirect!("/settings");
-        return;
-      }
-      if (
-        (request.body.courseAIType !== "openAI" &&
-          request.body.courseAIType !== "anthropic" &&
-          request.body.courseAIType !== "google" &&
-          request.body.courseAIType !== "openAICompatible") ||
-        typeof request.body.courseAIAPIKey !== "string" ||
-        request.body.courseAIAPIKey.length > 2000
-      )
-        throw "validation";
-      const apiKey = request.body.courseAIAPIKey.trim();
-      if (
-        apiKey === "" &&
-        typeof request.state.user.courseAIAPIKeyEncrypted !== "string"
-      )
-        throw "validation";
-      let baseURL: string | null = null;
-      let model: string | null = null;
-      if (request.body.courseAIType === "openAICompatible") {
-        if (
-          typeof request.body.courseAIBaseURL !== "string" ||
-          typeof request.body.courseAIModel !== "string" ||
-          request.body.courseAIModel.trim() === "" ||
-          request.body.courseAIBaseURL.length > 2000 ||
-          request.body.courseAIModel.length > 2000
-        )
-          throw "validation";
-        try {
-          const url = new URL(request.body.courseAIBaseURL.trim());
-          if (url.protocol !== "https:" && url.protocol !== "http:")
-            throw "validation";
-          baseURL = url.href;
-        } catch {
-          throw "validation";
-        }
-        model = request.body.courseAIModel.trim();
-      }
-      application.database.run(
-        sql`
-          update "users"
-          set
-            "courseAIType" = ${request.body.courseAIType},
-            ${apiKey === "" ? sql`` : sql`"courseAIAPIKeyEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, apiKey)},`}
-            "courseAIBaseURL" = ${baseURL},
-            "courseAIModel" = ${model}
-          where "id" = ${request.state.user.id};
-        `,
-      );
       response.setFlash!(html`
         <div class="flash--green">Course AI updated successfully.</div>
       `);
