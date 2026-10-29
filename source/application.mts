@@ -98,14 +98,14 @@ export type Application = {
       domains: string[];
     } & (
       | {
-          type: "openai" | "anthropic" | "google";
+          type: "openAI" | "anthropic" | "google";
           apiKey: string;
         }
       | {
-          type: "openai-compatible";
+          type: "openAICompatible";
+          apiKey: string;
           baseURL: string;
           model: string;
-          apiKey?: string;
         }
     ))[];
   };
