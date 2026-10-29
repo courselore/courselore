@@ -2835,9 +2835,9 @@ export default async (application: Application): Promise<void> => {
                     url.hostname === "127.0.0.1"
                   )
                     throw new Error();
-                  return true;
-                } catch {
                   return false;
+                } catch {
+                  return true;
                 }
               })() ||
               typeof request.body.courseAIModel !== "string" ||
