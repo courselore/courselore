@@ -2850,7 +2850,8 @@ export default async (application: Application): Promise<void> => {
             set
               "courseAIType" = ${request.body.courseAIType},
               ${
-                typeof request.body.courseAIAPIKey === "string"
+                typeof request.body.courseAIAPIKey === "string" &&
+                0 < request.body.courseAIAPIKey.trim().length
                   ? sql`
                       "courseAIAPIKeyEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, request.body.courseAIAPIKey)},
                     `
