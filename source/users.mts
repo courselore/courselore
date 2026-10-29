@@ -1487,20 +1487,6 @@ export default async (application: Application): Promise<void> => {
                     flex-direction: column;
                     gap: var(--size--4);
                   `}"
-                  javascript="${javascript`
-                    this.oninput = () => {
-                      const enabled = this.querySelector('[name="courseAIEnabled"]').checked;
-                      const type = this.querySelector('[name="courseAIType"]:checked')?.value;
-                      this.querySelector('[key~="courseAI--provider"]').hidden = !enabled;
-                      this.querySelector('[key~="courseAI--apiKey"]').hidden = !enabled;
-                      this.querySelector('[key~="courseAI--openAICompatible"]').hidden = !enabled || type !== "openAICompatible";
-                      for (const element of this.querySelectorAll('input:not([name="courseAIEnabled"])'))
-                        element.disabled = !enabled;
-                      for (const element of this.querySelectorAll('[key~="courseAI--openAICompatible"] input'))
-                        element.required = enabled && type === "openAICompatible";
-                    };
-                    this.oninput();
-                  `}"
                 >
                   <div
                     css="${css`
@@ -1529,7 +1515,6 @@ export default async (application: Application): Promise<void> => {
                     Enable
                   </label>
                   <div
-                    key="courseAI--provider"
                     css="${css`
                       display: flex;
                       flex-direction: column;
@@ -1556,35 +1541,71 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--size--2);
                       `}"
                     >
-                      $${[
-                        ["openAI", "OpenAI"],
-                        ["anthropic", "Anthropic"],
-                        ["google", "Google"],
-                        ["openAICompatible", "OpenAI compatible"],
-                      ].map(
-                        ([value, label]) => html`
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="courseAIType"
-                              value="${value}"
-                              $${
-                                (request.state.user?.courseAIType ??
-                                  "openAI") === value
-                                  ? html`checked`
-                                  : html``
-                              }
-                              class="input--radio"
-                            />
-                            ${label}
-                          </label>
-                        `,
-                      )}
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="courseAIType"
+                          value="openAI"
+                          $${
+                            request.state.user.courseAIType === null ||
+                            request.state.user.courseAIType === "openAI"
+                              ? html`checked`
+                              : html``
+                          }
+                          class="input--radio"
+                        />  OpenAI
+                      </label>
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="courseAIType"
+                          value="anthropic"
+                          $${
+                            request.state.user.courseAIType === "anthropic"
+                              ? html`checked`
+                              : html``
+                          }
+                          class="input--radio"
+                        />  Anthropic
+                      </label>
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="courseAIType"
+                          value="google"
+                          $${
+                            request.state.user.courseAIType === "google"
+                              ? html`checked`
+                              : html``
+                          }
+                          class="input--radio"
+                        />  Google
+                      </label>
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="courseAIType"
+                          value="openAICompatible"
+                          $${
+                            request.state.user.courseAIType ===
+                            "openAICompatible"
+                              ? html`checked`
+                              : html``
+                          }
+                          class="input--radio"
+                        />  OpenAI Compatible
+                      </label>
                     </form>
                   </div>
-                  <label key="courseAI--apiKey">
+                  <label>
                     <div
                       css="${css`
                         font-size: var(--font-size--3);
@@ -1606,14 +1627,14 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="password"
                         name="courseAIAPIKey"
-                        autocomplete="off"
-                        maxlength="2000"
                         placeholder="${
-                          typeof request.state.user?.courseAIAPIKeyEncrypted ===
+                          typeof request.state.user.courseAIAPIKeyEncrypted ===
                           "string"
                             ? "Leave blank to keep the current API key"
                             : ""
                         }"
+                        required
+                        maxlength="2000"
                         class="input--text"
                         css="${css`
                           flex: 1;
@@ -1621,95 +1642,71 @@ export default async (application: Application): Promise<void> => {
                       />
                     </div>
                   </label>
-                  <div
-                    key="courseAI--openAICompatible"
-                    $${
-                      request.state.user?.courseAIType === "openAICompatible"
-                        ? html``
-                        : html`hidden`
-                    }
-                    css="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--size--4);
-                    `}"
-                  >
-                    <label>
-                      <div
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Base URL
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        name="courseAIBaseURL"
+                        value="${request.state.user.courseAIBaseURL ?? ""}"
+                        placeholder="https://example.com/v1"
+                        maxlength="2000"
+                        required
+                        class="input--text"
                         css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                          font-weight: 600;
-                          color: light-dark(
-                            var(--color--slate--500),
-                            var(--color--slate--500)
-                          );
+                          flex: 1;
                         `}"
-                      >
-                        Base URL
-                      </div>
-                      <div
+                      />
+                    </div>
+                  </label>
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Model
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        name="courseAIModel"
+                        value="${request.state.user.courseAIModel ?? ""}"
+                        maxlength="2000"
+                        required
+                        class="input--text"
                         css="${css`
-                          display: flex;
+                          flex: 1;
                         `}"
-                      >
-                        <input
-                          type="url"
-                          name="courseAIBaseURL"
-                          value="${request.state.user?.courseAIBaseURL ?? ""}"
-                          placeholder="https://example.com/v1"
-                          maxlength="2000"
-                          $${
-                            request.state.user?.courseAIType ===
-                            "openAICompatible"
-                              ? html`required`
-                              : html``
-                          }
-                          class="input--text"
-                          css="${css`
-                            flex: 1;
-                          `}"
-                        />
-                      </div>
-                    </label>
-                    <label>
-                      <div
-                        css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                          font-weight: 600;
-                          color: light-dark(
-                            var(--color--slate--500),
-                            var(--color--slate--500)
-                          );
-                        `}"
-                      >
-                        Model
-                      </div>
-                      <div
-                        css="${css`
-                          display: flex;
-                        `}"
-                      >
-                        <input
-                          type="text"
-                          name="courseAIModel"
-                          value="${request.state.user?.courseAIModel ?? ""}"
-                          maxlength="2000"
-                          $${
-                            request.state.user?.courseAIType ===
-                            "openAICompatible"
-                              ? html`required`
-                              : html``
-                          }
-                          class="input--text"
-                          css="${css`
-                            flex: 1;
-                          `}"
-                        />
-                      </div>
-                    </label>
-                  </div>
+                      />
+                    </div>
+                  </label>
                   <div
                     css="${css`
                       font-size: var(--font-size--3);
