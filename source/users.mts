@@ -1731,6 +1731,10 @@ export default async (application: Application): Promise<void> => {
                     >
                       <input
                         type="text"
+                        inputmode="url"
+                        autocapitalize="off"
+                        autocorrect="off"
+                        spellcheck="false"
                         name="courseAIBaseURL"
                         placeholder="https://api.example.com/v1"
                         $${
