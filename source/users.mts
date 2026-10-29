@@ -1514,23 +1514,15 @@ export default async (application: Application): Promise<void> => {
                       javascript="${javascript`
                         this.oninput = () => {
                           if (this.checked) {
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').disabled = false;
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').hidden = false;
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').disabled = false;
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").hidden = false;
-                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
-                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
-                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
-                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').disabled = this.closest('[type="form"]').querySelector('[key~="courseAIType"]').hidden = false;
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").hidden = false;
+                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
+                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = this.closest('[type="form"]').querySelector('[name="courseAIType"]:checked').value !== "openAICompatible";
                           } else {
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').disabled = true;
-                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').hidden = true;
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').disabled = true;
-                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").hidden = true;
-                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').disabled = true;
-                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden = true;
-                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').disabled = true;
-                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden = true;
+                            this.closest('[type="form"]').querySelector('[key~="courseAIType"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[key~="courseAIType"]').hidden = true;
+                            this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIAPIKey"]').closest("label").hidden = true;
+                            this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIBaseURL"]').closest("label").hidden =true;
+                            this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").disabled = this.closest('[type="form"]').querySelector('[name="courseAIModel"]').closest("label").hidden =true;
                           }
                         };
                       `}"
@@ -1544,6 +1536,7 @@ export default async (application: Application): Promise<void> => {
                       flex-direction: column;
                       gap: var(--size--1);
                     `}"
+                    $${typeof request.state.user.courseAIType !== "string" ? html`disabled hidden` : html``}
                   >
                     <div
                       css="${css`
@@ -1665,7 +1658,9 @@ export default async (application: Application): Promise<void> => {
                       </label>
                     </form>
                   </div>
-                  <label>
+                  <label
+                    $${typeof request.state.user.courseAIAPIKeyEncrypted !== "string" ? html`disabled hidden` : html``}
+                  >
                     <div
                       css="${css`
                         font-size: var(--font-size--3);
@@ -1687,13 +1682,13 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="password"
                         name="courseAIAPIKey"
-                        placeholder="${
-                          typeof request.state.user.courseAIAPIKeyEncrypted ===
+                        $${
+                          typeof request.state.user.courseAIAPIKeyEncrypted !==
                           "string"
-                            ? "Leave blank to keep the current API key"
-                            : ""
-                        }"
-                        required
+                            ? html`required`
+                            : html`placeholder="Leave blank to keep the current
+                              API key"`
+                        }
                         maxlength="2000"
                         class="input--text"
                         css="${css`
@@ -1702,7 +1697,9 @@ export default async (application: Application): Promise<void> => {
                       />
                     </div>
                   </label>
-                  <label>
+                  <label
+                    $${typeof request.state.user.courseAIBaseURL !== "string" ? html`disabled hidden` : html``}
+                  >
                     <div
                       css="${css`
                         font-size: var(--font-size--3);
@@ -1724,7 +1721,11 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="text"
                         name="courseAIBaseURL"
-                        value="${request.state.user.courseAIBaseURL ?? ""}"
+                        $${
+                          typeof request.state.user.courseAIBaseURL === "string"
+                            ? html`value="${request.state.user.courseAIBaseURL}"`
+                            : html``
+                        }
                         placeholder="https://example.com/v1"
                         maxlength="2000"
                         required
@@ -1735,7 +1736,9 @@ export default async (application: Application): Promise<void> => {
                       />
                     </div>
                   </label>
-                  <label>
+                  <label
+                    $${typeof request.state.user.courseAIModel !== "string" ? html`disabled hidden` : html``}
+                  >
                     <div
                       css="${css`
                         font-size: var(--font-size--3);
@@ -1757,7 +1760,11 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="text"
                         name="courseAIModel"
-                        value="${request.state.user.courseAIModel ?? ""}"
+                        $${
+                          typeof request.state.user.courseAIModel === "string"
+                            ? html`value="${request.state.user.courseAIModel}"`
+                            : html``
+                        }
                         maxlength="2000"
                         required
                         class="input--text"
