@@ -1487,6 +1487,11 @@ export default async (application: Application): Promise<void> => {
                     flex-direction: column;
                     gap: var(--size--4);
                   `}"
+                  javascript="${javascript`
+                    this.onsubmit = () => {
+                      this.querySelector('[name="courseAIAPIKey"]').value = "";
+                    };
+                  `}"
                 >
                   <div
                     css="${css`
