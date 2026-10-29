@@ -1731,12 +1731,12 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="text"
                         name="courseAIBaseURL"
+                        placeholder="https://api.example.com/v1"
                         $${
                           typeof request.state.user.courseAIBaseURL === "string"
                             ? html`value="${request.state.user.courseAIBaseURL}"`
                             : html``
                         }
-                        placeholder="https://example.com/v1"
                         maxlength="2000"
                         required
                         class="input--text"
@@ -1770,6 +1770,7 @@ export default async (application: Application): Promise<void> => {
                       <input
                         type="text"
                         name="courseAIModel"
+                        placeholder="meta-llama/Llama-3-70b-chat-hf"
                         $${
                           typeof request.state.user.courseAIModel === "string"
                             ? html`value="${request.state.user.courseAIModel}"`
