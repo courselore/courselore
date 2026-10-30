@@ -1179,17 +1179,6 @@ export default async (application: Application): Promise<void> => {
                                     : html``
                                 }
                                 class="input--checkbox"
-                                javascript="${javascript`
-                                this.oninput = () => {
-                                  if (this.checked) {
-                                    this.closest('details').querySelector('[key~="courseAIProvider"]').removeAttribute("disabled");
-                                    this.closest('details').querySelector('[key~="courseAIProvider"]').removeAttribute("hidden");
-                                  } else {
-                                    this.closest('details').querySelector('[key~="courseAIProvider"]').setAttribute("disabled", "");
-                                    this.closest('details').querySelector('[key~="courseAIProvider"]').setAttribute("hidden", "");
-                                  }
-                                };
-                              `}"
                               />
                               Enable Course AI
                             </label>
