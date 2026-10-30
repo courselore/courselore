@@ -1129,11 +1129,6 @@ export default async (application: Application): Promise<void> => {
                           Course AI
                         </summary>
                         <div
-                          type="form"
-                          method="PATCH"
-                          action="/courses/${
-                            request.state.course.publicId
-                          }/settings/course-ai"
                           css="${css`
                             padding: var(--size--2) var(--size--0);
                             border-bottom: var(--border-width--1) solid
@@ -1145,74 +1140,75 @@ export default async (application: Application): Promise<void> => {
                             flex-direction: column;
                             gap: var(--size--4);
                           `}"
-                          javascript="${javascript`
-                            this.onsubmit = () => {
-                              this.querySelector('[name="courseAIProviderAPIKey"]').value = "";
-                            };
-                          `}"
                         >
                           <div
+                            type="form"
+                            method="PATCH"
+                            action="/courses/${
+                              request.state.course.publicId
+                            }/settings/course-ai"
                             css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              color: light-dark(
-                                var(--color--slate--600),
-                                var(--color--slate--400)
-                              );
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--4);
                             `}"
                           >
-                            Course participants may bring their own LLM API
-                            keys, or you may optionally set a Course AI provider
-                            to be used by everyone in the course.
-                          </div>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="courseAIEnabled"
-                              $${
-                                Boolean(request.state.course.courseAIEnabled)
-                                  ? html`checked`
-                                  : html``
-                              }
-                              class="input--checkbox"
-                              javascript="${javascript`
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                            >
+                              Course participants may bring their own LLM API
+                              keys, or you may optionally set a Course AI
+                              provider to be used by everyone in the course.
+                            </div>
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="courseAIEnabled"
+                                $${
+                                  Boolean(request.state.course.courseAIEnabled)
+                                    ? html`checked`
+                                    : html``
+                                }
+                                class="input--checkbox"
+                                javascript="${javascript`
                                 this.oninput = () => {
                                   if (this.checked) {
-                                    this.closest('[type="form"]').querySelector('[key~="courseAIProviderEnabled"]').removeAttribute("disabled");
-                                    this.closest('[type="form"]').querySelector('[key~="courseAIProviderEnabled"]').removeAttribute("hidden");
-                                    if (this.closest('[type="form"]').querySelector('[name="courseAIProviderEnabled"]').checked) {
-                                      this.closest('[type="form"]').querySelector('[key~="courseAIProviderType"]').removeAttribute("disabled");
-                                      this.closest('[type="form"]').querySelector('[key~="courseAIProviderType"]').removeAttribute("hidden");
-                                      this.closest('[type="form"]').querySelector('[name="courseAIProviderAPIKey"]').closest("label").removeAttribute("disabled");
-                                      this.closest('[type="form"]').querySelector('[name="courseAIProviderAPIKey"]').closest("label").removeAttribute("hidden");
-                                      if (this.closest('[type="form"]').querySelector('[name="courseAIProviderType"]:checked').value === "openAICompatible") {
-                                        this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").removeAttribute("disabled");
-                                        this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").removeAttribute("hidden");
-                                        this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").removeAttribute("disabled");
-                                        this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").removeAttribute("hidden");
-                                      }
-                                    }
+                                    this.closest('details').querySelector('[key~="courseAIProvider"]').removeAttribute("disabled");
+                                    this.closest('details').querySelector('[key~="courseAIProvider"]').removeAttribute("hidden");
                                   } else {
-                                    this.closest('[type="form"]').querySelector('[key~="courseAIProviderEnabled"]').setAttribute("disabled", "");
-                                    this.closest('[type="form"]').querySelector('[key~="courseAIProviderEnabled"]').setAttribute("hidden", "");
-                                    this.closest('[type="form"]').querySelector('[key~="courseAIProviderType"]').setAttribute("disabled", "");
-                                    this.closest('[type="form"]').querySelector('[key~="courseAIProviderType"]').setAttribute("hidden", "");
-                                    this.closest('[type="form"]').querySelector('[name="courseAIProviderAPIKey"]').closest("label").setAttribute("disabled", "");
-                                    this.closest('[type="form"]').querySelector('[name="courseAIProviderAPIKey"]').closest("label").setAttribute("hidden", "");
-                                    this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("disabled", "");
-                                    this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("hidden", "");
-                                    this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("disabled", "");
-                                    this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
+                                    this.closest('details').querySelector('[key~="courseAIProvider"]').setAttribute("disabled", "");
+                                    this.closest('details').querySelector('[key~="courseAIProvider"]').setAttribute("hidden", "");
                                   }
                                 };
                               `}"
-                            />
-                            Enable Course AI
-                          </label>
+                              />
+                              Enable Course AI
+                            </label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                              `}"
+                            >
+                              <button
+                                type="submit"
+                                class="button button--rectangle button--blue"
+                              >
+                                Update Course AI
+                              </button>
+                            </div>
+                          </div>
                           <details
-                            key="courseAIProviderEnabled"
+                            key="courseAIProvider"
                             $${!Boolean(request.state.course.courseAIEnabled) ? html`disabled hidden` : html``}
                           >
                             <summary
@@ -1249,11 +1245,21 @@ export default async (application: Application): Promise<void> => {
                               Course AI provider
                             </summary>
                             <div
+                              type="form"
+                              method="PATCH"
+                              action="/courses/${
+                                request.state.course.publicId
+                              }/settings/course-ai-provider"
                               css="${css`
                                 padding: var(--size--2) var(--size--0);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--size--4);
+                              `}"
+                              javascript="${javascript`
+                                this.onsubmit = () => {
+                                  this.querySelector('[name="courseAIProviderAPIKey"]').value = "";
+                                };
                               `}"
                             >
                               <label
@@ -1304,7 +1310,7 @@ export default async (application: Application): Promise<void> => {
                                   flex-direction: column;
                                   gap: var(--size--1);
                                 `}"
-                                $${!Boolean(request.state.course.courseAIEnabled) || typeof request.state.course.courseAIProviderType !== "string" ? html`disabled hidden` : html``}
+                                $${typeof request.state.course.courseAIProviderType !== "string" ? html`disabled hidden` : html``}
                               >
                                 <div
                                   css="${css`
@@ -1438,7 +1444,7 @@ export default async (application: Application): Promise<void> => {
                                 </form>
                               </div>
                               <label
-                                $${!Boolean(request.state.course.courseAIEnabled) || typeof request.state.course.courseAIProviderType !== "string" ? html`disabled hidden` : html``}
+                                $${typeof request.state.course.courseAIProviderType !== "string" ? html`disabled hidden` : html``}
                               >
                                 <div
                                   css="${css`
@@ -1481,7 +1487,7 @@ export default async (application: Application): Promise<void> => {
                                 </div>
                               </label>
                               <label
-                                $${!Boolean(request.state.course.courseAIEnabled) || request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
+                                $${request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
                               >
                                 <div
                                   css="${css`
@@ -1538,7 +1544,7 @@ export default async (application: Application): Promise<void> => {
                                 </div>
                               </label>
                               <label
-                                $${!Boolean(request.state.course.courseAIEnabled) || request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
+                                $${request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
                               >
                                 <div
                                   css="${css`
@@ -1579,21 +1585,21 @@ export default async (application: Application): Promise<void> => {
                                   />
                                 </div>
                               </label>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
+                              >
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Update Course AI provider
+                                </button>
+                              </div>
                             </div>
                           </details>
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                            `}"
-                          >
-                            <button
-                              type="submit"
-                              class="button button--rectangle button--blue"
-                            >
-                              Update Course AI
-                            </button>
-                          </div>
                         </div>
                       </details>
                       <details>
@@ -4161,6 +4167,57 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           courseAIEnabled: "on";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      if (request.body.courseAIEnabled === "on")
+        application.database.run(
+          sql`
+            update "courses"
+            set "courseAIEnabled" = ${Number(true)}
+            where "id" = ${request.state.course.id};
+          `,
+        );
+      else
+        application.database.run(
+          sql`
+            update "courses"
+            set
+              "courseAIEnabled" = ${Number(false)},
+              "courseAIProviderType" = null,
+              "courseAIProviderAPIKeyEncrypted" = null,
+              "courseAIProviderBaseURL" = null,
+              "courseAIProviderModel" = null
+            where "id" = ${request.state.course.id};
+          `,
+        );
+      response.setFlash!(html`
+        <div class="flash--green">Course AI updated successfully.</div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.webServer?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/course-ai-provider$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
           courseAIProviderEnabled: "on";
           courseAIProviderType: string;
           courseAIProviderAPIKey: string;
@@ -4178,76 +4235,61 @@ export default async (application: Application): Promise<void> => {
           "courseParticipationRoleInstructor"
       )
         return;
-      if (request.body.courseAIEnabled === "on") {
-        if (request.body.courseAIProviderEnabled === "on") {
-          if (
-            (request.body.courseAIProviderType !== "openAI" &&
-              request.body.courseAIProviderType !== "anthropic" &&
-              request.body.courseAIProviderType !== "google" &&
-              request.body.courseAIProviderType !== "openAICompatible") ||
-            (typeof request.state.course.courseAIProviderAPIKeyEncrypted !==
-              "string" &&
-              (typeof request.body.courseAIProviderAPIKey !== "string" ||
-                request.body.courseAIProviderAPIKey.trim().length === 0)) ||
-            (request.body.courseAIProviderType === "openAICompatible" &&
-              (typeof request.body.courseAIProviderBaseURL !== "string" ||
-                request.body.courseAIProviderBaseURL.trim() === "" ||
-                (() => {
-                  try {
-                    const url = new URL(request.body.courseAIProviderBaseURL);
-                    if (
-                      url.protocol !== "https:" ||
-                      url.hostname === "localhost" ||
-                      url.hostname === "127.0.0.1"
-                    )
-                      throw new Error();
-                    return false;
-                  } catch {
-                    return true;
-                  }
-                })() ||
-                typeof request.body.courseAIProviderModel !== "string" ||
-                request.body.courseAIProviderModel.trim() === ""))
-          )
-            throw "validation";
-          application.database.run(
-            sql`
-              update "courses"
-              set
-                "courseAIEnabled" = ${Number(true)},
-                "courseAIProviderType" = ${request.body.courseAIProviderType},
-                ${
-                  typeof request.body.courseAIProviderAPIKey === "string" &&
-                  0 < request.body.courseAIProviderAPIKey.trim().length
-                    ? sql`
-                        "courseAIProviderAPIKeyEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, request.body.courseAIProviderAPIKey)},
-                      `
-                    : sql``
+      if (!Boolean(request.state.course.courseAIEnabled)) throw "validation";
+      if (request.body.courseAIProviderEnabled === "on") {
+        if (
+          (request.body.courseAIProviderType !== "openAI" &&
+            request.body.courseAIProviderType !== "anthropic" &&
+            request.body.courseAIProviderType !== "google" &&
+            request.body.courseAIProviderType !== "openAICompatible") ||
+          (typeof request.state.course.courseAIProviderAPIKeyEncrypted !==
+            "string" &&
+            (typeof request.body.courseAIProviderAPIKey !== "string" ||
+              request.body.courseAIProviderAPIKey.trim().length === 0)) ||
+          (request.body.courseAIProviderType === "openAICompatible" &&
+            (typeof request.body.courseAIProviderBaseURL !== "string" ||
+              request.body.courseAIProviderBaseURL.trim() === "" ||
+              (() => {
+                try {
+                  const url = new URL(request.body.courseAIProviderBaseURL);
+                  if (
+                    url.protocol !== "https:" ||
+                    url.hostname === "localhost" ||
+                    url.hostname === "127.0.0.1"
+                  )
+                    throw new Error();
+                  return false;
+                } catch {
+                  return true;
                 }
-                "courseAIProviderBaseURL" = ${request.body.courseAIProviderType === "openAICompatible" ? request.body.courseAIProviderBaseURL! : null},
-                "courseAIProviderModel" = ${request.body.courseAIProviderType === "openAICompatible" ? request.body.courseAIProviderModel! : null}
-              where "id" = ${request.state.course.id};
-            `,
-          );
-        } else
-          application.database.run(
-            sql`
-              update "courses"
-              set
-                "courseAIEnabled" = ${Number(true)},
-                "courseAIProviderType" = null,
-                "courseAIProviderAPIKeyEncrypted" = null,
-                "courseAIProviderBaseURL" = null,
-                "courseAIProviderModel" = null
-              where "id" = ${request.state.course.id};
-            `,
-          );
+              })() ||
+              typeof request.body.courseAIProviderModel !== "string" ||
+              request.body.courseAIProviderModel.trim() === ""))
+        )
+          throw "validation";
+        application.database.run(
+          sql`
+            update "courses"
+            set
+              "courseAIProviderType" = ${request.body.courseAIProviderType},
+              ${
+                typeof request.body.courseAIProviderAPIKey === "string" &&
+                0 < request.body.courseAIProviderAPIKey.trim().length
+                  ? sql`
+                      "courseAIProviderAPIKeyEncrypted" = ${cryptography.SymmetricEncryption.encrypt(application.applicationConfiguration.secretKey, request.body.courseAIProviderAPIKey)},
+                    `
+                  : sql``
+              }
+              "courseAIProviderBaseURL" = ${request.body.courseAIProviderType === "openAICompatible" ? request.body.courseAIProviderBaseURL! : null},
+              "courseAIProviderModel" = ${request.body.courseAIProviderType === "openAICompatible" ? request.body.courseAIProviderModel! : null}
+            where "id" = ${request.state.course.id};
+          `,
+        );
       } else
         application.database.run(
           sql`
             update "courses"
             set
-              "courseAIEnabled" = ${Number(false)},
               "courseAIProviderType" = null,
               "courseAIProviderAPIKeyEncrypted" = null,
               "courseAIProviderBaseURL" = null,
@@ -4256,7 +4298,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
       response.setFlash!(html`
-        <div class="flash--green">Course AI updated successfully.</div>
+        <div class="flash--green">Course AI provider updated successfully.</div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
     },
