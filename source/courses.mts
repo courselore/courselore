@@ -1254,6 +1254,23 @@ export default async (application: Application): Promise<void> => {
                                         };
                                       `}"
                                     >
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          color: light-dark(
+                                            var(--color--slate--600),
+                                            var(--color--slate--400)
+                                          );
+                                        `}"
+                                      >
+                                        Course participants may bring their own
+                                        LLM API keys, or you may optionally set
+                                        a Course AI provider to be used by
+                                        everyone in the course.
+                                      </div>
                                       <label
                                         class="button button--rectangle button--transparent"
                                       >
