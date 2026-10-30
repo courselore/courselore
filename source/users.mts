@@ -1503,8 +1503,8 @@ export default async (application: Application): Promise<void> => {
                       );
                     `}"
                   >
-                    Bring your own LLM API key to use in all your courses that
-                    have Course AI enabled.
+                    Bring your own LLM API key for all your courses that have
+                    Course AI enabled.
                   </div>
                   <label class="button button--rectangle button--transparent">
                     <input

@@ -1266,10 +1266,8 @@ export default async (application: Application): Promise<void> => {
                                           );
                                         `}"
                                       >
-                                        Course participants may bring their own
-                                        LLM API keys, or you may optionally set
-                                        a Course AI provider to be used by
-                                        everyone in the course.
+                                        Bring your own LLM API key for all
+                                        course participants.
                                       </div>
                                       <label
                                         class="button button--rectangle button--transparent"
@@ -1310,8 +1308,7 @@ export default async (application: Application): Promise<void> => {
                                             };
                                           `}"
                                         />
-                                        Set a Course AI provider for the whole
-                                        course
+                                        Enable
                                       </label>
                                       <div
                                         key="courseAIProviderType"
@@ -1371,8 +1368,7 @@ export default async (application: Application): Promise<void> => {
                                                     this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                                                 };
                                               `}"
-                                            />
-                                            OpenAI
+                                            />  OpenAI
                                           </label>
                                           <label
                                             class="button button--rectangle button--transparent"
@@ -1398,8 +1394,7 @@ export default async (application: Application): Promise<void> => {
                                                     this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                                                 };
                                               `}"
-                                            />
-                                            Anthropic
+                                            />  Anthropic
                                           </label>
                                           <label
                                             class="button button--rectangle button--transparent"
@@ -1425,8 +1420,7 @@ export default async (application: Application): Promise<void> => {
                                                     this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                                                 };
                                               `}"
-                                            />
-                                            Google
+                                            />  Google
                                           </label>
                                           <label
                                             class="button button--rectangle button--transparent"
@@ -1452,8 +1446,7 @@ export default async (application: Application): Promise<void> => {
                                                     this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").removeAttribute("hidden");
                                                 };
                                               `}"
-                                            />
-                                            OpenAI Compatible
+                                            />  OpenAI Compatible
                                           </label>
                                         </form>
                                       </div>
@@ -1501,7 +1494,7 @@ export default async (application: Application): Promise<void> => {
                                         </div>
                                       </label>
                                       <label
-                                        $${request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
+                                        $${typeof request.state.course.courseAIProviderBaseURL !== "string" ? html`disabled hidden` : html``}
                                       >
                                         <div
                                           css="${css`
@@ -1559,7 +1552,7 @@ export default async (application: Application): Promise<void> => {
                                         </div>
                                       </label>
                                       <label
-                                        $${request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
+                                        $${typeof request.state.course.courseAIProviderBaseURL !== "string" ? html`disabled hidden` : html``}
                                       >
                                         <div
                                           css="${css`
