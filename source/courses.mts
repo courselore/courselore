@@ -1611,6 +1611,129 @@ export default async (application: Application): Promise<void> => {
                                       </div>
                                     </div>
                                   </details>
+                                  <details>
+                                    <summary
+                                      class="button button--rectangle button--transparent"
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        font-weight: 600;
+                                        color: light-dark(
+                                          var(--color--slate--600),
+                                          var(--color--slate--400)
+                                        );
+                                      `}"
+                                    >
+                                      <span
+                                        css="${css`
+                                          display: inline-block;
+                                          transition-property: var(
+                                            --transition-property--transform
+                                          );
+                                          transition-duration: var(
+                                            --transition-duration--150
+                                          );
+                                          transition-timing-function: var(
+                                            --transition-timing-function--ease-in-out
+                                          );
+                                          details[open] > summary > & {
+                                            rotate: var(--rotate--90);
+                                          }
+                                        `}"
+                                      >
+                                        <i class="bi bi-chevron-right"></i>
+                                      </span>
+                                      Course AI sources
+                                    </summary>
+                                    <div
+                                      type="form"
+                                      method="PATCH"
+                                      action="/courses/${
+                                        request.state.course.publicId
+                                      }/settings/course-ai-sources"
+                                      enctype="multipart/form-data"
+                                      css="${css`
+                                        padding: var(--size--2) var(--size--0);
+                                        border-bottom: var(--border-width--1)
+                                          solid
+                                          light-dark(
+                                            var(--color--slate--200),
+                                            var(--color--slate--800)
+                                          );
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--4);
+                                      `}"
+                                    >
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--slate--600),
+                                            var(--color--slate--400)
+                                          );
+                                          display: flex;
+                                          flex-direction: column;
+                                          align-items: flex-start;
+                                          gap: var(--size--2);
+                                        `}"
+                                      >
+                                        <label
+                                          class="button button--rectangle button--transparent"
+                                        >
+                                          <input
+                                            type="file"
+                                            name="courseAISources[]"
+                                            multiple
+                                            hidden
+                                            javascript="${javascript`
+                                              this.oninput = () => {
+                                                const list = this.closest('[type~="form"]').querySelector('[key~="courseAISources--list"]');
+                                                list.replaceChildren(...[...this.files].map((file) => {
+                                                  const item = document.createElement("li");
+                                                  item.textContent = file.name;
+                                                  return item;
+                                                }));
+                                              };
+                                            `}"
+                                          />
+                                          Add
+                                        </label>
+                                        <ul
+                                          key="courseAISources--list"
+                                          css="${css`
+                                            font-weight: 400;
+                                            padding-left: var(--size--4);
+                                            list-style: disc;
+                                            &:empty {
+                                              display: none;
+                                            }
+                                          `}"
+                                        ></ul>
+                                      </div>
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                        `}"
+                                      >
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--blue"
+                                        >
+                                          Update Course AI sources
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </details>
                                 `
                               : html``
                           }
