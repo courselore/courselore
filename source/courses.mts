@@ -1211,22 +1211,65 @@ export default async (application: Application): Promise<void> => {
                             />
                             Enable Course AI
                           </label>
-                          <label
+                          <details
                             key="courseAIProviderEnabled"
-                            class="button button--rectangle button--transparent"
                             $${!Boolean(request.state.course.courseAIEnabled) ? html`disabled hidden` : html``}
                           >
-                            <input
-                              type="checkbox"
-                              name="courseAIProviderEnabled"
-                              $${
-                                typeof request.state.course
-                                  .courseAIProviderType === "string"
-                                  ? html`checked`
-                                  : html``
-                              }
-                              class="input--checkbox"
-                              javascript="${javascript`
+                            <summary
+                              class="button button--rectangle button--transparent"
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                            >
+                              <span
+                                css="${css`
+                                  display: inline-block;
+                                  transition-property: var(
+                                    --transition-property--transform
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  details[open] > summary > & {
+                                    rotate: var(--rotate--90);
+                                  }
+                                `}"
+                              >
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
+                              Course AI provider
+                            </summary>
+                            <div
+                              css="${css`
+                                padding: var(--size--2) var(--size--0);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+                              `}"
+                            >
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="courseAIProviderEnabled"
+                                  $${
+                                    typeof request.state.course
+                                      .courseAIProviderType === "string"
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--checkbox"
+                                  javascript="${javascript`
                                 this.oninput = () => {
                                   if (this.checked) {
                                     this.closest('[type="form"]').querySelector('[key~="courseAIProviderType"]').removeAttribute("disabled");
@@ -1251,56 +1294,58 @@ export default async (application: Application): Promise<void> => {
                                   }
                                 };
                               `}"
-                            />
-                            Set a Course AI provider for the whole course
-                          </label>
-                          <div
-                            key="courseAIProviderType"
-                            css="${css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--1);
-                            `}"
-                            $${!Boolean(request.state.course.courseAIEnabled) || typeof request.state.course.courseAIProviderType !== "string" ? html`disabled hidden` : html``}
-                          >
-                            <div
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                color: light-dark(
-                                  var(--color--slate--500),
-                                  var(--color--slate--500)
-                                );
-                              `}"
-                            >
-                              Provider
-                            </div>
-                            <form
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--2);
-                              `}"
-                            >
-                              <label
-                                class="button button--rectangle button--transparent"
+                                />
+                                Set a Course AI provider for the whole course
+                              </label>
+                              <div
+                                key="courseAIProviderType"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--1);
+                                `}"
+                                $${!Boolean(request.state.course.courseAIEnabled) || typeof request.state.course.courseAIProviderType !== "string" ? html`disabled hidden` : html``}
                               >
-                                <input
-                                  type="radio"
-                                  name="courseAIProviderType"
-                                  value="openAI"
-                                  $${
-                                    request.state.course
-                                      .courseAIProviderType === null ||
-                                    request.state.course
-                                      .courseAIProviderType === "openAI"
-                                      ? html`checked`
-                                      : html``
-                                  }
-                                  required
-                                  class="input--radio"
-                                  javascript="${javascript`
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                >
+                                  Provider
+                                </div>
+                                <form
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--2);
+                                  `}"
+                                >
+                                  <label
+                                    class="button button--rectangle button--transparent"
+                                  >
+                                    <input
+                                      type="radio"
+                                      name="courseAIProviderType"
+                                      value="openAI"
+                                      $${
+                                        request.state.course
+                                          .courseAIProviderType === null ||
+                                        request.state.course
+                                          .courseAIProviderType === "openAI"
+                                          ? html`checked`
+                                          : html``
+                                      }
+                                      required
+                                      class="input--radio"
+                                      javascript="${javascript`
                                     this.oninput = () => {
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("disabled", "");
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("hidden", "");
@@ -1308,25 +1353,25 @@ export default async (application: Application): Promise<void> => {
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                                     };
                                   `}"
-                                />
-                                OpenAI
-                              </label>
-                              <label
-                                class="button button--rectangle button--transparent"
-                              >
-                                <input
-                                  type="radio"
-                                  name="courseAIProviderType"
-                                  value="anthropic"
-                                  $${
-                                    request.state.course
-                                      .courseAIProviderType === "anthropic"
-                                      ? html`checked`
-                                      : html``
-                                  }
-                                  required
-                                  class="input--radio"
-                                  javascript="${javascript`
+                                    />
+                                    OpenAI
+                                  </label>
+                                  <label
+                                    class="button button--rectangle button--transparent"
+                                  >
+                                    <input
+                                      type="radio"
+                                      name="courseAIProviderType"
+                                      value="anthropic"
+                                      $${
+                                        request.state.course
+                                          .courseAIProviderType === "anthropic"
+                                          ? html`checked`
+                                          : html``
+                                      }
+                                      required
+                                      class="input--radio"
+                                      javascript="${javascript`
                                     this.oninput = () => {
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("disabled", "");
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("hidden", "");
@@ -1334,25 +1379,25 @@ export default async (application: Application): Promise<void> => {
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                                     };
                                   `}"
-                                />
-                                Anthropic
-                              </label>
-                              <label
-                                class="button button--rectangle button--transparent"
-                              >
-                                <input
-                                  type="radio"
-                                  name="courseAIProviderType"
-                                  value="google"
-                                  $${
-                                    request.state.course
-                                      .courseAIProviderType === "google"
-                                      ? html`checked`
-                                      : html``
-                                  }
-                                  required
-                                  class="input--radio"
-                                  javascript="${javascript`
+                                    />
+                                    Anthropic
+                                  </label>
+                                  <label
+                                    class="button button--rectangle button--transparent"
+                                  >
+                                    <input
+                                      type="radio"
+                                      name="courseAIProviderType"
+                                      value="google"
+                                      $${
+                                        request.state.course
+                                          .courseAIProviderType === "google"
+                                          ? html`checked`
+                                          : html``
+                                      }
+                                      required
+                                      class="input--radio"
+                                      javascript="${javascript`
                                     this.oninput = () => {
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("disabled", "");
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").setAttribute("hidden", "");
@@ -1360,26 +1405,26 @@ export default async (application: Application): Promise<void> => {
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").setAttribute("hidden", "");
                                     };
                                   `}"
-                                />
-                                Google
-                              </label>
-                              <label
-                                class="button button--rectangle button--transparent"
-                              >
-                                <input
-                                  type="radio"
-                                  name="courseAIProviderType"
-                                  value="openAICompatible"
-                                  $${
-                                    request.state.course
-                                      .courseAIProviderType ===
-                                    "openAICompatible"
-                                      ? html`checked`
-                                      : html``
-                                  }
-                                  required
-                                  class="input--radio"
-                                  javascript="${javascript`
+                                    />
+                                    Google
+                                  </label>
+                                  <label
+                                    class="button button--rectangle button--transparent"
+                                  >
+                                    <input
+                                      type="radio"
+                                      name="courseAIProviderType"
+                                      value="openAICompatible"
+                                      $${
+                                        request.state.course
+                                          .courseAIProviderType ===
+                                        "openAICompatible"
+                                          ? html`checked`
+                                          : html``
+                                      }
+                                      required
+                                      class="input--radio"
+                                      javascript="${javascript`
                                     this.oninput = () => {
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").removeAttribute("disabled");
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderBaseURL"]').closest("label").removeAttribute("hidden");
@@ -1387,94 +1432,98 @@ export default async (application: Application): Promise<void> => {
                                         this.closest('[type="form"]').querySelector('[name="courseAIProviderModel"]').closest("label").removeAttribute("hidden");
                                     };
                                   `}"
-                                />
-                                OpenAI Compatible
-                              </label>
-                            </form>
-                          </div>
-                          <label
-                            $${!Boolean(request.state.course.courseAIEnabled) || typeof request.state.course.courseAIProviderType !== "string" ? html`disabled hidden` : html``}
-                          >
-                            <div
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                color: light-dark(
-                                  var(--color--slate--500),
-                                  var(--color--slate--500)
-                                );
-                              `}"
-                            >
-                              API key
-                            </div>
-                            <div
-                              css="${css`
-                                display: flex;
-                              `}"
-                            >
-                              <input
-                                type="password"
-                                name="courseAIProviderAPIKey"
-                                $${
-                                  typeof request.state.course
-                                    .courseAIProviderAPIKeyEncrypted !==
-                                  "string"
-                                    ? html`required`
-                                    : /* prettier-ignore */ html`
+                                    />
+                                    OpenAI Compatible
+                                  </label>
+                                </form>
+                              </div>
+                              <label
+                                $${!Boolean(request.state.course.courseAIEnabled) || typeof request.state.course.courseAIProviderType !== "string" ? html`disabled hidden` : html``}
+                              >
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                >
+                                  API key
+                                </div>
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                  `}"
+                                >
+                                  <input
+                                    type="password"
+                                    name="courseAIProviderAPIKey"
+                                    $${
+                                      typeof request.state.course
+                                        .courseAIProviderAPIKeyEncrypted !==
+                                      "string"
+                                        ? html`required`
+                                        : /* prettier-ignore */ html`
                                         placeholder="Leave blank to keep the current API key"
                                       `
-                                }
-                                maxlength="2000"
-                                class="input--text"
-                                css="${css`
-                                  flex: 1;
-                                `}"
-                              />
-                            </div>
-                          </label>
-                          <label
-                            $${!Boolean(request.state.course.courseAIEnabled) || request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
-                          >
-                            <div
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                color: light-dark(
-                                  var(--color--slate--500),
-                                  var(--color--slate--500)
-                                );
-                              `}"
-                            >
-                              Base URL
-                            </div>
-                            <div
-                              css="${css`
-                                display: flex;
-                              `}"
-                            >
-                              <input
-                                type="text"
-                                inputmode="url"
-                                autocapitalize="off"
-                                autocorrect="off"
-                                spellcheck="false"
-                                name="courseAIProviderBaseURL"
-                                placeholder="https://api.example.com/v1"
-                                $${
-                                  typeof request.state.course
-                                    .courseAIProviderBaseURL === "string"
-                                    ? html`value="${request.state.course.courseAIProviderBaseURL}"`
-                                    : html``
-                                }
-                                maxlength="2000"
-                                required
-                                class="input--text"
-                                css="${css`
-                                  flex: 1;
-                                `}"
-                                javascript="${javascript`
+                                    }
+                                    maxlength="2000"
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                  />
+                                </div>
+                              </label>
+                              <label
+                                $${!Boolean(request.state.course.courseAIEnabled) || request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
+                              >
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                >
+                                  Base URL
+                                </div>
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                  `}"
+                                >
+                                  <input
+                                    type="text"
+                                    inputmode="url"
+                                    autocapitalize="off"
+                                    autocorrect="off"
+                                    spellcheck="false"
+                                    name="courseAIProviderBaseURL"
+                                    placeholder="https://api.example.com/v1"
+                                    $${
+                                      typeof request.state.course
+                                        .courseAIProviderBaseURL === "string"
+                                        ? html`value="${request.state.course.courseAIProviderBaseURL}"`
+                                        : html``
+                                    }
+                                    maxlength="2000"
+                                    required
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                    javascript="${javascript`
                                   this.onvalidate = () => {
                                     try {
                                       const url = new URL(this.value);
@@ -1485,49 +1534,53 @@ export default async (application: Application): Promise<void> => {
                                     }
                                   };
                                 `}"
-                              />
+                                  />
+                                </div>
+                              </label>
+                              <label
+                                $${!Boolean(request.state.course.courseAIEnabled) || request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
+                              >
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                >
+                                  Model
+                                </div>
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                  `}"
+                                >
+                                  <input
+                                    type="text"
+                                    name="courseAIProviderModel"
+                                    placeholder="meta-llama/Llama-3-70b-chat-hf"
+                                    $${
+                                      typeof request.state.course
+                                        .courseAIProviderModel === "string"
+                                        ? html`value="${request.state.course.courseAIProviderModel}"`
+                                        : html``
+                                    }
+                                    maxlength="2000"
+                                    required
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                  />
+                                </div>
+                              </label>
                             </div>
-                          </label>
-                          <label
-                            $${!Boolean(request.state.course.courseAIEnabled) || request.state.course.courseAIProviderType !== "openAICompatible" ? html`disabled hidden` : html``}
-                          >
-                            <div
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                color: light-dark(
-                                  var(--color--slate--500),
-                                  var(--color--slate--500)
-                                );
-                              `}"
-                            >
-                              Model
-                            </div>
-                            <div
-                              css="${css`
-                                display: flex;
-                              `}"
-                            >
-                              <input
-                                type="text"
-                                name="courseAIProviderModel"
-                                placeholder="meta-llama/Llama-3-70b-chat-hf"
-                                $${
-                                  typeof request.state.course
-                                    .courseAIProviderModel === "string"
-                                    ? html`value="${request.state.course.courseAIProviderModel}"`
-                                    : html``
-                                }
-                                maxlength="2000"
-                                required
-                                class="input--text"
-                                css="${css`
-                                  flex: 1;
-                                `}"
-                              />
-                            </div>
-                          </label>
+                          </details>
                           <div
                             css="${css`
                               font-size: var(--font-size--3);
