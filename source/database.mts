@@ -8146,5 +8146,15 @@ export default async (application: Application): Promise<void> => {
         alter table "users" add column "courseAIProviderBaseURL" text null;
         alter table "users" add column "courseAIProviderModel" text null;
       `,
+
+      sql`
+        alter table "courses" add column "courseAIEnabled" integer null;
+        update "courses" set "courseAIEnabled" = false;
+        alter table "courses" alter column "courseAIEnabled" set not null;
+        alter table "courses" add column "courseAIProviderType" text null;
+        alter table "courses" add column "courseAIProviderAPIKeyEncrypted" text null;
+        alter table "courses" add column "courseAIProviderBaseURL" text null;
+        alter table "courses" add column "courseAIProviderModel" text null;
+      `,
     );
 };
