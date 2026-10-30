@@ -4246,10 +4246,10 @@ export default async (application: Application): Promise<void> => {
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
         request.state.courseParticipation.courseParticipationRole !==
-          "courseParticipationRoleInstructor"
+          "courseParticipationRoleInstructor" ||
+        !Boolean(request.state.course.courseAIEnabled)
       )
         return;
-      if (!Boolean(request.state.course.courseAIEnabled)) throw "validation";
       if (request.body.courseAIProviderEnabled === "on") {
         if (
           (request.body.courseAIProviderType !== "openAI" &&
