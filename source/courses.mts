@@ -1209,7 +1209,7 @@ export default async (application: Application): Promise<void> => {
                                 };
                               `}"
                             />
-                            Enable Course AI"
+                            Enable Course AI
                           </label>
                           <label
                             key="courseAIProviderEnabled"
