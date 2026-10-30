@@ -1475,7 +1475,7 @@ export default async (application: Application): Promise<void> => {
                 <div
                   type="form"
                   method="PATCH"
-                  action="/settings/course-ai"
+                  action="/settings/course-ai-provider"
                   css="${css`
                     padding: var(--size--2) var(--size--0);
                     border-bottom: var(--border-width--1) solid
@@ -2800,7 +2800,7 @@ export default async (application: Application): Promise<void> => {
 
   application.webServer?.push({
     method: "PATCH",
-    pathname: "/settings/course-ai",
+    pathname: "/settings/course-ai-provider",
     handler: (
       request: serverTypes.Request<
         {},
