@@ -1702,6 +1702,9 @@ export default async (application: Application): Promise<void> => {
                                               var(--color--slate--600),
                                               var(--color--slate--400)
                                             );
+                                            display: flex;
+                                            align-items: baseline;
+                                            gap: var(--size--4);
                                           `}"
                                         >
                                           <label
@@ -1720,6 +1723,85 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             Add
                                           </label>
+                                          <button
+                                            type="button"
+                                            class="button button--rectangle button--transparent"
+                                            javascript="${javascript`
+                                            javascript.popover({ element: this, trigger: "click" });
+                                          `}"
+                                          >
+                                            <form>
+                                              <span
+                                                css="${css`
+                                                  color: light-dark(
+                                                    var(--color--slate--500),
+                                                    var(--color--slate--500)
+                                                  );
+                                                `}"
+                                                >Visibility:</span
+                                              >  <input
+                                                type="radio"
+                                                name="courseAISourceVisibility"
+                                                value="courseAISourceVisibilityVisibleByEveryone"
+                                                required
+                                                checked
+                                                hidden
+                                              /><span
+                                                css="${css`
+                                                  :not(:checked) + & {
+                                                    display: none;
+                                                  }
+                                                `}"
+                                                >Visible by everyone</span
+                                              ><input
+                                                type="radio"
+                                                name="courseAISourceVisibility"
+                                                value="courseAISourceVisibilityUsedByCourseAIButNotVisible"
+                                                required
+                                                hidden
+                                              /><span
+                                                css="${css`
+                                                  :not(:checked) + & {
+                                                    display: none;
+                                                  }
+                                                `}"
+                                                >Used by Course AI, but not
+                                                visible</span
+                                              >
+                                              <i class="bi bi-chevron-down"></i>
+                                            </form>
+                                          </button>
+                                          <div
+                                            type="popover"
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--size--2);
+                                            `}"
+                                          >
+                                            <button
+                                              type="button"
+                                              class="button button--rectangle button--transparent button--dropdown-menu"
+                                              javascript="${javascript`
+                                              this.onclick = () => {
+                                                this.closest('[type~="form"]').querySelector('[name="courseAISourceVisibility"][value="courseAISourceVisibilityVisibleByEveryone"]').click();
+                                              };
+                                            `}"
+                                            >
+                                              Visible by everyone
+                                            </button>
+                                            <button
+                                              type="button"
+                                              class="button button--rectangle button--transparent button--dropdown-menu"
+                                              javascript="${javascript`
+                                              this.onclick = () => {
+                                                this.closest('[type~="form"]').querySelector('[name="courseAISourceVisibility"][value="courseAISourceVisibilityUsedByCourseAIButNotVisible"]').click();
+                                              };
+                                            `}"
+                                            >
+                                              Used by Course AI, but not visible
+                                            </button>
+                                          </div>
                                         </div>
                                       </div>
                                       <div
@@ -1728,103 +1810,14 @@ export default async (application: Application): Promise<void> => {
                                           line-height: var(
                                             --font-size--3--line-height
                                           );
-                                          font-weight: 600;
-                                          color: light-dark(
-                                            var(--color--slate--600),
-                                            var(--color--slate--400)
-                                          );
-                                          display: flex;
-                                          align-items: baseline;
-                                          gap: var(--size--4);
                                         `}"
                                       >
-                                        <div>
-                                          <button
-                                            type="submit"
-                                            class="button button--rectangle button--blue"
-                                          >
-                                            Update Course AI sources
-                                          </button>
-                                        </div>
                                         <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent"
-                                          javascript="${javascript`
-                                            javascript.popover({ element: this, trigger: "click" });
-                                          `}"
+                                          type="submit"
+                                          class="button button--rectangle button--blue"
                                         >
-                                          <form>
-                                            <span
-                                              css="${css`
-                                                color: light-dark(
-                                                  var(--color--slate--500),
-                                                  var(--color--slate--500)
-                                                );
-                                              `}"
-                                              >Visibility:</span
-                                            >  <input
-                                              type="radio"
-                                              name="courseAISourceVisibility"
-                                              value="courseAISourceVisibilityVisibleByEveryone"
-                                              required
-                                              checked
-                                              hidden
-                                            /><span
-                                              css="${css`
-                                                :not(:checked) + & {
-                                                  display: none;
-                                                }
-                                              `}"
-                                              >Visible by everyone</span
-                                            ><input
-                                              type="radio"
-                                              name="courseAISourceVisibility"
-                                              value="courseAISourceVisibilityUsedByCourseAIButNotVisible"
-                                              required
-                                              hidden
-                                            /><span
-                                              css="${css`
-                                                :not(:checked) + & {
-                                                  display: none;
-                                                }
-                                              `}"
-                                              >Used by Course AI, but not
-                                              visible</span
-                                            >
-                                            <i class="bi bi-chevron-down"></i>
-                                          </form>
+                                          Update Course AI sources
                                         </button>
-                                        <div
-                                          type="popover"
-                                          css="${css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--size--2);
-                                          `}"
-                                        >
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              this.onclick = () => {
-                                                this.closest('[type~="form"]').querySelector('[name="courseAISourceVisibility"][value="courseAISourceVisibilityVisibleByEveryone"]').click();
-                                              };
-                                            `}"
-                                          >
-                                            Visible by everyone
-                                          </button>
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              this.onclick = () => {
-                                                this.closest('[type~="form"]').querySelector('[name="courseAISourceVisibility"][value="courseAISourceVisibilityUsedByCourseAIButNotVisible"]').click();
-                                              };
-                                            `}"
-                                          >
-                                            Used by Course AI, but not visible
-                                          </button>
-                                        </div>
                                       </div>
                                     </div>
                                   </details>
