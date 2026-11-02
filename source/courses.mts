@@ -1668,50 +1668,59 @@ export default async (application: Application): Promise<void> => {
                                       `}"
                                     >
                                       <div
-                                        key="courseAISources--toAdd"
                                         css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                          color: light-dark(
-                                            var(--color--slate--500),
-                                            var(--color--slate--500)
-                                          );
-                                          &:empty {
-                                            display: none;
-                                          }
-                                        `}"
-                                      ></div>
-                                      <div
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                          font-weight: 600;
-                                          color: light-dark(
-                                            var(--color--slate--600),
-                                            var(--color--slate--400)
-                                          );
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--size--2);
                                         `}"
                                       >
-                                        <label
-                                          class="button button--rectangle button--transparent"
+                                        <div
+                                          key="courseAISources--toAdd"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            color: light-dark(
+                                              var(--color--slate--500),
+                                              var(--color--slate--500)
+                                            );
+
+                                            &:empty {
+                                              display: none;
+                                            }
+                                          `}"
+                                        ></div>
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            font-weight: 600;
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
+                                          `}"
                                         >
-                                          <input
-                                            type="file"
-                                            name="courseAISources[]"
-                                            multiple
-                                            hidden
-                                            javascript="${javascript`
-                                              this.oninput = () => {
-                                                this.closest('[type~="form"]').querySelector('[key~="courseAISources--toAdd"]').innerHTML = html\`$\${[...this.files].map((file) => html\`<div>\${file.name}</div>\`)}\`;
-                                              };
-                                            `}"
-                                          />
-                                          Add
-                                        </label>
+                                          <label
+                                            class="button button--rectangle button--transparent"
+                                          >
+                                            <input
+                                              type="file"
+                                              name="courseAISources[]"
+                                              multiple
+                                              hidden
+                                              javascript="${javascript`
+                                                this.oninput = () => {
+                                                  this.closest('[type~="form"]').querySelector('[key~="courseAISources--toAdd"]').innerHTML = html\`$\${[...this.files].map((file) => html\`<div>\${file.name}</div>\`)}\`;
+                                                };
+                                              `}"
+                                            />
+                                            Add
+                                          </label>
+                                        </div>
                                       </div>
                                       <div
                                         css="${css`
