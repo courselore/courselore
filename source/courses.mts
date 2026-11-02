@@ -769,18 +769,6 @@ export default async (application: Application): Promise<void> => {
               >
                 Course settings
               </div>
-              <div
-                css="${css`
-                  width: 40px;
-                  height: 40px;
-                  background-color: red;
-                  &:empty {
-                    display: none;
-                  }
-                `}"
-              >
-                $${1 + 2 == 4 ? html`` : html``}
-              </div>
               $${
                 request.state.courseParticipation.courseParticipationRole ===
                 "courseParticipationRoleInstructor"
