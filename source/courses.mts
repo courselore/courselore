@@ -1709,7 +1709,7 @@ export default async (application: Application): Promise<void> => {
                                           >
                                             <input
                                               type="file"
-                                              name="courseAISources[]"
+                                              name="courseAISourcesToAdd[]"
                                               multiple
                                               hidden
                                               javascript="${javascript`
