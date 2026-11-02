@@ -1684,6 +1684,17 @@ export default async (application: Application): Promise<void> => {
                                           gap: var(--size--2);
                                         `}"
                                       >
+                                        <ul
+                                          key="courseAISources--list"
+                                          css="${css`
+                                            font-weight: 400;
+                                            padding-left: var(--size--4);
+                                            list-style: disc;
+                                            &:empty {
+                                              display: none;
+                                            }
+                                          `}"
+                                        ></ul>
                                         <label
                                           class="button button--rectangle button--transparent"
                                         >
@@ -1705,17 +1716,6 @@ export default async (application: Application): Promise<void> => {
                                           />
                                           Add
                                         </label>
-                                        <ul
-                                          key="courseAISources--list"
-                                          css="${css`
-                                            font-weight: 400;
-                                            padding-left: var(--size--4);
-                                            list-style: disc;
-                                            &:empty {
-                                              display: none;
-                                            }
-                                          `}"
-                                        ></ul>
                                       </div>
                                       <div
                                         css="${css`
