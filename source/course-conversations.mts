@@ -6944,10 +6944,10 @@ export default async (application: Application): Promise<void> => {
                                       type="button"
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
-                                      };
-                                    `}"
+                                        this.onclick = () => {
+                                          this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
+                                        };
+                                      `}"
                                     >
                                       Everyone
                                     </button>
@@ -6955,10 +6955,10 @@ export default async (application: Application): Promise<void> => {
                                       type="button"
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
-                                      };
-                                    `}"
+                                        this.onclick = () => {
+                                          this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
+                                        };
+                                      `}"
                                     >
                                       Instructors
                                     </button>
@@ -6980,21 +6980,21 @@ export default async (application: Application): Promise<void> => {
                                     type="button"
                                     class="button button--rectangle button--transparent"
                                     javascript="${javascript`
-                                    javascript.popover({ element: this, trigger: "click" });
-                                  `}"
+                                      javascript.popover({ element: this, trigger: "click" });
+                                    `}"
                                   >
                                     <form
                                       javascript="${javascript`
-                                      this.oninput = async () => {
-                                        await fetch(
-                                          "/settings/anonymity-preferred", {
-                                            method: "PATCH",
-                                            headers: { "CSRF-Protection": "true" },
-                                            body: new URLSearchParams(javascript.serialize(this)),
-                                          }
-                                        );
-                                      };
-                                    `}"
+                                        this.oninput = async () => {
+                                          await fetch(
+                                            "/settings/anonymity-preferred", {
+                                              method: "PATCH",
+                                              headers: { "CSRF-Protection": "true" },
+                                              body: new URLSearchParams(javascript.serialize(this)),
+                                            }
+                                          );
+                                        };
+                                      `}"
                                     >
                                       <span
                                         css="${css`
