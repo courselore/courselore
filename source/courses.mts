@@ -1784,10 +1784,6 @@ export default async (application: Application): Promise<void> => {
                                               hidden
                                             /><span
                                               css="${css`
-                                                color: light-dark(
-                                                  var(--color--blue--500),
-                                                  var(--color--blue--500)
-                                                );
                                                 :not(:checked) + & {
                                                   display: none;
                                                 }
