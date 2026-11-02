@@ -1668,6 +1668,12 @@ export default async (application: Application): Promise<void> => {
                                         flex-direction: column;
                                         gap: var(--size--4);
                                       `}"
+                                      javascript="${javascript`
+                                        this.morph = false;
+                                        this.onsubmit = () => {
+                                          delete this.morph;
+                                        };
+                                      `}"
                                     >
                                       <div
                                         css="${css`
@@ -1806,6 +1812,279 @@ export default async (application: Application): Promise<void> => {
                                           </div>
                                         </div>
                                       </div>
+                                      $${(() => {
+                                        const courseAISources =
+                                          application.database.all<{
+                                            publicId: string;
+                                            file: string;
+                                            courseAISourceVisibility:
+                                              | "courseAISourceVisibilityVisibleByEveryone"
+                                              | "courseAISourceVisibilityUsedByCourseAIButNotVisible";
+                                          }>(
+                                            sql`
+                                              select
+                                                "publicId",
+                                                "file",
+                                                "courseAISourceVisibility"
+                                              from "courseAISources"
+                                              where "course" = ${request.state.course!.id}
+                                              order by "id" asc;
+                                            `,
+                                          );
+                                        return html`
+                                          <div
+                                            key="courseAISources"
+                                            $${
+                                              courseAISources.length === 0
+                                                ? html`hidden`
+                                                : html``
+                                            }
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--size--2);
+                                            `}"
+                                          >
+                                            $${courseAISources.map(
+                                              (courseAISource) => html`
+                                                <div
+                                                  key="courseAISource ${courseAISource.publicId}"
+                                                  css="${css`
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    gap: var(--size--1);
+                                                  `}"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="courseAISourcesPublicIds[]"
+                                                    value="${courseAISource.publicId}"
+                                                  />
+                                                  <a
+                                                    href="/${courseAISource.file}"
+                                                    target="_blank"
+                                                    class="link"
+                                                    >${path.basename(
+                                                      courseAISource.file,
+                                                    )}</a
+                                                  >
+                                                  <div
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--3
+                                                      );
+                                                      line-height: var(
+                                                        --font-size--3--line-height
+                                                      );
+                                                      font-weight: 600;
+                                                      color: light-dark(
+                                                        var(
+                                                          --color--slate--600
+                                                        ),
+                                                        var(--color--slate--400)
+                                                      );
+                                                      display: flex;
+                                                      align-items: baseline;
+                                                      flex-wrap: wrap;
+                                                      column-gap: var(
+                                                        --size--4
+                                                      );
+                                                    `}"
+                                                  >
+                                                    <button
+                                                      type="button"
+                                                      class="button button--rectangle button--transparent"
+                                                      javascript="${javascript`
+                                                        javascript.popover({ element: this, trigger: "click" });
+                                                      `}"
+                                                    >
+                                                      <form>
+                                                        <span
+                                                          css="${css`
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--slate--500
+                                                              ),
+                                                              var(
+                                                                --color--slate--500
+                                                              )
+                                                            );
+                                                          `}"
+                                                          >Visibility:</span
+                                                        >
+                                                        <input
+                                                          type="radio"
+                                                          name="courseAISources[${courseAISource.publicId}].courseAISourceVisibility"
+                                                          value="courseAISourceVisibilityVisibleByEveryone"
+                                                          required
+                                                          $${
+                                                            courseAISource.courseAISourceVisibility ===
+                                                            "courseAISourceVisibilityVisibleByEveryone"
+                                                              ? html`checked`
+                                                              : html``
+                                                          }
+                                                          hidden
+                                                        /><span
+                                                          css="${css`
+                                                            :not(:checked) + & {
+                                                              display: none;
+                                                            }
+                                                          `}"
+                                                          >Visible by
+                                                          everyone</span
+                                                        ><input
+                                                          type="radio"
+                                                          name="courseAISources[${courseAISource.publicId}].courseAISourceVisibility"
+                                                          value="courseAISourceVisibilityUsedByCourseAIButNotVisible"
+                                                          required
+                                                          $${
+                                                            courseAISource.courseAISourceVisibility ===
+                                                            "courseAISourceVisibilityUsedByCourseAIButNotVisible"
+                                                              ? html`checked`
+                                                              : html``
+                                                          }
+                                                          hidden
+                                                        /><span
+                                                          css="${css`
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--blue--500
+                                                              ),
+                                                              var(
+                                                                --color--blue--500
+                                                              )
+                                                            );
+                                                            :not(:checked) + & {
+                                                              display: none;
+                                                            }
+                                                          `}"
+                                                          >Used by Course AI,
+                                                          but not visible</span
+                                                        >
+                                                        <i
+                                                          class="bi bi-chevron-down"
+                                                        ></i>
+                                                      </form>
+                                                    </button>
+                                                    <div
+                                                      type="popover"
+                                                      css="${css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--size--2);
+                                                      `}"
+                                                    >
+                                                      <button
+                                                        type="button"
+                                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                                        javascript="${javascript`
+                                                          this.onclick = () => {
+                                                            this.closest('[key~="courseAISource"]').querySelector('[value="courseAISourceVisibilityVisibleByEveryone"]').click();
+                                                          };
+                                                        `}"
+                                                      >
+                                                        Visible by everyone
+                                                      </button>
+                                                      <button
+                                                        type="button"
+                                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                                        javascript="${javascript`
+                                                          this.onclick = () => {
+                                                            this.closest('[key~="courseAISource"]').querySelector('[value="courseAISourceVisibilityUsedByCourseAIButNotVisible"]').click();
+                                                          };
+                                                        `}"
+                                                      >
+                                                        Used by Course AI, but
+                                                        not visible
+                                                      </button>
+                                                    </div>
+                                                    <button
+                                                      type="button"
+                                                      class="button button--rectangle button--transparent"
+                                                      javascript="${javascript`
+                                                        javascript.popover({ element: this, trigger: "click" });
+                                                      `}"
+                                                    >
+                                                      Remove
+                                                    </button>
+                                                    <div
+                                                      type="popover"
+                                                      css="${css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--size--2);
+                                                      `}"
+                                                    >
+                                                      <div
+                                                        css="${css`
+                                                          font-size: var(
+                                                            --font-size--3
+                                                          );
+                                                          line-height: var(
+                                                            --font-size--3--line-height
+                                                          );
+                                                          font-weight: 600;
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--red--500
+                                                            ),
+                                                            var(
+                                                              --color--red--500
+                                                            )
+                                                          );
+                                                        `}"
+                                                      >
+                                                        <i
+                                                          class="bi bi-exclamation-triangle-fill"
+                                                        ></i>
+                                                        The source will no
+                                                        longer be used by Course
+                                                        AI, but existing answers
+                                                        that mention it will
+                                                        continue to be able to
+                                                        access it.
+                                                      </div>
+                                                      <div>
+                                                        <button
+                                                          type="button"
+                                                          class="button button--rectangle button--red"
+                                                          css="${css`
+                                                            font-size: var(
+                                                              --font-size--3
+                                                            );
+                                                            line-height: var(
+                                                              --font-size--3--line-height
+                                                            );
+                                                          `}"
+                                                          javascript="${javascript`
+                                                            this.onclick = () => {
+                                                              this.closest('[type~="form"]').insertAdjacentElement(
+                                                                "beforeend",
+                                                                javascript.stringToElement(html\`
+                                                                  <input
+                                                                    type="hidden"
+                                                                    name="courseAISourcesToRemove[]"
+                                                                    value="\${this.closest('[key~="courseAISource"]').querySelector('[name="courseAISourcesPublicIds[]"]').getAttribute("value")}"
+                                                                  />
+                                                                \`)
+                                                              );
+                                                              const courseAISources = this.closest('[key~="courseAISources"]');
+                                                              this.closest('[key~="courseAISource"]').remove();
+                                                              courseAISources.hidden = courseAISources.children.length === 0;
+                                                            };
+                                                          `}"
+                                                        >
+                                                          Remove source
+                                                        </button>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              `,
+                                            )}
+                                          </div>
+                                        `;
+                                      })()}
                                       <div
                                         css="${css`
                                           font-size: var(--font-size--3);
@@ -1874,12 +2153,12 @@ export default async (application: Application): Promise<void> => {
                             gap: var(--size--4);
                           `}"
                           javascript="${javascript`
-                          this.morph = false;
-                          this.onsubmit = () => {
-                            delete this.morph;
-                            for (const element of javascript.children(this)) delete element.isModified;
-                          };
-                        `}"
+                            this.morph = false;
+                            this.onsubmit = () => {
+                              delete this.morph;
+                              for (const element of javascript.children(this)) delete element.isModified;
+                            };
+                          `}"
                         >
                           <label
                             class="button button--rectangle button--transparent"
@@ -2154,17 +2433,17 @@ export default async (application: Application): Promise<void> => {
                             return html`
                               <div
                                 key="courseConversationsTags"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--4);
-                                `}"
                                 $${
                                   request.state.courseConversationsTags
                                     .length === 0
                                     ? html`hidden`
                                     : html``
                                 }
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--4);
+                                `}"
                               >
                                 $${request.state.courseConversationsTags.map(
                                   (courseConversationsTag) =>
