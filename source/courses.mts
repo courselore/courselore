@@ -1,3 +1,5 @@
+import path from "node:path";
+import fs from "node:fs/promises";
 import crypto from "node:crypto";
 import * as serverTypes from "@radically-straightforward/server";
 import * as cryptography from "@radically-straightforward/cryptography";
@@ -4523,6 +4525,82 @@ export default async (application: Application): Promise<void> => {
         );
       response.setFlash!(html`
         <div class="flash--green">Course AI provider updated successfully.</div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.webServer?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/course-ai-sources$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseAISourcesToAdd: serverTypes.RequestBodyFile[];
+          courseAISourceVisibility:
+            | "courseAISourceVisibilityVisibleByEveryone"
+            | "courseAISourceVisibilityUsedByCourseAIButNotVisible";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor" ||
+        !Boolean(request.state.course.courseAIEnabled)
+      )
+        return;
+      request.body.courseAISourcesToAdd ??= [];
+      if (
+        !Array.isArray(request.body.courseAISourcesToAdd) ||
+        request.body.courseAISourcesToAdd.some(
+          (courseAISource) => courseAISource.file !== true,
+        ) ||
+        (0 < request.body.courseAISourcesToAdd.length &&
+          request.body.courseAISourceVisibility !==
+            "courseAISourceVisibilityVisibleByEveryone" &&
+          request.body.courseAISourceVisibility !==
+            "courseAISourceVisibilityUsedByCourseAIButNotVisible")
+      )
+        throw "validation";
+      for (const courseAISource of request.body.courseAISourcesToAdd) {
+        const relativePath = `files/${cryptoRandomString({
+          length: 20,
+          characters: "abcdefghijklmnopqrstuvwxyz0123456789",
+        })}/${path.basename(courseAISource.path)}`;
+        const absolutePath = path.join(
+          application.userConfiguration.dataDirectory,
+          relativePath,
+        );
+        await fs.mkdir(path.dirname(absolutePath), { recursive: true });
+        await fs.copyFile(courseAISource.path, absolutePath);
+        application.database.run(
+          sql`
+            insert into "courseAISources" (
+              "publicId",
+              "course",
+              "file",
+              "courseAISourceVisibility"
+            )
+            values (
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${request.state.course.id},
+              ${relativePath},
+              ${request.body.courseAISourceVisibility!}
+            );
+          `,
+        );
+      }
+      response.setFlash!(html`
+        <div class="flash--green">Course AI sources updated successfully.</div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
     },
