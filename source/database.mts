@@ -8156,5 +8156,41 @@ export default async (application: Application): Promise<void> => {
         alter table "courses" add column "courseAIProviderBaseURL" text null;
         alter table "courses" add column "courseAIProviderModel" text null;
       `,
+
+      sql`
+        create table "courseAISources" (
+          "id" integer primary key autoincrement,
+          "publicId" text not null,
+          "course" integer not null references "courses",
+          "file" text not null,
+          "courseAISourceVisibility" text not null,
+          unique ("publicId", "course")
+        ) strict;
+        
+        create table "courseAISourceChunks" (
+          "id" integer primary key autoincrement,
+          "courseAISource" integer not null references "courseAISources",
+          "location" text not null,
+          "content" text not null,
+          "contentLexicalSearch" text not null,
+          "contentSemanticSearch" blob null not null
+        ) strict;
+        create index "index_courseAISourceChunks_courseAISource" on "courseAISourceChunks" ("courseAISource");
+        create virtual table "search_courseAISourceChunks_contentLexicalSearch" using fts5(
+          "contentLexicalSearch",
+          content = "courseAISourceChunks",
+          content_rowid = "id",
+          prefix = '1 2 3'
+        );
+        create trigger "search_courseAISourceChunks_contentLexicalSearch_insert" after insert on "courseAISourceChunks" begin
+          insert into "search_courseAISourceChunks_contentLexicalSearch" ("rowid", "contentLexicalSearch") values ("new"."id", "new"."contentLexicalSearch");
+        end;
+        create trigger "search_courseAISourceChunks_contentLexicalSearch_update" after update on "courseAISourceChunks" begin
+          update "search_courseAISourceChunks_contentLexicalSearch" set "contentLexicalSearch" = "new"."contentLexicalSearch" where "rowid" = "old"."id";
+        end;
+        create trigger "search_courseAISourceChunks_contentLexicalSearch_delete" after delete on "courseAISourceChunks" begin
+          delete from "search_courseAISourceChunks_contentLexicalSearch" where "rowid" = "old"."id";
+        end;
+      `,
     );
 };
