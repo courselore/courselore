@@ -1706,7 +1706,7 @@ export default async (application: Application): Promise<void> => {
                                             hidden
                                             javascript="${javascript`
                                               this.oninput = () => {
-                                                this.closest('[type~="form"]').querySelector('[key~="courseAISources--toAdd"]').innerHTML = html\`$\${[...this.files].map((file) => html\`<div>$\{file.name}</div>\`)}\`;
+                                                this.closest('[type~="form"]').querySelector('[key~="courseAISources--toAdd"]').innerHTML = html\`$\${[...this.files].map((file) => html\`<div>\${file.name}</div>\`)}\`;
                                               };
                                             `}"
                                           />
