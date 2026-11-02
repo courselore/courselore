@@ -1668,6 +1668,22 @@ export default async (application: Application): Promise<void> => {
                                       `}"
                                     >
                                       <div
+                                        key="courseAISources--toAdd"
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          color: light-dark(
+                                            var(--color--slate--500),
+                                            var(--color--slate--500)
+                                          );
+                                          &:empty {
+                                            display: none;
+                                          }
+                                        `}"
+                                      ></div>
+                                      <div
                                         css="${css`
                                           font-size: var(--font-size--3);
                                           line-height: var(
@@ -1678,23 +1694,8 @@ export default async (application: Application): Promise<void> => {
                                             var(--color--slate--600),
                                             var(--color--slate--400)
                                           );
-                                          display: flex;
-                                          flex-direction: column;
-                                          align-items: flex-start;
-                                          gap: var(--size--2);
                                         `}"
                                       >
-                                        <ul
-                                          key="courseAISources--list"
-                                          css="${css`
-                                            font-weight: 400;
-                                            padding-left: var(--size--4);
-                                            list-style: disc;
-                                            &:empty {
-                                              display: none;
-                                            }
-                                          `}"
-                                        ></ul>
                                         <label
                                           class="button button--rectangle button--transparent"
                                         >
@@ -1705,12 +1706,7 @@ export default async (application: Application): Promise<void> => {
                                             hidden
                                             javascript="${javascript`
                                               this.oninput = () => {
-                                                const list = this.closest('[type~="form"]').querySelector('[key~="courseAISources--list"]');
-                                                list.replaceChildren(...[...this.files].map((file) => {
-                                                  const item = document.createElement("li");
-                                                  item.textContent = file.name;
-                                                  return item;
-                                                }));
+                                                this.closest('[type~="form"]').querySelector('[key~="courseAISources--toAdd"]').innerHTML = html\`$\${[...this.files].map((file) => html\`<div>$\{file.name}</div>\`)}\`;
                                               };
                                             `}"
                                           />
