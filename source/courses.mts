@@ -4825,7 +4825,7 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       for (const courseAISource of request.body.courseAISourcesToAdd) {
-        const relativePath = `files/${cryptoRandomString({
+        const relativePath = `/files/${cryptoRandomString({
           length: 20,
           characters: "abcdefghijklmnopqrstuvwxyz0123456789",
         })}/${path.basename(courseAISource.path)}`;
