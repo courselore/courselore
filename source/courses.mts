@@ -4798,6 +4798,13 @@ export default async (application: Application): Promise<void> => {
           courseAISourceVisibility:
             | "courseAISourceVisibilityVisibleByEveryone"
             | "courseAISourceVisibilityUsedByCourseAIButNotVisible";
+          courseAISourcesPublicIds: string[];
+          [
+            courseAISourcesVisibility: `courseAISources[${string}].courseAISourceVisibility`
+          ]:
+            | "courseAISourceVisibilityVisibleByEveryone"
+            | "courseAISourceVisibilityUsedByCourseAIButNotVisible";
+          courseAISourcesToRemove: string[];
         },
         Application["types"]["states"]["Course"]
       >,
@@ -4812,6 +4819,8 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       request.body.courseAISourcesToAdd ??= [];
+      request.body.courseAISourcesPublicIds ??= [];
+      request.body.courseAISourcesToRemove ??= [];
       if (
         !Array.isArray(request.body.courseAISourcesToAdd) ||
         request.body.courseAISourcesToAdd.some(
@@ -4821,7 +4830,23 @@ export default async (application: Application): Promise<void> => {
           request.body.courseAISourceVisibility !==
             "courseAISourceVisibilityVisibleByEveryone" &&
           request.body.courseAISourceVisibility !==
-            "courseAISourceVisibilityUsedByCourseAIButNotVisible")
+            "courseAISourceVisibilityUsedByCourseAIButNotVisible") ||
+        !Array.isArray(request.body.courseAISourcesPublicIds) ||
+        request.body.courseAISourcesPublicIds.some(
+          (courseAISourcePublicId) =>
+            typeof courseAISourcePublicId !== "string" ||
+            (request.body[
+              `courseAISources[${courseAISourcePublicId}].courseAISourceVisibility`
+            ] !== "courseAISourceVisibilityVisibleByEveryone" &&
+              request.body[
+                `courseAISources[${courseAISourcePublicId}].courseAISourceVisibility`
+              ] !== "courseAISourceVisibilityUsedByCourseAIButNotVisible"),
+        ) ||
+        !Array.isArray(request.body.courseAISourcesToRemove) ||
+        request.body.courseAISourcesToRemove.some(
+          (courseAISourcePublicId) =>
+            typeof courseAISourcePublicId !== "string",
+        )
       )
         throw "validation";
       for (const courseAISource of request.body.courseAISourcesToAdd) {
@@ -4849,6 +4874,40 @@ export default async (application: Application): Promise<void> => {
               ${relativePath},
               ${request.body.courseAISourceVisibility!}
             );
+          `,
+        );
+      }
+      for (const courseAISourcePublicId of request.body
+        .courseAISourcesPublicIds)
+        application.database.run(
+          sql`
+            update "courseAISources"
+            set "courseAISourceVisibility" = ${request.body[`courseAISources[${courseAISourcePublicId}].courseAISourceVisibility`]!}
+            where
+              "publicId" = ${courseAISourcePublicId} and
+              "course" = ${request.state.course.id};
+          `,
+        );
+      for (const courseAISourcePublicId of request.body
+        .courseAISourcesToRemove) {
+        const courseAISource = application.database.get<{ id: number }>(
+          sql`
+            select "id"
+            from "courseAISources"
+            where
+              "publicId" = ${courseAISourcePublicId} and
+              "course" = ${request.state.course.id};
+          `,
+        );
+        if (courseAISource === undefined) continue;
+        application.database.run(
+          sql`
+            delete from "courseAISourceChunks" where "courseAISource" = ${courseAISource.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            delete from "courseAISources" where "id" = ${courseAISource.id};
           `,
         );
       }
