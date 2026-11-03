@@ -2427,6 +2427,7 @@ export default async (application: Application): Promise<void> => {
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--size--4);
+
                                 &:empty {
                                   display: none;
                                 }
