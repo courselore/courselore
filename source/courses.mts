@@ -1875,6 +1875,7 @@ export default async (application: Application): Promise<void> => {
                                                   align-items: baseline;
                                                   flex-wrap: wrap;
                                                   column-gap: var(--size--4);
+                                                  row-gap: var(--size--2);
                                                 `}"
                                               >
                                                 <button
@@ -1897,8 +1898,7 @@ export default async (application: Application): Promise<void> => {
                                                         );
                                                       `}"
                                                       >Visibility:</span
-                                                    >
-                                                    <input
+                                                    >  <input
                                                       type="radio"
                                                       name="courseAISources[${courseAISource.publicId}].courseAISourceVisibility"
                                                       value="courseAISourceVisibilityVisibleByEveryone"
