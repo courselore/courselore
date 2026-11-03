@@ -1834,8 +1834,8 @@ export default async (application: Application): Promise<void> => {
                                           `,
                                         )
                                         .map(
-                                          (courseAISource) => html`
-                                            <div
+                                          (courseAISource) =>
+                                            html`<div
                                               key="courseAISource ${courseAISource.publicId}"
                                               css="${css`
                                                 display: flex;
@@ -2054,8 +2054,7 @@ export default async (application: Application): Promise<void> => {
                                                   </div>
                                                 </div>
                                               </div>
-                                            </div>
-                                          `,
+                                            </div>`,
                                         )}</div>
                                       <div
                                         css="${css`
