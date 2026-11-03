@@ -2172,8 +2172,8 @@ export default async (application: Application): Promise<void> => {
                           $${(() => {
                             const courseConversationsTagPartial = (
                               courseConversationsTag?: (typeof request.state.courseConversationsTags)[number],
-                            ): HTML => html`
-                              <div
+                            ): HTML =>
+                              html`<div
                                 key="courseConversationsTag ${
                                   courseConversationsTag?.publicId ?? ""
                                 }"
@@ -2418,24 +2418,25 @@ export default async (application: Application): Promise<void> => {
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            `;
+                              </div>`;
                             return html`
+                              <!-- prettier-ignore -->
                               <div
                                 key="courseConversationsTags"
                                 css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--4);
-                                `}"
-                              >
-                                $${request.state.courseConversationsTags.map(
-                                  (courseConversationsTag) =>
-                                    courseConversationsTagPartial(
-                                      courseConversationsTag,
-                                    ),
-                                )}
-                              </div>
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+                                &:empty {
+                                  display: none;
+                                }
+                              `}"
+                              >$${request.state.courseConversationsTags.map(
+                                (courseConversationsTag) =>
+                                  courseConversationsTagPartial(
+                                    courseConversationsTag,
+                                  ),
+                              )}</div>
                               <div
                                 css="${css`
                                   font-size: var(--font-size--3);
