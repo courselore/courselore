@@ -2009,9 +2009,9 @@ export default async (application: Application): Promise<void> => {
                                                   >
                                                     <i
                                                       class="bi bi-exclamation-triangle-fill"
-                                                    ></i>
-                                                    The source will no longer be
-                                                    used by Course AI, but
+                                                    ></i
+                                                    > The source will no longer
+                                                    be used by Course AI, but
                                                     existing answers that
                                                     mention it will continue to
                                                     be able to access it.
@@ -2030,19 +2030,22 @@ export default async (application: Application): Promise<void> => {
                                                       `}"
                                                       javascript="${javascript`
                                                         this.onclick = () => {
-                                                          this.closest('[type~="form"]').insertAdjacentElement(
-                                                            "beforeend",
-                                                            javascript.stringToElement(html\`
-                                                              <input
-                                                                type="hidden"
-                                                                name="courseAISourcesToRemove[]"
-                                                                value="\${this.closest('[key~="courseAISource"]').querySelector('[name="courseAISourcesPublicIds[]"]').getAttribute("value")}"
-                                                              />
-                                                            \`)
+                                                          javascript.execute(
+                                                            this.closest('[type~="form"]').insertAdjacentElement(
+                                                              "beforeend",
+                                                              javascript.stringToElement(html\`
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="courseAISourcesToRemove[]"
+                                                                  value="\${${courseAISource.publicId}}"
+                                                                  javascript="\${${javascript`
+                                                                    this.isModified = true;
+                                                                  `}}"
+                                                                />
+                                                              \`)
+                                                            )
                                                           );
-                                                          const courseAISources = this.closest('[key~="courseAISources"]');
                                                           this.closest('[key~="courseAISource"]').remove();
-                                                          courseAISources.hidden = courseAISources.children.length === 0;
                                                         };
                                                       `}"
                                                     >
