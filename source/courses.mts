@@ -2408,9 +2408,7 @@ export default async (application: Application): Promise<void> => {
                                                   \`)
                                                 );
                                             }
-                                            const courseConversationsTags = this.closest('[key~="courseConversationsTags"]');
                                             this.closest('[key~="courseConversationsTag"]').remove();
-                                            courseConversationsTags.hidden = courseConversationsTags.children.length === 0;
                                           };
                                         `}"
                                         >
@@ -2425,12 +2423,6 @@ export default async (application: Application): Promise<void> => {
                             return html`
                               <div
                                 key="courseConversationsTags"
-                                $${
-                                  request.state.courseConversationsTags
-                                    .length === 0
-                                    ? html`hidden`
-                                    : html``
-                                }
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
@@ -2460,7 +2452,6 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent"
                                   javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[type~="form"]').querySelector('[key~="courseConversationsTags"]').hidden = false;
                                     javascript.execute(
                                       this.closest('[type~="form"]')
                                         .querySelector('[key~="courseConversationsTags"]')
