@@ -4048,7 +4048,6 @@ export default async (application: Application): Promise<void> => {
                               this.morph = false;
                               this.onsubmit = () => {
                                 delete this.morph;
-                                delete this.isModified;
                               };
                             `}"
                           >
@@ -4391,18 +4390,22 @@ export default async (application: Application): Promise<void> => {
                                                   `}"
                                                   javascript="${javascript`
                                                   this.onclick = () => {
-                                                    this.closest('[type~="form"]').isModified = true;
-                                                    this.closest('[type~="form"]')
-                                                      .insertAdjacentElement(
-                                                        "beforeend",
-                                                        javascript.stringToElement(${html`
-                                                          <input
-                                                            type="hidden"
-                                                            name="courseParticipationsPublicIdsToRemove[]"
-                                                            value="${courseParticipation.publicId}"
-                                                          />
-                                                        `})
-                                                      );
+                                                    javascript.execute(
+                                                      this.closest('[type~="form"]')
+                                                        .insertAdjacentElement(
+                                                          "beforeend",
+                                                          javascript.stringToElement(${html`
+                                                            <input
+                                                              type="hidden"
+                                                              name="courseParticipationsPublicIdsToRemove[]"
+                                                              value="${courseParticipation.publicId}"
+                                                              javascript="${javascript`
+                                                                this.isModified = true;
+                                                              `}"
+                                                            />
+                                                          `})
+                                                        )
+                                                    );
                                                     this.closest('[key~="courseParticipation"]').remove();
                                                   };
                                                 `}"
