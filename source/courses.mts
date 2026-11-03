@@ -2394,20 +2394,23 @@ export default async (application: Application): Promise<void> => {
                                           `}"
                                           javascript="${javascript`
                                           this.onclick = () => {
-                                            if (${courseConversationsTag !== undefined}) {
-                                              this.closest('[type~="form"]').isModified = true;
-                                              this.closest('[type~="form"]')
-                                                .insertAdjacentElement(
-                                                  "beforeend",
-                                                  javascript.stringToElement(html\`
-                                                    <input
-                                                      type="hidden"
-                                                      name="courseConversationsTagsPublicIdsToRemove[]"
-                                                      value="\${this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")}"
-                                                    />
-                                                  \`)
-                                                );
-                                            }
+                                            if (${courseConversationsTag !== undefined})
+                                              javascript.execute(
+                                                this.closest('[type~="form"]')
+                                                  .insertAdjacentElement(
+                                                    "beforeend",
+                                                    javascript.stringToElement(html\`
+                                                      <input
+                                                        type="hidden"
+                                                        name="courseConversationsTagsPublicIdsToRemove[]"
+                                                        value="\${this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")}"
+                                                        javascript="\${${javascript`
+                                                          this.isModified = true;
+                                                        `}}"
+                                                      />
+                                                    \`)
+                                                  )
+                                              );
                                             this.closest('[key~="courseConversationsTag"]').remove();
                                           };
                                         `}"
