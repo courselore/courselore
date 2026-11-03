@@ -1685,15 +1685,6 @@ export default async (application: Application): Promise<void> => {
                                         <div
                                           key="courseAISources--toAdd"
                                           css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            color: light-dark(
-                                              var(--color--slate--500),
-                                              var(--color--slate--500)
-                                            );
-
                                             &:empty {
                                               display: none;
                                             }
@@ -1818,7 +1809,7 @@ export default async (application: Application): Promise<void> => {
                                         css="${css`
                                         display: flex;
                                         flex-direction: column;
-                                        gap: var(--size--2);
+                                        gap: var(--size--4);
 
                                         &:empty {
                                           display: none;
@@ -1849,7 +1840,7 @@ export default async (application: Application): Promise<void> => {
                                               css="${css`
                                                 display: flex;
                                                 flex-direction: column;
-                                                gap: var(--size--1);
+                                                gap: var(--size--2);
                                               `}"
                                             >
                                               <input
@@ -1857,14 +1848,16 @@ export default async (application: Application): Promise<void> => {
                                                 name="courseAISourcesPublicIds[]"
                                                 value="${courseAISource.publicId}"
                                               />
-                                              <a
-                                                href="/${courseAISource.file}"
-                                                target="_blank"
-                                                class="link"
-                                                >${path.basename(
-                                                  courseAISource.file,
-                                                )}</a
-                                              >
+                                              <div>
+                                                <a
+                                                  href="${courseAISource.file}"
+                                                  target="_blank"
+                                                  class="button button--rectangle button--transparent"
+                                                  >${path.basename(
+                                                    courseAISource.file,
+                                                  )}</a
+                                                >
+                                              </div>
                                               <div
                                                 css="${css`
                                                   font-size: var(
