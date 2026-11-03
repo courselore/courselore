@@ -3367,7 +3367,6 @@ export default async (application: Application): Promise<void> => {
                                       this.morph = false;
                                       this.onsubmit = () => {
                                         delete this.morph;
-                                        delete this.isModified;
                                       };
                                     `}"
                                     >
@@ -3510,18 +3509,22 @@ export default async (application: Application): Promise<void> => {
                                                 class="button button--rectangle button--transparent"
                                                 javascript="${javascript`
                                                 this.onclick = () => {
-                                                  this.closest('[type~="form"]').isModified = true;
-                                                  this.closest('[type~="form"]')
-                                                    .insertAdjacentElement(
-                                                      "beforeend",
-                                                      javascript.stringToElement(${html`
-                                                        <input
-                                                          type="hidden"
-                                                          name="coursePendingInvitationEmailsPublicIdsToRemove[]"
-                                                          value="${coursePendingInvitationEmail.publicId}"
-                                                        />
-                                                      `})
-                                                    );
+                                                  javascript.execute(
+                                                    this.closest('[type~="form"]')
+                                                      .insertAdjacentElement(
+                                                        "beforeend",
+                                                        javascript.stringToElement(${html`
+                                                          <input
+                                                            type="hidden"
+                                                            name="coursePendingInvitationEmailsPublicIdsToRemove[]"
+                                                            value="${coursePendingInvitationEmail.publicId}"
+                                                            javascript="${javascript`
+                                                              this.isModified = true;
+                                                            `}"
+                                                          />
+                                                        `})
+                                                      )
+                                                  );
                                                   this.closest('[key~="coursePendingInvitationEmail"]').remove();
                                                 };
                                               `}"
