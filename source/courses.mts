@@ -1672,6 +1672,7 @@ export default async (application: Application): Promise<void> => {
                                         this.morph = false;
                                         this.onsubmit = () => {
                                           delete this.morph;
+                                          this.querySelector('[name="courseAISourcesToAdd[]"]').value = "";
                                         };
                                       `}"
                                     >
