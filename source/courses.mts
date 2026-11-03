@@ -4849,33 +4849,51 @@ export default async (application: Application): Promise<void> => {
         )
       )
         throw "validation";
-      for (const courseAISource of request.body.courseAISourcesToAdd) {
+      for (const courseAISourceToAdd of request.body.courseAISourcesToAdd) {
         const relativePath = `/files/${cryptoRandomString({
           length: 20,
           characters: "abcdefghijklmnopqrstuvwxyz0123456789",
-        })}/${path.basename(courseAISource.path)}`;
+        })}/${path.basename(courseAISourceToAdd.path)}`;
         const absolutePath = path.join(
           application.userConfiguration.dataDirectory,
           relativePath,
         );
         await fs.mkdir(path.dirname(absolutePath), { recursive: true });
-        await fs.copyFile(courseAISource.path, absolutePath);
-        application.database.run(
+        await fs.copyFile(courseAISourceToAdd.path, absolutePath);
+        const courseAISource = application.database.get<{
+          id: number;
+          publicId: string;
+          course: number;
+          file: string;
+          courseAISourceVisibility:
+            | "courseAISourceVisibilityVisibleByEveryone"
+            | "courseAISourceVisibilityUsedByCourseAIButNotVisible";
+        }>(
           sql`
-            insert into "courseAISources" (
-              "publicId",
-              "course",
-              "file",
-              "courseAISourceVisibility"
-            )
-            values (
-              ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${request.state.course.id},
-              ${relativePath},
-              ${request.body.courseAISourceVisibility!}
-            );
+            select * from "courseAISources" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "courseAISources" (
+                    "publicId",
+                    "course",
+                    "file",
+                    "courseAISourceVisibility"
+                  )
+                  values (
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${request.state.course.id},
+                    ${relativePath},
+                    ${request.body.courseAISourceVisibility!}
+                  );
+                `,
+              ).lastInsertRowid
+            };
           `,
-        );
+        )!;
+        application.database.backgroundJob({
+          type: "courseAISource",
+          parameters: { courseAISourceId: courseAISource.id },
+        });
       }
       for (const courseAISourcePublicId of request.body
         .courseAISourcesPublicIds)
