@@ -4965,18 +4965,24 @@ export default async (application: Application): Promise<void> => {
           contentSemanticSearch: string;
         }>();
         if (courseAISource.file.toLowerCase().endsWith(".pdf"))
-          for (const [pageIndex, page] of (
-            await unpdf.extractText(
-              new Uint8Array(
-                await fs.readFile(
-                  path.join(
-                    application.userConfiguration.dataDirectory,
-                    courseAISource.file,
+          for (const [pageIndex, page] of await (async () => {
+            try {
+              return (
+                await unpdf.extractText(
+                  new Uint8Array(
+                    await fs.readFile(
+                      path.join(
+                        application.userConfiguration.dataDirectory,
+                        courseAISource.file,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            )
-          ).text.entries())
+                )
+              ).text.entries();
+            } catch {
+              return [];
+            }
+          })())
             for (const chunkContent of await recursiveCharacterTextSplitter.splitText(
               page,
             ))
