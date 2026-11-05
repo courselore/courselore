@@ -4936,6 +4936,12 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  if (application.commandLineArguments.values.type === "backgroundJobWorker")
+    application.database.backgroundJobWorker<{ courseAISourceId: number }>(
+      { type: "courseAISource" },
+      async (parameters) => {},
+    );
+
   application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/settings/tags$"),
