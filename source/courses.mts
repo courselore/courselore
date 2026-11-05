@@ -4,6 +4,9 @@ import crypto from "node:crypto";
 import * as serverTypes from "@radically-straightforward/server";
 import * as cryptography from "@radically-straightforward/cryptography";
 import QRCode from "qrcode";
+import natural from "natural";
+import * as unpdf from "unpdf";
+import * as langChainTextSplitters from "@langchain/textsplitters";
 import cryptoRandomString from "crypto-random-string";
 import emailAddresses from "email-addresses";
 import * as jose from "jose";
@@ -4936,11 +4939,88 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  if (application.commandLineArguments.values.type === "backgroundJobWorker")
+  if (application.commandLineArguments.values.type === "backgroundJobWorker") {
+    const recursiveCharacterTextSplitter =
+      new langChainTextSplitters.RecursiveCharacterTextSplitter({
+        chunkSize: 512 * 4,
+        chunkOverlap: 128 * 4,
+        separators: ["\n\n", "\n", ". ", "! ", "? ", " ", ""],
+      });
     application.database.backgroundJobWorker<{ courseAISourceId: number }>(
       { type: "courseAISource" },
-      async (parameters) => {},
+      async (parameters) => {
+        const courseAISource = application.database.get<{
+          id: number;
+          file: string;
+        }>(
+          sql`
+            select "id", "file" from "courseAISources" where "id" = ${parameters.courseAISourceId};
+          `,
+        );
+        if (courseAISource === undefined) return;
+        const courseAISourceChunks = new Array<{
+          location: string;
+          content: string;
+          contentLexicalSearch: string;
+          contentSemanticSearch: string;
+        }>();
+        if (courseAISource.file.toLowerCase().endsWith(".pdf"))
+          for (const [pageIndex, page] of (
+            await unpdf.extractText(
+              new Uint8Array(
+                await fs.readFile(
+                  path.join(
+                    application.userConfiguration.dataDirectory,
+                    courseAISource.file,
+                  ),
+                ),
+              ),
+            )
+          ).text.entries())
+            for (const chunkContent of await recursiveCharacterTextSplitter.splitText(
+              page,
+            ))
+              courseAISourceChunks.push({
+                location: `Page ${pageIndex + 1}`,
+                content: chunkContent,
+                contentLexicalSearch: utilities
+                  .tokenize(chunkContent, {
+                    stopWords: application.applicationConfiguration.stopWords,
+                    stem: (token) => natural.PorterStemmer.stem(token),
+                  })
+                  .map((tokenWithPosition) => tokenWithPosition.token)
+                  .join(" "),
+                contentSemanticSearch: await (
+                  await fetch("http://localhost:19000/vector-embedding", {
+                    method: "POST",
+                    headers: { "CSRF-Protection": "true" },
+                    body: new URLSearchParams({ text: chunkContent }),
+                  })
+                ).text(),
+              });
+        application.database.transaction(() => {
+          for (const courseAISourceChunk of courseAISourceChunks)
+            application.database.run(
+              sql`
+                insert into "courseAISourceChunks" (
+                  "courseAISource",
+                  "location",
+                  "content",
+                  "contentLexicalSearch",
+                  "contentSemanticSearch"
+                ) values (
+                  ${courseAISource.id},
+                  ${courseAISourceChunk.location},
+                  ${courseAISourceChunk.content},
+                  ${courseAISourceChunk.contentLexicalSearch},
+                  vec_f32(${courseAISourceChunk.contentSemanticSearch})
+                );
+              `,
+            );
+        });
+      },
     );
+  }
 
   application.webServer?.push({
     method: "PATCH",
