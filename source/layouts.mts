@@ -797,101 +797,111 @@ export default async (application: Application): Promise<void> => {
                         </div>
                       </div>
                     </div>
-                    <a
-                      href="/courses/${request.state.course.publicId}"
-                      class="button button--rectangle button--transparent"
+                    <div
                       css="${css`
                         display: flex;
-                        gap: var(--size--0-5);
-                      `} ${
-                        request.URL.pathname.startsWith(
-                          `/courses/${request.state.course.publicId}/conversations/`,
-                        )
-                          ? css`
-                              font-weight: 800;
-                            `
-                          : css``
-                      }"
+                        gap: var(--size--4);
+                        @media (max-width: 899px) {
+                          display: none;
+                        }
+                      `}"
                     >
-                      Forum
-                      $${
-                        application.database.get(
-                          sql`
-                            select true
-                            from "courseConversationMessages"
-                            join "courseConversations" on
-                              "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
-                              "courseConversations"."course" = ${request.state.course.id}
-                              and (
-                                "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                      <a
+                        href="/courses/${request.state.course.publicId}"
+                        class="button button--rectangle button--transparent"
+                        css="${css`
+                          display: flex;
+                          gap: var(--size--0-5);
+                        `} ${
+                          request.URL.pathname.startsWith(
+                            `/courses/${request.state.course.publicId}/conversations/`,
+                          )
+                            ? css`
+                                font-weight: 800;
+                              `
+                            : css``
+                        }"
+                      >
+                        Forum
+                        $${
+                          application.database.get(
+                            sql`
+                              select true
+                              from "courseConversationMessages"
+                              join "courseConversations" on
+                                "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                                "courseConversations"."course" = ${request.state.course.id}
+                                and (
+                                  "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                                  ${
+                                    request.state.courseParticipation
+                                      .courseParticipationRole ===
+                                    "courseParticipationRoleInstructor"
+                                      ? sql`
+                                          or
+                                          "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                        `
+                                      : sql``
+                                  }
+                                  or (
+                                    select true
+                                    from "courseConversationParticipations"
+                                    where
+                                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                      "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                                  )
+                                )
+                              left join "courseConversationMessageViews" on
+                                "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                                "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation.id}
+                              where
                                 ${
                                   request.state.courseParticipation
-                                    .courseParticipationRole ===
+                                    .courseParticipationRole !==
                                   "courseParticipationRoleInstructor"
                                     ? sql`
-                                        or
-                                        "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                        "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors' and
                                       `
                                     : sql``
                                 }
-                                or (
-                                  select true
-                                  from "courseConversationParticipations"
-                                  where
-                                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                                )
-                              )
-                            left join "courseConversationMessageViews" on
-                              "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                              "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation.id}
-                            where
-                              ${
-                                request.state.courseParticipation
-                                  .courseParticipationRole !==
-                                "courseParticipationRoleInstructor"
-                                  ? sql`
-                                      "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors' and
-                                    `
-                                  : sql``
-                              }
-                              "courseConversationMessageViews"."id" is null
-                            limit 1;
-                          `,
-                        ) !== undefined
-                          ? html`
-                              <span
-                                css="${css`
-                                  font-size: var(--size--1-5);
-                                  line-height: var(
-                                    --font-size--3-5--line-height
-                                  );
-                                  color: light-dark(
-                                    var(--color--blue--500),
-                                    var(--color--blue--500)
-                                  );
-                                `}"
-                              >
-                                <i class="bi bi-circle-fill"></i>
-                              </span>
-                            `
-                          : html``
-                      }
-                    </a>
-                    <a
-                      href="/courses/${request.state.course.publicId}/settings"
-                      class="button button--rectangle button--transparent"
-                      css="${
-                        request.URL.pathname ===
-                        `/courses/${request.state.course.publicId}/settings`
-                          ? css`
-                              font-weight: 800;
-                            `
-                          : css``
-                      }"
-                    >
-                      Course settings
-                    </a>
+                                "courseConversationMessageViews"."id" is null
+                              limit 1;
+                            `,
+                          ) !== undefined
+                            ? html`
+                                <span
+                                  css="${css`
+                                    font-size: var(--size--1-5);
+                                    line-height: var(
+                                      --font-size--3-5--line-height
+                                    );
+                                    color: light-dark(
+                                      var(--color--blue--500),
+                                      var(--color--blue--500)
+                                    );
+                                  `}"
+                                >
+                                  <i class="bi bi-circle-fill"></i>
+                                </span>
+                              `
+                            : html``
+                        }
+                      </a>
+                      <a
+                        href="/courses/${request.state.course.publicId}/settings"
+                        class="button button--rectangle button--transparent"
+                        css="${
+                          request.URL.pathname ===
+                          `/courses/${request.state.course.publicId}/settings`
+                            ? css`
+                                font-weight: 800;
+                              `
+                            : css``
+                        }"
+                      >
+                        Course settings
+                      </a>
+                    </div>
                   `
                 : request.state.user !== undefined &&
                     application.database.get(
@@ -1010,6 +1020,126 @@ export default async (application: Application): Promise<void> => {
           }
           $${headerAfter}
         </div>
+        $${
+          request.state.user !== undefined &&
+          request.state.course !== undefined &&
+          request.state.courseParticipation !== undefined
+            ? html`
+                <div
+                  css="${css`
+                    padding: var(--size--2) var(--size--4);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    column-gap: var(--size--4);
+                    row-gap: var(--size--2);
+                    @media (min-width: 900px) {
+                      display: none;
+                    }
+                  `}"
+                >
+                  <a
+                    href="/courses/${request.state.course.publicId}"
+                    class="button button--rectangle button--transparent"
+                    css="${css`
+                      display: flex;
+                      gap: var(--size--0-5);
+                    `} ${
+                      request.URL.pathname.startsWith(
+                        `/courses/${request.state.course.publicId}/conversations/`,
+                      )
+                        ? css`
+                            font-weight: 800;
+                          `
+                        : css``
+                    }"
+                  >
+                    Forum
+                    $${
+                      application.database.get(
+                        sql`
+                          select true
+                          from "courseConversationMessages"
+                          join "courseConversations" on
+                            "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                            "courseConversations"."course" = ${request.state.course.id}
+                            and (
+                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                              ${
+                                request.state.courseParticipation
+                                  .courseParticipationRole ===
+                                "courseParticipationRoleInstructor"
+                                  ? sql`
+                                      or
+                                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                    `
+                                  : sql``
+                              }
+                              or (
+                                select true
+                                from "courseConversationParticipations"
+                                where
+                                  "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                  "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                              )
+                            )
+                          left join "courseConversationMessageViews" on
+                            "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                            "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation.id}
+                          where
+                            ${
+                              request.state.courseParticipation
+                                .courseParticipationRole !==
+                              "courseParticipationRoleInstructor"
+                                ? sql`
+                                    "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors' and
+                                  `
+                                : sql``
+                            }
+                            "courseConversationMessageViews"."id" is null
+                          limit 1;
+                        `,
+                      ) !== undefined
+                        ? html`
+                            <span
+                              css="${css`
+                                font-size: var(--size--1-5);
+                                line-height: var(--font-size--3-5--line-height);
+                                color: light-dark(
+                                  var(--color--blue--500),
+                                  var(--color--blue--500)
+                                );
+                              `}"
+                            >
+                              <i class="bi bi-circle-fill"></i>
+                            </span>
+                          `
+                        : html``
+                    }
+                  </a>
+                  <a
+                    href="/courses/${request.state.course.publicId}/settings"
+                    class="button button--rectangle button--transparent"
+                    css="${
+                      request.URL.pathname ===
+                      `/courses/${request.state.course.publicId}/settings`
+                        ? css`
+                            font-weight: 800;
+                          `
+                        : css``
+                    }"
+                  >
+                    Course settings
+                  </a>
+                </div>
+              `
+            : html``
+        }
         <div
           key="main"
           css="${css`
