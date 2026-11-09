@@ -798,6 +798,7 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
                     <div
+                      key="header--course--navigation"
                       css="${css`
                         display: flex;
                         gap: var(--size--4);
@@ -927,7 +928,7 @@ export default async (application: Application): Promise<void> => {
             request.state.user !== undefined
               ? html`
                   <button
-                    key="user"
+                    key="header--user"
                     type="button"
                     class="button button--square button--transparent"
                     javascript="${javascript`
