@@ -548,6 +548,29 @@ export default async (application: Application): Promise<void> => {
                         : html``
                     }
                   </a>
+                  $${
+                    Boolean(request.state.course.courseAIEnabled)
+                      ? html`
+                          <a
+                            href="/courses/${request.state.course.publicId}/ai"
+                            class="button button--rectangle button--transparent"
+                            css="${
+                              request.URL.pathname.match(
+                                new RegExp(
+                                  `^/courses/${request.state.course.publicId}/ai(?:$|/)`,
+                                ),
+                              )
+                                ? css`
+                                    font-weight: 800;
+                                  `
+                                : css``
+                            }"
+                          >
+                            Course AI
+                          </a>
+                        `
+                      : html``
+                  }
                   <a
                     href="/courses/${request.state.course.publicId}/settings"
                     class="button button--rectangle button--transparent"
