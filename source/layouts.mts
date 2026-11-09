@@ -799,12 +799,29 @@ export default async (application: Application): Promise<void> => {
                     <a
                       href="/courses/${request.state.course.publicId}"
                       class="button button--rectangle button--transparent"
+                      css="${
+                        request.URL.pathname.startsWith(
+                          `/courses/${request.state.course.publicId}/conversations/`,
+                        )
+                          ? css`
+                              font-weight: 800;
+                            `
+                          : css``
+                      }"
                     >
                       Forum
                     </a>
                     <a
                       href="/courses/${request.state.course.publicId}/settings"
                       class="button button--rectangle button--transparent"
+                      css="${
+                        request.URL.pathname ===
+                        `/courses/${request.state.course.publicId}/settings`
+                          ? css`
+                              font-weight: 800;
+                            `
+                          : css``
+                      }"
                     >
                       Course settings
                     </a>
