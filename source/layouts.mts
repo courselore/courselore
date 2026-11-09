@@ -505,6 +505,8 @@ export default async (application: Application): Promise<void> => {
             css="${css`
               flex: 1;
               min-width: var(--size--0);
+              display: flex;
+              gap: var(--size--4);
             `}"
           >
             $${
@@ -794,6 +796,18 @@ export default async (application: Application): Promise<void> => {
                         </div>
                       </div>
                     </div>
+                    <a
+                      href="/courses/${request.state.course.publicId}"
+                      class="button button--rectangle button--transparent"
+                    >
+                      Forum
+                    </a>
+                    <a
+                      href="/courses/${request.state.course.publicId}/settings"
+                      class="button button--rectangle button--transparent"
+                    >
+                      Course settings
+                    </a>
                   `
                 : request.state.user !== undefined &&
                     application.database.get(
