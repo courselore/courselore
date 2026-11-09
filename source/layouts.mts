@@ -511,7 +511,8 @@ export default async (application: Application): Promise<void> => {
           >
             $${
               request.state.user !== undefined &&
-              request.state.course !== undefined
+              request.state.course !== undefined &&
+              request.state.courseParticipation !== undefined
                 ? html`
                     <button
                       type="button"
@@ -799,7 +800,10 @@ export default async (application: Application): Promise<void> => {
                     <a
                       href="/courses/${request.state.course.publicId}"
                       class="button button--rectangle button--transparent"
-                      css="${
+                      css="${css`
+                        display: flex;
+                        gap: var(--size--0-5);
+                      `} ${
                         request.URL.pathname.startsWith(
                           `/courses/${request.state.course.publicId}/conversations/`,
                         )
@@ -810,6 +814,69 @@ export default async (application: Application): Promise<void> => {
                       }"
                     >
                       Forum
+                      $${
+                        application.database.get(
+                          sql`
+                            select true
+                            from "courseConversationMessages"
+                            join "courseConversations" on
+                              "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                              "courseConversations"."course" = ${request.state.course.id}
+                              and (
+                                "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                                ${
+                                  request.state.courseParticipation
+                                    .courseParticipationRole ===
+                                  "courseParticipationRoleInstructor"
+                                    ? sql`
+                                        or
+                                        "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                      `
+                                    : sql``
+                                }
+                                or (
+                                  select true
+                                  from "courseConversationParticipations"
+                                  where
+                                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                                )
+                              )
+                            left join "courseConversationMessageViews" on
+                              "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                              "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation.id}
+                            where
+                              ${
+                                request.state.courseParticipation
+                                  .courseParticipationRole !==
+                                "courseParticipationRoleInstructor"
+                                  ? sql`
+                                      "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors' and
+                                    `
+                                  : sql``
+                              }
+                              "courseConversationMessageViews"."id" is null
+                            limit 1;
+                          `,
+                        ) !== undefined
+                          ? html`
+                              <span
+                                css="${css`
+                                  font-size: var(--size--1-5);
+                                  line-height: var(
+                                    --font-size--3-5--line-height
+                                  );
+                                  color: light-dark(
+                                    var(--color--blue--500),
+                                    var(--color--blue--500)
+                                  );
+                                `}"
+                              >
+                                <i class="bi bi-circle-fill"></i>
+                              </span>
+                            `
+                          : html``
+                      }
                     </a>
                     <a
                       href="/courses/${request.state.course.publicId}/settings"
