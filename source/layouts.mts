@@ -1027,6 +1027,7 @@ export default async (application: Application): Promise<void> => {
           request.state.courseParticipation !== undefined
             ? html`
                 <div
+                  key="header--course--navigation"
                   css="${css`
                     padding: var(--size--2) var(--size--4);
                     border-bottom: var(--border-width--1) solid
