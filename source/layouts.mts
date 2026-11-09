@@ -463,588 +463,12 @@ export default async (application: Application): Promise<void> => {
               `
             : html``
         }
-        <div
-          key="header"
-          css="${css`
-            padding: var(--size--2) var(--size--4);
-            border-bottom: var(--border-width--1) solid
-              light-dark(var(--color--slate--200), var(--color--slate--800));
-            display: flex;
-            align-items: center;
-            gap: var(--size--4);
-          `}"
-        >
-          $${headerBefore}
-          <a
-            key="header--logo"
-            href="/"
-            class="button button--rectangle button--transparent"
-            css="${css`
-              font-family: "Roboto Serif Variable", var(--font-family--serif);
-              font-weight: 900;
-              font-size: var(--font-size--4);
-              line-height: var(--font-size--4--line-height);
-              display: flex;
-              gap: var(--size--1);
-              align-items: center;
-            `}"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24">
-              <path
-                d="M 3 3 L 9 9 L 3 9 L 9 3 L 3 15 L 9 21 L 9 15 L 3 21 L 15 15 L 21 21 L 21 15 L 15 21 L 21 9 L 15 3 L 21 3 L 15 9 Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <div>Courselore</div>
-          </a>
-          <div
-            key="header--course"
-            css="${css`
-              flex: 1;
-              min-width: var(--size--0);
-              display: flex;
-              gap: var(--size--4);
-            `}"
-          >
-            $${
-              request.state.user !== undefined &&
-              request.state.course !== undefined &&
-              request.state.courseParticipation !== undefined
-                ? html`
-                    <button
-                      type="button"
-                      class="button button--rectangle button--transparent"
-                      css="${css`
-                        max-width: 100%;
-                        display: flex;
-                        gap: var(--size--1);
-                        align-items: center;
-                      `}"
-                      javascript="${javascript`
-                      javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
-                    `}"
-                    >
-                      <div
-                        css="${css`
-                          white-space: nowrap;
-                          overflow: hidden;
-                          text-overflow: ellipsis;
-                        `}"
-                      >
-                        ${request.state.course.name}
-                      </div>
-                      <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div
-                      type="popover"
-                      css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--size--2);
-                      `}"
-                    >
-                      $${application.database
-                        .all<{
-                          id: number;
-                          course: number;
-                          courseParticipationRole:
-                            | "courseParticipationRoleInstructor"
-                            | "courseParticipationRoleStudent";
-                        }>(
-                          sql`
-                          select
-                            "courseParticipations"."id" as "id",
-                            "courseParticipations"."course" as "course",
-                            "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                          from "courseParticipations"
-                          join "courses" on
-                            "courseParticipations"."course" = "courses"."id" and
-                            "courseParticipations"."user" = ${request.state.user.id}
-                          order by
-                            "courses"."courseState" = 'courseStateActive' desc,
-                            "courseParticipations"."id" desc;
-                        `,
-                        )
-                        .map((courseParticipation) => {
-                          const course = application.database.get<{
-                            id: number;
-                            publicId: string;
-                            name: string;
-                            information: string | null;
-                            courseState:
-                              "courseStateActive" | "courseStateArchived";
-                          }>(
-                            sql`
-                            select
-                              "id",
-                              "publicId",
-                              "name",
-                              "information",
-                              "courseState"
-                            from "courses"
-                            where "id" = ${courseParticipation.course};
-                          `,
-                          );
-                          if (course === undefined) throw new Error();
-                          return html`
-                            <a
-                              key="course-selector ${course.publicId}"
-                              href="/courses/${course.publicId}"
-                              class="button button--rectangle button--transparent ${
-                                request.URL.pathname.match(
-                                  new RegExp(
-                                    `^/courses/${course.publicId}(?:$|/)`,
-                                  ),
-                                )
-                                  ? "button--blue"
-                                  : ""
-                              } button--dropdown-menu"
-                              css="${css`
-                                display: flex;
-                                gap: var(--size--2);
-                              `}"
-                              javascript="${javascript`
-                              this.onclick = () => {
-                                document.querySelector("body").click();
-                              };
-                            `}"
-                            >
-                              <div
-                                css="${css`
-                                  flex: 1;
-                                `}"
-                              >
-                                <div
-                                  css="${css`
-                                    font-weight: 500;
-                                  `}"
-                                >
-                                  ${course.name}
-                                </div>
-                                $${(() => {
-                                  const courseInformationHTML = [
-                                    course.courseState === "courseStateArchived"
-                                      ? html`<span
-                                          css="${css`
-                                            font-weight: 700;
-                                            [key~="course-selector"]:not(
-                                                .button--blue
-                                              )
-                                              & {
-                                              color: light-dark(
-                                                var(--color--red--500),
-                                                var(--color--red--500)
-                                              );
-                                            }
-                                          `}"
-                                          >Archived</span
-                                        >`
-                                      : html``,
-                                    html`${course.information ?? ""}`,
-                                  ]
-                                    .filter(
-                                      (courseInformationPart) =>
-                                        courseInformationPart !== "",
-                                    )
-                                    .join(" · ");
-                                  return courseInformationHTML !== html``
-                                    ? html`
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            [key~="course-selector"]:not(
-                                                .button--blue
-                                              )
-                                              & {
-                                              color: light-dark(
-                                                var(--color--slate--600),
-                                                var(--color--slate--400)
-                                              );
-                                            }
-                                            [key~="course-selector"].button--blue
-                                              & {
-                                              color: light-dark(
-                                                var(--color--blue--200),
-                                                var(--color--blue--200)
-                                              );
-                                            }
-                                          `}"
-                                        >
-                                          $${courseInformationHTML}
-                                        </div>
-                                      `
-                                    : html``;
-                                })()}
-                              </div>
-                              <div
-                                css="${css`
-                                  font-size: var(--size--1-5);
-                                  line-height: var(
-                                    --font-size--3-5--line-height
-                                  );
-                                  color: light-dark(
-                                    var(--color--blue--500),
-                                    var(--color--blue--500)
-                                  );
-                                `} ${
-                                  request.state.course!.id === course.id ||
-                                  application.database.get(
-                                    sql`
-                                  select true
-                                  from "courseConversationMessages"
-                                  join "courseConversations" on
-                                    "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
-                                    "courseConversations"."course" = ${course.id}
-                                    and (
-                                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                                      ${
-                                        courseParticipation.courseParticipationRole ===
-                                        "courseParticipationRoleInstructor"
-                                          ? sql`
-                                              or
-                                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                                            `
-                                          : sql``
-                                      }
-                                      or (
-                                        select true
-                                        from "courseConversationParticipations"
-                                        where
-                                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                                          "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
-                                      )
-                                    )
-                                  left join "courseConversationMessageViews" on
-                                    "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                                    "courseConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
-                                  where
-                                    ${
-                                      courseParticipation.courseParticipationRole !==
-                                      "courseParticipationRoleInstructor"
-                                        ? sql`
-                                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors' and
-                                          `
-                                        : sql``
-                                    }
-                                    "courseConversationMessageViews"."id" is null
-                                  limit 1;
-                                `,
-                                  ) === undefined
-                                    ? css`
-                                        visibility: hidden;
-                                      `
-                                    : css``
-                                }"
-                              >
-                                <i class="bi bi-circle-fill"></i>
-                              </div>
-                            </a>
-                          `;
-                        })}
-                      <hr class="separator" />
-                      $${
-                        request.state.systemSettings !== undefined &&
-                        ((request.state.systemSettings
-                          .userRolesWhoMayCreateCourses === "userRoleUser" &&
-                          (request.state.user.userRole === "userRoleUser" ||
-                            request.state.user.userRole === "userRoleStaff" ||
-                            request.state.user.userRole ===
-                              "userRoleSystemAdministrator")) ||
-                          (request.state.systemSettings
-                            .userRolesWhoMayCreateCourses === "userRoleStaff" &&
-                            (request.state.user.userRole === "userRoleStaff" ||
-                              request.state.user.userRole ===
-                                "userRoleSystemAdministrator")) ||
-                          (request.state.systemSettings
-                            .userRolesWhoMayCreateCourses ===
-                            "userRoleSystemAdministrator" &&
-                            request.state.user.userRole ===
-                              "userRoleSystemAdministrator"))
-                          ? html`
-                              <a
-                                href="/courses/new"
-                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                javascript="${javascript`
-                              this.onclick = () => {
-                                document.querySelector("body").click();
-                              };
-                            `}"
-                                >Create a new course</a
-                              >
-                            `
-                          : html``
-                      }
-                      <div>
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent button--dropdown-menu"
-                          javascript="${javascript`
-                          javascript.popover({ element: this, trigger: "click" });
-                        `}"
-                        >
-                          Join an existing course
-                        </button>
-                        <div type="popover">
-                          To join an existing course you must receive an
-                          invitation from the instructors, either via an
-                          invitation link or via email.
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      key="header--course--navigation"
-                      css="${css`
-                        display: flex;
-                        gap: var(--size--4);
-                        @media (max-width: 899px) {
-                          display: none;
-                        }
-                      `}"
-                    >
-                      <a
-                        href="/courses/${request.state.course.publicId}"
-                        class="button button--rectangle button--transparent"
-                        css="${css`
-                          display: flex;
-                          gap: var(--size--0-5);
-                        `} ${
-                          request.URL.pathname.startsWith(
-                            `/courses/${request.state.course.publicId}/conversations/`,
-                          )
-                            ? css`
-                                font-weight: 800;
-                              `
-                            : css``
-                        }"
-                      >
-                        Forum
-                        $${
-                          application.database.get(
-                            sql`
-                              select true
-                              from "courseConversationMessages"
-                              join "courseConversations" on
-                                "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
-                                "courseConversations"."course" = ${request.state.course.id}
-                                and (
-                                  "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                                  ${
-                                    request.state.courseParticipation
-                                      .courseParticipationRole ===
-                                    "courseParticipationRoleInstructor"
-                                      ? sql`
-                                          or
-                                          "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                                        `
-                                      : sql``
-                                  }
-                                  or (
-                                    select true
-                                    from "courseConversationParticipations"
-                                    where
-                                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                                      "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                                  )
-                                )
-                              left join "courseConversationMessageViews" on
-                                "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                                "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation.id}
-                              where
-                                ${
-                                  request.state.courseParticipation
-                                    .courseParticipationRole !==
-                                  "courseParticipationRoleInstructor"
-                                    ? sql`
-                                        "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors' and
-                                      `
-                                    : sql``
-                                }
-                                "courseConversationMessageViews"."id" is null
-                              limit 1;
-                            `,
-                          ) !== undefined
-                            ? html`
-                                <span
-                                  css="${css`
-                                    font-size: var(--size--1-5);
-                                    line-height: var(
-                                      --font-size--3-5--line-height
-                                    );
-                                    color: light-dark(
-                                      var(--color--blue--500),
-                                      var(--color--blue--500)
-                                    );
-                                  `}"
-                                >
-                                  <i class="bi bi-circle-fill"></i>
-                                </span>
-                              `
-                            : html``
-                        }
-                      </a>
-                      <a
-                        href="/courses/${request.state.course.publicId}/settings"
-                        class="button button--rectangle button--transparent"
-                        css="${
-                          request.URL.pathname ===
-                          `/courses/${request.state.course.publicId}/settings`
-                            ? css`
-                                font-weight: 800;
-                              `
-                            : css``
-                        }"
-                      >
-                        Course settings
-                      </a>
-                    </div>
-                  `
-                : request.state.user !== undefined &&
-                    application.database.get(
-                      sql`
-                      select true
-                      from "courseParticipations"
-                      where "user" = ${request.state.user.id}
-                      limit 1;
-                    `,
-                    )
-                  ? html`
-                      <a
-                        href="/"
-                        class="button button--rectangle button--transparent"
-                      >
-                        <i class="bi bi-arrow-left"></i> Return to courses
-                      </a>
-                    `
-                  : html``
-            }
-          </div>
-          $${
-            request.state.user !== undefined
+        $${(() => {
+          const headerCourseNavigation =
+            request.state.user !== undefined &&
+            request.state.course !== undefined &&
+            request.state.courseParticipation !== undefined
               ? html`
-                  <button
-                    key="header--user"
-                    type="button"
-                    class="button button--square button--transparent"
-                    javascript="${javascript`
-                    javascript.popover({ element: this, trigger: "click", placement: "bottom-end" });
-                  `}"
-                  >
-                    $${application.partials.userAvatar({
-                      user: request.state.user,
-                      onlineIndicator: false,
-                    })}
-                  </button>
-                  <div
-                    type="popover"
-                    css="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--size--2);
-                    `}"
-                  >
-                    <div
-                      css="${css`
-                        display: flex;
-                        gap: var(--size--2);
-                      `}"
-                    >
-                      <div>
-                        $${application.partials.userAvatar({
-                          user: request.state.user,
-                          onlineIndicator: false,
-                          size: 9,
-                        })}
-                      </div>
-                      <div>
-                        <div
-                          css="${css`
-                            font-weight: 700;
-                          `}"
-                        >
-                          ${request.state.user.name}
-                        </div>
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            color: light-dark(
-                              var(--color--slate--600),
-                              var(--color--slate--400)
-                            );
-                          `}"
-                        >
-                          ${request.state.user.email}
-                        </div>
-                      </div>
-                    </div>
-                    <hr class="separator" />
-                    $${
-                      request.state.user.userRole ===
-                      "userRoleSystemAdministrator"
-                        ? html`
-                            <a
-                              href="/system-settings"
-                              class="button button--rectangle button--transparent button--dropdown-menu"
-                            >
-                              System settings
-                            </a>
-                          `
-                        : html``
-                    }
-                    <a
-                      href="/settings"
-                      class="button button--rectangle button--transparent button--dropdown-menu"
-                    >
-                      User settings
-                    </a>
-                    <div
-                      type="form"
-                      method="POST"
-                      action="/authentication/sign-out"
-                    >
-                      <button
-                        type="submit"
-                        class="button button--rectangle button--transparent button--dropdown-menu"
-                      >
-                        Sign out
-                      </button>
-                    </div>
-                  </div>
-                `
-              : html``
-          }
-          $${headerAfter}
-        </div>
-        $${
-          request.state.user !== undefined &&
-          request.state.course !== undefined &&
-          request.state.courseParticipation !== undefined
-            ? html`
-                <div
-                  key="header--course--navigation"
-                  css="${css`
-                    padding: var(--size--2) var(--size--4);
-                    border-bottom: var(--border-width--1) solid
-                      light-dark(
-                        var(--color--slate--200),
-                        var(--color--slate--800)
-                      );
-                    display: flex;
-                    align-items: center;
-                    flex-wrap: wrap;
-                    column-gap: var(--size--4);
-                    row-gap: var(--size--2);
-                    @media (min-width: 900px) {
-                      display: none;
-                    }
-                  `}"
-                >
                   <a
                     href="/courses/${request.state.course.publicId}"
                     class="button button--rectangle button--transparent"
@@ -1138,10 +562,510 @@ export default async (application: Application): Promise<void> => {
                   >
                     Course settings
                   </a>
-                </div>
-              `
-            : html``
-        }
+                `
+              : html``;
+          return html`
+            <div
+              key="header"
+              css="${css`
+                padding: var(--size--2) var(--size--4);
+                border-bottom: var(--border-width--1) solid
+                  light-dark(var(--color--slate--200), var(--color--slate--800));
+                display: flex;
+                align-items: center;
+                gap: var(--size--4);
+              `}"
+            >
+              $${headerBefore}
+              <a
+                key="header--logo"
+                href="/"
+                class="button button--rectangle button--transparent"
+                css="${css`
+                  font-family:
+                    "Roboto Serif Variable", var(--font-family--serif);
+                  font-weight: 900;
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  display: flex;
+                  gap: var(--size--1);
+                  align-items: center;
+                `}"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <path
+                    d="M 3 3 L 9 9 L 3 9 L 9 3 L 3 15 L 9 21 L 9 15 L 3 21 L 15 15 L 21 21 L 21 15 L 15 21 L 21 9 L 15 3 L 21 3 L 15 9 Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <div>Courselore</div>
+              </a>
+              <div
+                key="header--course"
+                css="${css`
+                  flex: 1;
+                  min-width: var(--size--0);
+                  display: flex;
+                  gap: var(--size--4);
+                `}"
+              >
+                $${
+                  request.state.user !== undefined &&
+                  request.state.course !== undefined &&
+                  request.state.courseParticipation !== undefined
+                    ? html`
+                        <button
+                          type="button"
+                          class="button button--rectangle button--transparent"
+                          css="${css`
+                            max-width: 100%;
+                            display: flex;
+                            gap: var(--size--1);
+                            align-items: center;
+                          `}"
+                          javascript="${javascript`
+                          javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                        `}"
+                        >
+                          <div
+                            css="${css`
+                              white-space: nowrap;
+                              overflow: hidden;
+                              text-overflow: ellipsis;
+                            `}"
+                          >
+                            ${request.state.course.name}
+                          </div>
+                          <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <div
+                          type="popover"
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--2);
+                          `}"
+                        >
+                          $${application.database
+                            .all<{
+                              id: number;
+                              course: number;
+                              courseParticipationRole:
+                                | "courseParticipationRoleInstructor"
+                                | "courseParticipationRoleStudent";
+                            }>(
+                              sql`
+                              select
+                                "courseParticipations"."id" as "id",
+                                "courseParticipations"."course" as "course",
+                                "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                              from "courseParticipations"
+                              join "courses" on
+                                "courseParticipations"."course" = "courses"."id" and
+                                "courseParticipations"."user" = ${request.state.user.id}
+                              order by
+                                "courses"."courseState" = 'courseStateActive' desc,
+                                "courseParticipations"."id" desc;
+                            `,
+                            )
+                            .map((courseParticipation) => {
+                              const course = application.database.get<{
+                                id: number;
+                                publicId: string;
+                                name: string;
+                                information: string | null;
+                                courseState:
+                                  "courseStateActive" | "courseStateArchived";
+                              }>(
+                                sql`
+                                select
+                                  "id",
+                                  "publicId",
+                                  "name",
+                                  "information",
+                                  "courseState"
+                                from "courses"
+                                where "id" = ${courseParticipation.course};
+                              `,
+                              );
+                              if (course === undefined) throw new Error();
+                              return html`
+                                <a
+                                  key="course-selector ${course.publicId}"
+                                  href="/courses/${course.publicId}"
+                                  class="button button--rectangle button--transparent ${
+                                    request.URL.pathname.match(
+                                      new RegExp(
+                                        `^/courses/${course.publicId}(?:$|/)`,
+                                      ),
+                                    )
+                                      ? "button--blue"
+                                      : ""
+                                  } button--dropdown-menu"
+                                  css="${css`
+                                    display: flex;
+                                    gap: var(--size--2);
+                                  `}"
+                                  javascript="${javascript`
+                                  this.onclick = () => {
+                                    document.querySelector("body").click();
+                                  };
+                                `}"
+                                >
+                                  <div
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                  >
+                                    <div
+                                      css="${css`
+                                        font-weight: 500;
+                                      `}"
+                                    >
+                                      ${course.name}
+                                    </div>
+                                    $${(() => {
+                                      const courseInformationHTML = [
+                                        course.courseState ===
+                                        "courseStateArchived"
+                                          ? html`<span
+                                              css="${css`
+                                                font-weight: 700;
+                                                [key~="course-selector"]:not(
+                                                    .button--blue
+                                                  )
+                                                  & {
+                                                  color: light-dark(
+                                                    var(--color--red--500),
+                                                    var(--color--red--500)
+                                                  );
+                                                }
+                                              `}"
+                                              >Archived</span
+                                            >`
+                                          : html``,
+                                        html`${course.information ?? ""}`,
+                                      ]
+                                        .filter(
+                                          (courseInformationPart) =>
+                                            courseInformationPart !== "",
+                                        )
+                                        .join(" · ");
+                                      return courseInformationHTML !== html``
+                                        ? html`
+                                            <div
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                                [key~="course-selector"]:not(
+                                                    .button--blue
+                                                  )
+                                                  & {
+                                                  color: light-dark(
+                                                    var(--color--slate--600),
+                                                    var(--color--slate--400)
+                                                  );
+                                                }
+                                                [key~="course-selector"].button--blue
+                                                  & {
+                                                  color: light-dark(
+                                                    var(--color--blue--200),
+                                                    var(--color--blue--200)
+                                                  );
+                                                }
+                                              `}"
+                                            >
+                                              $${courseInformationHTML}
+                                            </div>
+                                          `
+                                        : html``;
+                                    })()}
+                                  </div>
+                                  <div
+                                    css="${css`
+                                      font-size: var(--size--1-5);
+                                      line-height: var(
+                                        --font-size--3-5--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--blue--500),
+                                        var(--color--blue--500)
+                                      );
+                                    `} ${
+                                      request.state.course!.id === course.id ||
+                                      application.database.get(
+                                        sql`
+                                      select true
+                                      from "courseConversationMessages"
+                                      join "courseConversations" on
+                                        "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                                        "courseConversations"."course" = ${course.id}
+                                        and (
+                                          "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                                          ${
+                                            courseParticipation.courseParticipationRole ===
+                                            "courseParticipationRoleInstructor"
+                                              ? sql`
+                                                  or
+                                                  "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                                `
+                                              : sql``
+                                          }
+                                          or (
+                                            select true
+                                            from "courseConversationParticipations"
+                                            where
+                                              "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                              "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                                          )
+                                        )
+                                      left join "courseConversationMessageViews" on
+                                        "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                                        "courseConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
+                                      where
+                                        ${
+                                          courseParticipation.courseParticipationRole !==
+                                          "courseParticipationRoleInstructor"
+                                            ? sql`
+                                                "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors' and
+                                              `
+                                            : sql``
+                                        }
+                                        "courseConversationMessageViews"."id" is null
+                                      limit 1;
+                                    `,
+                                      ) === undefined
+                                        ? css`
+                                            visibility: hidden;
+                                          `
+                                        : css``
+                                    }"
+                                  >
+                                    <i class="bi bi-circle-fill"></i>
+                                  </div>
+                                </a>
+                              `;
+                            })}
+                          <hr class="separator" />
+                          $${
+                            request.state.systemSettings !== undefined &&
+                            ((request.state.systemSettings
+                              .userRolesWhoMayCreateCourses ===
+                              "userRoleUser" &&
+                              (request.state.user.userRole === "userRoleUser" ||
+                                request.state.user.userRole ===
+                                  "userRoleStaff" ||
+                                request.state.user.userRole ===
+                                  "userRoleSystemAdministrator")) ||
+                              (request.state.systemSettings
+                                .userRolesWhoMayCreateCourses ===
+                                "userRoleStaff" &&
+                                (request.state.user.userRole ===
+                                  "userRoleStaff" ||
+                                  request.state.user.userRole ===
+                                    "userRoleSystemAdministrator")) ||
+                              (request.state.systemSettings
+                                .userRolesWhoMayCreateCourses ===
+                                "userRoleSystemAdministrator" &&
+                                request.state.user.userRole ===
+                                  "userRoleSystemAdministrator"))
+                              ? html`
+                                  <a
+                                    href="/courses/new"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                  this.onclick = () => {
+                                    document.querySelector("body").click();
+                                  };
+                                `}"
+                                    >Create a new course</a
+                                  >
+                                `
+                              : html``
+                          }
+                          <div>
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent button--dropdown-menu"
+                              javascript="${javascript`
+                              javascript.popover({ element: this, trigger: "click" });
+                            `}"
+                            >
+                              Join an existing course
+                            </button>
+                            <div type="popover">
+                              To join an existing course you must receive an
+                              invitation from the instructors, either via an
+                              invitation link or via email.
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          key="header--course--navigation"
+                          css="${css`
+                            display: flex;
+                            gap: var(--size--4);
+                            @media (max-width: 899px) {
+                              display: none;
+                            }
+                          `}"
+                        >
+                          $${headerCourseNavigation}
+                        </div>
+                      `
+                    : request.state.user !== undefined &&
+                        application.database.get(
+                          sql`
+                          select true
+                          from "courseParticipations"
+                          where "user" = ${request.state.user.id}
+                          limit 1;
+                        `,
+                        )
+                      ? html`
+                          <a
+                            href="/"
+                            class="button button--rectangle button--transparent"
+                          >
+                            <i class="bi bi-arrow-left"></i> Return to courses
+                          </a>
+                        `
+                      : html``
+                }
+              </div>
+              $${
+                request.state.user !== undefined
+                  ? html`
+                      <button
+                        key="header--user"
+                        type="button"
+                        class="button button--square button--transparent"
+                        javascript="${javascript`
+                        javascript.popover({ element: this, trigger: "click", placement: "bottom-end" });
+                      `}"
+                      >
+                        $${application.partials.userAvatar({
+                          user: request.state.user,
+                          onlineIndicator: false,
+                        })}
+                      </button>
+                      <div
+                        type="popover"
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--size--2);
+                        `}"
+                      >
+                        <div
+                          css="${css`
+                            display: flex;
+                            gap: var(--size--2);
+                          `}"
+                        >
+                          <div>
+                            $${application.partials.userAvatar({
+                              user: request.state.user,
+                              onlineIndicator: false,
+                              size: 9,
+                            })}
+                          </div>
+                          <div>
+                            <div
+                              css="${css`
+                                font-weight: 700;
+                              `}"
+                            >
+                              ${request.state.user.name}
+                            </div>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                            >
+                              ${request.state.user.email}
+                            </div>
+                          </div>
+                        </div>
+                        <hr class="separator" />
+                        $${
+                          request.state.user.userRole ===
+                          "userRoleSystemAdministrator"
+                            ? html`
+                                <a
+                                  href="/system-settings"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                >
+                                  System settings
+                                </a>
+                              `
+                            : html``
+                        }
+                        <a
+                          href="/settings"
+                          class="button button--rectangle button--transparent button--dropdown-menu"
+                        >
+                          User settings
+                        </a>
+                        <div
+                          type="form"
+                          method="POST"
+                          action="/authentication/sign-out"
+                        >
+                          <button
+                            type="submit"
+                            class="button button--rectangle button--transparent button--dropdown-menu"
+                          >
+                            Sign out
+                          </button>
+                        </div>
+                      </div>
+                    `
+                  : html``
+              }
+              $${headerAfter}
+            </div>
+            $${
+              request.state.user !== undefined &&
+              request.state.course !== undefined &&
+              request.state.courseParticipation !== undefined
+                ? html`
+                    <div
+                      key="header--course--navigation"
+                      css="${css`
+                        padding: var(--size--2) var(--size--4);
+                        border-bottom: var(--border-width--1) solid
+                          light-dark(
+                            var(--color--slate--200),
+                            var(--color--slate--800)
+                          );
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        column-gap: var(--size--4);
+                        row-gap: var(--size--2);
+                        @media (min-width: 900px) {
+                          display: none;
+                        }
+                      `}"
+                    >
+                      $${headerCourseNavigation}
+                    </div>
+                  `
+                : html``
+            }
+          `;
+        })()}
         <div
           key="main"
           css="${css`
