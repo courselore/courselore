@@ -775,7 +775,7 @@ export default async (application: Application): Promise<void> => {
                                         var(--color--slate--500)
                                       );
                                     `}"
-                                    >Conversations:</span
+                                    >Forum conversations:</span
                                   > $${String(
                                     application.database.get<{
                                       count: number;
