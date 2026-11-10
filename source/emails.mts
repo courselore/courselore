@@ -523,7 +523,9 @@ export default async (application: Application): Promise<void> => {
                 );
                 application.database.backgroundJob({
                   type: "courseConversationMessageEmailNotification",
-                  startAt: Temporal.Now.instant().add({ minutes: 5 }).toString(),
+                  startAt: Temporal.Now.instant()
+                    .add({ minutes: 5 })
+                    .toString(),
                   parameters: {
                     courseConversationMessageId:
                       state.courseConversationMessage.id,
