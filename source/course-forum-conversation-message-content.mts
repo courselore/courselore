@@ -834,7 +834,7 @@ export default async (application: Application): Promise<void> => {
                       this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--preview"]').firstElementChild,
                       await (
                         await fetch(
-                          ${`/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}/messages${courseConversationMessage !== undefined ? `/${courseConversationMessage.publicId}` : ""}/preview`}, {
+                          ${`/courses/${course.publicId}${courseConversation !== undefined ? `/forum/${courseConversation.publicId}` : ""}/messages${courseConversationMessage !== undefined ? `/${courseConversationMessage.publicId}` : ""}/preview`}, {
                             method: "POST",
                             headers: { "CSRF-Protection": "true" },
                             body: new URLSearchParams(javascript.serialize(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]'))),
@@ -1148,7 +1148,7 @@ ${courseConversationMessageContent}</textarea>
   application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)(?:/conversations/(?<courseConversationPublicId>[0-9]+))?/messages(?:/(?<courseConversationMessagePublicId>[0-9]+))?/preview$",
+      "^/courses/(?<coursePublicId>[0-9]+)(?:/forum/(?<courseConversationPublicId>[0-9]+))?/messages(?:/(?<courseConversationMessagePublicId>[0-9]+))?/preview$",
     ),
     handler: async (
       request: serverTypes.Request<
@@ -2203,7 +2203,7 @@ You may also use the buttons on the message content editor to ${
         for (const element of document.querySelectorAll("a")) {
           const url = new URL(
             element.getAttribute("href"),
-            `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
+            `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/forum/${courseConversation.publicId}` : ""}`,
           );
           if (
             url.protocol !== "https:" ||
@@ -2236,7 +2236,7 @@ You may also use the buttons on the message content editor to ${
           element.outerHTML = html`<a
             href="https://${
               application.userConfiguration.hostname
-            }/courses/${course.publicId}/conversations/${
+            }/courses/${course.publicId}/forum/${
               courseConversation!.publicId
             }?${new URLSearchParams({
               message: courseConversationMessage!.publicId,
@@ -2259,7 +2259,7 @@ You may also use the buttons on the message content editor to ${
           element.outerHTML = html`<a
             href="https://${
               application.userConfiguration.hostname
-            }/courses/${course.publicId}/conversations/${
+            }/courses/${course.publicId}/forum/${
               courseConversation!.publicId
             }?${new URLSearchParams({
               message: courseConversationMessage!.publicId,
@@ -2282,7 +2282,7 @@ You may also use the buttons on the message content editor to ${
               <a
                 href="https://${
                   application.userConfiguration.hostname
-                }/courses/${course.publicId}/conversations/${
+                }/courses/${course.publicId}/forum/${
                   courseConversation!.publicId
                 }?${new URLSearchParams({
                   message: courseConversationMessage!.publicId,
@@ -2541,7 +2541,7 @@ You may also use the buttons on the message content editor to ${
             method="PATCH"
             action="/courses/${course.publicId}${
               courseConversation !== undefined
-                ? `/conversations/${courseConversation.publicId}`
+                ? `/forum/${courseConversation.publicId}`
                 : ""
             }${
               courseConversationMessage !== undefined
@@ -2634,7 +2634,7 @@ You may also use the buttons on the message content editor to ${
                 <a
                   href="https://${
                     application.userConfiguration.hostname
-                  }/courses/${course.publicId}/conversations/${
+                  }/courses/${course.publicId}/forum/${
                     courseConversation!.publicId
                   }${new URLSearchParams({
                     message: courseConversationMessage!.publicId,
@@ -2647,7 +2647,7 @@ You may also use the buttons on the message content editor to ${
             element.outerHTML = html`<a
               href="https://${
                 application.userConfiguration.hostname
-              }/courses/${course.publicId}/conversations/${
+              }/courses/${course.publicId}/forum/${
                 courseConversation!.publicId
               }${new URLSearchParams({
                 message: courseConversationMessage!.publicId,
@@ -2892,7 +2892,7 @@ You may also use the buttons on the message content editor to ${
                   if (courseConversationMessagePublicId === undefined)
                     return html`
                       <a
-                        href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
+                        href="/courses/${course.publicId}/forum/${mentionCourseConversation.publicId}"
                         class="link"
                         >${match}</a
                       >
@@ -2920,7 +2920,7 @@ You may also use the buttons on the message content editor to ${
                     return match;
                   return html`
                     <a
-                      href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?${new URLSearchParams(
+                      href="/courses/${course.publicId}/forum/${mentionCourseConversation.publicId}?${new URLSearchParams(
                         { message: mentionCourseConversationMessage.publicId },
                       ).toString()}"
                       class="link"
@@ -2948,7 +2948,7 @@ You may also use the buttons on the message content editor to ${
           .getAttribute("href")
           .match(
             new RegExp(
-              `^https://${RegExp.escape(application.userConfiguration.hostname)}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
+              `^https://${RegExp.escape(application.userConfiguration.hostname)}/courses/${course.publicId}/(?:forum|conversations)/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
             ),
           );
         if (match === null) continue;
@@ -3023,7 +3023,7 @@ You may also use the buttons on the message content editor to ${
             "href",
             new URL(
               element.getAttribute("href"),
-              `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/conversations/${courseConversation.publicId}` : ""}`,
+              `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/forum/${courseConversation.publicId}` : ""}`,
             ).href,
           );
         else if (
@@ -3052,7 +3052,7 @@ You may also use the buttons on the message content editor to ${
   application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/polls/(?<courseConversationMessageContentPollIndex>[0-9]+)$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/polls/(?<courseConversationMessageContentPollIndex>[0-9]+)$",
     ),
     handler: async (
       request: serverTypes.Request<
@@ -3206,14 +3206,14 @@ You may also use the buttons on the message content editor to ${
         `,
       );
       response.redirect!(
-        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+        `/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}(?:$|/)`,
           }),
         });
     },

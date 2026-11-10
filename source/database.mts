@@ -7442,11 +7442,11 @@ export default async (application: Application): Promise<void> => {
 
                         Conversation existent permanent link turned reference: <https://${
                           application.userConfiguration.hostname
-                        }/courses/${course.publicId}/conversations/1>
+                        }/courses/${course.publicId}/forum/1>
 
                         Conversation non-existent permanent link turned reference: <https://${
                           application.userConfiguration.hostname
-                        }/courses/${course.publicId}/conversations/999999>
+                        }/courses/${course.publicId}/forum/999999>
 
                         Message existent: #1/${courseConversationMessageForCourseConversationMessageDraft!.publicId}
 
@@ -7454,11 +7454,15 @@ export default async (application: Application): Promise<void> => {
 
                         Message existent permanent link turned reference: <https://${
                           application.userConfiguration.hostname
-                        }/courses/${course.publicId}/conversations/1?message=${courseConversationMessageForCourseConversationMessageDraft!.publicId}>
+                        }/courses/${course.publicId}/forum/1?message=${courseConversationMessageForCourseConversationMessageDraft!.publicId}>
 
                         Message non-existent permanent link turned reference: <https://${
                           application.userConfiguration.hostname
-                        }/courses/${course.publicId}/conversations/1?message=999999>
+                        }/courses/${course.publicId}/forum/1?message=999999>
+
+                        Conversation legacy permanent link turned reference: <https://${
+                          application.userConfiguration.hostname
+                        }/courses/${course.publicId}/conversations/1>
 
                         # Comment
 

@@ -477,7 +477,7 @@ export default async (application: Application): Promise<void> => {
                       gap: var(--size--0-5);
                     `} ${
                       request.URL.pathname.startsWith(
-                        `/courses/${request.state.course.publicId}/conversations/`,
+                        `/courses/${request.state.course.publicId}/forum/`,
                       )
                         ? css`
                             font-weight: 800;

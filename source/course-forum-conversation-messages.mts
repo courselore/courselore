@@ -41,7 +41,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/draft$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/draft$",
     ),
     handler: (
       request: serverTypes.Request<
@@ -177,7 +177,7 @@ export default async (application: Application): Promise<void> => {
             method: "POST",
             headers: { "CSRF-Protection": "true" },
             body: new URLSearchParams({
-              pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+              pathname: `^/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}(?:$|/)`,
             }),
           });
     },
@@ -186,7 +186,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages$",
     ),
     handler: async (
       request: serverTypes.Request<
@@ -400,14 +400,14 @@ export default async (application: Application): Promise<void> => {
         });
       });
       response.redirect!(
-        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+        `/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}(?:$|/)`,
           }),
         });
     },
@@ -706,7 +706,7 @@ export default async (application: Application): Promise<void> => {
                     <a
                       href="https://${
                         application.userConfiguration.hostname
-                      }/courses/${course.publicId}/conversations/${courseConversation.publicId}?${new URLSearchParams(
+                      }/courses/${course.publicId}/forum/${courseConversation.publicId}?${new URLSearchParams(
                         {
                           message: courseConversationMessage.publicId,
                         },
@@ -737,7 +737,7 @@ export default async (application: Application): Promise<void> => {
 
   application.webServer?.push({
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
@@ -810,7 +810,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/edit$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/edit$",
     ),
     handler: (
       request: serverTypes.Request<
@@ -841,7 +841,7 @@ export default async (application: Application): Promise<void> => {
         <div
           type="form"
           method="PATCH"
-          action="/courses/${request.state.course.publicId}/conversations/${
+          action="/courses/${request.state.course.publicId}/forum/${
             request.state.courseConversation.publicId
           }/messages/${request.state.courseConversationMessage.publicId}"
           css="${css`
@@ -1342,7 +1342,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)$",
     ),
     handler: async (
       request: serverTypes.Request<
@@ -1493,14 +1493,14 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       response.redirect!(
-        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+        `/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}(?:$|/)`,
           }),
         });
     },
@@ -1509,7 +1509,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "DELETE",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)$",
     ),
     handler: (
       request: serverTypes.Request<
@@ -1567,14 +1567,14 @@ export default async (application: Application): Promise<void> => {
         );
       });
       response.redirect!(
-        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+        `/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}(?:$|/)`,
           }),
         });
     },
@@ -1583,7 +1583,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/view$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/view$",
     ),
     handler: (
       request: serverTypes.Request<
@@ -1634,7 +1634,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/like$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/like$",
     ),
     handler: (
       request: serverTypes.Request<
@@ -1680,14 +1680,14 @@ export default async (application: Application): Promise<void> => {
           );
       });
       response.redirect!(
-        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+        `/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}(?:$|/)`,
           }),
         });
     },
@@ -1696,7 +1696,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "DELETE",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/like$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/like$",
     ),
     handler: (
       request: serverTypes.Request<
@@ -1736,14 +1736,14 @@ export default async (application: Application): Promise<void> => {
           );
       });
       response.redirect!(
-        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+        `/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}(?:$|/)`,
           }),
         });
     },

@@ -537,7 +537,7 @@ export default async (application: Application): Promise<void> => {
                   method: "POST",
                   headers: { "CSRF-Protection": "true" },
                   body: new URLSearchParams({
-                    pathname: `^/courses/${state.course.publicId}/conversations/${state.courseConversation.publicId}(?:$|/)`,
+                    pathname: `^/courses/${state.course.publicId}/forum/${state.courseConversation.publicId}(?:$|/)`,
                   }),
                 });
               utilities.log(

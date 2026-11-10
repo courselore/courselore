@@ -174,7 +174,7 @@ export default async (application: Application): Promise<void> => {
                         key="sidebar--menu--new-conversation"
                         href="/courses/${
                           request.state.course.publicId
-                        }/conversations/new"
+                        }/forum/new"
                         class="button button--rectangle button--blue"
                         css="${css`
                           font-size: var(--font-size--3);
@@ -647,10 +647,10 @@ export default async (application: Application): Promise<void> => {
                                     <a
                                       key="courseConversation /courses/${
                                         request.state.course!.publicId
-                                      }/conversations/${courseConversation.publicId}"
+                                      }/forum/${courseConversation.publicId}"
                                       href="/courses/${
                                         request.state.course!.publicId
-                                      }/conversations/${courseConversation.publicId}"
+                                      }/forum/${courseConversation.publicId}"
                                       css="${css`
                                         padding: var(--size--2) var(--size--4);
                                         border-bottom: var(--border-width--1)
@@ -1384,7 +1384,7 @@ export default async (application: Application): Promise<void> => {
             <a
               href="/courses/${
                 request.state.course.publicId
-              }/conversations/${courseConversation.publicId}"
+              }/forum/${courseConversation.publicId}"
               class="button button--rectangle button--transparent button--dropdown-menu"
             >
               <span
@@ -1544,9 +1544,9 @@ export default async (application: Application): Promise<void> => {
             <a
               href="/courses/${
                 request.state.course.publicId
-              }/conversations/${courseConversation.publicId}?${new URLSearchParams(
-                { message: courseConversationMessage.publicId },
-              ).toString()}"
+              }/forum/${courseConversation.publicId}?${new URLSearchParams({
+                message: courseConversationMessage.publicId,
+              }).toString()}"
               class="button button--rectangle button--transparent button--dropdown-menu"
             >
               <div>
@@ -1675,9 +1675,7 @@ export default async (application: Application): Promise<void> => {
 
   application.webServer?.push({
     method: "GET",
-    pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/new$",
-    ),
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/forum/new$"),
     handler: async (
       request: serverTypes.Request<
         {},
@@ -1879,10 +1877,10 @@ export default async (application: Application): Promise<void> => {
             <div
               key="courseConversation/new /courses/${
                 request.state.course.publicId
-              }/conversations/new"
+              }/forum/new"
               type="form"
               method="POST"
-              action="/courses/${request.state.course.publicId}/conversations"
+              action="/courses/${request.state.course.publicId}/forum"
               css="${css`
                 display: flex;
                 flex-direction: column;
@@ -1947,7 +1945,7 @@ export default async (application: Application): Promise<void> => {
                                     this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = true;
                                     return;
                                   }
-                                  const similarQuestionsResults = await (await fetch(${`/courses/${request.state.course.publicId}/conversations/new/similar-questions`} + "?" + new URLSearchParams({ title: this.value }))).text();
+                                  const similarQuestionsResults = await (await fetch(${`/courses/${request.state.course.publicId}/forum/new/similar-questions`} + "?" + new URLSearchParams({ title: this.value }))).text();
                                   if (similarQuestionsResults === "") {
                                     this.closest('[type~="form"]').querySelector('[key~="similarQuestions"]').hidden = true;
                                     return;
@@ -2948,7 +2946,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/new/similar-questions$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/new/similar-questions$",
     ),
     handler: async (
       request: serverTypes.Request<
@@ -3104,7 +3102,7 @@ export default async (application: Application): Promise<void> => {
               <a
                 href="/courses/${
                   request.state.course.publicId
-                }/conversations/${courseConversation.publicId}"
+                }/forum/${courseConversation.publicId}"
                 target="_blank"
                 class="button button--rectangle button--transparent"
               >
@@ -3157,7 +3155,7 @@ export default async (application: Application): Promise<void> => {
 
   application.webServer?.push({
     method: "POST",
-    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/conversations$"),
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/forum$"),
     handler: async (
       request: serverTypes.Request<
         {},
@@ -3493,14 +3491,14 @@ export default async (application: Application): Promise<void> => {
         });
       });
       response.redirect!(
-        `/courses/${request.state.course.publicId}/conversations/${courseConversation!.publicId}`,
+        `/courses/${request.state.course.publicId}/forum/${courseConversation!.publicId}`,
       );
       for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/conversations(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum(?:$|/)`,
           }),
         });
     },
@@ -3508,7 +3506,7 @@ export default async (application: Application): Promise<void> => {
 
   application.webServer?.push({
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
@@ -3586,7 +3584,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)$",
     ),
     handler: async (
       request: serverTypes.Request<
@@ -3633,7 +3631,7 @@ export default async (application: Application): Promise<void> => {
             <div
               key="courseConversation /courses/${
                 request.state.course.publicId
-              }/conversations/${request.state.courseConversation.publicId}"
+              }/forum/${request.state.courseConversation.publicId}"
               css="${css`
                 display: flex;
                 flex-direction: column;
@@ -3644,7 +3642,7 @@ export default async (application: Application): Promise<void> => {
                   ${typeof request.search.message === "string" && !request.liveConnection} ? (
                     this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
                       request.state.course.publicId
-                    }/conversations/${
+                    }/forum/${
                       request.state.courseConversation.publicId
                     }/messages/${request.search.message}"]`}) ??
                     undefined
@@ -3669,7 +3667,7 @@ export default async (application: Application): Promise<void> => {
                 method="PATCH"
                 action="/courses/${
                   request.state.course.publicId
-                }/conversations/${request.state.courseConversation.publicId}"
+                }/forum/${request.state.courseConversation.publicId}"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -3836,7 +3834,7 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               const popover = javascript.popover({ element: this, trigger: "none" });
                               this.onclick = async () => {
-                                await navigator.clipboard.writeText(${`https://${application.userConfiguration.hostname}/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`});
+                                await navigator.clipboard.writeText(${`https://${application.userConfiguration.hostname}/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}`});
                                 popover.showPopover();
                                 await utilities.sleep(1000);
                                 popover.hidePopover();
@@ -3909,7 +3907,7 @@ export default async (application: Application): Promise<void> => {
                                     $${courses.map(
                                       (course) => html`
                                         <a
-                                          href="/courses/${course.publicId}/conversations/new?${new URLSearchParams(
+                                          href="/courses/${course.publicId}/forum/new?${new URLSearchParams(
                                             {
                                               "reuse.course":
                                                 request.state.course!.publicId,
@@ -3979,7 +3977,7 @@ export default async (application: Application): Promise<void> => {
                                     method="DELETE"
                                     action="/courses/${
                                       request.state.course.publicId
-                                    }/conversations/${
+                                    }/forum/${
                                       request.state.courseConversation.publicId
                                     }"
                                     css="${css`
@@ -5392,7 +5390,7 @@ export default async (application: Application): Promise<void> => {
                         <div
                           key="courseConversationMessage /courses/${
                             request.state.course!.publicId
-                          }/conversations/${
+                          }/forum/${
                             request.state.courseConversation!.publicId
                           }/messages/${courseConversationMessage.publicId}"
                           css="${css`
@@ -5469,7 +5467,7 @@ export default async (application: Application): Promise<void> => {
                                           javascript.stateAdd(this, "viewed");
                                           await fetch(${`/courses/${
                                             request.state.course!.publicId
-                                          }/conversations/${
+                                          }/forum/${
                                             request.state.courseConversation!
                                               .publicId
                                           }/messages/${courseConversationMessage.publicId}/view`}, {
@@ -5714,7 +5712,7 @@ export default async (application: Application): Promise<void> => {
                                     javascript="${javascript`
                                       const popover = javascript.popover({ element: this, trigger: "none" });
                                       this.onclick = async () => {
-                                        await navigator.clipboard.writeText(${`https://${application.userConfiguration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
+                                        await navigator.clipboard.writeText(${`https://${application.userConfiguration.hostname}/courses/${request.state.course!.publicId}/forum/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
                                         popover.showPopover();
                                         await utilities.sleep(1000);
                                         popover.hidePopover();
@@ -5762,7 +5760,7 @@ export default async (application: Application): Promise<void> => {
                                                   this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').firstElementChild,
                                                   await (
                                                     await fetch(
-                                                      ${`/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}/messages/${courseConversationMessage.publicId}/edit`}
+                                                      ${`/courses/${request.state.course!.publicId}/forum/${request.state.courseConversation!.publicId}/messages/${courseConversationMessage.publicId}/edit`}
                                                     )
                                                   ).text()
                                                 );
@@ -5800,7 +5798,7 @@ export default async (application: Application): Promise<void> => {
                                             method="DELETE"
                                             action="/courses/${
                                               request.state.course!.publicId
-                                            }/conversations/${
+                                            }/forum/${
                                               request.state.courseConversation!
                                                 .publicId
                                             }/messages/${courseConversationMessage.publicId}"
@@ -5992,7 +5990,7 @@ export default async (application: Application): Promise<void> => {
                                               method="POST"
                                               action="/courses/${
                                                 request.state.course!.publicId
-                                              }/conversations/${
+                                              }/forum/${
                                                 request.state
                                                   .courseConversation!.publicId
                                               }/messages/${courseConversationMessage.publicId}/like"
@@ -6012,7 +6010,7 @@ export default async (application: Application): Promise<void> => {
                                               method="DELETE"
                                               action="/courses/${
                                                 request.state.course!.publicId
-                                              }/conversations/${
+                                              }/forum/${
                                                 request.state
                                                   .courseConversation!.publicId
                                               }/messages/${courseConversationMessage.publicId}/like"
@@ -6557,7 +6555,7 @@ export default async (application: Application): Promise<void> => {
                           method="POST"
                           action="/courses/${
                             request.state.course.publicId
-                          }/conversations/${
+                          }/forum/${
                             request.state.courseConversation.publicId
                           }/messages"
                           css="${css`
@@ -6570,7 +6568,7 @@ export default async (application: Application): Promise<void> => {
                           this.oninput = utilities.throttle(async () => {
                             await fetch(${`/courses/${
                               request.state.course.publicId
-                            }/conversations/${request.state.courseConversation.publicId}/messages/draft`}, {
+                            }/forum/${request.state.courseConversation.publicId}/messages/draft`}, {
                               method: "POST",
                               headers: { "CSRF-Protection": "true" },
                               body: new URLSearchParams(javascript.serialize(this)),
@@ -7193,7 +7191,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)$",
     ),
     handler: async (
       request: serverTypes.Request<
@@ -7381,14 +7379,14 @@ export default async (application: Application): Promise<void> => {
           );
       });
       response.redirect!(
-        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+        `/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}`,
       );
       for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/conversations(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum(?:$|/)`,
           }),
         });
     },
@@ -7397,7 +7395,7 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "DELETE",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)$",
     ),
     handler: (
       request: serverTypes.Request<
@@ -7492,7 +7490,7 @@ export default async (application: Application): Promise<void> => {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/conversations(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum(?:$|/)`,
           }),
         });
     },

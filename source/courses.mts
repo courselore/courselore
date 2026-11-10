@@ -661,7 +661,7 @@ export default async (application: Application): Promise<void> => {
         );
       if (courseConversation !== undefined) {
         response.redirect!(
-          `/courses/${request.state.course.publicId}/conversations/${courseConversation.publicId}`,
+          `/courses/${request.state.course.publicId}/forum/${courseConversation.publicId}`,
         );
         return;
       }
@@ -670,7 +670,7 @@ export default async (application: Application): Promise<void> => {
         "courseParticipationRoleStudent"
       ) {
         response.redirect!(
-          `/courses/${request.state.course.publicId}/conversations/new`,
+          `/courses/${request.state.course.publicId}/forum/new`,
         );
         return;
       }
@@ -712,9 +712,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
                 <div>
                   <a
-                    href="/courses/${
-                      request.state.course.publicId
-                    }/conversations/new"
+                    href="/courses/${request.state.course.publicId}/forum/new"
                     class="button button--rectangle button--transparent"
                     >Start the first conversation</a
                   >
