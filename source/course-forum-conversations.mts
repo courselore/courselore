@@ -8,7 +8,7 @@ import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import { Application } from "./application.mjs";
 
-export type ApplicationCourseConversation = {
+export type ApplicationCourseForumConversations = {
   types: {
     states: {
       CourseConversation: Application["types"]["states"]["Course"] & {

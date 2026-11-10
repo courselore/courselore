@@ -30,7 +30,7 @@ import * as utilities from "@radically-straightforward/utilities";
 import natural from "natural";
 import { Application } from "./application.mjs";
 
-export type ApplicationCourseConversationMessageContent = {
+export type ApplicationCourseForumConversationMessageContent = {
   partials: {
     courseConversationMessageContentEditor: ({
       course,

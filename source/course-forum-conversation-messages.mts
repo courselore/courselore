@@ -9,7 +9,7 @@ import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import { Application } from "./application.mjs";
 
-export type ApplicationCourseConversationMessages = {
+export type ApplicationCourseForumConversationMessages = {
   types: {
     states: {
       CourseConversationMessage: Application["types"]["states"]["CourseConversation"] & {

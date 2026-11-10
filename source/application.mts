@@ -16,26 +16,26 @@ import selfsigned from "selfsigned";
 import * as sqliteVec from "sqlite-vec";
 import nodemailer from "nodemailer";
 import * as smtpServer from "smtp-server";
-import layouts, { ApplicationLayouts } from "./layouts.mjs";
-import authentication, {
+import applicationLayouts, { ApplicationLayouts } from "./layouts.mjs";
+import applicationAuthentication, {
   ApplicationAuthentication,
 } from "./authentication.mjs";
-import homepage from "./homepage.mjs";
-import systemSettings from "./system-settings.mjs";
-import users, { ApplicationUsers } from "./users.mjs";
-import courses, { ApplicationCourses } from "./courses.mjs";
-import courseConversations, {
-  ApplicationCourseConversation,
-} from "./course-conversations.mjs";
-import courseConversationMessages, {
-  ApplicationCourseConversationMessages,
-} from "./course-conversation-messages.mjs";
-import courseConversationMessageContent, {
-  ApplicationCourseConversationMessageContent,
-} from "./course-conversation-message-content.mjs";
-import emails from "./emails.mjs";
-import errors from "./errors.mjs";
-import database from "./database.mjs";
+import applicationHomepage from "./homepage.mjs";
+import applicationSystemSettings from "./system-settings.mjs";
+import applicationUsers, { ApplicationUsers } from "./users.mjs";
+import applicationCourses, { ApplicationCourses } from "./courses.mjs";
+import applicationCourseForumConversations, {
+  ApplicationCourseForumConversations,
+} from "./course-forum-conversations.mjs";
+import applicationCourseForumConversationMessages, {
+  ApplicationCourseForumConversationMessages,
+} from "./course-forum-conversation-messages.mjs";
+import applicationCourseForumConversationMessageContent, {
+  ApplicationCourseForumConversationMessageContent,
+} from "./course-forum-conversation-message-content.mjs";
+import applicationEmails from "./emails.mjs";
+import applicationErrors from "./errors.mjs";
+import applicationDatabase from "./database.mjs";
 
 export type Application = {
   version: string;
@@ -122,9 +122,9 @@ export type Application = {
   ApplicationAuthentication &
   ApplicationUsers &
   ApplicationCourses &
-  ApplicationCourseConversation &
-  ApplicationCourseConversationMessages &
-  ApplicationCourseConversationMessageContent;
+  ApplicationCourseForumConversations &
+  ApplicationCourseForumConversationMessages &
+  ApplicationCourseForumConversationMessageContent;
 const application = {} as Application;
 application.version = "10.3.1";
 application.commandLineArguments = util.parseArgs({
@@ -245,18 +245,18 @@ process.once("beforeExit", () => {
   );
 });
 
-await layouts(application);
-await authentication(application);
-await homepage(application);
-await systemSettings(application);
-await users(application);
-await courses(application);
-await courseConversations(application);
-await courseConversationMessages(application);
-await courseConversationMessageContent(application);
-await emails(application);
-await errors(application);
-await database(application);
+await applicationLayouts(application);
+await applicationAuthentication(application);
+await applicationHomepage(application);
+await applicationSystemSettings(application);
+await applicationUsers(application);
+await applicationCourses(application);
+await applicationCourseForumConversations(application);
+await applicationCourseForumConversationMessages(application);
+await applicationCourseForumConversationMessageContent(application);
+await applicationEmails(application);
+await applicationErrors(application);
+await applicationDatabase(application);
 
 if (application.commandLineArguments.values.type === "initialize")
   fsCallback.writeSync(3, JSON.stringify(application));
