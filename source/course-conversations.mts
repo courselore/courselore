@@ -1662,6 +1662,18 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.webServer?.push({
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/conversations/"),
+    handler: (request, response) => {
+      if (request.liveConnection) return;
+      response.redirect!(
+        request.URL.pathname.replace("/conversations/", "/forum/") +
+          request.URL.search.toString(),
+        "permanent",
+      );
+    },
+  });
+
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/conversations/new$",
