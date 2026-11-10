@@ -7462,7 +7462,7 @@ export default async (application: Application): Promise<void> => {
 
                         Conversation legacy permanent link turned reference: <https://${
                           application.userConfiguration.hostname
-                        }/courses/${course.publicId}/conversations/1>
+                        }/courses/${course.publicId}/forum/1>
 
                         # Comment
 

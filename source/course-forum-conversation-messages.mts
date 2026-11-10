@@ -686,8 +686,8 @@ export default async (application: Application): Promise<void> => {
               },
               to: courseConversationMessageEmailNotificationUser.email,
               replyTo: `${courseConversationMessageEmailNotificationReplyToken}@${application.userConfiguration.email.receive.hostname}`,
-              inReplyTo: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
-              references: `courses/${course.publicId}/conversations/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
+              inReplyTo: `courses/${course.publicId}/forum/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
+              references: `courses/${course.publicId}/forum/${courseConversation.publicId}@${application.userConfiguration.hostname}`,
               subject: courseConversation.title,
               html: html`
                 $${await application.partials.courseConversationMessageContentProcessor(
