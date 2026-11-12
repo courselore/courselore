@@ -145,7 +145,7 @@ export default async (application: Application): Promise<void> => {
                   "id",
                   "courseConversation",
                   "courseParticipation"
-                from "courseConversationMessageEmailNotificationReplyTokens"
+                from "courseForumConversationMessageEmailNotificationReplyTokens"
                 where "tokenTokenHash" = ${cryptography.TokenHash.hash(
                   courseConversationMessageEmailNotificationReplyTokenToken,
                 )};

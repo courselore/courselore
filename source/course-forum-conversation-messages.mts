@@ -663,7 +663,7 @@ export default async (application: Application): Promise<void> => {
               });
             application.database.run(
               sql`
-                insert into "courseConversationMessageEmailNotificationReplyTokens" (
+                insert into "courseForumConversationMessageEmailNotificationReplyTokens" (
                   "tokenTokenHash",
                   "courseConversation",
                   "courseParticipation"
