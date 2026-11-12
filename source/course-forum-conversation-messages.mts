@@ -76,8 +76,10 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.content !== "string" ||
         (request.body.courseForumConversationMessageType !== undefined &&
-          (typeof request.body.courseForumConversationMessageType !== "string" ||
-            request.state.courseForumConversation.courseForumConversationType !==
+          (typeof request.body.courseForumConversationMessageType !==
+            "string" ||
+            request.state.courseForumConversation
+              .courseForumConversationType !==
               "courseForumConversationTypeQuestion" ||
             (request.body.courseForumConversationMessageType !==
               "courseForumConversationMessageTypeMessage" &&
@@ -134,7 +136,8 @@ export default async (application: Application): Promise<void> => {
           );
         sendLiveConnectionUpdates =
           ((previouscourseForumConversationMessageDraft === undefined ||
-            previouscourseForumConversationMessageDraft.content.trim() === "") &&
+            previouscourseForumConversationMessageDraft.content.trim() ===
+              "") &&
             request.body.content!.trim() !== "") ||
           (previouscourseForumConversationMessageDraft !== undefined &&
             previouscourseForumConversationMessageDraft.content.trim() !== "" &&
@@ -223,8 +226,10 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.content !== "string" ||
         request.body.content.trim() === "" ||
         (request.body.courseForumConversationMessageType !== undefined &&
-          (typeof request.body.courseForumConversationMessageType !== "string" ||
-            request.state.courseForumConversation.courseForumConversationType !==
+          (typeof request.body.courseForumConversationMessageType !==
+            "string" ||
+            request.state.courseForumConversation
+              .courseForumConversationType !==
               "courseForumConversationTypeQuestion" ||
             (request.body.courseForumConversationMessageType !==
               "courseForumConversationMessageTypeMessage" &&
@@ -268,11 +273,13 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const contentTextContent =
-        await application.partials.courseForumConversationMessageContentProcessor({
-          course: request.state.course,
-          courseForumConversationMessageContent: request.body.content,
-          mode: "textContent",
-        });
+        await application.partials.courseForumConversationMessageContentProcessor(
+          {
+            course: request.state.course,
+            courseForumConversationMessageContent: request.body.content,
+            mode: "textContent",
+          },
+        );
       const contentSemanticSearch = await (
         await fetch("http://localhost:19000/vector-embedding", {
           method: "POST",
@@ -483,7 +490,8 @@ export default async (application: Application): Promise<void> => {
             limit 1;
           `,
         );
-        if (firstcourseForumConversationMessage === undefined) throw new Error();
+        if (firstcourseForumConversationMessage === undefined)
+          throw new Error();
         const course = application.database.get<{
           id: number;
           publicId: string;
@@ -531,13 +539,16 @@ export default async (application: Application): Promise<void> => {
               )
             : undefined;
         const courseForumConversationMessageMentions =
-          await application.partials.courseForumConversationMessageContentProcessor({
-            course,
-            courseForumConversation,
-            courseForumConversationMessage,
-            mode: "mentions",
-          });
-        const courseForumConversationMessageEmailNotifications = new Array<any>();
+          await application.partials.courseForumConversationMessageContentProcessor(
+            {
+              course,
+              courseForumConversation,
+              courseForumConversationMessage,
+              mode: "mentions",
+            },
+          );
+        const courseForumConversationMessageEmailNotifications =
+          new Array<any>();
         for (const courseForumConversationMessageEmailNotificationCourseParticipation of application.database.all<{
           id: number;
           publicId: string;
@@ -860,7 +871,8 @@ export default async (application: Application): Promise<void> => {
             course: request.state.course,
             courseParticipation: request.state.courseParticipation,
             courseForumConversation: request.state.courseForumConversation,
-            courseForumConversationMessage: request.state.courseForumConversationMessage,
+            courseForumConversationMessage:
+              request.state.courseForumConversationMessage,
           })}
           <div
             css="${css`
@@ -908,7 +920,8 @@ export default async (application: Application): Promise<void> => {
                 if (firstcourseForumConversationMessage === undefined)
                   throw new Error();
                 if (
-                  request.state.courseForumConversation.courseForumConversationType ===
+                  request.state.courseForumConversation
+                    .courseForumConversationType ===
                     "courseForumConversationTypeQuestion" &&
                   request.state.courseForumConversationMessage.id !==
                     firstcourseForumConversationMessage.id
@@ -1399,8 +1412,10 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.content !== "string" ||
         request.body.content.trim() === "" ||
         (request.body.courseForumConversationMessageType !== undefined &&
-          (typeof request.body.courseForumConversationMessageType !== "string" ||
-            request.state.courseForumConversation.courseForumConversationType !==
+          (typeof request.body.courseForumConversationMessageType !==
+            "string" ||
+            request.state.courseForumConversation
+              .courseForumConversationType !==
               "courseForumConversationTypeQuestion" ||
             request.state.courseForumConversationMessage.id ===
               firstcourseForumConversationMessage.id ||
@@ -1448,11 +1463,13 @@ export default async (application: Application): Promise<void> => {
       )
         throw "validation";
       const contentTextContent =
-        await application.partials.courseForumConversationMessageContentProcessor({
-          course: request.state.course,
-          courseForumConversationMessageContent: request.body.content,
-          mode: "textContent",
-        });
+        await application.partials.courseForumConversationMessageContentProcessor(
+          {
+            course: request.state.course,
+            courseForumConversationMessageContent: request.body.content,
+            mode: "textContent",
+          },
+        );
       const contentSemanticSearch = await (
         await fetch("http://localhost:19000/vector-embedding", {
           method: "POST",

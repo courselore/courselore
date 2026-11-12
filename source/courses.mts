@@ -2298,7 +2298,8 @@ export default async (application: Application): Promise<void> => {
                                         }
                                         class="input--checkbox"
                                         $${
-                                          courseForumConversationsTag === undefined
+                                          courseForumConversationsTag ===
+                                          undefined
                                             ? html`
                                                 javascript="${javascript`
                                               this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseForumConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")));
@@ -2313,7 +2314,8 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--rectangle button--transparent"
                                       javascript="${javascript`
                                       if (${
-                                        courseForumConversationsTag !== undefined &&
+                                        courseForumConversationsTag !==
+                                          undefined &&
                                         application.database.get(
                                           sql`
                                             select true
@@ -5072,7 +5074,9 @@ export default async (application: Application): Promise<void> => {
               `courseForumConversationsTags[${courseForumConversationsTagPublicId}].name`
             ]!.trim() === "",
         ) ||
-        !Array.isArray(request.body.courseForumConversationsTagsPublicIdsToRemove) ||
+        !Array.isArray(
+          request.body.courseForumConversationsTagsPublicIdsToRemove,
+        ) ||
         request.body.courseForumConversationsTagsPublicIdsToRemove.some(
           (courseForumConversationsTagPublicId) =>
             typeof courseForumConversationsTagPublicId !== "string" ||

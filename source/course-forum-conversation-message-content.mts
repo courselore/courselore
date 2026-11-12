@@ -144,7 +144,8 @@ export default async (application: Application): Promise<void> => {
     courseParticipation,
     courseForumConversation,
     courseForumConversationMessage,
-    courseForumConversationMessageContent = courseForumConversationMessage?.content ?? "",
+    courseForumConversationMessageContent = courseForumConversationMessage?.content ??
+      "",
   }) => html`
     <div
       key="courseForumConversationMessageContentEditor"
@@ -1180,14 +1181,17 @@ ${courseForumConversationMessageContent}</textarea>
       )
         throw "validation";
       response.send(
-        await application.partials.courseForumConversationMessageContentProcessor({
-          course: request.state.course,
-          courseParticipation: request.state.courseParticipation,
-          courseForumConversation: request.state.courseForumConversation,
-          courseForumConversationMessage: request.state.courseForumConversationMessage,
-          courseForumConversationMessageContent: request.body.content,
-          mode: "preview",
-        }),
+        await application.partials.courseForumConversationMessageContentProcessor(
+          {
+            course: request.state.course,
+            courseParticipation: request.state.courseParticipation,
+            courseForumConversation: request.state.courseForumConversation,
+            courseForumConversationMessage:
+              request.state.courseForumConversationMessage,
+            courseForumConversationMessageContent: request.body.content,
+            mode: "preview",
+          },
+        ),
       );
     },
   });
@@ -1717,10 +1721,12 @@ You may also use the buttons on the message content editor to ${
                   mode: "preview",
                 },
               )}
-              $${application.partials.courseForumConversationMessageContentEditor({
-                course: request.state.course,
-                courseParticipation: request.state.courseParticipation,
-              })}
+              $${application.partials.courseForumConversationMessageContentEditor(
+                {
+                  course: request.state.course,
+                  courseParticipation: request.state.courseParticipation,
+                },
+              )}
             </div>
           `,
         }),
@@ -2298,7 +2304,10 @@ You may also use the buttons on the message content editor to ${
           ...element.children[0].children,
         ].entries()) {
           const votesElement = pollOption.querySelector("votes");
-          if (mode !== "programmaticEditingOfcourseForumConversationMessageContent")
+          if (
+            mode !==
+            "programmaticEditingOfcourseForumConversationMessageContent"
+          )
             votesElement?.remove();
           pollOption.votes =
             votesElement === null ? [] : JSON.parse(votesElement.textContent);
@@ -2850,11 +2859,12 @@ You may also use the buttons on the message content editor to ${
                   courseForumConversationPublicId,
                   courseForumConversationMessagePublicId,
                 ) => {
-                  const mentioncourseForumConversation = application.database.get<{
-                    id: number;
-                    publicId: string;
-                  }>(
-                    sql`
+                  const mentioncourseForumConversation =
+                    application.database.get<{
+                      id: number;
+                      publicId: string;
+                    }>(
+                      sql`
                       select "id", "publicId"
                       from "courseForumConversations"
                       where
@@ -2887,8 +2897,9 @@ You may also use the buttons on the message content editor to ${
                           
                         );
                     `,
-                  );
-                  if (mentioncourseForumConversation === undefined) return match;
+                    );
+                  if (mentioncourseForumConversation === undefined)
+                    return match;
                   if (courseForumConversationMessagePublicId === undefined)
                     return html`
                       <a
@@ -2921,7 +2932,10 @@ You may also use the buttons on the message content editor to ${
                   return html`
                     <a
                       href="/courses/${course.publicId}/forum/${mentioncourseForumConversation.publicId}?${new URLSearchParams(
-                        { message: mentioncourseForumConversationMessage.publicId },
+                        {
+                          message:
+                            mentioncourseForumConversationMessage.publicId,
+                        },
                       ).toString()}"
                       class="link"
                       >${match}</a
@@ -3065,8 +3079,8 @@ You may also use the buttons on the message content editor to ${
       response,
     ) => {
       if (
-        typeof request.pathname.courseForumConversationMessageContentPollIndex !==
-          "string" ||
+        typeof request.pathname
+          .courseForumConversationMessageContentPollIndex !== "string" ||
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
@@ -3079,10 +3093,12 @@ You may also use the buttons on the message content editor to ${
         !Array.isArray(
           request.body.courseForumConversationMessageContentPollOptions,
         ) ||
-        request.body.courseForumConversationMessageContentPollOptions.length === 0 ||
+        request.body.courseForumConversationMessageContentPollOptions.length ===
+          0 ||
         request.body.courseForumConversationMessageContentPollOptions.some(
           (courseForumConversationMessageContentPollOption) =>
-            typeof courseForumConversationMessageContentPollOption !== "string" ||
+            typeof courseForumConversationMessageContentPollOption !==
+              "string" ||
             !courseForumConversationMessageContentPollOption.match(/^[0-9]+$/),
         )
       )
@@ -3097,7 +3113,8 @@ You may also use the buttons on the message content editor to ${
                   {
                     course: request.state.course,
                     courseParticipation: request.state.courseParticipation,
-                    courseForumConversation: request.state.courseForumConversation,
+                    courseForumConversation:
+                      request.state.courseForumConversation,
                     courseForumConversationMessage:
                       request.state.courseForumConversationMessage,
                     mode: "programmaticEditingOfcourseForumConversationMessageContent",
@@ -3117,12 +3134,16 @@ You may also use the buttons on the message content editor to ${
           document
             .querySelectorAll('[type~="poll"]')
             [
-              Number(request.pathname.courseForumConversationMessageContentPollIndex)
+              Number(
+                request.pathname.courseForumConversationMessageContentPollIndex,
+              )
             ]?.querySelectorAll(":scope > ul > li") ?? []
         ).entries(),
       ].reverse()) {
         const votesElement =
-          courseForumConversationMessageContentPollOption.querySelector("votes");
+          courseForumConversationMessageContentPollOption.querySelector(
+            "votes",
+          );
         const votes = new Set(
           votesElement !== null
             ? JSON.parse(votesElement.textContent)
@@ -3160,15 +3181,19 @@ You may also use the buttons on the message content editor to ${
             position.start,
           ) +
           html`<votes>${JSON.stringify([...votes])}</votes>` +
-          request.state.courseForumConversationMessage.content.slice(position.end);
+          request.state.courseForumConversationMessage.content.slice(
+            position.end,
+          );
       }
       const contentTextContent =
-        await application.partials.courseForumConversationMessageContentProcessor({
-          course: request.state.course,
-          courseForumConversationMessageContent:
-            request.state.courseForumConversationMessage.content,
-          mode: "textContent",
-        });
+        await application.partials.courseForumConversationMessageContentProcessor(
+          {
+            course: request.state.course,
+            courseForumConversationMessageContent:
+              request.state.courseForumConversationMessage.content,
+            mode: "textContent",
+          },
+        );
       const contentSemanticSearch = await (
         await fetch("http://localhost:19000/vector-embedding", {
           method: "POST",

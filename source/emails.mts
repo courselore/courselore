@@ -81,7 +81,8 @@ export default async (application: Application): Promise<void> => {
           id: number;
           publicId: string;
           courseForumConversationType:
-            "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
+            | "courseForumConversationTypeNote"
+            | "courseForumConversationTypeQuestion";
           courseForumConversationTypeQuestionResolved: number;
           courseForumConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
@@ -250,7 +251,8 @@ export default async (application: Application): Promise<void> => {
               id: number;
               publicId: string;
               courseForumConversationType:
-                "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
+                | "courseForumConversationTypeNote"
+                | "courseForumConversationTypeQuestion";
               courseForumConversationTypeQuestionResolved: number;
               courseForumConversationVisibility:
                 | "courseForumConversationVisibilityEveryone"
@@ -443,10 +445,11 @@ export default async (application: Application): Promise<void> => {
                       where "id" = ${state.courseForumConversation.id};
                     `,
                   );
-                state.courseForumConversationMessage = application.database.get<{
-                  id: number;
-                }>(
-                  sql`
+                state.courseForumConversationMessage =
+                  application.database.get<{
+                    id: number;
+                  }>(
+                    sql`
                     select * from "courseForumConversationMessages" where "id" = ${
                       application.database.run(
                         sql`
@@ -506,7 +509,7 @@ export default async (application: Application): Promise<void> => {
                       ).lastInsertRowid
                     };
                   `,
-                )!;
+                  )!;
                 application.database.run(
                   sql`
                     insert into "courseForumConversationMessageViews" (
@@ -547,7 +550,8 @@ export default async (application: Application): Promise<void> => {
                   course: state.course.id,
                   courseParticipation: state.courseParticipation.id,
                   courseForumConversation: state.courseForumConversation.id,
-                  courseForumConversationMessage: state.courseForumConversationMessage.id,
+                  courseForumConversationMessage:
+                    state.courseForumConversationMessage.id,
                 }),
               );
             }

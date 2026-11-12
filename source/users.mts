@@ -1327,7 +1327,8 @@ export default async (application: Application): Promise<void> => {
                         name="emailNotificationsForCourseForumForAllMessages"
                         $${
                           Boolean(
-                            request.state.user.emailNotificationsForCourseForumForAllMessages,
+                            request.state.user
+                              .emailNotificationsForCourseForumForAllMessages,
                           )
                             ? html`checked`
                             : html``
