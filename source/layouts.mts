@@ -523,7 +523,7 @@ export default async (application: Application): Promise<void> => {
                                 .courseParticipationRole !==
                               "courseParticipationRoleInstructor"
                                 ? sql`
-                                    "courseConversationMessages"."courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' and
+                                    "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' and
                                   `
                                 : sql``
                             }
@@ -855,7 +855,7 @@ export default async (application: Application): Promise<void> => {
                                           courseParticipation.courseParticipationRole !==
                                           "courseParticipationRoleInstructor"
                                             ? sql`
-                                                "courseConversationMessages"."courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' and
+                                                "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' and
                                               `
                                             : sql``
                                         }

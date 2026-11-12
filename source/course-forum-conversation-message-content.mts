@@ -2910,7 +2910,7 @@ You may also use the buttons on the message content editor to ${
                               "courseParticipationRoleStudent"
                               ? sql`
                                   and
-                                  "courseConversationMessageVisibility" = 'courseForumConversationMessageVisibilityEveryone'
+                                  "courseForumConversationMessageVisibility" = 'courseForumConversationMessageVisibilityEveryone'
                                 `
                               : sql``
                           };
@@ -3008,7 +3008,7 @@ You may also use the buttons on the message content editor to ${
                   "courseParticipationRoleStudent"
                   ? sql`
                       and
-                      "courseConversationMessageVisibility" = 'courseForumConversationMessageVisibilityEveryone'
+                      "courseForumConversationMessageVisibility" = 'courseForumConversationMessageVisibilityEveryone'
                     `
                   : sql``
               };

@@ -439,7 +439,7 @@ export default async (application: Application): Promise<void> => {
                                 "courseParticipationRoleInstructor"
                                   ? sql`
                                       and
-                                      "courseConversationMessages"."courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                      "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                                     `
                                   : sql``
                               } and
@@ -1455,7 +1455,7 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipationRoleInstructor"
                       ? sql`
                           where
-                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
+                            "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                         `
                       : sql``
                   }
@@ -1497,7 +1497,7 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipationRoleInstructor"
                       ? sql`
                           where
-                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
+                            "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                         `
                       : sql``
                   }
@@ -3430,7 +3430,7 @@ export default async (application: Application): Promise<void> => {
                     "createdAt",
                     "updatedAt",
                     "courseForumConversationMessageType",
-                    "courseConversationMessageVisibility",
+                    "courseForumConversationMessageVisibility",
                     "courseConversationMessageAnonymity",
                     "sentViaEmail",
                     "content",
@@ -5273,7 +5273,7 @@ export default async (application: Application): Promise<void> => {
                         | "courseForumConversationMessageTypeMessage"
                         | "courseForumConversationMessageTypeAnswer"
                         | "courseForumConversationMessageTypeFollowUpQuestion";
-                      courseConversationMessageVisibility:
+                      courseForumConversationMessageVisibility:
                         | "courseForumConversationMessageVisibilityEveryone"
                         | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
                       courseConversationMessageAnonymity:
@@ -5291,7 +5291,7 @@ export default async (application: Application): Promise<void> => {
                           "createdAt",
                           "updatedAt",
                           "courseForumConversationMessageType",
-                          "courseConversationMessageVisibility",
+                          "courseForumConversationMessageVisibility",
                           "courseConversationMessageAnonymity",
                           "sentViaEmail",
                           "content"
@@ -5303,7 +5303,7 @@ export default async (application: Application): Promise<void> => {
                             "courseParticipationRoleInstructor"
                               ? sql`
                                   and
-                                  "courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                  "courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                                 `
                               : sql``
                           }
@@ -5630,7 +5630,7 @@ export default async (application: Application): Promise<void> => {
                                     else throw new Error();
                                   }
                                   if (
-                                    courseConversationMessage.courseConversationMessageVisibility ===
+                                    courseConversationMessage.courseForumConversationMessageVisibility ===
                                     "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                                   )
                                     courseConversationMessageMainHeaderBylineHTMLs.push(
@@ -6527,7 +6527,7 @@ export default async (application: Application): Promise<void> => {
                             | "courseForumConversationMessageTypeMessage"
                             | "courseForumConversationMessageTypeAnswer"
                             | "courseForumConversationMessageTypeFollowUpQuestion";
-                          courseConversationMessageVisibility:
+                          courseForumConversationMessageVisibility:
                             | "courseForumConversationMessageVisibilityEveryone"
                             | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
                           courseConversationMessageAnonymity:
@@ -6539,7 +6539,7 @@ export default async (application: Application): Promise<void> => {
                           sql`
                           select
                             "courseForumConversationMessageType",
-                            "courseConversationMessageVisibility",
+                            "courseForumConversationMessageVisibility",
                             "courseConversationMessageAnonymity",
                             "content"
                           from "courseConversationMessageDrafts"
@@ -6897,13 +6897,13 @@ export default async (application: Application): Promise<void> => {
                                         >Visibility:</span
                                       >  <input
                                         type="radio"
-                                        name="courseConversationMessageVisibility"
+                                        name="courseForumConversationMessageVisibility"
                                         value="courseForumConversationMessageVisibilityEveryone"
                                         required
                                         $${
                                           courseConversationMessageDraft ===
                                             undefined ||
-                                          courseConversationMessageDraft.courseConversationMessageVisibility ===
+                                          courseConversationMessageDraft.courseForumConversationMessageVisibility ===
                                             "courseForumConversationMessageVisibilityEveryone"
                                             ? html`checked`
                                             : html``
@@ -6918,11 +6918,11 @@ export default async (application: Application): Promise<void> => {
                                         >Everyone</span
                                       ><input
                                         type="radio"
-                                        name="courseConversationMessageVisibility"
+                                        name="courseForumConversationMessageVisibility"
                                         value="courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                                         required
                                         $${
-                                          courseConversationMessageDraft?.courseConversationMessageVisibility ===
+                                          courseConversationMessageDraft?.courseForumConversationMessageVisibility ===
                                           "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                                             ? html`checked`
                                             : html``
@@ -6955,7 +6955,7 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
                                         this.onclick = () => {
-                                          this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseForumConversationMessageVisibilityEveryone"]').click();
+                                          this.closest('[type~="form"]').querySelector('[name="courseForumConversationMessageVisibility"][value="courseForumConversationMessageVisibilityEveryone"]').click();
                                         };
                                       `}"
                                     >
@@ -6966,7 +6966,7 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
                                         this.onclick = () => {
-                                          this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
+                                          this.closest('[type~="form"]').querySelector('[name="courseForumConversationMessageVisibility"][value="courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
                                         };
                                       `}"
                                     >
