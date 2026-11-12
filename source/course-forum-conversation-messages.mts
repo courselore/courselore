@@ -77,7 +77,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.content !== "string" ||
         (request.body.courseConversationMessageType !== undefined &&
           (typeof request.body.courseConversationMessageType !== "string" ||
-            request.state.courseConversation.courseConversationType !==
+            request.state.courseConversation.courseForumConversationType !==
               "courseForumConversationTypeQuestion" ||
             (request.body.courseConversationMessageType !==
               "courseForumConversationMessageTypeMessage" &&
@@ -224,7 +224,7 @@ export default async (application: Application): Promise<void> => {
         request.body.content.trim() === "" ||
         (request.body.courseConversationMessageType !== undefined &&
           (typeof request.body.courseConversationMessageType !== "string" ||
-            request.state.courseConversation.courseConversationType !==
+            request.state.courseConversation.courseForumConversationType !==
               "courseForumConversationTypeQuestion" ||
             (request.body.courseConversationMessageType !==
               "courseForumConversationMessageTypeMessage" &&
@@ -908,7 +908,7 @@ export default async (application: Application): Promise<void> => {
                 if (firstCourseConversationMessage === undefined)
                   throw new Error();
                 if (
-                  request.state.courseConversation.courseConversationType ===
+                  request.state.courseConversation.courseForumConversationType ===
                     "courseForumConversationTypeQuestion" &&
                   request.state.courseConversationMessage.id !==
                     firstCourseConversationMessage.id
@@ -1400,7 +1400,7 @@ export default async (application: Application): Promise<void> => {
         request.body.content.trim() === "" ||
         (request.body.courseConversationMessageType !== undefined &&
           (typeof request.body.courseConversationMessageType !== "string" ||
-            request.state.courseConversation.courseConversationType !==
+            request.state.courseConversation.courseForumConversationType !==
               "courseForumConversationTypeQuestion" ||
             request.state.courseConversationMessage.id ===
               firstCourseConversationMessage.id ||

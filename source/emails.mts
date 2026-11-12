@@ -80,7 +80,7 @@ export default async (application: Application): Promise<void> => {
         courseConversation: {
           id: number;
           publicId: string;
-          courseConversationType:
+          courseForumConversationType:
             "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
           courseForumConversationTypeQuestionResolved: number;
           courseConversationVisibility:
@@ -249,7 +249,7 @@ export default async (application: Application): Promise<void> => {
             application.database.get<{
               id: number;
               publicId: string;
-              courseConversationType:
+              courseForumConversationType:
                 "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
               courseForumConversationTypeQuestionResolved: number;
               courseConversationVisibility:
@@ -263,7 +263,7 @@ export default async (application: Application): Promise<void> => {
                 select 
                   "id",
                   "publicId",
-                  "courseConversationType",
+                  "courseForumConversationType",
                   "courseForumConversationTypeQuestionResolved",
                   "courseConversationVisibility",
                   "pinned",
@@ -431,7 +431,7 @@ export default async (application: Application): Promise<void> => {
               };
               application.database.transaction(() => {
                 if (
-                  state.courseConversation.courseConversationType ===
+                  state.courseConversation.courseForumConversationType ===
                     "courseForumConversationTypeQuestion" &&
                   state.courseParticipation.courseParticipationRole ===
                     "courseParticipationRoleInstructor"
@@ -474,7 +474,7 @@ export default async (application: Application): Promise<void> => {
                             ${null},
                             ${
                               state.courseConversation
-                                .courseConversationType ===
+                                .courseForumConversationType ===
                                 "courseForumConversationTypeQuestion" &&
                               state.courseParticipation
                                 .courseParticipationRole ===
