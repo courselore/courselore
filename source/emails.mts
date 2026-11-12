@@ -81,7 +81,7 @@ export default async (application: Application): Promise<void> => {
           id: number;
           publicId: string;
           courseConversationType:
-            "courseForumConversationTypeNote" | "courseConversationTypeQuestion";
+            "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
           questionResolved: number;
           courseConversationVisibility:
             | "courseConversationVisibilityEveryone"
@@ -250,7 +250,7 @@ export default async (application: Application): Promise<void> => {
               id: number;
               publicId: string;
               courseConversationType:
-                "courseForumConversationTypeNote" | "courseConversationTypeQuestion";
+                "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
               questionResolved: number;
               courseConversationVisibility:
                 | "courseConversationVisibilityEveryone"
@@ -432,7 +432,7 @@ export default async (application: Application): Promise<void> => {
               application.database.transaction(() => {
                 if (
                   state.courseConversation.courseConversationType ===
-                    "courseConversationTypeQuestion" &&
+                    "courseForumConversationTypeQuestion" &&
                   state.courseParticipation.courseParticipationRole ===
                     "courseParticipationRoleInstructor"
                 )
@@ -475,7 +475,7 @@ export default async (application: Application): Promise<void> => {
                             ${
                               state.courseConversation
                                 .courseConversationType ===
-                                "courseConversationTypeQuestion" &&
+                                "courseForumConversationTypeQuestion" &&
                               state.courseParticipation
                                 .courseParticipationRole ===
                                 "courseParticipationRoleInstructor"
