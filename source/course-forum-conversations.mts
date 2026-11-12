@@ -1013,7 +1013,7 @@ export default async (application: Application): Promise<void> => {
                                                       : ""
                                                   }`,
                                               ];
-                                            for (const courseConversationsTag of request
+                                            for (const courseForumConversationsTag of request
                                               .state.courseForumConversationsTags!)
                                               if (
                                                 application.database.get(
@@ -1022,12 +1022,12 @@ export default async (application: Application): Promise<void> => {
                                                     from "courseForumConversationTaggings"
                                                     where
                                                       "courseConversation" = ${courseConversation.id} and
-                                                      "courseConversationsTag" = ${courseConversationsTag.id};
+                                                      "courseForumConversationsTag" = ${courseForumConversationsTag.id};
                                                   `,
                                                 ) !== undefined
                                               )
                                                 courseConversationMainDetails.push(
-                                                  html`${courseConversationsTag.name}`,
+                                                  html`${courseForumConversationsTag.name}`,
                                                 );
                                             return courseConversationMainDetails.join(
                                               " · ",
@@ -2644,14 +2644,14 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   $${request.state.courseForumConversationsTags.map(
-                                    (courseConversationsTag) => html`
+                                    (courseForumConversationsTag) => html`
                                       <label
                                         class="button button--rectangle button--transparent"
                                       >
                                         <input
                                           type="checkbox"
                                           name="tags[]"
-                                          value="${courseConversationsTag.publicId}"
+                                          value="${courseForumConversationsTag.publicId}"
                                           $${
                                             Boolean(
                                               request.state.course!
@@ -2663,13 +2663,13 @@ export default async (application: Application): Promise<void> => {
                                           $${
                                             Array.isArray(prefill.tags) &&
                                             prefill.tags.includes(
-                                              courseConversationsTag.publicId,
+                                              courseForumConversationsTag.publicId,
                                             )
                                               ? html`checked`
                                               : html``
                                           }
                                           class="input--checkbox"
-                                        />  ${courseConversationsTag.name}
+                                        />  ${courseForumConversationsTag.name}
                                       </label>
                                     `,
                                   )}
@@ -3226,8 +3226,8 @@ export default async (application: Application): Promise<void> => {
           (tag) =>
             typeof tag !== "string" ||
             !request.state.courseForumConversationsTags!.some(
-              (courseConversationsTag) =>
-                tag === courseConversationsTag.publicId,
+              (courseForumConversationsTag) =>
+                tag === courseForumConversationsTag.publicId,
             ),
         ) ||
         typeof request.body.content !== "string" ||
@@ -3408,11 +3408,11 @@ export default async (application: Application): Promise<void> => {
             sql`
               insert into "courseForumConversationTaggings" (
                 "courseConversation",
-                "courseConversationsTag"
+                "courseForumConversationsTag"
               )
               values (
                 ${courseConversation.id},
-                ${request.state.courseForumConversationsTags!.find((courseConversationsTag) => tag === courseConversationsTag.publicId)!.id}
+                ${request.state.courseForumConversationsTags!.find((courseForumConversationsTag) => tag === courseForumConversationsTag.publicId)!.id}
               );
             `,
           );
@@ -5076,14 +5076,14 @@ export default async (application: Application): Promise<void> => {
                             let courseForumConversationsTagsHTML = html``;
                             const courseForumConversationsTagsWithTagging =
                               request.state.courseForumConversationsTags.filter(
-                                (courseConversationsTag) =>
+                                (courseForumConversationsTag) =>
                                   application.database.get(
                                     sql`
                                     select true
                                     from "courseForumConversationTaggings"
                                     where
                                       "courseConversation" = ${request.state.courseConversation!.id} and
-                                      "courseConversationsTag" = ${courseConversationsTag.id};
+                                      "courseForumConversationsTag" = ${courseForumConversationsTag.id};
                                   `,
                                   ) !== undefined,
                               );
@@ -5116,14 +5116,14 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                   >
                                     $${request.state.courseForumConversationsTags.map(
-                                      (courseConversationsTag) => html`
+                                      (courseForumConversationsTag) => html`
                                         <label
                                           class="button button--rectangle button--transparent button--dropdown-menu"
                                         >
                                           <input
                                             type="checkbox"
                                             name="tags[]"
-                                            value="${courseConversationsTag.publicId}"
+                                            value="${courseForumConversationsTag.publicId}"
                                             $${
                                               Boolean(
                                                 request.state.course!
@@ -5135,16 +5135,16 @@ export default async (application: Application): Promise<void> => {
                                             $${
                                               courseForumConversationsTagsWithTagging.some(
                                                 (
-                                                  courseConversationsTagWithTagging,
+                                                  courseForumConversationsTagWithTagging,
                                                 ) =>
-                                                  courseConversationsTag.id ===
-                                                  courseConversationsTagWithTagging.id,
+                                                  courseForumConversationsTag.id ===
+                                                  courseForumConversationsTagWithTagging.id,
                                               )
                                                 ? html`checked`
                                                 : html``
                                             }
                                             class="input--checkbox"
-                                          />  ${courseConversationsTag.name}
+                                          />  ${courseForumConversationsTag.name}
                                         </label>
                                       `,
                                     )}
@@ -5197,8 +5197,8 @@ export default async (application: Application): Promise<void> => {
                                 >
                                   ${courseForumConversationsTagsWithTagging
                                     .map(
-                                      (courseConversationsTag) =>
-                                        courseConversationsTag.name,
+                                      (courseForumConversationsTag) =>
+                                        courseForumConversationsTag.name,
                                     )
                                     .join(" · ")}
                                 </div>
@@ -7274,8 +7274,8 @@ export default async (application: Application): Promise<void> => {
           (tag) =>
             typeof tag !== "string" ||
             !request.state.courseForumConversationsTags!.some(
-              (courseConversationsTag) =>
-                tag === courseConversationsTag.publicId,
+              (courseForumConversationsTag) =>
+                tag === courseForumConversationsTag.publicId,
             ),
         )
       )
@@ -7369,11 +7369,11 @@ export default async (application: Application): Promise<void> => {
             sql`
               insert into "courseForumConversationTaggings" (
                 "courseConversation",
-                "courseConversationsTag"
+                "courseForumConversationsTag"
               )
               values (
                 ${request.state.courseConversation!.id},
-                ${request.state.courseForumConversationsTags!.find((courseConversationsTag) => tag === courseConversationsTag.publicId)!.id}
+                ${request.state.courseForumConversationsTags!.find((courseForumConversationsTag) => tag === courseForumConversationsTag.publicId)!.id}
               );
             `,
           );
