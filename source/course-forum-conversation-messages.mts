@@ -457,7 +457,7 @@ export default async (application: Application): Promise<void> => {
           courseForumConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-            | "courseConversationParticipations";
+            | "courseForumConversationParticipations";
           title: string;
         }>(
           sql`
@@ -599,7 +599,7 @@ export default async (application: Application): Promise<void> => {
               application.database.get(
                 sql`
                   select true
-                  from "courseConversationParticipations"
+                  from "courseForumConversationParticipations"
                   where
                     "courseConversation" = ${courseConversation.id} and
                     "courseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id};

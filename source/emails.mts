@@ -284,10 +284,10 @@ export default async (application: Application): Promise<void> => {
                     }
                     or (
                       select true
-                      from "courseConversationParticipations"
+                      from "courseForumConversationParticipations"
                       where
-                        "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                        "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                        "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                        "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                     )
                   );
               `,

@@ -301,10 +301,10 @@ export default async (application: Application): Promise<void> => {
                           }
                           or (
                             select true
-                            from "courseConversationParticipations"
+                            from "courseForumConversationParticipations"
                             where
-                              "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                              "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation!.id}
+                              "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                              "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation!.id}
                           )
                         )
                       order by "id" desc;
@@ -1325,10 +1325,10 @@ export default async (application: Application): Promise<void> => {
                       }
                       or (
                         select true
-                        from "courseConversationParticipations"
+                        from "courseForumConversationParticipations"
                         where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                          "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                          "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
                   order by "lexicalSearch_courseForumConversations_titleLexicalSearch"."rank" asc
@@ -1356,10 +1356,10 @@ export default async (application: Application): Promise<void> => {
                       }
                       or (
                         select true
-                        from "courseConversationParticipations"
+                        from "courseForumConversationParticipations"
                         where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                          "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                          "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
                   order by vec_distance_L2("courseConversations"."titleSemanticSearch", ${semanticSearch}) asc
@@ -1443,10 +1443,10 @@ export default async (application: Application): Promise<void> => {
                       }
                       or (
                         select true
-                        from "courseConversationParticipations"
+                        from "courseForumConversationParticipations"
                         where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                          "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                          "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
                   ${
@@ -1485,10 +1485,10 @@ export default async (application: Application): Promise<void> => {
                       }
                       or (
                         select true
-                        from "courseConversationParticipations"
+                        from "courseForumConversationParticipations"
                         where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                          "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                          "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
                   ${
@@ -1795,10 +1795,10 @@ export default async (application: Application): Promise<void> => {
                       }
                       or (
                         select true
-                        from "courseConversationParticipations"
+                        from "courseForumConversationParticipations"
                         where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                          "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                          "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                       )
                     );
                 `,
@@ -1854,10 +1854,10 @@ export default async (application: Application): Promise<void> => {
                 }
                 or (
                   select true
-                  from "courseConversationParticipations"
+                  from "courseForumConversationParticipations"
                   where
-                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                    "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                    "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                 )
               )
             limit 1;
@@ -1888,7 +1888,7 @@ export default async (application: Application): Promise<void> => {
               `}"
               javascript="${javascript`
                 this.onsubmit = () => {
-                  delete this.querySelector('[key~="courseConversationParticipations--courseParticipations"]').morph;
+                  delete this.querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').morph;
                 };
               `}"
             >
@@ -2213,7 +2213,7 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.onclick = () => {
                                 this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"][value="courseForumConversationVisibilityEveryone"]').click();
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').setHidden();
                               };
                             `}"
                           >
@@ -2225,10 +2225,10 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.onclick = () => {
                                 this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"][value="courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"]').checked = true;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').setHidden();
+                                if (this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').hidden) return;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--input"]').focus();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--input"]').onkeyup();
                               };
                             `}"
                           >
@@ -2240,17 +2240,17 @@ export default async (application: Application): Promise<void> => {
                             javascript="${javascript`
                               this.onclick = () => {
                                 this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"][value="courseForumConversationVisibilityCourseForumConversationParticipations"]').checked = true;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                                if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').setHidden();
+                                if (this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').hidden) return;
+                                this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--input"]').focus();
+                                this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--input"]').onkeyup();
                               };
                             `}"
                           >
                             Selected course participants
                           </button>
                           <div
-                            key="courseConversationParticipations"
+                            key="courseForumConversationParticipations"
                             css="${css`
                               display: flex;
                               flex-direction: column;
@@ -2261,10 +2261,10 @@ export default async (application: Application): Promise<void> => {
                                 this.hidden =
                                   this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"]:checked').value === "courseForumConversationVisibilityEveryone" || (
                                     this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
-                                    ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
+                                    ![...this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
                                   ) || (
                                     this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseForumConversationParticipations" &&
-                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').children.length === 0
                                   );
                               };
                               this.setHidden();
@@ -2272,7 +2272,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             <hr class="separator" />
                             <input
-                              key="courseConversationParticipations--input"
+                              key="courseForumConversationParticipations--input"
                               type="text"
                               placeholder="Search…"
                               maxlength="3000"
@@ -2281,8 +2281,8 @@ export default async (application: Application): Promise<void> => {
                                 this.isModified = false;
                                 this.onkeyup = utilities.throttle(() => {
                                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                                  for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
-                                    const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
+                                  for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').children) {
+                                    const nameElement = element.querySelector('[key~="courseForumConversationParticipations--courseParticipation--name"]');
                                     nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
                                     nameElement.morph = nameElement.querySelector("span") === null;
                                     element.hidden =
@@ -2298,7 +2298,7 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             />
                             <div
-                              key="courseConversationParticipations--courseParticipations"
+                              key="courseForumConversationParticipations--courseParticipations"
                               css="${css`
                                 max-height: var(--size--36);
                                 padding: var(--size--1) var(--size--2);
@@ -2378,7 +2378,7 @@ export default async (application: Application): Promise<void> => {
                                     if (user === undefined) throw new Error();
                                     return html`
                                       <label
-                                        key="courseConversationParticipations--courseParticipation ${courseParticipation.publicId}"
+                                        key="courseForumConversationParticipations--courseParticipation ${courseParticipation.publicId}"
                                         class="button button--rectangle button--transparent button--dropdown-menu"
                                         css="${css`
                                           display: flex;
@@ -2391,7 +2391,7 @@ export default async (application: Application): Promise<void> => {
                                       >
                                         <input
                                           type="checkbox"
-                                          name="courseConversationParticipations[]"
+                                          name="courseForumConversationParticipations[]"
                                           value="${courseParticipation.publicId}"
                                           class="input--checkbox"
                                           css="${css`
@@ -2399,24 +2399,24 @@ export default async (application: Application): Promise<void> => {
                                           `}"
                                           javascript="${javascript`
                                             this.oninput = () => {
-                                              const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
-                                              for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
+                                              const element = this.closest('[key~="courseForumConversationParticipations--courseParticipation"]');
+                                              for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').children)
                                                 if (
                                                   (
                                                     this.checked && (
-                                                      otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
+                                                      otherElement.querySelector('[name="courseForumConversationParticipations[]"]').checked === false ||
                                                       element.order < otherElement.order
                                                     ) 
                                                   ) || (
                                                     !this.checked &&
-                                                      otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
+                                                      otherElement.querySelector('[name="courseForumConversationParticipations[]"]').checked === false &&
                                                       element.order < otherElement.order
                                                   )
                                                 ) {
                                                   otherElement.insertAdjacentElement("beforebegin", element);
                                                   return;
                                                 }
-                                              this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
+                                              this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
                                             };
                                           `}"
                                         />
@@ -2429,7 +2429,7 @@ export default async (application: Application): Promise<void> => {
                                           `}"
                                         >
                                           <span
-                                            key="courseConversationParticipations--courseParticipation--name"
+                                            key="courseForumConversationParticipations--courseParticipation--name"
                                             javascript="${javascript`
                                               this.name = ${user.name};
                                             `}"
@@ -3019,10 +3019,10 @@ export default async (application: Application): Promise<void> => {
                       }
                       or (
                         select true
-                        from "courseConversationParticipations"
+                        from "courseForumConversationParticipations"
                         where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                          "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                          "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
                   order by "lexicalSearch_courseForumConversations_titleLexicalSearch"."rank" asc
@@ -3056,10 +3056,10 @@ export default async (application: Application): Promise<void> => {
                       }
                       or (
                         select true
-                        from "courseConversationParticipations"
+                        from "courseForumConversationParticipations"
                         where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                          "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                          "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
                   order by vec_distance_L2("courseConversations"."titleSemanticSearch", ${semanticSearch}) asc
@@ -3169,7 +3169,7 @@ export default async (application: Application): Promise<void> => {
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseForumConversationVisibilityCourseForumConversationParticipations";
-          courseConversationParticipations: string[];
+          courseForumConversationParticipations: string[];
           pinned: "false" | "true";
           announcement: "on";
           tags: string[];
@@ -3191,7 +3191,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseForumConversationsTags === undefined
       )
         return;
-      request.body.courseConversationParticipations ??= [];
+      request.body.courseForumConversationParticipations ??= [];
       request.body.tags ??= [];
       if (
         typeof request.body.title !== "string" ||
@@ -3205,8 +3205,8 @@ export default async (application: Application): Promise<void> => {
             "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
           request.body.courseForumConversationVisibility !==
             "courseForumConversationVisibilityCourseForumConversationParticipations") ||
-        !Array.isArray(request.body.courseConversationParticipations) ||
-        request.body.courseConversationParticipations.some(
+        !Array.isArray(request.body.courseForumConversationParticipations) ||
+        request.body.courseForumConversationParticipations.some(
           (courseConversationParticipation) =>
             typeof courseConversationParticipation !== "string",
         ) ||
@@ -3362,7 +3362,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         for (const courseConversationParticipation of new Set([
-          ...request.body.courseConversationParticipations!,
+          ...request.body.courseForumConversationParticipations!,
           request.state.courseParticipation!.publicId,
         ])) {
           const courseParticipation = application.database.get<{
@@ -3392,7 +3392,7 @@ export default async (application: Application): Promise<void> => {
           )
             application.database.run(
               sql`
-                insert into "courseConversationParticipations" (
+                insert into "courseForumConversationParticipations" (
                   "courseConversation",
                   "courseParticipation"
                 )
@@ -3562,10 +3562,10 @@ export default async (application: Application): Promise<void> => {
               }
               or (
                 select true
-                from "courseConversationParticipations"
+                from "courseForumConversationParticipations"
                 where
-                  "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                  "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                  "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                  "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
               )
             );
         `,
@@ -3684,7 +3684,7 @@ export default async (application: Application): Promise<void> => {
                   this.onsubmit = () => {
                     this.querySelector('[key~="courseConversation--header--title--show"]').hidden = false;
                     this.querySelector('[key~="courseConversation--header--title--edit"]').hidden = true;
-                    delete this.querySelector('[key~="courseConversationParticipations--courseParticipations"]').morph;
+                    delete this.querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').morph;
                   };
                 `}"
               >
@@ -4423,7 +4423,7 @@ export default async (application: Application): Promise<void> => {
                                   javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"][value="courseForumConversationVisibilityEveryone"]').click();
-                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').setHidden();
                                   };
                                 `}"
                                 >
@@ -4436,10 +4436,10 @@ export default async (application: Application): Promise<void> => {
                                   this.onclick = () => {
                                     this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"][value="courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"]').checked = true;
                                     this.closest('[type~="form"]').oninput();
-                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                                    if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').setHidden();
+                                    if (this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').hidden) return;
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--input"]').focus();
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--input"]').onkeyup();
                                   };
                                 `}"
                                 >
@@ -4452,17 +4452,17 @@ export default async (application: Application): Promise<void> => {
                                   this.onclick = () => {
                                     this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"][value="courseForumConversationVisibilityCourseForumConversationParticipations"]').checked = true;
                                     this.closest('[type~="form"]').oninput();
-                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
-                                    if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
-                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
-                                    this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').onkeyup();
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').setHidden();
+                                    if (this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations"]').hidden) return;
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--input"]').focus();
+                                    this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--input"]').onkeyup();
                                   };
                                 `}"
                                 >
                                   Selected course participants
                                 </button>
                                 <div
-                                  key="courseConversationParticipations"
+                                  key="courseForumConversationParticipations"
                                   css="${css`
                                     display: flex;
                                     flex-direction: column;
@@ -4473,10 +4473,10 @@ export default async (application: Application): Promise<void> => {
                                     this.hidden =
                                       this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"]:checked').value === "courseForumConversationVisibilityEveryone" || (
                                         this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
-                                        ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
+                                        ![...this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
                                       ) || (
                                         this.closest('[type~="form"]').querySelector('[name="courseForumConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseForumConversationParticipations" &&
-                                        this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
+                                        this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').children.length === 0
                                       );
                                   };
                                   this.setHidden();
@@ -4484,7 +4484,7 @@ export default async (application: Application): Promise<void> => {
                                 >
                                   <hr class="separator" />
                                   <input
-                                    key="courseConversationParticipations--input"
+                                    key="courseForumConversationParticipations--input"
                                     type="text"
                                     placeholder="Search…"
                                     maxlength="3000"
@@ -4493,8 +4493,8 @@ export default async (application: Application): Promise<void> => {
                                     this.isModified = false;
                                     this.onkeyup = utilities.throttle(() => {
                                       const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                                      for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children) {
-                                        const nameElement = element.querySelector('[key~="courseConversationParticipations--courseParticipation--name"]');
+                                      for (const element of this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').children) {
+                                        const nameElement = element.querySelector('[key~="courseForumConversationParticipations--courseParticipation--name"]');
                                         nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
                                         nameElement.morph = nameElement.querySelector("span") === null;
                                         element.hidden =
@@ -4513,7 +4513,7 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                   />
                                   <div
-                                    key="courseConversationParticipations--courseParticipations"
+                                    key="courseForumConversationParticipations--courseParticipations"
                                     css="${css`
                                       max-height: var(--size--36);
                                       padding: var(--size--1) var(--size--2);
@@ -4597,7 +4597,7 @@ export default async (application: Application): Promise<void> => {
                                             throw new Error();
                                           return html`
                                             <label
-                                              key="courseConversationParticipations--courseParticipation ${courseParticipation.publicId}"
+                                              key="courseForumConversationParticipations--courseParticipation ${courseParticipation.publicId}"
                                               class="button button--rectangle button--transparent button--dropdown-menu"
                                               css="${css`
                                                 display: flex;
@@ -4610,7 +4610,7 @@ export default async (application: Application): Promise<void> => {
                                             >
                                               <input
                                                 type="checkbox"
-                                                name="courseConversationParticipations[]"
+                                                name="courseForumConversationParticipations[]"
                                                 value="${courseParticipation.publicId}"
                                                 class="input--checkbox"
                                                 css="${css`
@@ -4620,7 +4620,7 @@ export default async (application: Application): Promise<void> => {
                                                   application.database.get(
                                                     sql`
                                                   select true
-                                                  from "courseConversationParticipations"
+                                                  from "courseForumConversationParticipations"
                                                   where
                                                     "courseConversation" = ${request.state.courseConversation!.id} and
                                                     "courseParticipation" = ${courseParticipation.id};
@@ -4643,24 +4643,24 @@ export default async (application: Application): Promise<void> => {
                                                 }
                                                 javascript="${javascript`
                                                 this.oninput = () => {
-                                                  const element = this.closest('[key~="courseConversationParticipations--courseParticipation"]');
-                                                  for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children)
+                                                  const element = this.closest('[key~="courseForumConversationParticipations--courseParticipation"]');
+                                                  for (const otherElement of this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').children)
                                                     if (
                                                       (
                                                         this.checked && (
-                                                          otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false ||
+                                                          otherElement.querySelector('[name="courseForumConversationParticipations[]"]').checked === false ||
                                                           element.order < otherElement.order
                                                         ) 
                                                       ) || (
                                                         !this.checked &&
-                                                          otherElement.querySelector('[name="courseConversationParticipations[]"]').checked === false &&
+                                                          otherElement.querySelector('[name="courseForumConversationParticipations[]"]').checked === false &&
                                                           element.order < otherElement.order
                                                       )
                                                     ) {
                                                       otherElement.insertAdjacentElement("beforebegin", element);
                                                       return;
                                                     }
-                                                  this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
+                                                  this.closest('[type~="popover"]').querySelector('[key~="courseForumConversationParticipations--courseParticipations"]').insertAdjacentElement("beforeend", element);
                                                 };
                                                 window.setTimeout(() => {
                                                   this.oninput();
@@ -4678,7 +4678,7 @@ export default async (application: Application): Promise<void> => {
                                                 `}"
                                               >
                                                 <span
-                                                  key="courseConversationParticipations--courseParticipation--name"
+                                                  key="courseForumConversationParticipations--courseParticipation--name"
                                                   javascript="${javascript`
                                                   this.name = ${user.name};
                                                 `}"
@@ -4749,24 +4749,24 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             `
                           : (() => {
-                              const courseConversationParticipations =
+                              const courseForumConversationParticipations =
                                 application.database.all<{
                                   courseParticipation: number;
                                 }>(
                                   sql`
-                                  select "courseConversationParticipations"."courseParticipation" as "courseParticipation"
-                                  from "courseConversationParticipations"
-                                  join "courseParticipations" on "courseConversationParticipations"."courseParticipation" = "courseParticipations"."id"
+                                  select "courseForumConversationParticipations"."courseParticipation" as "courseParticipation"
+                                  from "courseForumConversationParticipations"
+                                  join "courseParticipations" on "courseForumConversationParticipations"."courseParticipation" = "courseParticipations"."id"
                                   join "users" on "courseParticipations"."user" = "users"."id"
                                   where
-                                    "courseConversationParticipations"."courseConversation" = ${request.state.courseConversation.id} and
-                                    "courseConversationParticipations"."courseParticipation" != ${request.state.courseParticipation.id}
+                                    "courseForumConversationParticipations"."courseConversation" = ${request.state.courseConversation.id} and
+                                    "courseForumConversationParticipations"."courseParticipation" != ${request.state.courseParticipation.id}
                                   order by
                                     "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
                                     "users"."name" asc;
                                 `,
                                 );
-                              return courseConversationParticipations.length ===
+                              return courseForumConversationParticipations.length ===
                                 0
                                 ? html`
                                     <div>
@@ -4843,7 +4843,7 @@ export default async (application: Application): Promise<void> => {
                                         gap: var(--size--2);
                                       `}"
                                     >
-                                      $${courseConversationParticipations.map(
+                                      $${courseForumConversationParticipations.map(
                                         (courseConversationParticipation) => {
                                           const courseParticipation =
                                             application.database.get<{
@@ -7207,7 +7207,7 @@ export default async (application: Application): Promise<void> => {
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseForumConversationVisibilityCourseForumConversationParticipations";
-          courseConversationParticipations: string[];
+          courseForumConversationParticipations: string[];
           pinned: "false" | "true";
           tags: string[];
         },
@@ -7244,7 +7244,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         return;
-      request.body.courseConversationParticipations ??= [];
+      request.body.courseForumConversationParticipations ??= [];
       request.body.tags ??= [];
       if (
         typeof request.body.title !== "string" ||
@@ -7258,8 +7258,8 @@ export default async (application: Application): Promise<void> => {
             "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
           request.body.courseForumConversationVisibility !==
             "courseForumConversationVisibilityCourseForumConversationParticipations") ||
-        !Array.isArray(request.body.courseConversationParticipations) ||
-        request.body.courseConversationParticipations.some(
+        !Array.isArray(request.body.courseForumConversationParticipations) ||
+        request.body.courseForumConversationParticipations.some(
           (courseConversationParticipation) =>
             typeof courseConversationParticipation !== "string",
         ) ||
@@ -7312,12 +7312,12 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            delete from "courseConversationParticipations"
+            delete from "courseForumConversationParticipations"
             where "courseConversation" = ${request.state.courseConversation!.id};
           `,
         );
         for (const courseConversationParticipation of new Set([
-          ...request.body.courseConversationParticipations!,
+          ...request.body.courseForumConversationParticipations!,
           request.state.courseParticipation!.publicId,
         ])) {
           const courseParticipation = application.database.get<{
@@ -7347,7 +7347,7 @@ export default async (application: Application): Promise<void> => {
           )
             application.database.run(
               sql`
-                insert into "courseConversationParticipations" (
+                insert into "courseForumConversationParticipations" (
                   "courseConversation",
                   "courseParticipation"
                 )
@@ -7426,7 +7426,7 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            delete from "courseConversationParticipations"
+            delete from "courseForumConversationParticipations"
             where "courseConversation" = ${request.state.courseConversation!.id};
           `,
         );

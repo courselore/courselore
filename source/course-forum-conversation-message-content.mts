@@ -512,10 +512,10 @@ export default async (application: Application): Promise<void> => {
                                   and (
                                     "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' or (
                                       select true
-                                      from "courseConversationParticipations"
+                                      from "courseForumConversationParticipations"
                                       where
-                                        "courseConversationParticipations"."courseConversation" = ${courseConversation.id} and
-                                        "courseParticipations"."id" = "courseConversationParticipations"."courseParticipation"
+                                        "courseForumConversationParticipations"."courseConversation" = ${courseConversation.id} and
+                                        "courseParticipations"."id" = "courseForumConversationParticipations"."courseParticipation"
                                     )
                                   )
                                 `
@@ -524,10 +524,10 @@ export default async (application: Application): Promise<void> => {
                                 ? sql`
                                     and (
                                       select true
-                                      from "courseConversationParticipations"
+                                      from "courseForumConversationParticipations"
                                       where
-                                        "courseConversationParticipations"."courseConversation" = ${courseConversation.id} and
-                                        "courseParticipations"."id" = "courseConversationParticipations"."courseParticipation"
+                                        "courseForumConversationParticipations"."courseConversation" = ${courseConversation.id} and
+                                        "courseParticipations"."id" = "courseForumConversationParticipations"."courseParticipation"
                                     )
                                   `
                                 : (() => {
@@ -716,10 +716,10 @@ export default async (application: Application): Promise<void> => {
                         }
                         or (
                           select true
-                          from "courseConversationParticipations"
+                          from "courseForumConversationParticipations"
                           where
-                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                            "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                            "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                            "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                         )
                       )
                     order by "id" desc;
@@ -2876,10 +2876,10 @@ You may also use the buttons on the message content editor to ${
                               ? sql`
                                   or (
                                     select true
-                                    from "courseConversationParticipations"
+                                    from "courseForumConversationParticipations"
                                     where
-                                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                                      "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                                      "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                                      "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                                   )
                                 `
                               : sql``
@@ -2978,10 +2978,10 @@ You may also use the buttons on the message content editor to ${
                     ? sql`
                         or (
                           select true
-                          from "courseConversationParticipations"
+                          from "courseForumConversationParticipations"
                           where
-                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                            "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                            "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                            "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                         )
                       `
                     : sql``

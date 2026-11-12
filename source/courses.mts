@@ -618,10 +618,10 @@ export default async (application: Application): Promise<void> => {
                   }
                   or (
                     select true
-                    from "courseConversationParticipations"
+                    from "courseForumConversationParticipations"
                     where
-                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                      "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                      "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                      "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                   )
                 );
               `,
@@ -647,10 +647,10 @@ export default async (application: Application): Promise<void> => {
                 }
                 or (
                   select true
-                  from "courseConversationParticipations"
+                  from "courseForumConversationParticipations"
                   where
-                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                    "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                    "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                 )
               )
             order by
@@ -6309,7 +6309,7 @@ export default async (application: Application): Promise<void> => {
           );
           application.database.run(
             sql`
-              delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+              delete from "courseForumConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
             `,
           );
           application.database.run(
@@ -6873,7 +6873,7 @@ export default async (application: Application): Promise<void> => {
             );
             application.database.run(
               sql`
-                delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+                delete from "courseForumConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
               `,
             );
             application.database.run(
@@ -7009,7 +7009,7 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            delete from "courseConversationParticipations" where "courseParticipation" = ${request.state.courseParticipation!.id};
+            delete from "courseForumConversationParticipations" where "courseParticipation" = ${request.state.courseParticipation!.id};
           `,
         );
         application.database.run(

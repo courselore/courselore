@@ -1003,7 +1003,7 @@ export default async (application: Application): Promise<void> => {
           )) {
             application.database.run(
               sql`
-                delete from "courseConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+                delete from "courseForumConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
               `,
             );
             application.database.run(
