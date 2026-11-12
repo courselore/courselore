@@ -3331,7 +3331,7 @@ export default async (application: Application): Promise<void> => {
                     "titleSemanticSearch"
                   )
                   values (
-                    ${String(request.state.course!.courseConversationsNextPublicId)},
+                    ${String(request.state.course!.courseForumConversationsNextPublicId)},
                     ${request.state.course!.id},
                     ${request.body.courseConversationType!},
                     ${Number(false)},
@@ -3353,11 +3353,11 @@ export default async (application: Application): Promise<void> => {
             };
           `,
         )!;
-        request.state.course!.courseConversationsNextPublicId++;
+        request.state.course!.courseForumConversationsNextPublicId++;
         application.database.run(
           sql`
             update "courses"
-            set "courseConversationsNextPublicId" = ${request.state.course!.courseConversationsNextPublicId}
+            set "courseForumConversationsNextPublicId" = ${request.state.course!.courseForumConversationsNextPublicId}
             where "id" = ${request.state.course!.id};
           `,
         );

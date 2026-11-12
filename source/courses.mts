@@ -37,7 +37,7 @@ export type ApplicationCourses = {
             | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
           courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
           courseState: "courseStateActive" | "courseStateArchived";
-          courseConversationsNextPublicId: number;
+          courseForumConversationsNextPublicId: number;
           ltiPlatformId: string | null;
           ltiClientId: string | null;
           ltiContextId: string | null;
@@ -287,7 +287,7 @@ export default async (application: Application): Promise<void> => {
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
         courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
         courseState: "courseStateActive" | "courseStateArchived";
-        courseConversationsNextPublicId: number;
+        courseForumConversationsNextPublicId: number;
         ltiPlatformId: string | null;
         ltiClientId: string | null;
         ltiContextId: string | null;
@@ -315,7 +315,7 @@ export default async (application: Application): Promise<void> => {
                 "courseParticipationRoleStudentsAnonymityAllowed",
                 "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages",
                 "courseState",
-                "courseConversationsNextPublicId",
+                "courseForumConversationsNextPublicId",
                 "ltiPlatformId",
                 "ltiClientId",
                 "ltiContextId",
@@ -456,7 +456,7 @@ export default async (application: Application): Promise<void> => {
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
         courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
         courseState: "courseStateActive" | "courseStateArchived";
-        courseConversationsNextPublicId: number;
+        courseForumConversationsNextPublicId: number;
         ltiPlatformId: string | null;
         ltiClientId: string | null;
         ltiContextId: string | null;
@@ -482,7 +482,7 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsAnonymityAllowed",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages",
             "courseState",
-            "courseConversationsNextPublicId",
+            "courseForumConversationsNextPublicId",
             "ltiPlatformId",
             "ltiClientId",
             "ltiContextId",
@@ -5309,7 +5309,7 @@ export default async (application: Application): Promise<void> => {
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
         courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
         courseState: "courseStateActive" | "courseStateArchived";
-        courseConversationsNextPublicId: number;
+        courseForumConversationsNextPublicId: number;
         ltiPlatformId: string | null;
         ltiClientId: string | null;
         ltiContextId: string | null;
@@ -5335,7 +5335,7 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsAnonymityAllowed",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages",
             "courseState",
-            "courseConversationsNextPublicId",
+            "courseForumConversationsNextPublicId",
             "ltiPlatformId",
             "ltiClientId",
             "ltiContextId",
@@ -5822,7 +5822,7 @@ export default async (application: Application): Promise<void> => {
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
         courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
         courseState: "courseStateActive" | "courseStateArchived";
-        courseConversationsNextPublicId: number;
+        courseForumConversationsNextPublicId: number;
         ltiPlatformId: string | null;
         ltiClientId: string | null;
         ltiContextId: string | null;
@@ -5848,7 +5848,7 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsAnonymityAllowed",
             "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages",
             "courseState",
-            "courseConversationsNextPublicId",
+            "courseForumConversationsNextPublicId",
             "ltiPlatformId",
             "ltiClientId",
             "ltiContextId",

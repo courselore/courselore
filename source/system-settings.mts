@@ -648,7 +648,7 @@ export default async (application: Application): Promise<void> => {
                       name: string;
                       information: string | null;
                       courseState: "courseStateActive" | "courseStateArchived";
-                      courseConversationsNextPublicId: number;
+                      courseForumConversationsNextPublicId: number;
                     }>(
                       sql`
                         select 
@@ -657,7 +657,7 @@ export default async (application: Application): Promise<void> => {
                           "name",
                           "information",
                           "courseState",
-                          "courseConversationsNextPublicId"
+                          "courseForumConversationsNextPublicId"
                         from "courses"
                         order by
                           "courseState" = 'courseStateActive' desc,
