@@ -429,9 +429,9 @@ export default async (application: Application): Promise<void> => {
                           sql`
                             select true
                             from "courseConversationMessages"
-                            left join "courseConversationMessageViews" on
-                              "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                              "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
+                            left join "courseForumConversationMessageViews" on
+                              "courseConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
+                              "courseForumConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
                             where
                               "courseConversationMessages"."courseConversation" = ${courseConversation.id} ${
                                 request.state.courseParticipation!
@@ -443,7 +443,7 @@ export default async (application: Application): Promise<void> => {
                                     `
                                   : sql``
                               } and
-                              "courseConversationMessageViews"."id" is null
+                              "courseForumConversationMessageViews"."id" is null
                             limit 1;
                           `,
                         ) !== undefined;
@@ -3469,7 +3469,7 @@ export default async (application: Application): Promise<void> => {
         )!;
         application.database.run(
           sql`
-            insert into "courseConversationMessageViews" (
+            insert into "courseForumConversationMessageViews" (
               "courseConversationMessage",
               "courseParticipation",
               "createdAt"
@@ -5425,7 +5425,7 @@ export default async (application: Application): Promise<void> => {
                                 application.database.get(
                                   sql`
                                   select true
-                                  from "courseConversationMessageViews"
+                                  from "courseForumConversationMessageViews"
                                   where
                                     "courseConversationMessage" = ${courseConversationMessage.id} and
                                     "courseParticipation" = ${request.state.courseParticipation!.id};
@@ -6188,20 +6188,20 @@ export default async (application: Application): Promise<void> => {
                                       .courseParticipationRole ===
                                     "courseParticipationRoleInstructor"
                                   ) {
-                                    const courseConversationMessageViews =
+                                    const courseForumConversationMessageViews =
                                       application.database.all<{
                                         createdAt: string;
                                         courseParticipation: number | null;
                                       }>(
                                         sql`
                                           select "createdAt", "courseParticipation"
-                                          from "courseConversationMessageViews"
+                                          from "courseForumConversationMessageViews"
                                           where "courseConversationMessage" = ${courseConversationMessage.id}
                                           order by "id" asc;
                                         `,
                                       );
                                     courseConversationMessageMainContentShowFooterHTML +=
-                                      courseConversationMessageViews.length > 0
+                                      courseForumConversationMessageViews.length > 0
                                         ? html`
                                             <button
                                               key="courseConversationMessage--main--content--show--footer--views"
@@ -6212,10 +6212,10 @@ export default async (application: Application): Promise<void> => {
                                               `}"
                                             >
                                               ${String(
-                                                courseConversationMessageViews.length,
+                                                courseForumConversationMessageViews.length,
                                               )}
                                               view${
-                                                courseConversationMessageViews.length !==
+                                                courseForumConversationMessageViews.length !==
                                                 1
                                                   ? "s"
                                                   : ""
@@ -6231,7 +6231,7 @@ export default async (application: Application): Promise<void> => {
                                                 gap: var(--size--2);
                                               `}"
                                             >
-                                              $${courseConversationMessageViews.map(
+                                              $${courseForumConversationMessageViews.map(
                                                 (
                                                   courseConversationMessageView,
                                                 ) => {
@@ -7454,7 +7454,7 @@ export default async (application: Application): Promise<void> => {
         )) {
           application.database.run(
             sql`
-              delete from "courseConversationMessageViews"
+              delete from "courseForumConversationMessageViews"
               where "courseConversationMessage" = ${courseConversationMessage.id};
             `,
           );

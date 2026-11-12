@@ -509,7 +509,7 @@ export default async (application: Application): Promise<void> => {
                 )!;
                 application.database.run(
                   sql`
-                    insert into "courseConversationMessageViews" (
+                    insert into "courseForumConversationMessageViews" (
                       "courseConversationMessage",
                       "courseParticipation",
                       "createdAt"

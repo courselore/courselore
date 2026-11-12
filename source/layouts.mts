@@ -514,9 +514,9 @@ export default async (application: Application): Promise<void> => {
                                   "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                               )
                             )
-                          left join "courseConversationMessageViews" on
-                            "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                            "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation.id}
+                          left join "courseForumConversationMessageViews" on
+                            "courseConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
+                            "courseForumConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation.id}
                           where
                             ${
                               request.state.courseParticipation
@@ -527,7 +527,7 @@ export default async (application: Application): Promise<void> => {
                                   `
                                 : sql``
                             }
-                            "courseConversationMessageViews"."id" is null
+                            "courseForumConversationMessageViews"."id" is null
                           limit 1;
                         `,
                       ) !== undefined
@@ -847,9 +847,9 @@ export default async (application: Application): Promise<void> => {
                                               "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                                           )
                                         )
-                                      left join "courseConversationMessageViews" on
-                                        "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                                        "courseConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
+                                      left join "courseForumConversationMessageViews" on
+                                        "courseConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
+                                        "courseForumConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
                                       where
                                         ${
                                           courseParticipation.courseParticipationRole !==
@@ -859,7 +859,7 @@ export default async (application: Application): Promise<void> => {
                                               `
                                             : sql``
                                         }
-                                        "courseConversationMessageViews"."id" is null
+                                        "courseForumConversationMessageViews"."id" is null
                                       limit 1;
                                     `,
                                       ) === undefined

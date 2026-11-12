@@ -379,7 +379,7 @@ export default async (application: Application): Promise<void> => {
         )!;
         application.database.run(
           sql`
-            insert into "courseConversationMessageViews" (
+            insert into "courseForumConversationMessageViews" (
               "courseConversationMessage",
               "courseParticipation",
               "createdAt"
@@ -649,7 +649,7 @@ export default async (application: Application): Promise<void> => {
             application.database.get(
               sql`
                 select true
-                from "courseConversationMessageViews"
+                from "courseForumConversationMessageViews"
                 where
                   "courseConversationMessage" = ${courseConversationMessage.id} and
                   "courseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id};
@@ -1549,7 +1549,7 @@ export default async (application: Application): Promise<void> => {
       application.database.transaction(() => {
         application.database.run(
           sql`
-            delete from "courseConversationMessageViews"
+            delete from "courseForumConversationMessageViews"
             where "courseConversationMessage" = ${request.state.courseConversationMessage!.id};
           `,
         );
@@ -1605,7 +1605,7 @@ export default async (application: Application): Promise<void> => {
           application.database.get(
             sql`
               select true
-              from "courseConversationMessageViews"
+              from "courseForumConversationMessageViews"
               where
                 "courseConversationMessage" = ${request.state.courseConversationMessage!.id} and
                 "courseParticipation" = ${request.state.courseParticipation!.id};
@@ -1614,7 +1614,7 @@ export default async (application: Application): Promise<void> => {
         )
           application.database.run(
             sql`
-              insert into "courseConversationMessageViews" (
+              insert into "courseForumConversationMessageViews" (
                 "courseConversationMessage",
                 "courseParticipation",
                 "createdAt"
