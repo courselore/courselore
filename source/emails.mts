@@ -86,7 +86,7 @@ export default async (application: Application): Promise<void> => {
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-            | "courseConversationVisibilityCourseConversationParticipations";
+            | "courseForumConversationVisibilityCourseForumConversationParticipations";
           pinned: number;
           title: string;
         };
@@ -255,7 +255,7 @@ export default async (application: Application): Promise<void> => {
               courseConversationVisibility:
                 | "courseForumConversationVisibilityEveryone"
                 | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-                | "courseConversationVisibilityCourseConversationParticipations";
+                | "courseForumConversationVisibilityCourseForumConversationParticipations";
               pinned: number;
               title: string;
             }>(

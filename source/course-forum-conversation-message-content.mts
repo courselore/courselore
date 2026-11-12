@@ -56,7 +56,7 @@ export type ApplicationCourseForumConversationMessageContent = {
         courseConversationVisibility:
           | "courseForumConversationVisibilityEveryone"
           | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-          | "courseConversationVisibilityCourseConversationParticipations";
+          | "courseForumConversationVisibilityCourseForumConversationParticipations";
       };
       courseConversationMessage?: {
         publicId: string;
@@ -520,7 +520,7 @@ export default async (application: Application): Promise<void> => {
                                   )
                                 `
                               : courseConversation.courseConversationVisibility ===
-                                  "courseConversationVisibilityCourseConversationParticipations"
+                                  "courseForumConversationVisibilityCourseForumConversationParticipations"
                                 ? sql`
                                     and (
                                       select true

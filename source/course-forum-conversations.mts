@@ -21,7 +21,7 @@ export type ApplicationCourseForumConversations = {
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-            | "courseConversationVisibilityCourseConversationParticipations";
+            | "courseForumConversationVisibilityCourseForumConversationParticipations";
           pinned: number;
           title: string;
         };
@@ -1688,7 +1688,7 @@ export default async (application: Application): Promise<void> => {
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-            | "courseConversationVisibilityCourseConversationParticipations";
+            | "courseForumConversationVisibilityCourseForumConversationParticipations";
           pinned: "false" | "true";
           announcement: "false" | "true";
           tags: string[];
@@ -1718,7 +1718,7 @@ export default async (application: Application): Promise<void> => {
         courseConversationVisibility:
           | "courseForumConversationVisibilityEveryone"
           | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-          | "courseConversationVisibilityCourseConversationParticipations";
+          | "courseForumConversationVisibilityCourseForumConversationParticipations";
         pinned: "false" | "true";
         announcement: "false" | "true";
         tags: string[];
@@ -1768,7 +1768,7 @@ export default async (application: Application): Promise<void> => {
                 courseConversationVisibility:
                   | "courseForumConversationVisibilityEveryone"
                   | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-                  | "courseConversationVisibilityCourseConversationParticipations";
+                  | "courseForumConversationVisibilityCourseForumConversationParticipations";
                 pinned: number;
                 title: string;
               }>(
@@ -2145,7 +2145,7 @@ export default async (application: Application): Promise<void> => {
                                 (prefill.courseConversationVisibility !==
                                   "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
                                   prefill.courseConversationVisibility !==
-                                    "courseConversationVisibilityCourseConversationParticipations")
+                                    "courseForumConversationVisibilityCourseForumConversationParticipations")
                                   ? html`checked`
                                   : html``
                               }
@@ -2180,11 +2180,11 @@ export default async (application: Application): Promise<void> => {
                             ><input
                               type="radio"
                               name="courseConversationVisibility"
-                              value="courseConversationVisibilityCourseConversationParticipations"
+                              value="courseForumConversationVisibilityCourseForumConversationParticipations"
                               required
                               $${
                                 prefill.courseConversationVisibility ===
-                                "courseConversationVisibilityCourseConversationParticipations"
+                                "courseForumConversationVisibilityCourseForumConversationParticipations"
                                   ? html`checked`
                                   : html``
                               }
@@ -2239,7 +2239,7 @@ export default async (application: Application): Promise<void> => {
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
                               this.onclick = () => {
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseForumConversationVisibilityCourseForumConversationParticipations"]').checked = true;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
                                 if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
@@ -2263,7 +2263,7 @@ export default async (application: Application): Promise<void> => {
                                     this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
                                     ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
                                   ) || (
-                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseForumConversationParticipations" &&
                                     this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
                                   );
                               };
@@ -3168,7 +3168,7 @@ export default async (application: Application): Promise<void> => {
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-            | "courseConversationVisibilityCourseConversationParticipations";
+            | "courseForumConversationVisibilityCourseForumConversationParticipations";
           courseConversationParticipations: string[];
           pinned: "false" | "true";
           announcement: "on";
@@ -3204,7 +3204,7 @@ export default async (application: Application): Promise<void> => {
           request.body.courseConversationVisibility !==
             "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
           request.body.courseConversationVisibility !==
-            "courseConversationVisibilityCourseConversationParticipations") ||
+            "courseForumConversationVisibilityCourseForumConversationParticipations") ||
         !Array.isArray(request.body.courseConversationParticipations) ||
         request.body.courseConversationParticipations.some(
           (courseConversationParticipation) =>
@@ -3274,7 +3274,7 @@ export default async (application: Application): Promise<void> => {
         courseConversationVisibility:
           | "courseForumConversationVisibilityEveryone"
           | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-          | "courseConversationVisibilityCourseConversationParticipations";
+          | "courseForumConversationVisibilityCourseForumConversationParticipations";
         pinned: number;
         title: string;
       };
@@ -3311,7 +3311,7 @@ export default async (application: Application): Promise<void> => {
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-            | "courseConversationVisibilityCourseConversationParticipations";
+            | "courseForumConversationVisibilityCourseForumConversationParticipations";
           pinned: number;
           title: string;
         }>(
@@ -3533,7 +3533,7 @@ export default async (application: Application): Promise<void> => {
         courseConversationVisibility:
           | "courseForumConversationVisibilityEveryone"
           | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-          | "courseConversationVisibilityCourseConversationParticipations";
+          | "courseForumConversationVisibilityCourseForumConversationParticipations";
         pinned: number;
         title: string;
       }>(
@@ -4389,12 +4389,12 @@ export default async (application: Application): Promise<void> => {
                                   ><input
                                     type="radio"
                                     name="courseConversationVisibility"
-                                    value="courseConversationVisibilityCourseConversationParticipations"
+                                    value="courseForumConversationVisibilityCourseForumConversationParticipations"
                                     required
                                     $${
                                       request.state.courseConversation
                                         .courseConversationVisibility ===
-                                      "courseConversationVisibilityCourseConversationParticipations"
+                                      "courseForumConversationVisibilityCourseForumConversationParticipations"
                                         ? html`checked`
                                         : html``
                                     }
@@ -4450,7 +4450,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').checked = true;
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseForumConversationVisibilityCourseForumConversationParticipations"]').checked = true;
                                     this.closest('[type~="form"]').oninput();
                                     this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
                                     if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
@@ -4475,7 +4475,7 @@ export default async (application: Application): Promise<void> => {
                                         this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
                                         ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
                                       ) || (
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseForumConversationParticipations" &&
                                         this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children.length === 0
                                       );
                                   };
@@ -4789,7 +4789,7 @@ export default async (application: Application): Promise<void> => {
                                             ? "Instructors and selected course participants"
                                             : request.state.courseConversation
                                                   .courseConversationVisibility ===
-                                                "courseConversationVisibilityCourseConversationParticipations"
+                                                "courseForumConversationVisibilityCourseForumConversationParticipations"
                                               ? "Selected course participants"
                                               : (() => {
                                                   throw new Error();
@@ -4824,7 +4824,7 @@ export default async (application: Application): Promise<void> => {
                                             ? "Instructors and selected course participants"
                                             : request.state.courseConversation
                                                   .courseConversationVisibility ===
-                                                "courseConversationVisibilityCourseConversationParticipations"
+                                                "courseForumConversationVisibilityCourseForumConversationParticipations"
                                               ? "Selected course participants"
                                               : (() => {
                                                   throw new Error();
@@ -7206,7 +7206,7 @@ export default async (application: Application): Promise<void> => {
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
-            | "courseConversationVisibilityCourseConversationParticipations";
+            | "courseForumConversationVisibilityCourseForumConversationParticipations";
           courseConversationParticipations: string[];
           pinned: "false" | "true";
           tags: string[];
@@ -7257,7 +7257,7 @@ export default async (application: Application): Promise<void> => {
           request.body.courseConversationVisibility !==
             "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
           request.body.courseConversationVisibility !==
-            "courseConversationVisibilityCourseConversationParticipations") ||
+            "courseForumConversationVisibilityCourseForumConversationParticipations") ||
         !Array.isArray(request.body.courseConversationParticipations) ||
         request.body.courseConversationParticipations.some(
           (courseConversationParticipation) =>
