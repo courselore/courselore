@@ -7997,7 +7997,7 @@ export default async (application: Application): Promise<void> => {
                   method: "POST",
                   headers: { "CSRF-Protection": "true" },
                   body: new URLSearchParams({
-                    text: await application.partials.courseConversationMessageContentProcessor(
+                    text: await application.partials.courseForumConversationMessageContentProcessor(
                       {
                         course:
                           database.get<{
@@ -8069,7 +8069,7 @@ export default async (application: Application): Promise<void> => {
               method: "POST",
               headers: { "CSRF-Protection": "true" },
               body: new URLSearchParams({
-                text: await application.partials.courseConversationMessageContentProcessor(
+                text: await application.partials.courseForumConversationMessageContentProcessor(
                   {
                     course:
                       database.get<{
