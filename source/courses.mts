@@ -70,7 +70,7 @@ export type ApplicationCourses = {
             | "fuchsia"
             | "pink"
             | "rose";
-          mostRecentlyVisitedCourseConversation: number | null;
+          mostRecentlyVisitedCourseForumConversation: number | null;
         };
         courseConversationsTags: {
           id: number;
@@ -367,7 +367,7 @@ export default async (application: Application): Promise<void> => {
           | "fuchsia"
           | "pink"
           | "rose";
-        mostRecentlyVisitedCourseConversation: number | null;
+        mostRecentlyVisitedCourseForumConversation: number | null;
       }>(
         sql`
           select * from "courseParticipations" where "id" = ${
@@ -379,7 +379,7 @@ export default async (application: Application): Promise<void> => {
                   "course",
                   "courseParticipationRole",
                   "decorationColor",
-                  "mostRecentlyVisitedCourseConversation"
+                  "mostRecentlyVisitedCourseForumConversation"
                 )
                 values (
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -518,7 +518,7 @@ export default async (application: Application): Promise<void> => {
           | "fuchsia"
           | "pink"
           | "rose";
-        mostRecentlyVisitedCourseConversation: number | null;
+        mostRecentlyVisitedCourseForumConversation: number | null;
       }>(
         sql`
           select
@@ -526,7 +526,7 @@ export default async (application: Application): Promise<void> => {
             "publicId",
             "courseParticipationRole",
             "decorationColor",
-            "mostRecentlyVisitedCourseConversation"
+            "mostRecentlyVisitedCourseForumConversation"
           from "courseParticipations"
           where
             "user" = ${request.state.user.id} and
@@ -594,7 +594,7 @@ export default async (application: Application): Promise<void> => {
         return;
       const courseConversation =
         (typeof request.state.courseParticipation
-          .mostRecentlyVisitedCourseConversation === "number"
+          .mostRecentlyVisitedCourseForumConversation === "number"
           ? application.database.get<{
               publicId: string;
             }>(
@@ -603,7 +603,7 @@ export default async (application: Application): Promise<void> => {
                 from "courseConversations"
                 where "id" = ${
                   request.state.courseParticipation
-                    .mostRecentlyVisitedCourseConversation
+                    .mostRecentlyVisitedCourseForumConversation
                 } and (
                   "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
                   ${
@@ -5554,7 +5554,7 @@ export default async (application: Application): Promise<void> => {
               "course",
               "courseParticipationRole",
               "decorationColor",
-              "mostRecentlyVisitedCourseConversation"
+              "mostRecentlyVisitedCourseForumConversation"
             )
             values (
               ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -6044,7 +6044,7 @@ export default async (application: Application): Promise<void> => {
               "course",
               "courseParticipationRole",
               "decorationColor",
-              "mostRecentlyVisitedCourseConversation"
+              "mostRecentlyVisitedCourseForumConversation"
             )
             values (
               ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -6701,7 +6701,7 @@ export default async (application: Application): Promise<void> => {
                   "course",
                   "courseParticipationRole",
                   "decorationColor",
-                  "mostRecentlyVisitedCourseConversation"
+                  "mostRecentlyVisitedCourseForumConversation"
                 )
                 values (
                   ${cryptoRandomString({ length: 20, type: "numeric" })},

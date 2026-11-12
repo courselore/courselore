@@ -3973,7 +3973,7 @@ export default async (application: Application): Promise<void> => {
                 "course",
                 "courseParticipationRole",
                 "decorationColor",
-                "mostRecentlyVisitedCourseConversation"
+                "mostRecentlyVisitedCourseForumConversation"
               )
               values (
                 ${cryptoRandomString({ length: 20, type: "numeric" })},

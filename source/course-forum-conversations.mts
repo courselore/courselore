@@ -3574,7 +3574,7 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           update "courseParticipations"
-          set "mostRecentlyVisitedCourseConversation" = ${request.state.courseConversation.id}
+          set "mostRecentlyVisitedCourseForumConversation" = ${request.state.courseConversation.id}
           where "id" = ${request.state.courseParticipation.id};
         `,
       );
@@ -7420,8 +7420,8 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             update "courseParticipations"
-            set "mostRecentlyVisitedCourseConversation" = null
-            where "mostRecentlyVisitedCourseConversation" = ${request.state.courseConversation!.id};
+            set "mostRecentlyVisitedCourseForumConversation" = null
+            where "mostRecentlyVisitedCourseForumConversation" = ${request.state.courseConversation!.id};
           `,
         );
         application.database.run(

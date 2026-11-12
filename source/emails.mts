@@ -75,7 +75,7 @@ export default async (application: Application): Promise<void> => {
             | "fuchsia"
             | "pink"
             | "rose";
-          mostRecentlyVisitedCourseConversation: number | null;
+          mostRecentlyVisitedCourseForumConversation: number | null;
         };
         courseConversation: {
           id: number;
@@ -177,7 +177,7 @@ export default async (application: Application): Promise<void> => {
                 | "fuchsia"
                 | "pink"
                 | "rose";
-              mostRecentlyVisitedCourseConversation: number | null;
+              mostRecentlyVisitedCourseForumConversation: number | null;
             }>(
               sql`
                 select
@@ -186,7 +186,7 @@ export default async (application: Application): Promise<void> => {
                   "course",
                   "courseParticipationRole",
                   "decorationColor",
-                  "mostRecentlyVisitedCourseConversation"
+                  "mostRecentlyVisitedCourseForumConversation"
                 from "courseParticipations"
                 where "id" = ${courseConversationMessageEmailNotificationReplyToken.courseParticipation};
               `,
