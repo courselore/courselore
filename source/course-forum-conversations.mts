@@ -439,7 +439,7 @@ export default async (application: Application): Promise<void> => {
                                 "courseParticipationRoleInstructor"
                                   ? sql`
                                       and
-                                      "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                      "courseConversationMessages"."courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                                     `
                                   : sql``
                               } and
@@ -1455,7 +1455,7 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipationRoleInstructor"
                       ? sql`
                           where
-                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                         `
                       : sql``
                   }
@@ -1497,7 +1497,7 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipationRoleInstructor"
                       ? sql`
                           where
-                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                            "courseConversationMessages"."courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                         `
                       : sql``
                   }
@@ -5275,7 +5275,7 @@ export default async (application: Application): Promise<void> => {
                         | "courseForumConversationMessageTypeFollowUpQuestion";
                       courseConversationMessageVisibility:
                         | "courseForumConversationMessageVisibilityEveryone"
-                        | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+                        | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
                       courseConversationMessageAnonymity:
                         | "courseConversationMessageAnonymityNone"
                         | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -5303,7 +5303,7 @@ export default async (application: Application): Promise<void> => {
                             "courseParticipationRoleInstructor"
                               ? sql`
                                   and
-                                  "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                  "courseConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                                 `
                               : sql``
                           }
@@ -5631,7 +5631,7 @@ export default async (application: Application): Promise<void> => {
                                   }
                                   if (
                                     courseConversationMessage.courseConversationMessageVisibility ===
-                                    "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                                    "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                                   )
                                     courseConversationMessageMainHeaderBylineHTMLs.push(
                                       html`<span
@@ -6529,7 +6529,7 @@ export default async (application: Application): Promise<void> => {
                             | "courseForumConversationMessageTypeFollowUpQuestion";
                           courseConversationMessageVisibility:
                             | "courseForumConversationMessageVisibilityEveryone"
-                            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+                            | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
                           courseConversationMessageAnonymity:
                             | "courseConversationMessageAnonymityNone"
                             | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -6919,11 +6919,11 @@ export default async (application: Application): Promise<void> => {
                                       ><input
                                         type="radio"
                                         name="courseConversationMessageVisibility"
-                                        value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                                        value="courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                                         required
                                         $${
                                           courseConversationMessageDraft?.courseConversationMessageVisibility ===
-                                          "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                                          "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                                             ? html`checked`
                                             : html``
                                         }
@@ -6966,7 +6966,7 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
                                         this.onclick = () => {
-                                          this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
+                                          this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
                                         };
                                       `}"
                                     >

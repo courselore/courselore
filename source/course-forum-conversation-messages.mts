@@ -25,7 +25,7 @@ export type ApplicationCourseForumConversationMessages = {
             | "courseForumConversationMessageTypeFollowUpQuestion";
           courseConversationMessageVisibility:
             | "courseForumConversationMessageVisibilityEveryone"
-            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+            | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
           courseConversationMessageAnonymity:
             | "courseConversationMessageAnonymityNone"
             | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -56,7 +56,7 @@ export default async (application: Application): Promise<void> => {
             | "courseForumConversationMessageTypeFollowUpQuestion";
           courseConversationMessageVisibility:
             | "courseForumConversationMessageVisibilityEveryone"
-            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+            | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
           courseConversationMessageAnonymity:
             | "courseConversationMessageAnonymityNone"
             | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -93,7 +93,7 @@ export default async (application: Application): Promise<void> => {
             (request.body.courseConversationMessageVisibility !==
               "courseForumConversationMessageVisibilityEveryone" &&
               request.body.courseConversationMessageVisibility !==
-                "courseConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
+                "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
         (request.body.courseConversationMessageAnonymity !== undefined &&
           (typeof request.body.courseConversationMessageAnonymity !==
             "string" ||
@@ -201,7 +201,7 @@ export default async (application: Application): Promise<void> => {
             | "courseForumConversationMessageTypeFollowUpQuestion";
           courseConversationMessageVisibility:
             | "courseForumConversationMessageVisibilityEveryone"
-            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+            | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
           courseConversationMessageAnonymity:
             | "courseConversationMessageAnonymityNone"
             | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -240,7 +240,7 @@ export default async (application: Application): Promise<void> => {
             (request.body.courseConversationMessageVisibility !==
               "courseForumConversationMessageVisibilityEveryone" &&
               request.body.courseConversationMessageVisibility !==
-                "courseConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
+                "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
         (request.body.courseConversationMessageAnonymity !== undefined &&
           (typeof request.body.courseConversationMessageAnonymity !==
             "string" ||
@@ -301,7 +301,7 @@ export default async (application: Application): Promise<void> => {
         );
         if (
           request.body.courseConversationMessageVisibility !==
-          "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+          "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
         ) {
           if (
             request.body.courseConversationMessageType ===
@@ -428,7 +428,7 @@ export default async (application: Application): Promise<void> => {
           updatedAt: string | null;
           courseConversationMessageVisibility:
             | "courseForumConversationMessageVisibilityEveryone"
-            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+            | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
           courseConversationMessageAnonymity:
             | "courseConversationMessageAnonymityNone"
             | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -608,7 +608,7 @@ export default async (application: Application): Promise<void> => {
             (courseConversationMessage.courseConversationMessageVisibility ===
               "courseForumConversationMessageVisibilityEveryone" ||
               (courseConversationMessage.courseConversationMessageVisibility ===
-                "courseConversationMessageVisibilityCourseParticipationRoleInstructors" &&
+                "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors" &&
                 courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor")) &&
             (parameters.announcement === true ||
@@ -768,7 +768,7 @@ export default async (application: Application): Promise<void> => {
           | "courseForumConversationMessageTypeFollowUpQuestion";
         courseConversationMessageVisibility:
           | "courseForumConversationMessageVisibilityEveryone"
-          | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+          | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
         courseConversationMessageAnonymity:
           | "courseConversationMessageAnonymityNone"
           | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -796,7 +796,7 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleInstructor"
                     ? sql`
                         or
-                        "courseConversationMessageVisibility" = 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                        "courseConversationMessageVisibility" = 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                       `
                     : sql``
                 }
@@ -1090,12 +1090,12 @@ export default async (application: Application): Promise<void> => {
                         ><input
                           type="radio"
                           name="courseConversationMessageVisibility"
-                          value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                          value="courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                           required
                           $${
                             request.state.courseConversationMessage
                               .courseConversationMessageVisibility ===
-                            "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                            "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                               ? html`checked`
                               : html``
                           }
@@ -1138,7 +1138,7 @@ export default async (application: Application): Promise<void> => {
                         class="button button--rectangle button--transparent button--dropdown-menu"
                         javascript="${javascript`
                           this.onclick = () => {
-                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
+                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
                           };
                         `}"
                       >
@@ -1357,7 +1357,7 @@ export default async (application: Application): Promise<void> => {
             | "courseForumConversationMessageTypeFollowUpQuestion";
           courseConversationMessageVisibility:
             | "courseForumConversationMessageVisibilityEveryone"
-            | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
+            | "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors";
           courseConversationMessageAnonymity:
             | "courseConversationMessageAnonymityNone"
             | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -1420,7 +1420,7 @@ export default async (application: Application): Promise<void> => {
             (request.body.courseConversationMessageVisibility !==
               "courseForumConversationMessageVisibilityEveryone" &&
               request.body.courseConversationMessageVisibility !==
-                "courseConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
+                "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"))) ||
         (request.body.courseConversationMessageAnonymity !== undefined &&
           (typeof request.body.courseConversationMessageAnonymity !==
             "string" ||
