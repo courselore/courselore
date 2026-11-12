@@ -3872,7 +3872,7 @@ export default async (application: Application): Promise<void> => {
           courseConversationMessageAnonymity:
             | "courseForumConversationMessageAnonymityNone"
             | "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
-            | "courseConversationMessageAnonymityEveryone";
+            | "courseForumConversationMessageAnonymityEveryone";
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -3885,7 +3885,7 @@ export default async (application: Application): Promise<void> => {
         request.body.courseConversationMessageAnonymity !==
           "courseForumConversationMessageAnonymityCourseParticipationRoleStudents" &&
         request.body.courseConversationMessageAnonymity !==
-          "courseConversationMessageAnonymityEveryone"
+          "courseForumConversationMessageAnonymityEveryone"
       )
         throw "validation";
       application.database.run(
@@ -3899,7 +3899,7 @@ export default async (application: Application): Promise<void> => {
                   "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
                 ? "userAnonymityPreferredCourseParticipationRoleStudents"
                 : request.body.courseConversationMessageAnonymity ===
-                    "courseConversationMessageAnonymityEveryone"
+                    "courseForumConversationMessageAnonymityEveryone"
                   ? "userAnonymityPreferredEveryone"
                   : (() => {
                       throw new Error();
