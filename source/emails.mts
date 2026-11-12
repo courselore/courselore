@@ -482,7 +482,7 @@ export default async (application: Application): Promise<void> => {
                                 ? "courseForumConversationMessageTypeAnswer"
                                 : "courseForumConversationMessageTypeMessage"
                             },
-                            ${"courseConversationMessageVisibilityEveryone"},
+                            ${"courseForumConversationMessageVisibilityEveryone"},
                             ${"courseConversationMessageAnonymityNone"},
                             ${Number(true)},
                             ${content},

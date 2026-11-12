@@ -3446,7 +3446,7 @@ export default async (application: Application): Promise<void> => {
                     ${Temporal.Now.instant().toString()},
                     ${null},
                     ${"courseForumConversationMessageTypeMessage"},
-                    ${"courseConversationMessageVisibilityEveryone"},
+                    ${"courseForumConversationMessageVisibilityEveryone"},
                     ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
                     ${Number(false)},
                     ${request.body.content!},
@@ -5272,9 +5272,9 @@ export default async (application: Application): Promise<void> => {
                       courseConversationMessageType:
                         | "courseForumConversationMessageTypeMessage"
                         | "courseForumConversationMessageTypeAnswer"
-                        | "courseConversationMessageTypeFollowUpQuestion";
+                        | "courseForumConversationMessageTypeFollowUpQuestion";
                       courseConversationMessageVisibility:
-                        | "courseConversationMessageVisibilityEveryone"
+                        | "courseForumConversationMessageVisibilityEveryone"
                         | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
                       courseConversationMessageAnonymity:
                         | "courseConversationMessageAnonymityNone"
@@ -5613,7 +5613,7 @@ export default async (application: Application): Promise<void> => {
                                       );
                                     else if (
                                       courseConversationMessage.courseConversationMessageType ===
-                                      "courseConversationMessageTypeFollowUpQuestion"
+                                      "courseForumConversationMessageTypeFollowUpQuestion"
                                     )
                                       courseConversationMessageMainHeaderBylineHTMLs.push(
                                         html`<span
@@ -6526,9 +6526,9 @@ export default async (application: Application): Promise<void> => {
                           courseConversationMessageType:
                             | "courseForumConversationMessageTypeMessage"
                             | "courseForumConversationMessageTypeAnswer"
-                            | "courseConversationMessageTypeFollowUpQuestion";
+                            | "courseForumConversationMessageTypeFollowUpQuestion";
                           courseConversationMessageVisibility:
-                            | "courseConversationMessageVisibilityEveryone"
+                            | "courseForumConversationMessageVisibilityEveryone"
                             | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
                           courseConversationMessageAnonymity:
                             | "courseConversationMessageAnonymityNone"
@@ -6807,11 +6807,11 @@ export default async (application: Application): Promise<void> => {
                                       ><input
                                         type="radio"
                                         name="courseConversationMessageType"
-                                        value="courseConversationMessageTypeFollowUpQuestion"
+                                        value="courseForumConversationMessageTypeFollowUpQuestion"
                                         required
                                         $${
                                           courseConversationMessageDraft?.courseConversationMessageType ===
-                                          "courseConversationMessageTypeFollowUpQuestion"
+                                          "courseForumConversationMessageTypeFollowUpQuestion"
                                             ? html`checked`
                                             : html``
                                         }
@@ -6865,7 +6865,7 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
                                       this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseForumConversationMessageTypeFollowUpQuestion"]').click();
                                       };
                                     `}"
                                     >
@@ -6898,13 +6898,13 @@ export default async (application: Application): Promise<void> => {
                                       >  <input
                                         type="radio"
                                         name="courseConversationMessageVisibility"
-                                        value="courseConversationMessageVisibilityEveryone"
+                                        value="courseForumConversationMessageVisibilityEveryone"
                                         required
                                         $${
                                           courseConversationMessageDraft ===
                                             undefined ||
                                           courseConversationMessageDraft.courseConversationMessageVisibility ===
-                                            "courseConversationMessageVisibilityEveryone"
+                                            "courseForumConversationMessageVisibilityEveryone"
                                             ? html`checked`
                                             : html``
                                         }
@@ -6955,7 +6955,7 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
                                         this.onclick = () => {
-                                          this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
+                                          this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseForumConversationMessageVisibilityEveryone"]').click();
                                         };
                                       `}"
                                     >
