@@ -600,7 +600,7 @@ export default async (application: Application): Promise<void> => {
             }>(
               sql`
                 select "publicId"
-                from "courseConversations"
+                from "courseForumConversations"
                 where "id" = ${
                   request.state.courseParticipation
                     .mostRecentlyVisitedCourseForumConversation
@@ -620,7 +620,7 @@ export default async (application: Application): Promise<void> => {
                     select true
                     from "courseForumConversationParticipations"
                     where
-                      "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                      "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
                       "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                   )
                 );
@@ -632,7 +632,7 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             select "publicId"
-            from "courseConversations"
+            from "courseForumConversations"
             where
               "course" = ${request.state.course.id} and (
                 "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
@@ -649,7 +649,7 @@ export default async (application: Application): Promise<void> => {
                   select true
                   from "courseForumConversationParticipations"
                   where
-                    "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                    "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
                     "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                 )
               )
@@ -2318,9 +2318,9 @@ export default async (application: Application): Promise<void> => {
                                           sql`
                                             select true
                                             from "courseForumConversationTaggings"
-                                            join "courseConversations" on
-                                              "courseForumConversationTaggings"."courseConversation" = "courseConversations"."id" and
-                                              "courseConversations"."course" = ${request.state.course!.id}
+                                            join "courseForumConversations" on
+                                              "courseForumConversationTaggings"."courseConversation" = "courseForumConversations"."id" and
+                                              "courseForumConversations"."course" = ${request.state.course!.id}
                                             where "courseForumConversationTaggings"."courseForumConversationsTag" = ${courseForumConversationsTag.id};
                                           `,
                                         ) !== undefined

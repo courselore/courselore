@@ -782,7 +782,7 @@ export default async (application: Application): Promise<void> => {
                                     }>(
                                       sql`
                                       select count(*) as "count"
-                                      from "courseConversations"
+                                      from "courseForumConversations"
                                       where "course" = ${course.id};
                                     `,
                                     )!.count,
@@ -796,9 +796,9 @@ export default async (application: Application): Promise<void> => {
                                       sql`
                                         select "courseForumConversationMessages"."createdAt" as "createdAt"
                                         from "courseForumConversationMessages"
-                                        join "courseConversations" on
-                                          "courseForumConversationMessages"."courseConversation" = "courseConversations"."id" and
-                                          "courseConversations"."course" = ${course.id}
+                                        join "courseForumConversations" on
+                                          "courseForumConversationMessages"."courseConversation" = "courseForumConversations"."id" and
+                                          "courseForumConversations"."course" = ${course.id}
                                         order by "courseForumConversationMessages"."createdAt" desc
                                         limit 1;
                                       `,

@@ -268,7 +268,7 @@ export default async (application: Application): Promise<void> => {
                   "courseForumConversationVisibility",
                   "pinned",
                   "title"
-                from "courseConversations"
+                from "courseForumConversations"
                 where
                   "course" = ${course.id} and
                   "id" = ${courseForumConversationMessageEmailNotificationReplyToken.courseConversation} and (
@@ -286,7 +286,7 @@ export default async (application: Application): Promise<void> => {
                       select true
                       from "courseForumConversationParticipations"
                       where
-                        "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                        "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
                         "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                     )
                   );
@@ -438,7 +438,7 @@ export default async (application: Application): Promise<void> => {
                 )
                   application.database.run(
                     sql`
-                      update "courseConversations"
+                      update "courseForumConversations"
                       set "courseForumConversationTypeQuestionResolved" = ${Number(true)}
                       where "id" = ${state.courseConversation.id};
                     `,

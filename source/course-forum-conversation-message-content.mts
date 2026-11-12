@@ -671,7 +671,7 @@ export default async (application: Application): Promise<void> => {
                 this.isModified = false;
                 this.onkeyup = utilities.throttle(() => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                  for (const element of this.closest('[key~="courseForumConversationMessageContentEditor--reference"]').querySelector('[key~="courseForumConversationMessageContentEditor--reference--courseConversations"]').children) {
+                  for (const element of this.closest('[key~="courseForumConversationMessageContentEditor--reference"]').querySelector('[key~="courseForumConversationMessageContentEditor--reference--courseForumConversations"]').children) {
                     const titleElement = element.querySelector('[key~="courseForumConversationMessageContentEditor--reference--courseConversation--title"]');
                     titleElement.innerHTML = utilities.highlight(html\`\${titleElement.title}\`, search, { prefix: true });
                     titleElement.morph = titleElement.querySelector("span") === null;
@@ -681,7 +681,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             />
             <div
-              key="courseForumConversationMessageContentEditor--reference--courseConversations"
+              key="courseForumConversationMessageContentEditor--reference--courseForumConversations"
               css="${css`
                 height: var(--size--60);
                 padding: var(--size--1) var(--size--2);
@@ -701,7 +701,7 @@ export default async (application: Application): Promise<void> => {
                     select
                       "publicId",
                       "title"
-                    from "courseConversations"
+                    from "courseForumConversations"
                     where
                       "course" = ${course.id} and (
                         "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
@@ -718,7 +718,7 @@ export default async (application: Application): Promise<void> => {
                           select true
                           from "courseForumConversationParticipations"
                           where
-                            "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                            "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
                             "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                         )
                       )
@@ -2856,7 +2856,7 @@ You may also use the buttons on the message content editor to ${
                   }>(
                     sql`
                       select "id", "publicId"
-                      from "courseConversations"
+                      from "courseForumConversations"
                       where
                         "publicId" = ${courseConversationPublicId} and
                         "course" = ${course.id} and (
@@ -2878,7 +2878,7 @@ You may also use the buttons on the message content editor to ${
                                     select true
                                     from "courseForumConversationParticipations"
                                     where
-                                      "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                                      "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
                                       "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                                   )
                                 `
@@ -2958,7 +2958,7 @@ You may also use the buttons on the message content editor to ${
         }>(
           sql`
             select "id", "publicId"
-            from "courseConversations"
+            from "courseForumConversations"
             where
               "publicId" = ${match.groups.courseConversationPublicId} and
               "course" = ${course.id} and (
@@ -2980,7 +2980,7 @@ You may also use the buttons on the message content editor to ${
                           select true
                           from "courseForumConversationParticipations"
                           where
-                            "courseConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                            "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
                             "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                         )
                       `

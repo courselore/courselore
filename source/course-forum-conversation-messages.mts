@@ -309,7 +309,7 @@ export default async (application: Application): Promise<void> => {
           )
             application.database.run(
               sql`
-              update "courseConversations"
+              update "courseForumConversations"
               set "courseForumConversationTypeQuestionResolved" = ${Number(true)}
               where "id" = ${request.state.courseConversation!.id};
             `,
@@ -320,7 +320,7 @@ export default async (application: Application): Promise<void> => {
           )
             application.database.run(
               sql`
-              update "courseConversations"
+              update "courseForumConversations"
               set "courseForumConversationTypeQuestionResolved" = ${Number(false)}
               where "id" = ${request.state.courseConversation!.id};
             `,
@@ -467,7 +467,7 @@ export default async (application: Application): Promise<void> => {
               "course",
               "courseForumConversationVisibility",
               "title"
-            from "courseConversations"
+            from "courseForumConversations"
             where "id" = ${courseForumConversationMessage.courseConversation};
           `,
         );
