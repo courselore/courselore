@@ -3871,7 +3871,7 @@ export default async (application: Application): Promise<void> => {
         {
           courseConversationMessageAnonymity:
             | "courseForumConversationMessageAnonymityNone"
-            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+            | "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
             | "courseConversationMessageAnonymityEveryone";
         },
         Application["types"]["states"]["Authentication"]
@@ -3883,7 +3883,7 @@ export default async (application: Application): Promise<void> => {
         request.body.courseConversationMessageAnonymity !==
           "courseForumConversationMessageAnonymityNone" &&
         request.body.courseConversationMessageAnonymity !==
-          "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+          "courseForumConversationMessageAnonymityCourseParticipationRoleStudents" &&
         request.body.courseConversationMessageAnonymity !==
           "courseConversationMessageAnonymityEveryone"
       )
@@ -3896,7 +3896,7 @@ export default async (application: Application): Promise<void> => {
             "courseForumConversationMessageAnonymityNone"
               ? "userAnonymityPreferredNone"
               : request.body.courseConversationMessageAnonymity ===
-                  "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                  "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
                 ? "userAnonymityPreferredCourseParticipationRoleStudents"
                 : request.body.courseConversationMessageAnonymity ===
                     "courseConversationMessageAnonymityEveryone"
