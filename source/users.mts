@@ -1345,11 +1345,11 @@ export default async (application: Application): Promise<void> => {
                     <label class="button button--rectangle button--transparent">
                       <input
                         type="checkbox"
-                        name="emailNotificationsForMessagesIncludingAMention"
+                        name="emailNotificationsForCourseForumForMessagesIncludingAMention"
                         $${
                           Boolean(
                             request.state.user
-                              .emailNotificationsForMessagesIncludingAMention,
+                              .emailNotificationsForCourseForumForMessagesIncludingAMention,
                           )
                             ? html`checked`
                             : html``
@@ -2769,7 +2769,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           emailNotificationsForCourseForumForAllMessages: "on";
-          emailNotificationsForMessagesIncludingAMention: "on";
+          emailNotificationsForCourseForumForMessagesIncludingAMention: "on";
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: "on";
           emailNotificationsForMessagesInConversationsThatYouStarted: "on";
         },
@@ -2783,7 +2783,7 @@ export default async (application: Application): Promise<void> => {
           update "users"
           set
             "emailNotificationsForCourseForumForAllMessages" = ${Number(request.body.emailNotificationsForCourseForumForAllMessages === "on")},
-            "emailNotificationsForMessagesIncludingAMention" = ${Number(request.body.emailNotificationsForMessagesIncludingAMention === "on")},
+            "emailNotificationsForCourseForumForMessagesIncludingAMention" = ${Number(request.body.emailNotificationsForCourseForumForMessagesIncludingAMention === "on")},
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" = ${Number(request.body.emailNotificationsForMessagesInConversationsInWhichYouParticipated === "on")},
             "emailNotificationsForMessagesInConversationsThatYouStarted" = ${Number(request.body.emailNotificationsForMessagesInConversationsThatYouStarted === "on")}
           where "id" = ${request.state.user.id};

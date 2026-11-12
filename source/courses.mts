@@ -6622,7 +6622,7 @@ export default async (application: Application): Promise<void> => {
                         "darkMode",
                         "sidebarWidth",
                         "emailNotificationsForCourseForumForAllMessages",
-                        "emailNotificationsForMessagesIncludingAMention",
+                        "emailNotificationsForCourseForumForMessagesIncludingAMention",
                         "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                         "emailNotificationsForMessagesInConversationsThatYouStarted",
                         "userAnonymityPreferred",

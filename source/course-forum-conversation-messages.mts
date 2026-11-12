@@ -561,7 +561,7 @@ export default async (application: Application): Promise<void> => {
             application.database.get<{
               email: string;
               emailNotificationsForCourseForumForAllMessages: number;
-              emailNotificationsForMessagesIncludingAMention: number;
+              emailNotificationsForCourseForumForMessagesIncludingAMention: number;
               emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
               emailNotificationsForMessagesInConversationsThatYouStarted: number;
             }>(
@@ -569,7 +569,7 @@ export default async (application: Application): Promise<void> => {
                 select
                   "email",
                   "emailNotificationsForCourseForumForAllMessages",
-                  "emailNotificationsForMessagesIncludingAMention",
+                  "emailNotificationsForCourseForumForMessagesIncludingAMention",
                   "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                   "emailNotificationsForMessagesInConversationsThatYouStarted"
                 from "users"
@@ -616,7 +616,7 @@ export default async (application: Application): Promise<void> => {
                 courseConversationMessageEmailNotificationUser.emailNotificationsForCourseForumForAllMessages,
               ) ||
               (Boolean(
-                courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesIncludingAMention,
+                courseConversationMessageEmailNotificationUser.emailNotificationsForCourseForumForMessagesIncludingAMention,
               ) &&
                 (courseConversationMessageMentions.has("everyone") ||
                   (courseConversationMessageMentions.has("instructors") &&
