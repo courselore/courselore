@@ -72,7 +72,7 @@ export type ApplicationCourses = {
             | "rose";
           mostRecentlyVisitedCourseForumConversation: number | null;
         };
-        courseConversationsTags: {
+        courseForumConversationsTags: {
           id: number;
           publicId: string;
           name: string;
@@ -544,7 +544,7 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${request.state.user.id};
         `,
       );
-      request.state.courseConversationsTags = application.database.all<{
+      request.state.courseForumConversationsTags = application.database.all<{
         id: number;
         publicId: string;
         name: string;
@@ -556,7 +556,7 @@ export default async (application: Application): Promise<void> => {
             "publicId",
             "name",
             "privateToCourseParticipationRoleInstructors"
-          from "courseConversationsTags"
+          from "courseForumConversationsTags"
           where
             "course" = ${request.state.course.id} ${
               request.state.courseParticipation.courseParticipationRole !==
@@ -741,7 +741,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversationsTags === undefined
+        request.state.courseForumConversationsTags === undefined
       )
         return;
       response.send(
@@ -2152,7 +2152,7 @@ export default async (application: Application): Promise<void> => {
                           </label>
                           $${(() => {
                             const courseConversationsTagPartial = (
-                              courseConversationsTag?: (typeof request.state.courseConversationsTags)[number],
+                              courseConversationsTag?: (typeof request.state.courseForumConversationsTags)[number],
                             ): HTML =>
                               html`<div
                                 key="courseConversationsTag ${
@@ -2169,7 +2169,7 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <input
                                   type="hidden"
-                                  name="courseConversationsTagsPublicIds[]"
+                                  name="courseForumConversationsTagsPublicIds[]"
                                   $${
                                     courseConversationsTag !== undefined
                                       ? html`
@@ -2240,7 +2240,7 @@ export default async (application: Application): Promise<void> => {
                                 >
                                   <input
                                     type="text"
-                                    name="courseConversationsTags[${
+                                    name="courseForumConversationsTags[${
                                       courseConversationsTag?.publicId ??
                                       "{tag}"
                                     }].name"
@@ -2255,7 +2255,7 @@ export default async (application: Application): Promise<void> => {
                                       courseConversationsTag === undefined
                                         ? html`
                                             javascript="${javascript`
-                                          this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")));
+                                          this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")));
                                         `}"
                                           `
                                         : html``
@@ -2284,7 +2284,7 @@ export default async (application: Application): Promise<void> => {
                                     >
                                       <input
                                         type="checkbox"
-                                        name="courseConversationsTags[${
+                                        name="courseForumConversationsTags[${
                                           courseConversationsTag?.publicId ??
                                           "{tag}"
                                         }].privateToCourseParticipationRoleInstructors"
@@ -2301,7 +2301,7 @@ export default async (application: Application): Promise<void> => {
                                           courseConversationsTag === undefined
                                             ? html`
                                                 javascript="${javascript`
-                                              this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")));
+                                              this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")));
                                             `}"
                                               `
                                             : html``
@@ -2383,8 +2383,8 @@ export default async (application: Application): Promise<void> => {
                                                     javascript.stringToElement(html\`
                                                       <input
                                                         type="hidden"
-                                                        name="courseConversationsTagsPublicIdsToRemove[]"
-                                                        value="\${this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseConversationsTagsPublicIds[]"]').getAttribute("value")}"
+                                                        name="courseForumConversationsTagsPublicIdsToRemove[]"
+                                                        value="\${this.closest('[key~="courseConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")}"
                                                         javascript="\${${javascript`
                                                           this.isModified = true;
                                                         `}}"
@@ -2406,7 +2406,7 @@ export default async (application: Application): Promise<void> => {
                             return html`
                               <!-- prettier-ignore -->
                               <div
-                                key="courseConversationsTags"
+                                key="courseForumConversationsTags"
                                 css="${css`
                                 display: flex;
                                 flex-direction: column;
@@ -2416,7 +2416,7 @@ export default async (application: Application): Promise<void> => {
                                   display: none;
                                 }
                               `}"
-                              >$${request.state.courseConversationsTags.map(
+                              >$${request.state.courseForumConversationsTags.map(
                                 (courseConversationsTag) =>
                                   courseConversationsTagPartial(
                                     courseConversationsTag,
@@ -2440,7 +2440,7 @@ export default async (application: Application): Promise<void> => {
                                   this.onclick = () => {
                                     javascript.execute(
                                       this.closest('[type~="form"]')
-                                        .querySelector('[key~="courseConversationsTags"]')
+                                        .querySelector('[key~="courseForumConversationsTags"]')
                                         .insertAdjacentElement(
                                           "beforeend",
                                           javascript.stringToElement(${courseConversationsTagPartial()})
@@ -5036,14 +5036,14 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           courseForumConversationRequiresTagging: "on";
-          courseConversationsTagsPublicIds: string[];
+          courseForumConversationsTagsPublicIds: string[];
           [
-            courseConversationsTagsName: `courseConversationsTags[${string}].name`
+            courseForumConversationsTagsName: `courseForumConversationsTags[${string}].name`
           ]: string;
           [
-            courseConversationsTagsPrivateToCourseParticipationRoleInstructors: `courseConversationsTags[${string}].privateToCourseParticipationRoleInstructors`
+            courseForumConversationsTagsPrivateToCourseParticipationRoleInstructors: `courseForumConversationsTags[${string}].privateToCourseParticipationRoleInstructors`
           ]: "on";
-          courseConversationsTagsPublicIdsToRemove: string[];
+          courseForumConversationsTagsPublicIdsToRemove: string[];
         },
         Application["types"]["states"]["Course"]
       >,
@@ -5054,26 +5054,26 @@ export default async (application: Application): Promise<void> => {
         request.state.courseParticipation === undefined ||
         request.state.courseParticipation.courseParticipationRole !==
           "courseParticipationRoleInstructor" ||
-        request.state.courseConversationsTags === undefined
+        request.state.courseForumConversationsTags === undefined
       )
         return;
-      request.body.courseConversationsTagsPublicIds ??= [];
-      request.body.courseConversationsTagsPublicIdsToRemove ??= [];
+      request.body.courseForumConversationsTagsPublicIds ??= [];
+      request.body.courseForumConversationsTagsPublicIdsToRemove ??= [];
       if (
-        !Array.isArray(request.body.courseConversationsTagsPublicIds) ||
-        request.body.courseConversationsTagsPublicIds.some(
+        !Array.isArray(request.body.courseForumConversationsTagsPublicIds) ||
+        request.body.courseForumConversationsTagsPublicIds.some(
           (courseConversationsTagPublicId) =>
             typeof courseConversationsTagPublicId !== "string" ||
             courseConversationsTagPublicId.trim() === "" ||
             typeof request.body[
-              `courseConversationsTags[${courseConversationsTagPublicId}].name`
+              `courseForumConversationsTags[${courseConversationsTagPublicId}].name`
             ] !== "string" ||
             request.body[
-              `courseConversationsTags[${courseConversationsTagPublicId}].name`
+              `courseForumConversationsTags[${courseConversationsTagPublicId}].name`
             ]!.trim() === "",
         ) ||
-        !Array.isArray(request.body.courseConversationsTagsPublicIdsToRemove) ||
-        request.body.courseConversationsTagsPublicIdsToRemove.some(
+        !Array.isArray(request.body.courseForumConversationsTagsPublicIdsToRemove) ||
+        request.body.courseForumConversationsTagsPublicIdsToRemove.some(
           (courseConversationsTagPublicId) =>
             typeof courseConversationsTagPublicId !== "string" ||
             courseConversationsTagPublicId.trim() === "",
@@ -5091,9 +5091,9 @@ export default async (application: Application): Promise<void> => {
         for (const [
           order,
           courseConversationsTagPublicId,
-        ] of request.body.courseConversationsTagsPublicIds!.entries()) {
+        ] of request.body.courseForumConversationsTagsPublicIds!.entries()) {
           const courseConversationsTag =
-            request.state.courseConversationsTags!.find(
+            request.state.courseForumConversationsTags!.find(
               (courseConversationsTag) =>
                 courseConversationsTagPublicId ===
                 courseConversationsTag.publicId,
@@ -5101,7 +5101,7 @@ export default async (application: Application): Promise<void> => {
           if (courseConversationsTag === undefined)
             application.database.run(
               sql`
-                insert into "courseConversationsTags" (
+                insert into "courseForumConversationsTags" (
                   "publicId",
                   "course",
                   "order",
@@ -5112,27 +5112,27 @@ export default async (application: Application): Promise<void> => {
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
                   ${request.state.course!.id},
                   ${order},
-                  ${request.body[`courseConversationsTags[${courseConversationsTagPublicId}].name`]!},
-                  ${Number(request.body[`courseConversationsTags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
+                  ${request.body[`courseForumConversationsTags[${courseConversationsTagPublicId}].name`]!},
+                  ${Number(request.body[`courseForumConversationsTags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
                 );
               `,
             );
           else
             application.database.run(
               sql`
-                update "courseConversationsTags"
+                update "courseForumConversationsTags"
                 set
                   "order" = ${order},
-                  "name" = ${request.body[`courseConversationsTags[${courseConversationsTagPublicId}].name`]!},
-                  "privateToCourseParticipationRoleInstructors" = ${Number(request.body[`courseConversationsTags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
+                  "name" = ${request.body[`courseForumConversationsTags[${courseConversationsTagPublicId}].name`]!},
+                  "privateToCourseParticipationRoleInstructors" = ${Number(request.body[`courseForumConversationsTags[${courseConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
                 where "id" = ${courseConversationsTag.id};
               `,
             );
         }
         for (const courseConversationsTagPublicId of request.body
-          .courseConversationsTagsPublicIdsToRemove!) {
+          .courseForumConversationsTagsPublicIdsToRemove!) {
           const courseConversationsTag =
-            request.state.courseConversationsTags!.find(
+            request.state.courseForumConversationsTags!.find(
               (courseConversationsTag) =>
                 courseConversationsTagPublicId ===
                 courseConversationsTag.publicId,
@@ -5145,7 +5145,7 @@ export default async (application: Application): Promise<void> => {
           );
           application.database.run(
             sql`
-              delete from "courseConversationsTags" where "id" = ${courseConversationsTag.id};
+              delete from "courseForumConversationsTags" where "id" = ${courseConversationsTag.id};
             `,
           );
         }

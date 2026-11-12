@@ -53,7 +53,7 @@ export default async (application: Application): Promise<void> => {
       request.state.user === undefined ||
       request.state.course === undefined ||
       request.state.courseParticipation === undefined ||
-      request.state.courseConversationsTags === undefined
+      request.state.courseForumConversationsTags === undefined
     )
       throw new Error();
     return application.layouts.base({
@@ -1014,7 +1014,7 @@ export default async (application: Application): Promise<void> => {
                                                   }`,
                                               ];
                                             for (const courseConversationsTag of request
-                                              .state.courseConversationsTags!)
+                                              .state.courseForumConversationsTags!)
                                               if (
                                                 application.database.get(
                                                   sql`
@@ -1708,7 +1708,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversationsTags === undefined
+        request.state.courseForumConversationsTags === undefined
       )
         return;
       let prefill: Partial<{
@@ -2608,7 +2608,7 @@ export default async (application: Application): Promise<void> => {
                           : html``
                       }
                       $${
-                        request.state.courseConversationsTags.length > 0
+                        request.state.courseForumConversationsTags.length > 0
                           ? html`
                               <div
                                 css="${css`
@@ -2643,7 +2643,7 @@ export default async (application: Application): Promise<void> => {
                                     row-gap: var(--size--2);
                                   `}"
                                 >
-                                  $${request.state.courseConversationsTags.map(
+                                  $${request.state.courseForumConversationsTags.map(
                                     (courseConversationsTag) => html`
                                       <label
                                         class="button button--rectangle button--transparent"
@@ -3188,7 +3188,7 @@ export default async (application: Application): Promise<void> => {
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversationsTags === undefined
+        request.state.courseForumConversationsTags === undefined
       )
         return;
       request.body.courseConversationParticipations ??= [];
@@ -3220,12 +3220,12 @@ export default async (application: Application): Promise<void> => {
               "courseParticipationRoleInstructor")) ||
         !Array.isArray(request.body.tags) ||
         (Boolean(request.state.course.courseForumConversationRequiresTagging) &&
-          0 < request.state.courseConversationsTags.length &&
+          0 < request.state.courseForumConversationsTags.length &&
           request.body.tags.length === 0) ||
         request.body.tags.some(
           (tag) =>
             typeof tag !== "string" ||
-            !request.state.courseConversationsTags!.some(
+            !request.state.courseForumConversationsTags!.some(
               (courseConversationsTag) =>
                 tag === courseConversationsTag.publicId,
             ),
@@ -3412,7 +3412,7 @@ export default async (application: Application): Promise<void> => {
               )
               values (
                 ${courseConversation.id},
-                ${request.state.courseConversationsTags!.find((courseConversationsTag) => tag === courseConversationsTag.publicId)!.id}
+                ${request.state.courseForumConversationsTags!.find((courseConversationsTag) => tag === courseConversationsTag.publicId)!.id}
               );
             `,
           );
@@ -3600,7 +3600,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversationsTags === undefined ||
+        request.state.courseForumConversationsTags === undefined ||
         request.state.courseConversation === undefined
       )
         return;
@@ -5071,11 +5071,11 @@ export default async (application: Application): Promise<void> => {
                       }
                     </div>
                     $${
-                      request.state.courseConversationsTags.length > 0
+                      request.state.courseForumConversationsTags.length > 0
                         ? (() => {
-                            let courseConversationsTagsHTML = html``;
-                            const courseConversationsTagsWithTagging =
-                              request.state.courseConversationsTags.filter(
+                            let courseForumConversationsTagsHTML = html``;
+                            const courseForumConversationsTagsWithTagging =
+                              request.state.courseForumConversationsTags.filter(
                                 (courseConversationsTag) =>
                                   application.database.get(
                                     sql`
@@ -5088,7 +5088,7 @@ export default async (application: Application): Promise<void> => {
                                   ) !== undefined,
                               );
                             if (mayEditCourseConversation)
-                              courseConversationsTagsHTML += html`
+                              courseForumConversationsTagsHTML += html`
                                 <div>
                                   <button
                                     type="button"
@@ -5115,7 +5115,7 @@ export default async (application: Application): Promise<void> => {
                                       gap: var(--size--2);
                                     `}"
                                   >
-                                    $${request.state.courseConversationsTags.map(
+                                    $${request.state.courseForumConversationsTags.map(
                                       (courseConversationsTag) => html`
                                         <label
                                           class="button button--rectangle button--transparent button--dropdown-menu"
@@ -5133,7 +5133,7 @@ export default async (application: Application): Promise<void> => {
                                                 : html``
                                             }
                                             $${
-                                              courseConversationsTagsWithTagging.some(
+                                              courseForumConversationsTagsWithTagging.some(
                                                 (
                                                   courseConversationsTagWithTagging,
                                                 ) =>
@@ -5174,9 +5174,9 @@ export default async (application: Application): Promise<void> => {
                                 </div>
                               `;
                             else if (
-                              courseConversationsTagsWithTagging.length > 0
+                              courseForumConversationsTagsWithTagging.length > 0
                             )
-                              courseConversationsTagsHTML += html`
+                              courseForumConversationsTagsHTML += html`
                                 <div
                                   css="${css`
                                     color: light-dark(
@@ -5188,14 +5188,14 @@ export default async (application: Application): Promise<void> => {
                                   Tags:
                                 </div>
                               `;
-                            if (courseConversationsTagsWithTagging.length > 0)
-                              courseConversationsTagsHTML += html`
+                            if (courseForumConversationsTagsWithTagging.length > 0)
+                              courseForumConversationsTagsHTML += html`
                                 <div
                                   css="${css`
                                     flex: 1;
                                   `}"
                                 >
-                                  ${courseConversationsTagsWithTagging
+                                  ${courseForumConversationsTagsWithTagging
                                     .map(
                                       (courseConversationsTag) =>
                                         courseConversationsTag.name,
@@ -5203,7 +5203,7 @@ export default async (application: Application): Promise<void> => {
                                     .join(" · ")}
                                 </div>
                               `;
-                            return courseConversationsTagsHTML !== html``
+                            return courseForumConversationsTagsHTML !== html``
                               ? html`
                                   <div
                                     css="${css`
@@ -5228,7 +5228,7 @@ export default async (application: Application): Promise<void> => {
                                           `
                                     }"
                                   >
-                                    $${courseConversationsTagsHTML}
+                                    $${courseForumConversationsTagsHTML}
                                   </div>
                                 `
                               : html``;
@@ -7219,7 +7219,7 @@ export default async (application: Application): Promise<void> => {
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversationsTags === undefined ||
+        request.state.courseForumConversationsTags === undefined ||
         request.state.courseConversation === undefined ||
         !(
           request.state.courseParticipation.courseParticipationRole ===
@@ -7268,12 +7268,12 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleInstructor") ||
         !Array.isArray(request.body.tags) ||
         (Boolean(request.state.course.courseForumConversationRequiresTagging) &&
-          0 < request.state.courseConversationsTags.length &&
+          0 < request.state.courseForumConversationsTags.length &&
           request.body.tags.length === 0) ||
         request.body.tags.some(
           (tag) =>
             typeof tag !== "string" ||
-            !request.state.courseConversationsTags!.some(
+            !request.state.courseForumConversationsTags!.some(
               (courseConversationsTag) =>
                 tag === courseConversationsTag.publicId,
             ),
@@ -7373,7 +7373,7 @@ export default async (application: Application): Promise<void> => {
               )
               values (
                 ${request.state.courseConversation!.id},
-                ${request.state.courseConversationsTags!.find((courseConversationsTag) => tag === courseConversationsTag.publicId)!.id}
+                ${request.state.courseForumConversationsTags!.find((courseConversationsTag) => tag === courseConversationsTag.publicId)!.id}
               );
             `,
           );
