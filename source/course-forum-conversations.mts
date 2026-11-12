@@ -1307,9 +1307,9 @@ export default async (application: Application): Promise<void> => {
                 sql`
                   select "courseConversations"."id" as "id"
                   from "courseConversations"
-                  join "lexicalSearch_courseConversations_titleLexicalSearch" on
-                    "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
-                    "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
+                  join "lexicalSearch_courseForumConversations_titleLexicalSearch" on
+                    "courseConversations"."id" = "lexicalSearch_courseForumConversations_titleLexicalSearch"."rowid" and
+                    "lexicalSearch_courseForumConversations_titleLexicalSearch" match ${lexicalSearchString}
                   where
                     "courseConversations"."course" = ${request.state.course.id} and (
                       "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
@@ -1331,7 +1331,7 @@ export default async (application: Application): Promise<void> => {
                           "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
-                  order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
+                  order by "lexicalSearch_courseForumConversations_titleLexicalSearch"."rank" asc
                   limit 20;
                 `,
               )
@@ -3000,9 +3000,9 @@ export default async (application: Application): Promise<void> => {
                     "courseConversations"."publicId" as "publicId",
                     "courseConversations"."title" as "title"
                   from "courseConversations"
-                  join "lexicalSearch_courseConversations_titleLexicalSearch" on
-                    "courseConversations"."id" = "lexicalSearch_courseConversations_titleLexicalSearch"."rowid" and
-                    "lexicalSearch_courseConversations_titleLexicalSearch" match ${lexicalSearchString}
+                  join "lexicalSearch_courseForumConversations_titleLexicalSearch" on
+                    "courseConversations"."id" = "lexicalSearch_courseForumConversations_titleLexicalSearch"."rowid" and
+                    "lexicalSearch_courseForumConversations_titleLexicalSearch" match ${lexicalSearchString}
                   where
                     "courseConversations"."course" = ${request.state.course.id} and
                     "courseConversations"."courseConversationType" = 'courseForumConversationTypeQuestion' and (
@@ -3025,7 +3025,7 @@ export default async (application: Application): Promise<void> => {
                           "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
-                  order by "lexicalSearch_courseConversations_titleLexicalSearch"."rank" asc
+                  order by "lexicalSearch_courseForumConversations_titleLexicalSearch"."rank" asc
                   limit 20;
                 `,
               ),
