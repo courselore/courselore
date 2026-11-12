@@ -54,7 +54,7 @@ export type ApplicationCourseForumConversationMessageContent = {
         id: number;
         publicId: string;
         courseConversationVisibility:
-          | "courseConversationVisibilityEveryone"
+          | "courseForumConversationVisibilityEveryone"
           | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
           | "courseConversationVisibilityCourseConversationParticipations";
       };
@@ -504,7 +504,7 @@ export default async (application: Application): Promise<void> => {
                         courseConversation === undefined
                           ? sql``
                           : courseConversation.courseConversationVisibility ===
-                              "courseConversationVisibilityEveryone"
+                              "courseForumConversationVisibilityEveryone"
                             ? sql``
                             : courseConversation.courseConversationVisibility ===
                                 "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
@@ -704,7 +704,7 @@ export default async (application: Application): Promise<void> => {
                     from "courseConversations"
                     where
                       "course" = ${course.id} and (
-                        "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                        "courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                         ${
                           courseParticipation.courseParticipationRole ===
                           "courseParticipationRoleInstructor"
@@ -2860,7 +2860,7 @@ You may also use the buttons on the message content editor to ${
                       where
                         "publicId" = ${courseConversationPublicId} and
                         "course" = ${course.id} and (
-                          "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                          "courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                           ${
                             courseParticipation !== undefined &&
                             courseParticipation.courseParticipationRole ===
@@ -2962,7 +2962,7 @@ You may also use the buttons on the message content editor to ${
             where
               "publicId" = ${match.groups.courseConversationPublicId} and
               "course" = ${course.id} and (
-                "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                "courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                 ${
                   courseParticipation !== undefined &&
                   courseParticipation.courseParticipationRole ===

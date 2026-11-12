@@ -495,7 +495,7 @@ export default async (application: Application): Promise<void> => {
                             "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
                             "courseConversations"."course" = ${request.state.course.id}
                             and (
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                              "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                               ${
                                 request.state.courseParticipation
                                   .courseParticipationRole ===
@@ -829,7 +829,7 @@ export default async (application: Application): Promise<void> => {
                                         "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
                                         "courseConversations"."course" = ${course.id}
                                         and (
-                                          "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                                          "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                                           ${
                                             courseParticipation.courseParticipationRole ===
                                             "courseParticipationRoleInstructor"

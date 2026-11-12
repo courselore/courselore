@@ -84,7 +84,7 @@ export default async (application: Application): Promise<void> => {
             "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
           courseForumConversationTypeQuestionResolved: number;
           courseConversationVisibility:
-            | "courseConversationVisibilityEveryone"
+            | "courseForumConversationVisibilityEveryone"
             | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
           pinned: number;
@@ -253,7 +253,7 @@ export default async (application: Application): Promise<void> => {
                 "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
               courseForumConversationTypeQuestionResolved: number;
               courseConversationVisibility:
-                | "courseConversationVisibilityEveryone"
+                | "courseForumConversationVisibilityEveryone"
                 | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
                 | "courseConversationVisibilityCourseConversationParticipations";
               pinned: number;
@@ -272,7 +272,7 @@ export default async (application: Application): Promise<void> => {
                 where
                   "course" = ${course.id} and
                   "id" = ${courseConversationMessageEmailNotificationReplyToken.courseConversation} and (
-                    "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                    "courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                     ${
                       courseParticipation.courseParticipationRole ===
                       "courseParticipationRoleInstructor"
