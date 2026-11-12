@@ -82,7 +82,7 @@ export default async (application: Application): Promise<void> => {
           publicId: string;
           courseConversationType:
             "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
-          questionResolved: number;
+          courseForumConversationTypeQuestionResolved: number;
           courseConversationVisibility:
             | "courseConversationVisibilityEveryone"
             | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
@@ -251,7 +251,7 @@ export default async (application: Application): Promise<void> => {
               publicId: string;
               courseConversationType:
                 "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
-              questionResolved: number;
+              courseForumConversationTypeQuestionResolved: number;
               courseConversationVisibility:
                 | "courseConversationVisibilityEveryone"
                 | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
@@ -264,7 +264,7 @@ export default async (application: Application): Promise<void> => {
                   "id",
                   "publicId",
                   "courseConversationType",
-                  "questionResolved",
+                  "courseForumConversationTypeQuestionResolved",
                   "courseConversationVisibility",
                   "pinned",
                   "title"
@@ -439,7 +439,7 @@ export default async (application: Application): Promise<void> => {
                   application.database.run(
                     sql`
                       update "courseConversations"
-                      set "questionResolved" = ${Number(true)}
+                      set "courseForumConversationTypeQuestionResolved" = ${Number(true)}
                       where "id" = ${state.courseConversation.id};
                     `,
                   );

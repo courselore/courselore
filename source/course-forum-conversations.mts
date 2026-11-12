@@ -17,7 +17,7 @@ export type ApplicationCourseForumConversations = {
           publicId: string;
           courseConversationType:
             "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
-          questionResolved: number;
+          courseForumConversationTypeQuestionResolved: number;
           courseConversationVisibility:
             | "courseConversationVisibilityEveryone"
             | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
@@ -273,7 +273,7 @@ export default async (application: Application): Promise<void> => {
                       courseConversationType:
                         | "courseForumConversationTypeNote"
                         | "courseForumConversationTypeQuestion";
-                      questionResolved: number;
+                      courseForumConversationTypeQuestionResolved: number;
                       pinned: number;
                       title: string;
                     }>(
@@ -282,7 +282,7 @@ export default async (application: Application): Promise<void> => {
                         "id",
                         "publicId",
                         "courseConversationType",
-                        "questionResolved",
+                        "courseForumConversationTypeQuestionResolved",
                         "pinned",
                         "title"
                       from "courseConversations"
@@ -792,7 +792,7 @@ export default async (application: Application): Promise<void> => {
                                               courseConversation.courseConversationType ===
                                                 "courseForumConversationTypeQuestion" &&
                                               Boolean(
-                                                courseConversation.questionResolved,
+                                                courseConversation.courseForumConversationTypeQuestionResolved,
                                               ) === false &&
                                               courseConversation.courseConversationMessagesCount ===
                                                 1 &&
@@ -974,7 +974,7 @@ export default async (application: Application): Promise<void> => {
                                                     courseConversation.courseConversationType ===
                                                     "courseForumConversationTypeQuestion"
                                                       ? Boolean(
-                                                          courseConversation.questionResolved,
+                                                          courseConversation.courseForumConversationTypeQuestionResolved,
                                                         ) === false
                                                         ? html` <span
                                                             css="${
@@ -3270,7 +3270,7 @@ export default async (application: Application): Promise<void> => {
         publicId: string;
         courseConversationType:
           "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
-        questionResolved: number;
+        courseForumConversationTypeQuestionResolved: number;
         courseConversationVisibility:
           | "courseConversationVisibilityEveryone"
           | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
@@ -3307,7 +3307,7 @@ export default async (application: Application): Promise<void> => {
           publicId: string;
           courseConversationType:
             "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
-          questionResolved: number;
+          courseForumConversationTypeQuestionResolved: number;
           courseConversationVisibility:
             | "courseConversationVisibilityEveryone"
             | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
@@ -3323,7 +3323,7 @@ export default async (application: Application): Promise<void> => {
                     "publicId",
                     "course",
                     "courseConversationType",
-                    "questionResolved",
+                    "courseForumConversationTypeQuestionResolved",
                     "courseConversationVisibility",
                     "pinned",
                     "title",
@@ -3529,7 +3529,7 @@ export default async (application: Application): Promise<void> => {
         publicId: string;
         courseConversationType:
           "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
-        questionResolved: number;
+        courseForumConversationTypeQuestionResolved: number;
         courseConversationVisibility:
           | "courseConversationVisibilityEveryone"
           | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
@@ -3542,7 +3542,7 @@ export default async (application: Application): Promise<void> => {
             "id",
             "publicId",
             "courseConversationType",
-            "questionResolved",
+            "courseForumConversationTypeQuestionResolved",
             "courseConversationVisibility",
             "pinned",
             "title"
@@ -4117,7 +4117,7 @@ export default async (application: Application): Promise<void> => {
                                   javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseForumConversationTypeNote"]').click();
-                                    this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--questionResolved"]').hidden = true;
+                                    this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--courseForumConversationTypeQuestionResolved"]').hidden = true;
                                   };
                                 `}"
                                 >
@@ -4129,7 +4129,7 @@ export default async (application: Application): Promise<void> => {
                                   javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseForumConversationTypeQuestion"]').click();
-                                    this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--questionResolved"]').hidden = false;
+                                    this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--courseForumConversationTypeQuestionResolved"]').hidden = false;
                                   };
                                 `}"
                                 >
@@ -4167,7 +4167,7 @@ export default async (application: Application): Promise<void> => {
                         mayEditCourseConversation
                           ? html`
                               <div
-                                key="courseConversation--header--questionResolved"
+                                key="courseConversation--header--courseForumConversationTypeQuestionResolved"
                                 $${
                                   request.state.courseConversation
                                     .courseConversationType !==
@@ -4194,13 +4194,13 @@ export default async (application: Application): Promise<void> => {
                                       >Question:</span
                                     >  <input
                                       type="radio"
-                                      name="questionResolved"
+                                      name="courseForumConversationTypeQuestionResolved"
                                       value="false"
                                       required
                                       $${
                                         Boolean(
                                           request.state.courseConversation
-                                            .questionResolved,
+                                            .courseForumConversationTypeQuestionResolved,
                                         ) === false
                                           ? html`checked`
                                           : html``
@@ -4219,13 +4219,13 @@ export default async (application: Application): Promise<void> => {
                                       >Unresolved</span
                                     ><input
                                       type="radio"
-                                      name="questionResolved"
+                                      name="courseForumConversationTypeQuestionResolved"
                                       value="true"
                                       required
                                       $${
                                         Boolean(
                                           request.state.courseConversation
-                                            .questionResolved,
+                                            .courseForumConversationTypeQuestionResolved,
                                         ) === true
                                           ? html`checked`
                                           : html``
@@ -4258,7 +4258,7 @@ export default async (application: Application): Promise<void> => {
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="questionResolved"][value="false"]').click();
+                                      this.closest('[type~="form"]').querySelector('[name="courseForumConversationTypeQuestionResolved"][value="false"]').click();
                                     };
                                   `}"
                                   >
@@ -4269,7 +4269,7 @@ export default async (application: Application): Promise<void> => {
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[name="questionResolved"][value="true"]').click();
+                                      this.closest('[type~="form"]').querySelector('[name="courseForumConversationTypeQuestionResolved"][value="true"]').click();
                                     };
                                   `}"
                                   >
@@ -4294,7 +4294,7 @@ export default async (application: Application): Promise<void> => {
                                   >  $${
                                     Boolean(
                                       request.state.courseConversation
-                                        .questionResolved,
+                                        .courseForumConversationTypeQuestionResolved,
                                     ) === false
                                       ? html`<span
                                           css="${css`
@@ -4307,7 +4307,7 @@ export default async (application: Application): Promise<void> => {
                                         >`
                                       : Boolean(
                                             request.state.courseConversation
-                                              .questionResolved,
+                                              .courseForumConversationTypeQuestionResolved,
                                           ) === true
                                         ? html`<span
                                             css="${css`
@@ -6750,7 +6750,7 @@ export default async (application: Application): Promise<void> => {
                                                 "courseForumConversationTypeQuestion" &&
                                               !Boolean(
                                                 request.state.courseConversation
-                                                  .questionResolved,
+                                                  .courseForumConversationTypeQuestionResolved,
                                               ) &&
                                               request.state.courseParticipation
                                                 .courseParticipationRole ===
@@ -6782,7 +6782,7 @@ export default async (application: Application): Promise<void> => {
                                               "courseForumConversationTypeQuestion" &&
                                             !Boolean(
                                               request.state.courseConversation
-                                                .questionResolved,
+                                                .courseForumConversationTypeQuestionResolved,
                                             ) &&
                                             request.state.courseParticipation
                                               .courseParticipationRole ===
@@ -7202,7 +7202,7 @@ export default async (application: Application): Promise<void> => {
           title: string;
           courseConversationType:
             "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
-          questionResolved: "false" | "true";
+          courseForumConversationTypeQuestionResolved: "false" | "true";
           courseConversationVisibility:
             | "courseConversationVisibilityEveryone"
             | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
@@ -7293,7 +7293,7 @@ export default async (application: Application): Promise<void> => {
             update "courseConversations"
             set
               "courseConversationType" = ${request.body.courseConversationType!},
-              "questionResolved" = ${Number(request.body.questionResolved === "true")},
+              "courseForumConversationTypeQuestionResolved" = ${Number(request.body.courseForumConversationTypeQuestionResolved === "true")},
               "courseConversationVisibility" = ${request.body.courseConversationVisibility!},
               "pinned" = ${
                 request.state.courseParticipation!.courseParticipationRole ===
