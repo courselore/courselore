@@ -3506,7 +3506,7 @@ export default async (application: Application): Promise<void> => {
           );
           application.database.run(
             sql`
-              update "courseConversationMessageLikes"
+              update "courseForumConversationMessageLikes"
               set "courseParticipation" = null
               where "courseParticipation" = ${courseParticipation.id};
             `,

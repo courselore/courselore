@@ -1038,11 +1038,11 @@ export default async (application: Application): Promise<void> => {
                                           application.database.get(
                                             sql`
                                               select true
-                                              from "courseConversationMessageLikes"
+                                              from "courseForumConversationMessageLikes"
                                               join "courseParticipations" on
-                                                "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                                "courseForumConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
                                                 "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                              where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversation.firstCourseConversationMessage.id}
+                                              where "courseForumConversationMessageLikes"."courseConversationMessage" = ${courseConversation.firstCourseConversationMessage.id}
                                               limit 1;
                                             `,
                                           ) !== undefined
@@ -5649,11 +5649,11 @@ export default async (application: Application): Promise<void> => {
                                     application.database.get(
                                       sql`
                                         select true
-                                        from "courseConversationMessageLikes"
+                                        from "courseForumConversationMessageLikes"
                                         join "courseParticipations" on
-                                          "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                          "courseForumConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
                                           "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                        where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id}
+                                        where "courseForumConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id}
                                         limit 1;
                                       `,
                                     ) !== undefined
@@ -5977,7 +5977,7 @@ export default async (application: Application): Promise<void> => {
                                       application.database.get(
                                         sql`
                                           select true
-                                          from "courseConversationMessageLikes"
+                                          from "courseForumConversationMessageLikes"
                                           where
                                             "courseConversationMessage" = ${courseConversationMessage.id} and
                                             "courseParticipation" = ${request.state.courseParticipation!.id};
@@ -6029,18 +6029,18 @@ export default async (application: Application): Promise<void> => {
                                               </button>
                                             </div>
                                           `;
-                                  const courseConversationMessageLikes =
+                                  const courseForumConversationMessageLikes =
                                     application.database.all<{
                                       courseParticipation: number | null;
                                     }>(
                                       sql`
                                         select "courseParticipation"
-                                        from "courseConversationMessageLikes"
+                                        from "courseForumConversationMessageLikes"
                                         where "courseConversationMessage" = ${courseConversationMessage.id}
                                         order by "id" asc;
                                       `,
                                     );
-                                  if (courseConversationMessageLikes.length > 0)
+                                  if (courseForumConversationMessageLikes.length > 0)
                                     courseConversationMessageMainContentShowFooterHTML += html`
                                       <button
                                         key="courseConversationMessage--main--content--show--footer--likes"
@@ -6051,10 +6051,10 @@ export default async (application: Application): Promise<void> => {
                                         `}"
                                       >
                                         ${String(
-                                          courseConversationMessageLikes.length,
+                                          courseForumConversationMessageLikes.length,
                                         )}
                                         like${
-                                          courseConversationMessageLikes.length !==
+                                          courseForumConversationMessageLikes.length !==
                                           1
                                             ? "s"
                                             : ""
@@ -6068,7 +6068,7 @@ export default async (application: Application): Promise<void> => {
                                           gap: var(--size--2);
                                         `}"
                                       >
-                                        $${courseConversationMessageLikes.map(
+                                        $${courseForumConversationMessageLikes.map(
                                           (courseConversationMessageLike) => {
                                             const courseConversationMessageLikeCourseParticipation =
                                               typeof courseConversationMessageLike.courseParticipation ===
@@ -7460,7 +7460,7 @@ export default async (application: Application): Promise<void> => {
           );
           application.database.run(
             sql`
-              delete from "courseConversationMessageLikes"
+              delete from "courseForumConversationMessageLikes"
               where "courseConversationMessage" = ${courseConversationMessage.id};
             `,
           );

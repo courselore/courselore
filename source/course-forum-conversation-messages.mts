@@ -1555,7 +1555,7 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            delete from "courseConversationMessageLikes"
+            delete from "courseForumConversationMessageLikes"
             where "courseConversationMessage" = ${request.state.courseConversationMessage!.id};
           `,
         );
@@ -1659,7 +1659,7 @@ export default async (application: Application): Promise<void> => {
           application.database.get(
             sql`
               select true
-              from "courseConversationMessageLikes"
+              from "courseForumConversationMessageLikes"
               where
                 "courseConversationMessage" = ${request.state.courseConversationMessage!.id} and
                 "courseParticipation" = ${request.state.courseParticipation!.id};
@@ -1668,7 +1668,7 @@ export default async (application: Application): Promise<void> => {
         )
           application.database.run(
             sql`
-              insert into "courseConversationMessageLikes" (
+              insert into "courseForumConversationMessageLikes" (
                 "courseConversationMessage",
                 "courseParticipation"
               )
@@ -1722,7 +1722,7 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             select "id"
-            from "courseConversationMessageLikes"
+            from "courseForumConversationMessageLikes"
             where
               "courseConversationMessage" = ${request.state.courseConversationMessage!.id} and
               "courseParticipation" = ${request.state.courseParticipation!.id};
@@ -1731,7 +1731,7 @@ export default async (application: Application): Promise<void> => {
         if (courseConversationMessageLike !== undefined)
           application.database.run(
             sql`
-              delete from "courseConversationMessageLikes" where "id" = ${courseConversationMessageLike.id};
+              delete from "courseForumConversationMessageLikes" where "id" = ${courseConversationMessageLike.id};
             `,
           );
       });
