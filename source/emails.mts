@@ -458,7 +458,7 @@ export default async (application: Application): Promise<void> => {
                             "updatedAt",
                             "courseForumConversationMessageType",
                             "courseForumConversationMessageVisibility",
-                            "courseConversationMessageAnonymity",
+                            "courseForumConversationMessageAnonymity",
                             "sentViaEmail",
                             "content",
                             "contentLexicalSearch",

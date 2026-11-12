@@ -3869,7 +3869,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
-          courseConversationMessageAnonymity:
+          courseForumConversationMessageAnonymity:
             | "courseForumConversationMessageAnonymityNone"
             | "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
             | "courseForumConversationMessageAnonymityEveryone";
@@ -3880,11 +3880,11 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (request.state.user === undefined) return;
       if (
-        request.body.courseConversationMessageAnonymity !==
+        request.body.courseForumConversationMessageAnonymity !==
           "courseForumConversationMessageAnonymityNone" &&
-        request.body.courseConversationMessageAnonymity !==
+        request.body.courseForumConversationMessageAnonymity !==
           "courseForumConversationMessageAnonymityCourseParticipationRoleStudents" &&
-        request.body.courseConversationMessageAnonymity !==
+        request.body.courseForumConversationMessageAnonymity !==
           "courseForumConversationMessageAnonymityEveryone"
       )
         throw "validation";
@@ -3892,13 +3892,13 @@ export default async (application: Application): Promise<void> => {
         sql`
           update "users"
           set "userAnonymityPreferred" = ${
-            request.body.courseConversationMessageAnonymity ===
+            request.body.courseForumConversationMessageAnonymity ===
             "courseForumConversationMessageAnonymityNone"
               ? "userAnonymityPreferredNone"
-              : request.body.courseConversationMessageAnonymity ===
+              : request.body.courseForumConversationMessageAnonymity ===
                   "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
                 ? "userAnonymityPreferredCourseParticipationRoleStudents"
-                : request.body.courseConversationMessageAnonymity ===
+                : request.body.courseForumConversationMessageAnonymity ===
                     "courseForumConversationMessageAnonymityEveryone"
                   ? "userAnonymityPreferredEveryone"
                   : (() => {
