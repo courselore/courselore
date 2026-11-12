@@ -483,7 +483,7 @@ export default async (application: Application): Promise<void> => {
                                 : "courseForumConversationMessageTypeMessage"
                             },
                             ${"courseForumConversationMessageVisibilityEveryone"},
-                            ${"courseConversationMessageAnonymityNone"},
+                            ${"courseForumConversationMessageAnonymityNone"},
                             ${Number(true)},
                             ${content},
                             ${utilities

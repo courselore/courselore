@@ -3870,7 +3870,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {
           courseConversationMessageAnonymity:
-            | "courseConversationMessageAnonymityNone"
+            | "courseForumConversationMessageAnonymityNone"
             | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
             | "courseConversationMessageAnonymityEveryone";
         },
@@ -3881,7 +3881,7 @@ export default async (application: Application): Promise<void> => {
       if (request.state.user === undefined) return;
       if (
         request.body.courseConversationMessageAnonymity !==
-          "courseConversationMessageAnonymityNone" &&
+          "courseForumConversationMessageAnonymityNone" &&
         request.body.courseConversationMessageAnonymity !==
           "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
         request.body.courseConversationMessageAnonymity !==
@@ -3893,7 +3893,7 @@ export default async (application: Application): Promise<void> => {
           update "users"
           set "userAnonymityPreferred" = ${
             request.body.courseConversationMessageAnonymity ===
-            "courseConversationMessageAnonymityNone"
+            "courseForumConversationMessageAnonymityNone"
               ? "userAnonymityPreferredNone"
               : request.body.courseConversationMessageAnonymity ===
                   "courseConversationMessageAnonymityCourseParticipationRoleStudents"
