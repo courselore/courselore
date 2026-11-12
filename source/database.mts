@@ -8180,20 +8180,20 @@ export default async (application: Application): Promise<void> => {
           "contentSemanticSearch" blob null not null
         ) strict;
         create index "index_courseAISourceChunks_courseAISource" on "courseAISourceChunks" ("courseAISource");
-        create virtual table "search_courseAISourceChunks_contentLexicalSearch" using fts5(
+        create virtual table "lexicalSearch_courseAISourceChunks_contentLexicalSearch" using fts5(
           "contentLexicalSearch",
           content = "courseAISourceChunks",
           content_rowid = "id",
           prefix = '1 2 3'
         );
-        create trigger "search_courseAISourceChunks_contentLexicalSearch_insert" after insert on "courseAISourceChunks" begin
-          insert into "search_courseAISourceChunks_contentLexicalSearch" ("rowid", "contentLexicalSearch") values ("new"."id", "new"."contentLexicalSearch");
+        create trigger "lexicalSearch_courseAISourceChunks_contentLexicalSearch_insert" after insert on "courseAISourceChunks" begin
+          insert into "lexicalSearch_courseAISourceChunks_contentLexicalSearch" ("rowid", "contentLexicalSearch") values ("new"."id", "new"."contentLexicalSearch");
         end;
-        create trigger "search_courseAISourceChunks_contentLexicalSearch_update" after update on "courseAISourceChunks" begin
-          update "search_courseAISourceChunks_contentLexicalSearch" set "contentLexicalSearch" = "new"."contentLexicalSearch" where "rowid" = "old"."id";
+        create trigger "lexicalSearch_courseAISourceChunks_contentLexicalSearch_update" after update on "courseAISourceChunks" begin
+          update "lexicalSearch_courseAISourceChunks_contentLexicalSearch" set "contentLexicalSearch" = "new"."contentLexicalSearch" where "rowid" = "old"."id";
         end;
-        create trigger "search_courseAISourceChunks_contentLexicalSearch_delete" after delete on "courseAISourceChunks" begin
-          delete from "search_courseAISourceChunks_contentLexicalSearch" where "rowid" = "old"."id";
+        create trigger "lexicalSearch_courseAISourceChunks_contentLexicalSearch_delete" after delete on "courseAISourceChunks" begin
+          delete from "lexicalSearch_courseAISourceChunks_contentLexicalSearch" where "rowid" = "old"."id";
         end;
       `,
     );
