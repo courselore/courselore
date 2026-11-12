@@ -5271,7 +5271,7 @@ export default async (application: Application): Promise<void> => {
                       updatedAt: string | null;
                       courseConversationMessageType:
                         | "courseForumConversationMessageTypeMessage"
-                        | "courseConversationMessageTypeAnswer"
+                        | "courseForumConversationMessageTypeAnswer"
                         | "courseConversationMessageTypeFollowUpQuestion";
                       courseConversationMessageVisibility:
                         | "courseConversationMessageVisibilityEveryone"
@@ -5597,7 +5597,7 @@ export default async (application: Application): Promise<void> => {
                                       "NOOP";
                                     else if (
                                       courseConversationMessage.courseConversationMessageType ===
-                                      "courseConversationMessageTypeAnswer"
+                                      "courseForumConversationMessageTypeAnswer"
                                     )
                                       courseConversationMessageMainHeaderBylineHTMLs.push(
                                         html`<span
@@ -6525,7 +6525,7 @@ export default async (application: Application): Promise<void> => {
                         application.database.get<{
                           courseConversationMessageType:
                             | "courseForumConversationMessageTypeMessage"
-                            | "courseConversationMessageTypeAnswer"
+                            | "courseForumConversationMessageTypeAnswer"
                             | "courseConversationMessageTypeFollowUpQuestion";
                           courseConversationMessageVisibility:
                             | "courseConversationMessageVisibilityEveryone"
@@ -6772,7 +6772,7 @@ export default async (application: Application): Promise<void> => {
                                       ><input
                                         type="radio"
                                         name="courseConversationMessageType"
-                                        value="courseConversationMessageTypeAnswer"
+                                        value="courseForumConversationMessageTypeAnswer"
                                         required
                                         $${
                                           (courseConversationMessageDraft ===
@@ -6788,7 +6788,7 @@ export default async (application: Application): Promise<void> => {
                                               .courseParticipationRole ===
                                               "courseParticipationRoleInstructor") ||
                                           courseConversationMessageDraft?.courseConversationMessageType ===
-                                            "courseConversationMessageTypeAnswer"
+                                            "courseForumConversationMessageTypeAnswer"
                                             ? html`checked`
                                             : html``
                                         }
@@ -6854,7 +6854,7 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
                                       this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseForumConversationMessageTypeAnswer"]').click();
                                       };
                                     `}"
                                     >
