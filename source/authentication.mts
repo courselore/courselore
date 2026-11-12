@@ -70,8 +70,8 @@ export type ApplicationAuthentication = {
           sidebarWidth: number;
           emailNotificationsForCourseForumForAllMessages: number;
           emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-          emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-          emailNotificationsForMessagesInConversationsThatYouStarted: number;
+          emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+          emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
           userAnonymityPreferred:
             | "userAnonymityPreferredNone"
             | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -262,8 +262,8 @@ export default async (application: Application): Promise<void> => {
         sidebarWidth: number;
         emailNotificationsForCourseForumForAllMessages: number;
         emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-        emailNotificationsForMessagesInConversationsThatYouStarted: number;
+        emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+        emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -299,8 +299,8 @@ export default async (application: Application): Promise<void> => {
             "sidebarWidth",
             "emailNotificationsForCourseForumForAllMessages",
             "emailNotificationsForCourseForumForMessagesIncludingAMention",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-            "emailNotificationsForMessagesInConversationsThatYouStarted",
+            "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+            "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation",
             "deleteMyAccountNonceTokenHash",
@@ -1080,8 +1080,8 @@ export default async (application: Application): Promise<void> => {
           sidebarWidth: number;
           emailNotificationsForCourseForumForAllMessages: number;
           emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-          emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-          emailNotificationsForMessagesInConversationsThatYouStarted: number;
+          emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+          emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
           userAnonymityPreferred:
             | "userAnonymityPreferredNone"
             | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -1119,8 +1119,8 @@ export default async (application: Application): Promise<void> => {
                     "sidebarWidth",
                     "emailNotificationsForCourseForumForAllMessages",
                     "emailNotificationsForCourseForumForMessagesIncludingAMention",
-                    "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                    "emailNotificationsForMessagesInConversationsThatYouStarted",
+                    "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+                    "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
                     "userAnonymityPreferred",
                     "mostRecentlyVisitedCourseParticipation",
                     "deleteMyAccountNonceTokenHash",
@@ -1885,8 +1885,8 @@ export default async (application: Application): Promise<void> => {
         sidebarWidth: number;
         emailNotificationsForCourseForumForAllMessages: number;
         emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-        emailNotificationsForMessagesInConversationsThatYouStarted: number;
+        emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+        emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -1922,8 +1922,8 @@ export default async (application: Application): Promise<void> => {
             "sidebarWidth",
             "emailNotificationsForCourseForumForAllMessages",
             "emailNotificationsForCourseForumForMessagesIncludingAMention",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-            "emailNotificationsForMessagesInConversationsThatYouStarted",
+            "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+            "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation",
             "deleteMyAccountNonceTokenHash",
@@ -2488,8 +2488,8 @@ export default async (application: Application): Promise<void> => {
         sidebarWidth: number;
         emailNotificationsForCourseForumForAllMessages: number;
         emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-        emailNotificationsForMessagesInConversationsThatYouStarted: number;
+        emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+        emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -2525,8 +2525,8 @@ export default async (application: Application): Promise<void> => {
             "sidebarWidth",
             "emailNotificationsForCourseForumForAllMessages",
             "emailNotificationsForCourseForumForMessagesIncludingAMention",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-            "emailNotificationsForMessagesInConversationsThatYouStarted",
+            "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+            "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation",
             "deleteMyAccountNonceTokenHash",
@@ -2890,8 +2890,8 @@ export default async (application: Application): Promise<void> => {
         sidebarWidth: number;
         emailNotificationsForCourseForumForAllMessages: number;
         emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-        emailNotificationsForMessagesInConversationsThatYouStarted: number;
+        emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+        emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -2927,8 +2927,8 @@ export default async (application: Application): Promise<void> => {
             "sidebarWidth",
             "emailNotificationsForCourseForumForAllMessages",
             "emailNotificationsForCourseForumForMessagesIncludingAMention",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-            "emailNotificationsForMessagesInConversationsThatYouStarted",
+            "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+            "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation",
             "deleteMyAccountNonceTokenHash",
@@ -3325,8 +3325,8 @@ export default async (application: Application): Promise<void> => {
               sidebarWidth: number;
               emailNotificationsForCourseForumForAllMessages: number;
               emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-              emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-              emailNotificationsForMessagesInConversationsThatYouStarted: number;
+              emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+              emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
               userAnonymityPreferred:
                 | "userAnonymityPreferredNone"
                 | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -3362,8 +3362,8 @@ export default async (application: Application): Promise<void> => {
                   "sidebarWidth",
                   "emailNotificationsForCourseForumForAllMessages",
                   "emailNotificationsForCourseForumForMessagesIncludingAMention",
-                  "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                  "emailNotificationsForMessagesInConversationsThatYouStarted",
+                  "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+                  "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
                   "userAnonymityPreferred",
                   "mostRecentlyVisitedCourseParticipation",
                   "deleteMyAccountNonceTokenHash",
@@ -3418,8 +3418,8 @@ export default async (application: Application): Promise<void> => {
               sidebarWidth: number;
               emailNotificationsForCourseForumForAllMessages: number;
               emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-              emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-              emailNotificationsForMessagesInConversationsThatYouStarted: number;
+              emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+              emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
               userAnonymityPreferred:
                 | "userAnonymityPreferredNone"
                 | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -3457,8 +3457,8 @@ export default async (application: Application): Promise<void> => {
                         "sidebarWidth",
                         "emailNotificationsForCourseForumForAllMessages",
                         "emailNotificationsForCourseForumForMessagesIncludingAMention",
-                        "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                        "emailNotificationsForMessagesInConversationsThatYouStarted",
+                        "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+                        "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
                         "userAnonymityPreferred",
                         "mostRecentlyVisitedCourseParticipation",
                         "deleteMyAccountNonceTokenHash",
@@ -4236,8 +4236,8 @@ export default async (application: Application): Promise<void> => {
             sidebarWidth: number;
             emailNotificationsForCourseForumForAllMessages: number;
             emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-            emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-            emailNotificationsForMessagesInConversationsThatYouStarted: number;
+            emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+            emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
             userAnonymityPreferred:
               | "userAnonymityPreferredNone"
               | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -4273,8 +4273,8 @@ export default async (application: Application): Promise<void> => {
                 "sidebarWidth",
                 "emailNotificationsForCourseForumForAllMessages",
                 "emailNotificationsForCourseForumForMessagesIncludingAMention",
-                "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                "emailNotificationsForMessagesInConversationsThatYouStarted",
+                "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+                "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
                 "userAnonymityPreferred",
                 "mostRecentlyVisitedCourseParticipation",
                 "deleteMyAccountNonceTokenHash",
@@ -4327,8 +4327,8 @@ export default async (application: Application): Promise<void> => {
             sidebarWidth: number;
             emailNotificationsForCourseForumForAllMessages: number;
             emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-            emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-            emailNotificationsForMessagesInConversationsThatYouStarted: number;
+            emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+            emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
             userAnonymityPreferred:
               | "userAnonymityPreferredNone"
               | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -4366,8 +4366,8 @@ export default async (application: Application): Promise<void> => {
                       "sidebarWidth",
                       "emailNotificationsForCourseForumForAllMessages",
                       "emailNotificationsForCourseForumForMessagesIncludingAMention",
-                      "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                      "emailNotificationsForMessagesInConversationsThatYouStarted",
+                      "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+                      "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
                       "userAnonymityPreferred",
                       "mostRecentlyVisitedCourseParticipation",
                       "deleteMyAccountNonceTokenHash",

@@ -1372,11 +1372,11 @@ export default async (application: Application): Promise<void> => {
                     <label class="button button--rectangle button--transparent">
                       <input
                         type="checkbox"
-                        name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"
+                        name="emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated"
                         $${
                           Boolean(
                             request.state.user
-                              .emailNotificationsForMessagesInConversationsInWhichYouParticipated,
+                              .emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated,
                           )
                             ? html`checked`
                             : html``
@@ -1387,7 +1387,7 @@ export default async (application: Application): Promise<void> => {
                             if (!this.checked)
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForCourseForumForAllMessages"]').checked = false;
                             else
-                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForMessagesInConversationsThatYouStarted"]').checked = true;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted"]').checked = true;
                           };
                         `}"
                       />  Email notifications for messages in conversations in
@@ -1396,11 +1396,11 @@ export default async (application: Application): Promise<void> => {
                     <label class="button button--rectangle button--transparent">
                       <input
                         type="checkbox"
-                        name="emailNotificationsForMessagesInConversationsThatYouStarted"
+                        name="emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted"
                         $${
                           Boolean(
                             request.state.user
-                              .emailNotificationsForMessagesInConversationsThatYouStarted,
+                              .emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted,
                           )
                             ? html`checked`
                             : html``
@@ -1410,7 +1410,7 @@ export default async (application: Application): Promise<void> => {
                           this.oninput = () => {
                             if (!this.checked) {
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForCourseForumForAllMessages"]').checked = false;
-                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated"]').checked = false;
                             }
                           };
                         `}"
@@ -2770,8 +2770,8 @@ export default async (application: Application): Promise<void> => {
         {
           emailNotificationsForCourseForumForAllMessages: "on";
           emailNotificationsForCourseForumForMessagesIncludingAMention: "on";
-          emailNotificationsForMessagesInConversationsInWhichYouParticipated: "on";
-          emailNotificationsForMessagesInConversationsThatYouStarted: "on";
+          emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: "on";
+          emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: "on";
         },
         Application["types"]["states"]["Authentication"]
       >,
@@ -2784,8 +2784,8 @@ export default async (application: Application): Promise<void> => {
           set
             "emailNotificationsForCourseForumForAllMessages" = ${Number(request.body.emailNotificationsForCourseForumForAllMessages === "on")},
             "emailNotificationsForCourseForumForMessagesIncludingAMention" = ${Number(request.body.emailNotificationsForCourseForumForMessagesIncludingAMention === "on")},
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipated" = ${Number(request.body.emailNotificationsForMessagesInConversationsInWhichYouParticipated === "on")},
-            "emailNotificationsForMessagesInConversationsThatYouStarted" = ${Number(request.body.emailNotificationsForMessagesInConversationsThatYouStarted === "on")}
+            "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated" = ${Number(request.body.emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated === "on")},
+            "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted" = ${Number(request.body.emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted === "on")}
           where "id" = ${request.state.user.id};
         `,
       );

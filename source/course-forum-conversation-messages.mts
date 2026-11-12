@@ -562,16 +562,16 @@ export default async (application: Application): Promise<void> => {
               email: string;
               emailNotificationsForCourseForumForAllMessages: number;
               emailNotificationsForCourseForumForMessagesIncludingAMention: number;
-              emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-              emailNotificationsForMessagesInConversationsThatYouStarted: number;
+              emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated: number;
+              emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted: number;
             }>(
               sql`
                 select
                   "email",
                   "emailNotificationsForCourseForumForAllMessages",
                   "emailNotificationsForCourseForumForMessagesIncludingAMention",
-                  "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                  "emailNotificationsForMessagesInConversationsThatYouStarted"
+                  "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+                  "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted"
                 from "users"
                 where "id" = ${courseConversationMessageEmailNotificationCourseParticipation.user};
               `,
@@ -629,7 +629,7 @@ export default async (application: Application): Promise<void> => {
                     courseConversationMessageEmailNotificationCourseParticipation.publicId,
                   ))) ||
               (Boolean(
-                courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesInConversationsInWhichYouParticipated,
+                courseConversationMessageEmailNotificationUser.emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated,
               ) &&
                 application.database.get(
                   sql`
@@ -642,7 +642,7 @@ export default async (application: Application): Promise<void> => {
                   `,
                 ) !== undefined) ||
               (Boolean(
-                courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesInConversationsThatYouStarted,
+                courseConversationMessageEmailNotificationUser.emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted,
               ) &&
                 firstCourseConversationMessage.createdByCourseParticipation ===
                   courseConversationMessageEmailNotificationCourseParticipation.id)) &&
