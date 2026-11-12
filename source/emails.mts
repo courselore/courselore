@@ -83,7 +83,7 @@ export default async (application: Application): Promise<void> => {
           courseForumConversationType:
             "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
           courseForumConversationTypeQuestionResolved: number;
-          courseConversationVisibility:
+          courseForumConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseForumConversationVisibilityCourseForumConversationParticipations";
@@ -252,7 +252,7 @@ export default async (application: Application): Promise<void> => {
               courseForumConversationType:
                 "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
               courseForumConversationTypeQuestionResolved: number;
-              courseConversationVisibility:
+              courseForumConversationVisibility:
                 | "courseForumConversationVisibilityEveryone"
                 | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                 | "courseForumConversationVisibilityCourseForumConversationParticipations";
@@ -265,20 +265,20 @@ export default async (application: Application): Promise<void> => {
                   "publicId",
                   "courseForumConversationType",
                   "courseForumConversationTypeQuestionResolved",
-                  "courseConversationVisibility",
+                  "courseForumConversationVisibility",
                   "pinned",
                   "title"
                 from "courseConversations"
                 where
                   "course" = ${course.id} and
                   "id" = ${courseConversationMessageEmailNotificationReplyToken.courseConversation} and (
-                    "courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
+                    "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                     ${
                       courseParticipation.courseParticipationRole ===
                       "courseParticipationRoleInstructor"
                         ? sql`
                             or
-                            "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
+                            "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                           `
                         : sql``
                     }

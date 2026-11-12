@@ -454,7 +454,7 @@ export default async (application: Application): Promise<void> => {
           id: number;
           publicId: string;
           course: number;
-          courseConversationVisibility:
+          courseForumConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
             | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseConversationParticipations";
@@ -465,7 +465,7 @@ export default async (application: Application): Promise<void> => {
               "id",
               "publicId",
               "course",
-              "courseConversationVisibility",
+              "courseForumConversationVisibility",
               "title"
             from "courseConversations"
             where "id" = ${courseConversationMessage.courseConversation};
@@ -590,9 +590,9 @@ export default async (application: Application): Promise<void> => {
           if (
             courseConversationMessage.createdByCourseParticipation !==
               courseConversationMessageEmailNotificationCourseParticipation.id &&
-            (courseConversation.courseConversationVisibility ===
+            (courseConversation.courseForumConversationVisibility ===
               "courseForumConversationVisibilityEveryone" ||
-              (courseConversation.courseConversationVisibility ===
+              (courseConversation.courseForumConversationVisibility ===
                 "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
                 courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor") ||

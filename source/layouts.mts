@@ -495,14 +495,14 @@ export default async (application: Application): Promise<void> => {
                             "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
                             "courseConversations"."course" = ${request.state.course.id}
                             and (
-                              "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
+                              "courseConversations"."courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                               ${
                                 request.state.courseParticipation
                                   .courseParticipationRole ===
                                 "courseParticipationRoleInstructor"
                                   ? sql`
                                       or
-                                      "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
+                                      "courseConversations"."courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                                     `
                                   : sql``
                               }
@@ -829,13 +829,13 @@ export default async (application: Application): Promise<void> => {
                                         "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
                                         "courseConversations"."course" = ${course.id}
                                         and (
-                                          "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
+                                          "courseConversations"."courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                                           ${
                                             courseParticipation.courseParticipationRole ===
                                             "courseParticipationRoleInstructor"
                                               ? sql`
                                                   or
-                                                  "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
+                                                  "courseConversations"."courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                                                 `
                                               : sql``
                                           }

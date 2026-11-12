@@ -605,14 +605,14 @@ export default async (application: Application): Promise<void> => {
                   request.state.courseParticipation
                     .mostRecentlyVisitedCourseForumConversation
                 } and (
-                  "courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
+                  "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                   ${
                     request.state.courseParticipation
                       .courseParticipationRole ===
                     "courseParticipationRoleInstructor"
                       ? sql`
                           or
-                          "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
+                          "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                         `
                       : sql``
                   }
@@ -635,13 +635,13 @@ export default async (application: Application): Promise<void> => {
             from "courseConversations"
             where
               "course" = ${request.state.course.id} and (
-                "courseConversationVisibility" = 'courseForumConversationVisibilityEveryone'
+                "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                 ${
                   request.state.courseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor"
                     ? sql`
                         or
-                        "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
+                        "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                       `
                     : sql``
                 }
