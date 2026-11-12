@@ -1324,10 +1324,10 @@ export default async (application: Application): Promise<void> => {
                     <label class="button button--rectangle button--transparent">
                       <input
                         type="checkbox"
-                        name="emailNotificationsForAllMessages"
+                        name="emailNotificationsForCourseForumForAllMessages"
                         $${
                           Boolean(
-                            request.state.user.emailNotificationsForAllMessages,
+                            request.state.user.emailNotificationsForCourseForumForAllMessages,
                           )
                             ? html`checked`
                             : html``
@@ -1358,7 +1358,7 @@ export default async (application: Application): Promise<void> => {
                         javascript="${javascript`
                           this.oninput = () => {
                             if (!this.checked)
-                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForCourseForumForAllMessages"]').checked = false;
                           };
                         `}"
                       />  Email notifications for messages including a
@@ -1385,7 +1385,7 @@ export default async (application: Application): Promise<void> => {
                         javascript="${javascript`
                           this.oninput = () => {
                             if (!this.checked)
-                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForCourseForumForAllMessages"]').checked = false;
                             else
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForMessagesInConversationsThatYouStarted"]').checked = true;
                           };
@@ -1409,7 +1409,7 @@ export default async (application: Application): Promise<void> => {
                         javascript="${javascript`
                           this.oninput = () => {
                             if (!this.checked) {
-                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForCourseForumForAllMessages"]').checked = false;
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
                             }
                           };
@@ -2768,7 +2768,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
-          emailNotificationsForAllMessages: "on";
+          emailNotificationsForCourseForumForAllMessages: "on";
           emailNotificationsForMessagesIncludingAMention: "on";
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: "on";
           emailNotificationsForMessagesInConversationsThatYouStarted: "on";
@@ -2782,7 +2782,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           update "users"
           set
-            "emailNotificationsForAllMessages" = ${Number(request.body.emailNotificationsForAllMessages === "on")},
+            "emailNotificationsForCourseForumForAllMessages" = ${Number(request.body.emailNotificationsForCourseForumForAllMessages === "on")},
             "emailNotificationsForMessagesIncludingAMention" = ${Number(request.body.emailNotificationsForMessagesIncludingAMention === "on")},
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" = ${Number(request.body.emailNotificationsForMessagesInConversationsInWhichYouParticipated === "on")},
             "emailNotificationsForMessagesInConversationsThatYouStarted" = ${Number(request.body.emailNotificationsForMessagesInConversationsThatYouStarted === "on")}

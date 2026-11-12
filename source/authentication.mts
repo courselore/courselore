@@ -68,7 +68,7 @@ export type ApplicationAuthentication = {
           darkMode:
             "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
           sidebarWidth: number;
-          emailNotificationsForAllMessages: number;
+          emailNotificationsForCourseForumForAllMessages: number;
           emailNotificationsForMessagesIncludingAMention: number;
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
           emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -260,7 +260,7 @@ export default async (application: Application): Promise<void> => {
         darkMode:
           "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
-        emailNotificationsForAllMessages: number;
+        emailNotificationsForCourseForumForAllMessages: number;
         emailNotificationsForMessagesIncludingAMention: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -297,7 +297,7 @@ export default async (application: Application): Promise<void> => {
             "userRole",
             "darkMode",
             "sidebarWidth",
-            "emailNotificationsForAllMessages",
+            "emailNotificationsForCourseForumForAllMessages",
             "emailNotificationsForMessagesIncludingAMention",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
@@ -1078,7 +1078,7 @@ export default async (application: Application): Promise<void> => {
           darkMode:
             "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
           sidebarWidth: number;
-          emailNotificationsForAllMessages: number;
+          emailNotificationsForCourseForumForAllMessages: number;
           emailNotificationsForMessagesIncludingAMention: number;
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
           emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -1117,7 +1117,7 @@ export default async (application: Application): Promise<void> => {
                     "userRole",
                     "darkMode",
                     "sidebarWidth",
-                    "emailNotificationsForAllMessages",
+                    "emailNotificationsForCourseForumForAllMessages",
                     "emailNotificationsForMessagesIncludingAMention",
                     "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                     "emailNotificationsForMessagesInConversationsThatYouStarted",
@@ -1883,7 +1883,7 @@ export default async (application: Application): Promise<void> => {
         darkMode:
           "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
-        emailNotificationsForAllMessages: number;
+        emailNotificationsForCourseForumForAllMessages: number;
         emailNotificationsForMessagesIncludingAMention: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -1920,7 +1920,7 @@ export default async (application: Application): Promise<void> => {
             "userRole",
             "darkMode",
             "sidebarWidth",
-            "emailNotificationsForAllMessages",
+            "emailNotificationsForCourseForumForAllMessages",
             "emailNotificationsForMessagesIncludingAMention",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
@@ -2486,7 +2486,7 @@ export default async (application: Application): Promise<void> => {
         darkMode:
           "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
-        emailNotificationsForAllMessages: number;
+        emailNotificationsForCourseForumForAllMessages: number;
         emailNotificationsForMessagesIncludingAMention: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -2523,7 +2523,7 @@ export default async (application: Application): Promise<void> => {
             "userRole",
             "darkMode",
             "sidebarWidth",
-            "emailNotificationsForAllMessages",
+            "emailNotificationsForCourseForumForAllMessages",
             "emailNotificationsForMessagesIncludingAMention",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
@@ -2888,7 +2888,7 @@ export default async (application: Application): Promise<void> => {
         darkMode:
           "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
         sidebarWidth: number;
-        emailNotificationsForAllMessages: number;
+        emailNotificationsForCourseForumForAllMessages: number;
         emailNotificationsForMessagesIncludingAMention: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -2925,7 +2925,7 @@ export default async (application: Application): Promise<void> => {
             "userRole",
             "darkMode",
             "sidebarWidth",
-            "emailNotificationsForAllMessages",
+            "emailNotificationsForCourseForumForAllMessages",
             "emailNotificationsForMessagesIncludingAMention",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "emailNotificationsForMessagesInConversationsThatYouStarted",
@@ -3323,7 +3323,7 @@ export default async (application: Application): Promise<void> => {
               darkMode:
                 "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
               sidebarWidth: number;
-              emailNotificationsForAllMessages: number;
+              emailNotificationsForCourseForumForAllMessages: number;
               emailNotificationsForMessagesIncludingAMention: number;
               emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
               emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -3360,7 +3360,7 @@ export default async (application: Application): Promise<void> => {
                   "userRole",
                   "darkMode",
                   "sidebarWidth",
-                  "emailNotificationsForAllMessages",
+                  "emailNotificationsForCourseForumForAllMessages",
                   "emailNotificationsForMessagesIncludingAMention",
                   "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                   "emailNotificationsForMessagesInConversationsThatYouStarted",
@@ -3416,7 +3416,7 @@ export default async (application: Application): Promise<void> => {
               darkMode:
                 "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
               sidebarWidth: number;
-              emailNotificationsForAllMessages: number;
+              emailNotificationsForCourseForumForAllMessages: number;
               emailNotificationsForMessagesIncludingAMention: number;
               emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
               emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -3455,7 +3455,7 @@ export default async (application: Application): Promise<void> => {
                         "userRole",
                         "darkMode",
                         "sidebarWidth",
-                        "emailNotificationsForAllMessages",
+                        "emailNotificationsForCourseForumForAllMessages",
                         "emailNotificationsForMessagesIncludingAMention",
                         "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                         "emailNotificationsForMessagesInConversationsThatYouStarted",
@@ -4234,7 +4234,7 @@ export default async (application: Application): Promise<void> => {
             darkMode:
               "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
             sidebarWidth: number;
-            emailNotificationsForAllMessages: number;
+            emailNotificationsForCourseForumForAllMessages: number;
             emailNotificationsForMessagesIncludingAMention: number;
             emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
             emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -4271,7 +4271,7 @@ export default async (application: Application): Promise<void> => {
                 "userRole",
                 "darkMode",
                 "sidebarWidth",
-                "emailNotificationsForAllMessages",
+                "emailNotificationsForCourseForumForAllMessages",
                 "emailNotificationsForMessagesIncludingAMention",
                 "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                 "emailNotificationsForMessagesInConversationsThatYouStarted",
@@ -4325,7 +4325,7 @@ export default async (application: Application): Promise<void> => {
             darkMode:
               "userDarkModeSystem" | "userDarkModeLight" | "userDarkModeDark";
             sidebarWidth: number;
-            emailNotificationsForAllMessages: number;
+            emailNotificationsForCourseForumForAllMessages: number;
             emailNotificationsForMessagesIncludingAMention: number;
             emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
             emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -4364,7 +4364,7 @@ export default async (application: Application): Promise<void> => {
                       "userRole",
                       "darkMode",
                       "sidebarWidth",
-                      "emailNotificationsForAllMessages",
+                      "emailNotificationsForCourseForumForAllMessages",
                       "emailNotificationsForMessagesIncludingAMention",
                       "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                       "emailNotificationsForMessagesInConversationsThatYouStarted",

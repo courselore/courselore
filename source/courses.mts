@@ -6621,7 +6621,7 @@ export default async (application: Application): Promise<void> => {
                         "userRole",
                         "darkMode",
                         "sidebarWidth",
-                        "emailNotificationsForAllMessages",
+                        "emailNotificationsForCourseForumForAllMessages",
                         "emailNotificationsForMessagesIncludingAMention",
                         "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                         "emailNotificationsForMessagesInConversationsThatYouStarted",

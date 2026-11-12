@@ -560,7 +560,7 @@ export default async (application: Application): Promise<void> => {
           const courseConversationMessageEmailNotificationUser =
             application.database.get<{
               email: string;
-              emailNotificationsForAllMessages: number;
+              emailNotificationsForCourseForumForAllMessages: number;
               emailNotificationsForMessagesIncludingAMention: number;
               emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
               emailNotificationsForMessagesInConversationsThatYouStarted: number;
@@ -568,7 +568,7 @@ export default async (application: Application): Promise<void> => {
               sql`
                 select
                   "email",
-                  "emailNotificationsForAllMessages",
+                  "emailNotificationsForCourseForumForAllMessages",
                   "emailNotificationsForMessagesIncludingAMention",
                   "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                   "emailNotificationsForMessagesInConversationsThatYouStarted"
@@ -613,7 +613,7 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleInstructor")) &&
             (parameters.announcement === true ||
               Boolean(
-                courseConversationMessageEmailNotificationUser.emailNotificationsForAllMessages,
+                courseConversationMessageEmailNotificationUser.emailNotificationsForCourseForumForAllMessages,
               ) ||
               (Boolean(
                 courseConversationMessageEmailNotificationUser.emailNotificationsForMessagesIncludingAMention,
