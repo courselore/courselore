@@ -8215,6 +8215,9 @@ export default async (application: Application): Promise<void> => {
         drop index "index_courseConversationsTags_course";
         create index "index_courseForumConversationsTags_course" on "courseForumConversationsTags" ("course");
         
+        drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_insert";
+        drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_update";
+        drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_delete";
         alter table "courseConversations" rename to "courseForumConversations";
         alter table "courseForumConversations" rename column "courseConversationType" to "courseForumConversationType";
         update "courseForumConversations" set "courseForumConversationType" = 'courseForumConversationTypeNote' where "courseForumConversationType" = 'courseConversationTypeNote';
@@ -8231,9 +8234,6 @@ export default async (application: Application): Promise<void> => {
         drop index "index_courseConversations_pinned";
         create index "index_courseForumConversations_pinned" on "courseForumConversations" ("pinned");
         alter table "lexicalSearch_courseConversations_titleLexicalSearch" rename to "lexicalSearch_courseForumConversations_titleLexicalSearch";
-        drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_insert";
-        drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_update";
-        drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_delete";
         create trigger "lexicalSearch_courseForumConversations_titleLexicalSearch_insert" after insert on "courseForumConversations" begin
           insert into "lexicalSearch_courseForumConversations_titleLexicalSearch" ("rowid", "titleLexicalSearch") values ("new"."id", "new"."titleLexicalSearch");
         end;
@@ -8265,6 +8265,9 @@ export default async (application: Application): Promise<void> => {
         update "courseForumConversationMessageDrafts" set "courseForumConversationMessageAnonymity" = 'courseForumConversationMessageAnonymityCourseParticipationRoleStudents' where "courseForumConversationMessageAnonymity" = 'courseConversationMessageAnonymityCourseParticipationRoleStudents';
         update "courseForumConversationMessageDrafts" set "courseForumConversationMessageAnonymity" = 'courseForumConversationMessageAnonymityEveryone' where "courseForumConversationMessageAnonymity" = 'courseConversationMessageAnonymityEveryone';
         
+        drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_insert";
+        drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_update";
+        drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_delete";
         alter table "courseConversationMessages" rename to "courseForumConversationMessages";
         alter table "courseForumConversationMessages" rename column "courseConversation" to "courseForumConversation";
         alter table "courseForumConversationMessages" rename column "courseConversationMessageType" to "courseForumConversationMessageType";
@@ -8285,9 +8288,6 @@ export default async (application: Application): Promise<void> => {
         drop index "index_courseConversationMessages_courseConversationMessageType";
         create index "index_courseForumConversationMessages_courseForumConversationMessageType" on "courseForumConversationMessages" ("courseForumConversationMessageType");
         alter table "lexicalSearch_courseConversationMessages_contentLexicalSearch" rename to "lexicalSearch_courseForumConversationMessages_contentLexicalSearch";
-        drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_insert";
-        drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_update";
-        drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_delete";
         create trigger "lexicalSearch_courseForumConversationMessages_contentLexicalSearch_insert" after insert on "courseForumConversationMessages" begin
           insert into "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" ("rowid", "contentLexicalSearch") values ("new"."id", "new"."contentLexicalSearch");
         end;
