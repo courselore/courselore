@@ -3445,7 +3445,7 @@ export default async (application: Application): Promise<void> => {
                     ${request.state.courseParticipation!.id},
                     ${Temporal.Now.instant().toString()},
                     ${null},
-                    ${"courseConversationMessageTypeMessage"},
+                    ${"courseForumConversationMessageTypeMessage"},
                     ${"courseConversationMessageVisibilityEveryone"},
                     ${request.body.courseConversationMessageAnonymity ?? "courseConversationMessageAnonymityNone"},
                     ${Number(false)},
@@ -5270,7 +5270,7 @@ export default async (application: Application): Promise<void> => {
                       createdAt: string;
                       updatedAt: string | null;
                       courseConversationMessageType:
-                        | "courseConversationMessageTypeMessage"
+                        | "courseForumConversationMessageTypeMessage"
                         | "courseConversationMessageTypeAnswer"
                         | "courseConversationMessageTypeFollowUpQuestion";
                       courseConversationMessageVisibility:
@@ -5592,7 +5592,7 @@ export default async (application: Application): Promise<void> => {
                                   ) {
                                     if (
                                       courseConversationMessage.courseConversationMessageType ===
-                                      "courseConversationMessageTypeMessage"
+                                      "courseForumConversationMessageTypeMessage"
                                     )
                                       "NOOP";
                                     else if (
@@ -6524,7 +6524,7 @@ export default async (application: Application): Promise<void> => {
                       const courseConversationMessageDraft =
                         application.database.get<{
                           courseConversationMessageType:
-                            | "courseConversationMessageTypeMessage"
+                            | "courseForumConversationMessageTypeMessage"
                             | "courseConversationMessageTypeAnswer"
                             | "courseConversationMessageTypeFollowUpQuestion";
                           courseConversationMessageVisibility:
@@ -6739,7 +6739,7 @@ export default async (application: Application): Promise<void> => {
                                       >  <input
                                         type="radio"
                                         name="courseConversationMessageType"
-                                        value="courseConversationMessageTypeMessage"
+                                        value="courseForumConversationMessageTypeMessage"
                                         required
                                         $${
                                           (courseConversationMessageDraft ===
@@ -6757,7 +6757,7 @@ export default async (application: Application): Promise<void> => {
                                                 "courseParticipationRoleInstructor"
                                             )) ||
                                           courseConversationMessageDraft?.courseConversationMessageType ===
-                                            "courseConversationMessageTypeMessage"
+                                            "courseForumConversationMessageTypeMessage"
                                             ? html`checked`
                                             : html``
                                         }
@@ -6843,7 +6843,7 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--rectangle button--transparent button--dropdown-menu"
                                       javascript="${javascript`
                                       this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseForumConversationMessageTypeMessage"]').click();
                                       };
                                     `}"
                                     >

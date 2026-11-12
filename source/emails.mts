@@ -480,7 +480,7 @@ export default async (application: Application): Promise<void> => {
                                 .courseParticipationRole ===
                                 "courseParticipationRoleInstructor"
                                 ? "courseConversationMessageTypeAnswer"
-                                : "courseConversationMessageTypeMessage"
+                                : "courseForumConversationMessageTypeMessage"
                             },
                             ${"courseConversationMessageVisibilityEveryone"},
                             ${"courseConversationMessageAnonymityNone"},
