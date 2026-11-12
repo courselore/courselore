@@ -8021,7 +8021,7 @@ export default async (application: Application): Promise<void> => {
                           (() => {
                             throw new Error();
                           })(),
-                        courseConversationMessageContent:
+                        courseForumConversationMessageContent:
                           courseConversationMessage.content,
                         mode: "textContent",
                       },
@@ -8093,7 +8093,7 @@ export default async (application: Application): Promise<void> => {
                       (() => {
                         throw new Error();
                       })(),
-                    courseConversationMessageContent:
+                    courseForumConversationMessageContent:
                       courseConversationMessage.content,
                     mode: "textContent",
                   },
