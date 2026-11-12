@@ -8196,5 +8196,120 @@ export default async (application: Application): Promise<void> => {
           delete from "lexicalSearch_courseAISourceChunks_contentLexicalSearch" where "rowid" = "old"."id";
         end;
       `,
+
+      sql`
+        alter table "users" rename column "emailNotificationsForAllMessages" to "emailNotificationsForCourseForumForAllMessages";
+        alter table "users" rename column "emailNotificationsForMessagesIncludingAMention" to "emailNotificationsForCourseForumForMessagesIncludingAMention";
+        alter table "users" rename column "emailNotificationsForMessagesInConversationsInWhichYouParticipated" to "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated";
+        alter table "users" rename column "emailNotificationsForMessagesInConversationsThatYouStarted" to "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted";
+        
+        alter table "courses" rename column "courseConversationRequiresTagging" to "courseForumConversationRequiresTagging";
+        alter table "courses" rename column "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent" to "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages";
+        alter table "courses" rename column "courseConversationsNextPublicId" to "courseForumConversationsNextPublicId";
+        
+        alter table "courseParticipations" rename column "mostRecentlyVisitedCourseConversation" to "mostRecentlyVisitedCourseForumConversation";
+        drop index "index_courseParticipations_mostRecentlyVisitedCourseConversation";
+        create index "index_courseParticipations_mostRecentlyVisitedCourseForumConversation" on "courseParticipations" ("mostRecentlyVisitedCourseForumConversation");
+        
+        alter table "courseConversationsTags" rename to "courseForumConversationsTags";
+        drop index "index_courseConversationsTags_course";
+        create index "index_courseForumConversationsTags_course" on "courseForumConversationsTags" ("course");
+        
+        alter table "courseConversations" rename to "courseForumConversations";
+        alter table "courseForumConversations" rename column "courseConversationType" to "courseForumConversationType";
+        update "courseForumConversations" set "courseForumConversationType" = 'courseForumConversationTypeNote' where "courseForumConversationType" = 'courseConversationTypeNote';
+        update "courseForumConversations" set "courseForumConversationType" = 'courseForumConversationTypeQuestion' where "courseForumConversationType" = 'courseConversationTypeQuestion';
+        alter table "courseForumConversations" rename column "questionResolved" to "courseForumConversationTypeQuestionResolved";
+        alter table "courseForumConversations" rename column "courseConversationVisibility" to "courseForumConversationVisibility";
+        update "courseForumConversations" set "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone' where "courseForumConversationVisibility" = 'courseConversationVisibilityEveryone';
+        update "courseForumConversations" set "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations' where "courseForumConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations';
+        update "courseForumConversations" set "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseForumConversationParticipations' where "courseForumConversationVisibility" = 'courseConversationVisibilityCourseConversationParticipations';
+        drop index "index_courseConversations_courseConversationType";
+        create index "index_courseForumConversations_courseForumConversationType" on "courseForumConversations" ("courseForumConversationType");
+        drop index "index_courseConversations_questionResolved";
+        create index "index_courseForumConversations_courseForumConversationTypeQuestionResolved" on "courseForumConversations" ("courseForumConversationTypeQuestionResolved");
+        drop index "index_courseConversations_pinned";
+        create index "index_courseForumConversations_pinned" on "courseForumConversations" ("pinned");
+        alter table "lexicalSearch_courseConversations_titleLexicalSearch" rename to "lexicalSearch_courseForumConversations_titleLexicalSearch";
+        drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_insert";
+        drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_update";
+        drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_delete";
+        create trigger "lexicalSearch_courseForumConversations_titleLexicalSearch_insert" after insert on "courseForumConversations" begin
+          insert into "lexicalSearch_courseForumConversations_titleLexicalSearch" ("rowid", "titleLexicalSearch") values ("new"."id", "new"."titleLexicalSearch");
+        end;
+        create trigger "lexicalSearch_courseForumConversations_titleLexicalSearch_update" after update on "courseForumConversations" begin
+          update "lexicalSearch_courseForumConversations_titleLexicalSearch" set "titleLexicalSearch" = "new"."titleLexicalSearch" where "rowid" = "old"."id";
+        end;
+        create trigger "lexicalSearch_courseForumConversations_titleLexicalSearch_delete" after delete on "courseForumConversations" begin
+          delete from "lexicalSearch_courseForumConversations_titleLexicalSearch" where "rowid" = "old"."id";
+        end;
+        
+        alter table "courseConversationParticipations" rename to "courseForumConversationParticipations";
+        alter table "courseForumConversationParticipations" rename column "courseConversation" to "courseForumConversation";
+        
+        alter table "courseConversationTaggings" rename to "courseForumConversationTaggings";
+        alter table "courseForumConversationTaggings" rename column "courseConversation" to "courseForumConversation";
+        alter table "courseForumConversationTaggings" rename column "courseConversationsTag" to "courseForumConversationsTag";
+        
+        alter table "courseConversationMessageDrafts" rename to "courseForumConversationMessageDrafts";
+        alter table "courseForumConversationMessageDrafts" rename column "courseConversation" to "courseForumConversation";
+        alter table "courseForumConversationMessageDrafts" rename column "courseConversationMessageType" to "courseForumConversationMessageType";
+        update "courseForumConversationMessageDrafts" set "courseForumConversationMessageType" = 'courseForumConversationMessageTypeMessage' where "courseForumConversationMessageType" = 'courseConversationMessageTypeMessage';
+        update "courseForumConversationMessageDrafts" set "courseForumConversationMessageType" = 'courseForumConversationMessageTypeAnswer' where "courseForumConversationMessageType" = 'courseConversationMessageTypeAnswer';
+        update "courseForumConversationMessageDrafts" set "courseForumConversationMessageType" = 'courseForumConversationMessageTypeFollowUpQuestion' where "courseForumConversationMessageType" = 'courseConversationMessageTypeFollowUpQuestion';
+        alter table "courseForumConversationMessageDrafts" rename column "courseConversationMessageVisibility" to "courseForumConversationMessageVisibility";
+        update "courseForumConversationMessageDrafts" set "courseForumConversationMessageVisibility" = 'courseForumConversationMessageVisibilityEveryone' where "courseForumConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone';
+        update "courseForumConversationMessageDrafts" set "courseForumConversationMessageVisibility" = 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' where "courseForumConversationMessageVisibility" = 'courseConversationMessageVisibilityCourseParticipationRoleInstructors';
+        alter table "courseForumConversationMessageDrafts" rename column "courseConversationMessageAnonymity" to "courseForumConversationMessageAnonymity";
+        update "courseForumConversationMessageDrafts" set "courseForumConversationMessageAnonymity" = 'courseForumConversationMessageAnonymityNone' where "courseForumConversationMessageAnonymity" = 'courseConversationMessageAnonymityNone';
+        update "courseForumConversationMessageDrafts" set "courseForumConversationMessageAnonymity" = 'courseForumConversationMessageAnonymityCourseParticipationRoleStudents' where "courseForumConversationMessageAnonymity" = 'courseConversationMessageAnonymityCourseParticipationRoleStudents';
+        update "courseForumConversationMessageDrafts" set "courseForumConversationMessageAnonymity" = 'courseForumConversationMessageAnonymityEveryone' where "courseForumConversationMessageAnonymity" = 'courseConversationMessageAnonymityEveryone';
+        
+        alter table "courseConversationMessages" rename to "courseForumConversationMessages";
+        alter table "courseForumConversationMessages" rename column "courseConversation" to "courseForumConversation";
+        alter table "courseForumConversationMessages" rename column "courseConversationMessageType" to "courseForumConversationMessageType";
+        update "courseForumConversationMessages" set "courseForumConversationMessageType" = 'courseForumConversationMessageTypeMessage' where "courseForumConversationMessageType" = 'courseConversationMessageTypeMessage';
+        update "courseForumConversationMessages" set "courseForumConversationMessageType" = 'courseForumConversationMessageTypeAnswer' where "courseForumConversationMessageType" = 'courseConversationMessageTypeAnswer';
+        update "courseForumConversationMessages" set "courseForumConversationMessageType" = 'courseForumConversationMessageTypeFollowUpQuestion' where "courseForumConversationMessageType" = 'courseConversationMessageTypeFollowUpQuestion';
+        alter table "courseForumConversationMessages" rename column "courseConversationMessageVisibility" to "courseForumConversationMessageVisibility";
+        update "courseForumConversationMessages" set "courseForumConversationMessageVisibility" = 'courseForumConversationMessageVisibilityEveryone' where "courseForumConversationMessageVisibility" = 'courseConversationMessageVisibilityEveryone';
+        update "courseForumConversationMessages" set "courseForumConversationMessageVisibility" = 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' where "courseForumConversationMessageVisibility" = 'courseConversationMessageVisibilityCourseParticipationRoleInstructors';
+        alter table "courseForumConversationMessages" rename column "courseConversationMessageAnonymity" to "courseForumConversationMessageAnonymity";
+        update "courseForumConversationMessages" set "courseForumConversationMessageAnonymity" = 'courseForumConversationMessageAnonymityNone' where "courseForumConversationMessageAnonymity" = 'courseConversationMessageAnonymityNone';
+        update "courseForumConversationMessages" set "courseForumConversationMessageAnonymity" = 'courseForumConversationMessageAnonymityCourseParticipationRoleStudents' where "courseForumConversationMessageAnonymity" = 'courseConversationMessageAnonymityCourseParticipationRoleStudents';
+        update "courseForumConversationMessages" set "courseForumConversationMessageAnonymity" = 'courseForumConversationMessageAnonymityEveryone' where "courseForumConversationMessageAnonymity" = 'courseConversationMessageAnonymityEveryone';
+        drop index "index_courseConversationMessages_courseConversation";
+        create index "index_courseForumConversationMessages_courseForumConversation" on "courseForumConversationMessages" ("courseForumConversation");
+        drop index "index_courseConversationMessages_createdByCourseParticipation";
+        create index "index_courseForumConversationMessages_createdByCourseParticipation" on "courseForumConversationMessages" ("createdByCourseParticipation");
+        drop index "index_courseConversationMessages_courseConversationMessageType";
+        create index "index_courseForumConversationMessages_courseForumConversationMessageType" on "courseForumConversationMessages" ("courseForumConversationMessageType");
+        alter table "lexicalSearch_courseConversationMessages_contentLexicalSearch" rename to "lexicalSearch_courseForumConversationMessages_contentLexicalSearch";
+        drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_insert";
+        drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_update";
+        drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_delete";
+        create trigger "lexicalSearch_courseForumConversationMessages_contentLexicalSearch_insert" after insert on "courseForumConversationMessages" begin
+          insert into "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" ("rowid", "contentLexicalSearch") values ("new"."id", "new"."contentLexicalSearch");
+        end;
+        create trigger "lexicalSearch_courseForumConversationMessages_contentLexicalSearch_update" after update on "courseForumConversationMessages" begin
+          update "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" set "contentLexicalSearch" = "new"."contentLexicalSearch" where "rowid" = "old"."id";
+        end;
+        create trigger "lexicalSearch_courseForumConversationMessages_contentLexicalSearch_delete" after delete on "courseForumConversationMessages" begin
+          delete from "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" where "rowid" = "old"."id";
+        end;
+        
+        alter table "courseConversationMessageViews" rename to "courseForumConversationMessageViews";
+        alter table "courseForumConversationMessageViews" rename column "courseConversationMessage" to "courseForumConversationMessage";
+        
+        alter table "courseConversationMessageLikes" rename to "courseForumConversationMessageLikes";
+        alter table "courseForumConversationMessageLikes" rename column "courseConversationMessage" to "courseForumConversationMessage";
+        
+        alter table "courseConversationMessageEmailNotificationReplyTokens" rename to "courseForumConversationMessageEmailNotificationReplyTokens";
+        alter table "courseForumConversationMessageEmailNotificationReplyTokens" rename column "courseConversation" to "courseForumConversation";
+        drop index "index_courseConversationMessageEmailNotificationReplyTokens_courseConversation";
+        create index "index_courseForumConversationMessageEmailNotificationReplyTokens_courseForumConversation" on "courseForumConversationMessageEmailNotificationReplyTokens" ("courseForumConversation");
+        drop index "index_courseConversationMessageEmailNotificationReplyTokens_courseParticipation";
+        create index "index_courseForumConversationMessageEmailNotificationReplyTokens_courseParticipation" on "courseForumConversationMessageEmailNotificationReplyTokens" ("courseParticipation");
+      `,
     );
 };
