@@ -6542,7 +6542,7 @@ export default async (application: Application): Promise<void> => {
                             "courseForumConversationMessageVisibility",
                             "courseForumConversationMessageAnonymity",
                             "content"
-                          from "courseConversationMessageDrafts"
+                          from "courseForumConversationMessageDrafts"
                           where
                             "courseConversation" = ${request.state.courseConversation.id} and
                             "createdByCourseParticipation" = ${request.state.courseParticipation.id};
@@ -6594,7 +6594,7 @@ export default async (application: Application): Promise<void> => {
                                   }>(
                                     sql`
                                   select "createdByCourseParticipation"
-                                  from "courseConversationMessageDrafts"
+                                  from "courseForumConversationMessageDrafts"
                                   where
                                     "courseConversation" = ${request.state.courseConversation.id} and
                                     "createdByCourseParticipation" != ${request.state.courseParticipation.id} and
@@ -7438,7 +7438,7 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            delete from "courseConversationMessageDrafts"
+            delete from "courseForumConversationMessageDrafts"
             where "courseConversation" = ${request.state.courseConversation!.id};
           `,
         );

@@ -126,7 +126,7 @@ export default async (application: Application): Promise<void> => {
           application.database.get<{ content: string }>(
             sql`
               select "content"
-              from "courseConversationMessageDrafts"
+              from "courseForumConversationMessageDrafts"
               where
                 "courseConversation" = ${request.state.courseConversation!.id} and
                 "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
@@ -141,7 +141,7 @@ export default async (application: Application): Promise<void> => {
             request.body.content!.trim() === "");
         application.database.run(
           sql`
-            delete from "courseConversationMessageDrafts"
+            delete from "courseForumConversationMessageDrafts"
             where
               "courseConversation" = ${request.state.courseConversation!.id} and
               "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
@@ -149,7 +149,7 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            insert into "courseConversationMessageDrafts" (
+            insert into "courseForumConversationMessageDrafts" (
               "courseConversation",
               "createdByCourseParticipation",
               "createdAt",
@@ -293,7 +293,7 @@ export default async (application: Application): Promise<void> => {
       application.database.transaction(() => {
         application.database.run(
           sql`
-            delete from "courseConversationMessageDrafts"
+            delete from "courseForumConversationMessageDrafts"
             where
               "courseConversation" = ${request.state.courseConversation!.id} and
               "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
