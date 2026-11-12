@@ -35,7 +35,7 @@ export type ApplicationCourseForumConversationMessageContent = {
     courseForumConversationMessageContentEditor: ({
       course,
       courseParticipation,
-      courseConversation,
+      courseForumConversation,
       courseForumConversationMessage,
       courseForumConversationMessageContent,
     }: {
@@ -50,7 +50,7 @@ export type ApplicationCourseForumConversationMessageContent = {
           | "courseParticipationRoleInstructor"
           | "courseParticipationRoleStudent";
       };
-      courseConversation?: {
+      courseForumConversation?: {
         id: number;
         publicId: string;
         courseForumConversationVisibility:
@@ -68,7 +68,7 @@ export type ApplicationCourseForumConversationMessageContent = {
       ({
         course,
         courseParticipation,
-        courseConversation,
+        courseForumConversation,
         courseForumConversationMessage,
         courseForumConversationMessageContent,
         mode,
@@ -85,7 +85,7 @@ export type ApplicationCourseForumConversationMessageContent = {
             | "courseParticipationRoleInstructor"
             | "courseParticipationRoleStudent";
         };
-        courseConversation?: {
+        courseForumConversation?: {
           publicId: string;
         };
         courseForumConversationMessage?: {
@@ -105,7 +105,7 @@ export type ApplicationCourseForumConversationMessageContent = {
       ({
         course,
         courseParticipation,
-        courseConversation,
+        courseForumConversation,
         courseForumConversationMessage,
         courseForumConversationMessageContent,
         mode,
@@ -122,7 +122,7 @@ export type ApplicationCourseForumConversationMessageContent = {
             | "courseParticipationRoleInstructor"
             | "courseParticipationRoleStudent";
         };
-        courseConversation?: {
+        courseForumConversation?: {
           publicId: string;
         };
         courseForumConversationMessage?: {
@@ -142,7 +142,7 @@ export default async (application: Application): Promise<void> => {
   application.partials.courseForumConversationMessageContentEditor = ({
     course,
     courseParticipation,
-    courseConversation,
+    courseForumConversation,
     courseForumConversationMessage,
     courseForumConversationMessageContent = courseForumConversationMessage?.content ?? "",
   }) => html`
@@ -501,12 +501,12 @@ export default async (application: Application): Promise<void> => {
                     where
                       "courseParticipations"."course" = ${course.id} and
                       "courseParticipations"."id" != ${courseParticipation.id} ${
-                        courseConversation === undefined
+                        courseForumConversation === undefined
                           ? sql``
-                          : courseConversation.courseForumConversationVisibility ===
+                          : courseForumConversation.courseForumConversationVisibility ===
                               "courseForumConversationVisibilityEveryone"
                             ? sql``
-                            : courseConversation.courseForumConversationVisibility ===
+                            : courseForumConversation.courseForumConversationVisibility ===
                                 "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                               ? sql`
                                   and (
@@ -514,19 +514,19 @@ export default async (application: Application): Promise<void> => {
                                       select true
                                       from "courseForumConversationParticipations"
                                       where
-                                        "courseForumConversationParticipations"."courseConversation" = ${courseConversation.id} and
+                                        "courseForumConversationParticipations"."courseForumConversation" = ${courseForumConversation.id} and
                                         "courseParticipations"."id" = "courseForumConversationParticipations"."courseParticipation"
                                     )
                                   )
                                 `
-                              : courseConversation.courseForumConversationVisibility ===
+                              : courseForumConversation.courseForumConversationVisibility ===
                                   "courseForumConversationVisibilityCourseForumConversationParticipations"
                                 ? sql`
                                     and (
                                       select true
                                       from "courseForumConversationParticipations"
                                       where
-                                        "courseForumConversationParticipations"."courseConversation" = ${courseConversation.id} and
+                                        "courseForumConversationParticipations"."courseForumConversation" = ${courseForumConversation.id} and
                                         "courseParticipations"."id" = "courseForumConversationParticipations"."courseParticipation"
                                     )
                                   `
@@ -672,7 +672,7 @@ export default async (application: Application): Promise<void> => {
                 this.onkeyup = utilities.throttle(() => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
                   for (const element of this.closest('[key~="courseForumConversationMessageContentEditor--reference"]').querySelector('[key~="courseForumConversationMessageContentEditor--reference--courseForumConversations"]').children) {
-                    const titleElement = element.querySelector('[key~="courseForumConversationMessageContentEditor--reference--courseConversation--title"]');
+                    const titleElement = element.querySelector('[key~="courseForumConversationMessageContentEditor--reference--courseForumConversation--title"]');
                     titleElement.innerHTML = utilities.highlight(html\`\${titleElement.title}\`, search, { prefix: true });
                     titleElement.morph = titleElement.querySelector("span") === null;
                     element.hidden = 0 < search.size && titleElement.querySelector("span") === null;
@@ -718,7 +718,7 @@ export default async (application: Application): Promise<void> => {
                           select true
                           from "courseForumConversationParticipations"
                           where
-                            "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                            "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
                             "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                         )
                       )
@@ -726,7 +726,7 @@ export default async (application: Application): Promise<void> => {
                   `,
                 )
                 .map(
-                  (courseConversation) => html`
+                  (courseForumConversation) => html`
                     <button
                       type="button"
                       class="button button--rectangle button--transparent button--dropdown-menu"
@@ -736,7 +736,7 @@ export default async (application: Application): Promise<void> => {
                           element.click();
                           element.focus();
                           element.selectionEnd = element.selectionStart;
-                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}#\${${courseConversation.publicId}} \`);
+                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}#\${${courseForumConversation.publicId}} \`);
                         };
                       `}"
                     >
@@ -750,14 +750,14 @@ export default async (application: Application): Promise<void> => {
                             var(--color--slate--600)
                           );
                         `}"
-                        >#${courseConversation.publicId}</span
+                        >#${courseForumConversation.publicId}</span
                       >
                       <span
-                        key="courseForumConversationMessageContentEditor--reference--courseConversation--title"
+                        key="courseForumConversationMessageContentEditor--reference--courseForumConversation--title"
                         javascript="${javascript`
-                          this.title = ${courseConversation.title};
+                          this.title = ${courseForumConversation.title};
                         `}"
-                        >${courseConversation.title}</span
+                        >${courseForumConversation.title}</span
                       >
                     </button>
                   `,
@@ -834,7 +834,7 @@ export default async (application: Application): Promise<void> => {
                       this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--preview"]').firstElementChild,
                       await (
                         await fetch(
-                          ${`/courses/${course.publicId}${courseConversation !== undefined ? `/forum/${courseConversation.publicId}` : ""}/messages${courseForumConversationMessage !== undefined ? `/${courseForumConversationMessage.publicId}` : ""}/preview`}, {
+                          ${`/courses/${course.publicId}${courseForumConversation !== undefined ? `/forum/${courseForumConversation.publicId}` : ""}/messages${courseForumConversationMessage !== undefined ? `/${courseForumConversationMessage.publicId}` : ""}/preview`}, {
                             method: "POST",
                             headers: { "CSRF-Protection": "true" },
                             body: new URLSearchParams(javascript.serialize(this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]'))),
@@ -1148,12 +1148,12 @@ ${courseForumConversationMessageContent}</textarea>
   application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)(?:/forum/(?<courseConversationPublicId>[0-9]+))?/messages(?:/(?<courseForumConversationMessagePublicId>[0-9]+))?/preview$",
+      "^/courses/(?<coursePublicId>[0-9]+)(?:/forum/(?<courseForumConversationPublicId>[0-9]+))?/messages(?:/(?<courseForumConversationMessagePublicId>[0-9]+))?/preview$",
     ),
     handler: async (
       request: serverTypes.Request<
         {
-          courseConversationPublicId: string;
+          courseForumConversationPublicId: string;
           courseForumConversationMessagePublicId: string;
         },
         {},
@@ -1167,8 +1167,8 @@ ${courseForumConversationMessageContent}</textarea>
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
-        (typeof request.pathname.courseConversationPublicId === "string" &&
-          request.state.courseConversation === undefined) ||
+        (typeof request.pathname.courseForumConversationPublicId === "string" &&
+          request.state.courseForumConversation === undefined) ||
         (typeof request.pathname.courseForumConversationMessagePublicId ===
           "string" &&
           request.state.courseForumConversationMessage === undefined)
@@ -1183,7 +1183,7 @@ ${courseForumConversationMessageContent}</textarea>
         await application.partials.courseForumConversationMessageContentProcessor({
           course: request.state.course,
           courseParticipation: request.state.courseParticipation,
-          courseConversation: request.state.courseConversation,
+          courseForumConversation: request.state.courseForumConversation,
           courseForumConversationMessage: request.state.courseForumConversationMessage,
           courseForumConversationMessageContent: request.body.content,
           mode: "preview",
@@ -1731,7 +1731,7 @@ You may also use the buttons on the message content editor to ${
   application.partials.courseForumConversationMessageContentProcessor = async ({
     course,
     courseParticipation,
-    courseConversation,
+    courseForumConversation,
     courseForumConversationMessage,
     courseForumConversationMessageContent = courseForumConversationMessage?.content ??
       (() => {
@@ -1745,7 +1745,7 @@ You may also use the buttons on the message content editor to ${
             version: application.version,
             coursePublicId: course.publicId,
             courseParticipationPublicId: courseParticipation?.publicId,
-            courseConversationPublicId: courseConversation?.publicId,
+            courseForumConversationPublicId: courseForumConversation?.publicId,
             courseForumConversationMessagePublicId:
               courseForumConversationMessage?.publicId,
             courseForumConversationMessageUpdatedAt:
@@ -2203,7 +2203,7 @@ You may also use the buttons on the message content editor to ${
         for (const element of document.querySelectorAll("a")) {
           const url = new URL(
             element.getAttribute("href"),
-            `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/forum/${courseConversation.publicId}` : ""}`,
+            `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseForumConversation !== undefined ? `/forum/${courseForumConversation.publicId}` : ""}`,
           );
           if (
             url.protocol !== "https:" ||
@@ -2237,7 +2237,7 @@ You may also use the buttons on the message content editor to ${
             href="https://${
               application.userConfiguration.hostname
             }/courses/${course.publicId}/forum/${
-              courseConversation!.publicId
+              courseForumConversation!.publicId
             }?${new URLSearchParams({
               message: courseForumConversationMessage!.publicId,
             }).toString()}"
@@ -2260,7 +2260,7 @@ You may also use the buttons on the message content editor to ${
             href="https://${
               application.userConfiguration.hostname
             }/courses/${course.publicId}/forum/${
-              courseConversation!.publicId
+              courseForumConversation!.publicId
             }?${new URLSearchParams({
               message: courseForumConversationMessage!.publicId,
             }).toString()}"
@@ -2283,7 +2283,7 @@ You may also use the buttons on the message content editor to ${
                 href="https://${
                   application.userConfiguration.hostname
                 }/courses/${course.publicId}/forum/${
-                  courseConversation!.publicId
+                  courseForumConversation!.publicId
                 }?${new URLSearchParams({
                   message: courseForumConversationMessage!.publicId,
                 }).toString()}"
@@ -2540,8 +2540,8 @@ You may also use the buttons on the message content editor to ${
             type="form poll"
             method="PATCH"
             action="/courses/${course.publicId}${
-              courseConversation !== undefined
-                ? `/forum/${courseConversation.publicId}`
+              courseForumConversation !== undefined
+                ? `/forum/${courseForumConversation.publicId}`
                 : ""
             }${
               courseForumConversationMessage !== undefined
@@ -2635,7 +2635,7 @@ You may also use the buttons on the message content editor to ${
                   href="https://${
                     application.userConfiguration.hostname
                   }/courses/${course.publicId}/forum/${
-                    courseConversation!.publicId
+                    courseForumConversation!.publicId
                   }${new URLSearchParams({
                     message: courseForumConversationMessage!.publicId,
                   }).toString()}"
@@ -2648,7 +2648,7 @@ You may also use the buttons on the message content editor to ${
               href="https://${
                 application.userConfiguration.hostname
               }/courses/${course.publicId}/forum/${
-                courseConversation!.publicId
+                courseForumConversation!.publicId
               }${new URLSearchParams({
                 message: courseForumConversationMessage!.publicId,
               }).toString()}"
@@ -2844,13 +2844,13 @@ You may also use the buttons on the message content editor to ${
                 },
               )
               .replaceAll(
-                /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseForumConversationMessagePublicId>\d+))?/g,
+                /(?<=^|\s)#(?<courseForumConversationPublicId>\d+)(?:\/(?<courseForumConversationMessagePublicId>\d+))?/g,
                 (
                   match,
-                  courseConversationPublicId,
+                  courseForumConversationPublicId,
                   courseForumConversationMessagePublicId,
                 ) => {
-                  const mentionCourseConversation = application.database.get<{
+                  const mentioncourseForumConversation = application.database.get<{
                     id: number;
                     publicId: string;
                   }>(
@@ -2858,7 +2858,7 @@ You may also use the buttons on the message content editor to ${
                       select "id", "publicId"
                       from "courseForumConversations"
                       where
-                        "publicId" = ${courseConversationPublicId} and
+                        "publicId" = ${courseForumConversationPublicId} and
                         "course" = ${course.id} and (
                           "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                           ${
@@ -2878,7 +2878,7 @@ You may also use the buttons on the message content editor to ${
                                     select true
                                     from "courseForumConversationParticipations"
                                     where
-                                      "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                                      "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
                                       "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                                   )
                                 `
@@ -2888,11 +2888,11 @@ You may also use the buttons on the message content editor to ${
                         );
                     `,
                   );
-                  if (mentionCourseConversation === undefined) return match;
+                  if (mentioncourseForumConversation === undefined) return match;
                   if (courseForumConversationMessagePublicId === undefined)
                     return html`
                       <a
-                        href="/courses/${course.publicId}/forum/${mentionCourseConversation.publicId}"
+                        href="/courses/${course.publicId}/forum/${mentioncourseForumConversation.publicId}"
                         class="link"
                         >${match}</a
                       >
@@ -2904,7 +2904,7 @@ You may also use the buttons on the message content editor to ${
                         from "courseForumConversationMessages"
                         where
                           "publicId" = ${courseForumConversationMessagePublicId} and
-                          "courseConversation" = ${mentionCourseConversation.id} ${
+                          "courseForumConversation" = ${mentioncourseForumConversation.id} ${
                             courseParticipation === undefined ||
                             courseParticipation.courseParticipationRole ===
                               "courseParticipationRoleStudent"
@@ -2920,7 +2920,7 @@ You may also use the buttons on the message content editor to ${
                     return match;
                   return html`
                     <a
-                      href="/courses/${course.publicId}/forum/${mentionCourseConversation.publicId}?${new URLSearchParams(
+                      href="/courses/${course.publicId}/forum/${mentioncourseForumConversation.publicId}?${new URLSearchParams(
                         { message: mentioncourseForumConversationMessage.publicId },
                       ).toString()}"
                       class="link"
@@ -2948,11 +2948,11 @@ You may also use the buttons on the message content editor to ${
           .getAttribute("href")
           .match(
             new RegExp(
-              `^https://${RegExp.escape(application.userConfiguration.hostname)}/courses/${course.publicId}/(?:forum|conversations)/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseForumConversationMessagePublicId>\\d+))?$`,
+              `^https://${RegExp.escape(application.userConfiguration.hostname)}/courses/${course.publicId}/(?:forum|conversations)/(?<courseForumConversationPublicId>\\d+)(?:\\?message=(?<courseForumConversationMessagePublicId>\\d+))?$`,
             ),
           );
         if (match === null) continue;
-        const mentionCourseConversation = application.database.get<{
+        const mentioncourseForumConversation = application.database.get<{
           id: number;
           publicId: string;
         }>(
@@ -2960,7 +2960,7 @@ You may also use the buttons on the message content editor to ${
             select "id", "publicId"
             from "courseForumConversations"
             where
-              "publicId" = ${match.groups.courseConversationPublicId} and
+              "publicId" = ${match.groups.courseForumConversationPublicId} and
               "course" = ${course.id} and (
                 "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                 ${
@@ -2980,7 +2980,7 @@ You may also use the buttons on the message content editor to ${
                           select true
                           from "courseForumConversationParticipations"
                           where
-                            "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                            "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
                             "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                         )
                       `
@@ -2989,9 +2989,9 @@ You may also use the buttons on the message content editor to ${
               );
           `,
         );
-        if (mentionCourseConversation === undefined) continue;
+        if (mentioncourseForumConversation === undefined) continue;
         if (match.groups.courseForumConversationMessagePublicId === undefined) {
-          element.textContent = `#${mentionCourseConversation.publicId}`;
+          element.textContent = `#${mentioncourseForumConversation.publicId}`;
           continue;
         }
         const mentioncourseForumConversationMessage = application.database.get<{
@@ -3002,7 +3002,7 @@ You may also use the buttons on the message content editor to ${
             from "courseForumConversationMessages"
             where
               "publicId" = ${match.groups.courseForumConversationMessagePublicId} and
-              "courseConversation" = ${mentionCourseConversation.id} ${
+              "courseForumConversation" = ${mentioncourseForumConversation.id} ${
                 courseParticipation === undefined ||
                 courseParticipation.courseParticipationRole ===
                   "courseParticipationRoleStudent"
@@ -3015,7 +3015,7 @@ You may also use the buttons on the message content editor to ${
           `,
         );
         if (mentioncourseForumConversationMessage === undefined) continue;
-        element.textContent = `#${mentionCourseConversation.publicId}/${mentioncourseForumConversationMessage.publicId}`;
+        element.textContent = `#${mentioncourseForumConversation.publicId}/${mentioncourseForumConversationMessage.publicId}`;
       }
       for (const element of document.querySelectorAll("a"))
         if (mode === "emailNotification")
@@ -3023,7 +3023,7 @@ You may also use the buttons on the message content editor to ${
             "href",
             new URL(
               element.getAttribute("href"),
-              `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseConversation !== undefined ? `/forum/${courseConversation.publicId}` : ""}`,
+              `https://${application.userConfiguration.hostname}/courses/${course.publicId}${courseForumConversation !== undefined ? `/forum/${courseForumConversation.publicId}` : ""}`,
             ).href,
           );
         else if (
@@ -3052,7 +3052,7 @@ You may also use the buttons on the message content editor to ${
   application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseForumConversationMessagePublicId>[0-9]+)/polls/(?<courseForumConversationMessageContentPollIndex>[0-9]+)$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseForumConversationPublicId>[0-9]+)/messages/(?<courseForumConversationMessagePublicId>[0-9]+)/polls/(?<courseForumConversationMessageContentPollIndex>[0-9]+)$",
     ),
     handler: async (
       request: serverTypes.Request<
@@ -3070,7 +3070,7 @@ You may also use the buttons on the message content editor to ${
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversation === undefined ||
+        request.state.courseForumConversation === undefined ||
         request.state.courseForumConversationMessage === undefined
       )
         return;
@@ -3097,7 +3097,7 @@ You may also use the buttons on the message content editor to ${
                   {
                     course: request.state.course,
                     courseParticipation: request.state.courseParticipation,
-                    courseConversation: request.state.courseConversation,
+                    courseForumConversation: request.state.courseForumConversation,
                     courseForumConversationMessage:
                       request.state.courseForumConversationMessage,
                     mode: "programmaticEditingOfcourseForumConversationMessageContent",
@@ -3206,14 +3206,14 @@ You may also use the buttons on the message content editor to ${
         `,
       );
       response.redirect!(
-        `/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}`,
+        `/courses/${request.state.course.publicId}/forum/${request.state.courseForumConversation.publicId}`,
       );
       for (const port of application.applicationConfiguration.ports)
         fetch(`http://localhost:${port}/__live-connections`, {
           method: "POST",
           headers: { "CSRF-Protection": "true" },
           body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}/forum/${request.state.courseConversation.publicId}(?:$|/)`,
+            pathname: `^/courses/${request.state.course.publicId}/forum/${request.state.courseForumConversation.publicId}(?:$|/)`,
           }),
         });
     },

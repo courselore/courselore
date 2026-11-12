@@ -592,7 +592,7 @@ export default async (application: Application): Promise<void> => {
         request.liveConnection
       )
         return;
-      const courseConversation =
+      const courseForumConversation =
         (typeof request.state.courseParticipation
           .mostRecentlyVisitedCourseForumConversation === "number"
           ? application.database.get<{
@@ -620,7 +620,7 @@ export default async (application: Application): Promise<void> => {
                     select true
                     from "courseForumConversationParticipations"
                     where
-                      "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                      "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
                       "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                   )
                 );
@@ -649,7 +649,7 @@ export default async (application: Application): Promise<void> => {
                   select true
                   from "courseForumConversationParticipations"
                   where
-                    "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                    "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
                     "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                 )
               )
@@ -659,9 +659,9 @@ export default async (application: Application): Promise<void> => {
             limit 1;
           `,
         );
-      if (courseConversation !== undefined) {
+      if (courseForumConversation !== undefined) {
         response.redirect!(
-          `/courses/${request.state.course.publicId}/forum/${courseConversation.publicId}`,
+          `/courses/${request.state.course.publicId}/forum/${courseForumConversation.publicId}`,
         );
         return;
       }
@@ -2319,7 +2319,7 @@ export default async (application: Application): Promise<void> => {
                                             select true
                                             from "courseForumConversationTaggings"
                                             join "courseForumConversations" on
-                                              "courseForumConversationTaggings"."courseConversation" = "courseForumConversations"."id" and
+                                              "courseForumConversationTaggings"."courseForumConversation" = "courseForumConversations"."id" and
                                               "courseForumConversations"."course" = ${request.state.course!.id}
                                             where "courseForumConversationTaggings"."courseForumConversationsTag" = ${courseForumConversationsTag.id};
                                           `,

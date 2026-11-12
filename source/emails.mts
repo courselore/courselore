@@ -28,7 +28,7 @@ export default async (application: Application): Promise<void> => {
       states: {
         courseForumConversationMessageEmailNotificationReplyToken: {
           id: number;
-          courseConversation: number;
+          courseForumConversation: number;
           courseParticipation: number;
         };
         course: {
@@ -77,7 +77,7 @@ export default async (application: Application): Promise<void> => {
             | "rose";
           mostRecentlyVisitedCourseForumConversation: number | null;
         };
-        courseConversation: {
+        courseForumConversation: {
           id: number;
           publicId: string;
           courseForumConversationType:
@@ -137,13 +137,13 @@ export default async (application: Application): Promise<void> => {
           const courseForumConversationMessageEmailNotificationReplyToken =
             application.database.get<{
               id: number;
-              courseConversation: number;
+              courseForumConversation: number;
               courseParticipation: number;
             }>(
               sql`
                 select 
                   "id",
-                  "courseConversation",
+                  "courseForumConversation",
                   "courseParticipation"
                 from "courseForumConversationMessageEmailNotificationReplyTokens"
                 where "tokenTokenHash" = ${cryptography.TokenHash.hash(
@@ -245,7 +245,7 @@ export default async (application: Application): Promise<void> => {
             (() => {
               throw new Error();
             })();
-          const courseConversation =
+          const courseForumConversation =
             application.database.get<{
               id: number;
               publicId: string;
@@ -271,7 +271,7 @@ export default async (application: Application): Promise<void> => {
                 from "courseForumConversations"
                 where
                   "course" = ${course.id} and
-                  "id" = ${courseForumConversationMessageEmailNotificationReplyToken.courseConversation} and (
+                  "id" = ${courseForumConversationMessageEmailNotificationReplyToken.courseForumConversation} and (
                     "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                     ${
                       courseParticipation.courseParticipationRole ===
@@ -286,7 +286,7 @@ export default async (application: Application): Promise<void> => {
                       select true
                       from "courseForumConversationParticipations"
                       where
-                        "courseForumConversations"."id" = "courseForumConversationParticipations"."courseConversation" and
+                        "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
                         "courseForumConversationParticipations"."courseParticipation" = ${courseParticipation.id}
                     )
                   );
@@ -299,7 +299,7 @@ export default async (application: Application): Promise<void> => {
             courseForumConversationMessageEmailNotificationReplyToken,
             course,
             courseParticipation,
-            courseConversation,
+            courseForumConversation,
           } as SMTPServerSessionStates["states"][0]);
         },
       ),
@@ -431,7 +431,7 @@ export default async (application: Application): Promise<void> => {
               };
               application.database.transaction(() => {
                 if (
-                  state.courseConversation.courseForumConversationType ===
+                  state.courseForumConversation.courseForumConversationType ===
                     "courseForumConversationTypeQuestion" &&
                   state.courseParticipation.courseParticipationRole ===
                     "courseParticipationRoleInstructor"
@@ -440,7 +440,7 @@ export default async (application: Application): Promise<void> => {
                     sql`
                       update "courseForumConversations"
                       set "courseForumConversationTypeQuestionResolved" = ${Number(true)}
-                      where "id" = ${state.courseConversation.id};
+                      where "id" = ${state.courseForumConversation.id};
                     `,
                   );
                 state.courseForumConversationMessage = application.database.get<{
@@ -452,7 +452,7 @@ export default async (application: Application): Promise<void> => {
                         sql`
                           insert into "courseForumConversationMessages" (
                             "publicId",
-                            "courseConversation",
+                            "courseForumConversation",
                             "createdByCourseParticipation",
                             "createdAt",
                             "updatedAt",
@@ -468,12 +468,12 @@ export default async (application: Application): Promise<void> => {
                           )
                           values (
                             ${cryptoRandomString({ length: 20, type: "numeric" })},
-                            ${state.courseConversation.id},
+                            ${state.courseForumConversation.id},
                             ${state.courseParticipation.id},
                             ${Temporal.Now.instant().toString()},
                             ${null},
                             ${
-                              state.courseConversation
+                              state.courseForumConversation
                                 .courseForumConversationType ===
                                 "courseForumConversationTypeQuestion" &&
                               state.courseParticipation
@@ -537,7 +537,7 @@ export default async (application: Application): Promise<void> => {
                   method: "POST",
                   headers: { "CSRF-Protection": "true" },
                   body: new URLSearchParams({
-                    pathname: `^/courses/${state.course.publicId}/forum/${state.courseConversation.publicId}(?:$|/)`,
+                    pathname: `^/courses/${state.course.publicId}/forum/${state.courseForumConversation.publicId}(?:$|/)`,
                   }),
                 });
               utilities.log(
@@ -546,7 +546,7 @@ export default async (application: Application): Promise<void> => {
                 JSON.stringify({
                   course: state.course.id,
                   courseParticipation: state.courseParticipation.id,
-                  courseConversation: state.courseConversation.id,
+                  courseForumConversation: state.courseForumConversation.id,
                   courseForumConversationMessage: state.courseForumConversationMessage.id,
                 }),
               );

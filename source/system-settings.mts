@@ -797,7 +797,7 @@ export default async (application: Application): Promise<void> => {
                                         select "courseForumConversationMessages"."createdAt" as "createdAt"
                                         from "courseForumConversationMessages"
                                         join "courseForumConversations" on
-                                          "courseForumConversationMessages"."courseConversation" = "courseForumConversations"."id" and
+                                          "courseForumConversationMessages"."courseForumConversation" = "courseForumConversations"."id" and
                                           "courseForumConversations"."course" = ${course.id}
                                         order by "courseForumConversationMessages"."createdAt" desc
                                         limit 1;
@@ -831,7 +831,7 @@ export default async (application: Application): Promise<void> => {
                                   course.courseState === "courseStateArchived"
                                     ? html`
                                         <div
-                                          key="courseConversation--archived"
+                                          key="courseForumConversation--archived"
                                           css="${css`
                                             color: light-dark(
                                               var(--color--red--500),
