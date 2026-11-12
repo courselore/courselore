@@ -20,7 +20,7 @@ export type ApplicationCourseForumConversations = {
           courseForumConversationTypeQuestionResolved: number;
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
-            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
           pinned: number;
           title: string;
@@ -295,7 +295,7 @@ export default async (application: Application): Promise<void> => {
                             "courseParticipationRoleInstructor"
                               ? sql`
                                   or
-                                  "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                  "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                                 `
                               : sql``
                           }
@@ -1319,7 +1319,7 @@ export default async (application: Application): Promise<void> => {
                         "courseParticipationRoleInstructor"
                           ? sql`
                               or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                             `
                           : sql``
                       }
@@ -1350,7 +1350,7 @@ export default async (application: Application): Promise<void> => {
                         "courseParticipationRoleInstructor"
                           ? sql`
                               or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                             `
                           : sql``
                       }
@@ -1437,7 +1437,7 @@ export default async (application: Application): Promise<void> => {
                         "courseParticipationRoleInstructor"
                           ? sql`
                               or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                             `
                           : sql``
                       }
@@ -1479,7 +1479,7 @@ export default async (application: Application): Promise<void> => {
                         "courseParticipationRoleInstructor"
                           ? sql`
                               or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                             `
                           : sql``
                       }
@@ -1687,7 +1687,7 @@ export default async (application: Application): Promise<void> => {
             "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
-            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
           pinned: "false" | "true";
           announcement: "false" | "true";
@@ -1717,7 +1717,7 @@ export default async (application: Application): Promise<void> => {
           "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
         courseConversationVisibility:
           | "courseForumConversationVisibilityEveryone"
-          | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+          | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
           | "courseConversationVisibilityCourseConversationParticipations";
         pinned: "false" | "true";
         announcement: "false" | "true";
@@ -1767,7 +1767,7 @@ export default async (application: Application): Promise<void> => {
                   | "courseForumConversationTypeQuestion";
                 courseConversationVisibility:
                   | "courseForumConversationVisibilityEveryone"
-                  | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                  | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                   | "courseConversationVisibilityCourseConversationParticipations";
                 pinned: number;
                 title: string;
@@ -1789,7 +1789,7 @@ export default async (application: Application): Promise<void> => {
                         "courseParticipationRoleInstructor"
                           ? sql`
                               or
-                              "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                             `
                           : sql``
                       }
@@ -1848,7 +1848,7 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleInstructor"
                     ? sql`
                         or
-                        "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                        "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                       `
                     : sql``
                 }
@@ -2143,7 +2143,7 @@ export default async (application: Application): Promise<void> => {
                                 prefill.courseConversationVisibility ===
                                   "courseForumConversationVisibilityEveryone" ||
                                 (prefill.courseConversationVisibility !==
-                                  "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                                  "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
                                   prefill.courseConversationVisibility !==
                                     "courseConversationVisibilityCourseConversationParticipations")
                                   ? html`checked`
@@ -2160,11 +2160,11 @@ export default async (application: Application): Promise<void> => {
                             ><input
                               type="radio"
                               name="courseConversationVisibility"
-                              value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                              value="courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                               required
                               $${
                                 prefill.courseConversationVisibility ===
-                                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                                   ? html`checked`
                                   : html``
                               }
@@ -2224,7 +2224,7 @@ export default async (application: Application): Promise<void> => {
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
                               this.onclick = () => {
-                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
+                                this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"]').checked = true;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
                                 if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
                                 this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--input"]').focus();
@@ -2260,7 +2260,7 @@ export default async (application: Application): Promise<void> => {
                               this.setHidden = () => {
                                 this.hidden =
                                   this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityEveryone" || (
-                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
                                     ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
                                   ) || (
                                     this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
@@ -2288,7 +2288,7 @@ export default async (application: Application): Promise<void> => {
                                     element.hidden =
                                       (
                                         element.courseParticipationRole === "courseParticipationRoleInstructor" &&
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                                       ) || (
                                         0 < search.size &&
                                         nameElement.querySelector("span") === null
@@ -3013,7 +3013,7 @@ export default async (application: Application): Promise<void> => {
                         "courseParticipationRoleInstructor"
                           ? sql`
                               or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                             `
                           : sql``
                       }
@@ -3050,7 +3050,7 @@ export default async (application: Application): Promise<void> => {
                         "courseParticipationRoleInstructor"
                           ? sql`
                               or
-                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              "courseConversations"."courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                             `
                           : sql``
                       }
@@ -3167,7 +3167,7 @@ export default async (application: Application): Promise<void> => {
             "courseForumConversationTypeNote" | "courseForumConversationTypeQuestion";
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
-            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
           courseConversationParticipations: string[];
           pinned: "false" | "true";
@@ -3202,7 +3202,7 @@ export default async (application: Application): Promise<void> => {
         (request.body.courseConversationVisibility !==
           "courseForumConversationVisibilityEveryone" &&
           request.body.courseConversationVisibility !==
-            "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+            "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
           request.body.courseConversationVisibility !==
             "courseConversationVisibilityCourseConversationParticipations") ||
         !Array.isArray(request.body.courseConversationParticipations) ||
@@ -3273,7 +3273,7 @@ export default async (application: Application): Promise<void> => {
         courseForumConversationTypeQuestionResolved: number;
         courseConversationVisibility:
           | "courseForumConversationVisibilityEveryone"
-          | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+          | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
           | "courseConversationVisibilityCourseConversationParticipations";
         pinned: number;
         title: string;
@@ -3310,7 +3310,7 @@ export default async (application: Application): Promise<void> => {
           courseForumConversationTypeQuestionResolved: number;
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
-            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
           pinned: number;
           title: string;
@@ -3385,7 +3385,7 @@ export default async (application: Application): Promise<void> => {
               "courseForumConversationVisibilityEveryone" &&
             !(
               request.body.courseConversationVisibility ===
-                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
               courseParticipation.courseParticipationRole ===
                 "courseParticipationRoleInstructor"
             )
@@ -3532,7 +3532,7 @@ export default async (application: Application): Promise<void> => {
         courseForumConversationTypeQuestionResolved: number;
         courseConversationVisibility:
           | "courseForumConversationVisibilityEveryone"
-          | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+          | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
           | "courseConversationVisibilityCourseConversationParticipations";
         pinned: number;
         title: string;
@@ -3556,7 +3556,7 @@ export default async (application: Application): Promise<void> => {
                 "courseParticipationRoleInstructor"
                   ? sql`
                       or
-                      "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                      "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                     `
                   : sql``
               }
@@ -4368,12 +4368,12 @@ export default async (application: Application): Promise<void> => {
                                   ><input
                                     type="radio"
                                     name="courseConversationVisibility"
-                                    value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                    value="courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                                     required
                                     $${
                                       request.state.courseConversation
                                         .courseConversationVisibility ===
-                                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                      "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                                         ? html`checked`
                                         : html``
                                     }
@@ -4434,7 +4434,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').checked = true;
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"]').checked = true;
                                     this.closest('[type~="form"]').oninput();
                                     this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').setHidden();
                                     if (this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations"]').hidden) return;
@@ -4472,7 +4472,7 @@ export default async (application: Application): Promise<void> => {
                                   this.setHidden = () => {
                                     this.hidden =
                                       this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityEveryone" || (
-                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                                        this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
                                         ![...this.closest('[type~="popover"]').querySelector('[key~="courseConversationParticipations--courseParticipations"]').children].some((element) => element.courseParticipationRole !== "courseParticipationRoleInstructor")
                                       ) || (
                                         this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseConversationParticipations" &&
@@ -4500,7 +4500,7 @@ export default async (application: Application): Promise<void> => {
                                         element.hidden =
                                           (
                                             element.courseParticipationRole === "courseParticipationRoleInstructor" &&
-                                            this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                            this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"]:checked').value === "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                                           ) || (
                                             0 < search.size &&
                                             nameElement.querySelector("span") === null
@@ -4635,7 +4635,7 @@ export default async (application: Application): Promise<void> => {
                                                       (request.state
                                                         .courseConversation!
                                                         .courseConversationVisibility ===
-                                                        "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                                                        "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
                                                         courseParticipation.courseParticipationRole ===
                                                           "courseParticipationRoleInstructor")))
                                                     ? html`checked`
@@ -4785,7 +4785,7 @@ export default async (application: Application): Promise<void> => {
                                           ? "Everyone"
                                           : request.state.courseConversation
                                                 .courseConversationVisibility ===
-                                              "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                              "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                                             ? "Instructors and selected course participants"
                                             : request.state.courseConversation
                                                   .courseConversationVisibility ===
@@ -4820,7 +4820,7 @@ export default async (application: Application): Promise<void> => {
                                           ? "Everyone"
                                           : request.state.courseConversation
                                                 .courseConversationVisibility ===
-                                              "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                              "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                                             ? "Instructors and selected course participants"
                                             : request.state.courseConversation
                                                   .courseConversationVisibility ===
@@ -7205,7 +7205,7 @@ export default async (application: Application): Promise<void> => {
           courseForumConversationTypeQuestionResolved: "false" | "true";
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
-            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
           courseConversationParticipations: string[];
           pinned: "false" | "true";
@@ -7255,7 +7255,7 @@ export default async (application: Application): Promise<void> => {
         (request.body.courseConversationVisibility !==
           "courseForumConversationVisibilityEveryone" &&
           request.body.courseConversationVisibility !==
-            "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+            "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
           request.body.courseConversationVisibility !==
             "courseConversationVisibilityCourseConversationParticipations") ||
         !Array.isArray(request.body.courseConversationParticipations) ||
@@ -7340,7 +7340,7 @@ export default async (application: Application): Promise<void> => {
               "courseForumConversationVisibilityEveryone" &&
             !(
               request.body.courseConversationVisibility ===
-                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
               courseParticipation.courseParticipationRole ===
                 "courseParticipationRoleInstructor"
             )

@@ -612,7 +612,7 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipationRoleInstructor"
                       ? sql`
                           or
-                          "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                          "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                         `
                       : sql``
                   }
@@ -641,7 +641,7 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleInstructor"
                     ? sql`
                         or
-                        "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                        "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                       `
                     : sql``
                 }

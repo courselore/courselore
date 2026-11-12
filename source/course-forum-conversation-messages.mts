@@ -456,7 +456,7 @@ export default async (application: Application): Promise<void> => {
           course: number;
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
-            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseConversationParticipations";
           title: string;
         }>(
@@ -593,7 +593,7 @@ export default async (application: Application): Promise<void> => {
             (courseConversation.courseConversationVisibility ===
               "courseForumConversationVisibilityEveryone" ||
               (courseConversation.courseConversationVisibility ===
-                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations" &&
                 courseConversationMessageEmailNotificationCourseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor") ||
               application.database.get(

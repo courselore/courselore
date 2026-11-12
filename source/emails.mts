@@ -85,7 +85,7 @@ export default async (application: Application): Promise<void> => {
           courseForumConversationTypeQuestionResolved: number;
           courseConversationVisibility:
             | "courseForumConversationVisibilityEveryone"
-            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
           pinned: number;
           title: string;
@@ -254,7 +254,7 @@ export default async (application: Application): Promise<void> => {
               courseForumConversationTypeQuestionResolved: number;
               courseConversationVisibility:
                 | "courseForumConversationVisibilityEveryone"
-                | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                 | "courseConversationVisibilityCourseConversationParticipations";
               pinned: number;
               title: string;
@@ -278,7 +278,7 @@ export default async (application: Application): Promise<void> => {
                       "courseParticipationRoleInstructor"
                         ? sql`
                             or
-                            "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                            "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                           `
                         : sql``
                     }

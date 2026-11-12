@@ -55,7 +55,7 @@ export type ApplicationCourseForumConversationMessageContent = {
         publicId: string;
         courseConversationVisibility:
           | "courseForumConversationVisibilityEveryone"
-          | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+          | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
           | "courseConversationVisibilityCourseConversationParticipations";
       };
       courseConversationMessage?: {
@@ -507,7 +507,7 @@ export default async (application: Application): Promise<void> => {
                               "courseForumConversationVisibilityEveryone"
                             ? sql``
                             : courseConversation.courseConversationVisibility ===
-                                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
                               ? sql`
                                   and (
                                     "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' or (
@@ -710,7 +710,7 @@ export default async (application: Application): Promise<void> => {
                           "courseParticipationRoleInstructor"
                             ? sql`
                                 or
-                                "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                               `
                             : sql``
                         }
@@ -2867,7 +2867,7 @@ You may also use the buttons on the message content editor to ${
                               "courseParticipationRoleInstructor"
                               ? sql`
                                   or
-                                  "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                                  "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                                 `
                               : sql``
                           }
@@ -2969,7 +2969,7 @@ You may also use the buttons on the message content editor to ${
                     "courseParticipationRoleInstructor"
                     ? sql`
                         or
-                        "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                        "courseConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
                       `
                     : sql``
                 }
