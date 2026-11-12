@@ -6319,7 +6319,7 @@ export default async (application: Application): Promise<void> => {
           );
           application.database.run(
             sql`
-              update "courseConversationMessages"
+              update "courseForumConversationMessages"
               set "createdByCourseParticipation" = null
               where "createdByCourseParticipation" = ${courseParticipation.id};
             `,
@@ -6883,7 +6883,7 @@ export default async (application: Application): Promise<void> => {
             );
             application.database.run(
               sql`
-                update "courseConversationMessages"
+                update "courseForumConversationMessages"
                 set "createdByCourseParticipation" = null
                 where "createdByCourseParticipation" = ${courseParticipation.id};
               `,
@@ -7019,7 +7019,7 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            update "courseConversationMessages"
+            update "courseForumConversationMessages"
             set "createdByCourseParticipation" = null
             where "createdByCourseParticipation" = ${request.state.courseParticipation!.id};
           `,

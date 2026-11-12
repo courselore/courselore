@@ -447,10 +447,10 @@ export default async (application: Application): Promise<void> => {
                   id: number;
                 }>(
                   sql`
-                    select * from "courseConversationMessages" where "id" = ${
+                    select * from "courseForumConversationMessages" where "id" = ${
                       application.database.run(
                         sql`
-                          insert into "courseConversationMessages" (
+                          insert into "courseForumConversationMessages" (
                             "publicId",
                             "courseConversation",
                             "createdByCourseParticipation",

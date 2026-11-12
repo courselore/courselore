@@ -490,9 +490,9 @@ export default async (application: Application): Promise<void> => {
                       application.database.get(
                         sql`
                           select true
-                          from "courseConversationMessages"
+                          from "courseForumConversationMessages"
                           join "courseConversations" on
-                            "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                            "courseForumConversationMessages"."courseConversation" = "courseConversations"."id" and
                             "courseConversations"."course" = ${request.state.course.id}
                             and (
                               "courseConversations"."courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
@@ -515,7 +515,7 @@ export default async (application: Application): Promise<void> => {
                               )
                             )
                           left join "courseForumConversationMessageViews" on
-                            "courseConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
+                            "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
                             "courseForumConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation.id}
                           where
                             ${
@@ -523,7 +523,7 @@ export default async (application: Application): Promise<void> => {
                                 .courseParticipationRole !==
                               "courseParticipationRoleInstructor"
                                 ? sql`
-                                    "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' and
+                                    "courseForumConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' and
                                   `
                                 : sql``
                             }
@@ -824,9 +824,9 @@ export default async (application: Application): Promise<void> => {
                                       application.database.get(
                                         sql`
                                       select true
-                                      from "courseConversationMessages"
+                                      from "courseForumConversationMessages"
                                       join "courseConversations" on
-                                        "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                                        "courseForumConversationMessages"."courseConversation" = "courseConversations"."id" and
                                         "courseConversations"."course" = ${course.id}
                                         and (
                                           "courseConversations"."courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
@@ -848,14 +848,14 @@ export default async (application: Application): Promise<void> => {
                                           )
                                         )
                                       left join "courseForumConversationMessageViews" on
-                                        "courseConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
+                                        "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
                                         "courseForumConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
                                       where
                                         ${
                                           courseParticipation.courseParticipationRole !==
                                           "courseParticipationRoleInstructor"
                                             ? sql`
-                                                "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' and
+                                                "courseForumConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors' and
                                               `
                                             : sql``
                                         }

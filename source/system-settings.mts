@@ -794,12 +794,12 @@ export default async (application: Application): Promise<void> => {
                                       createdAt: string;
                                     }>(
                                       sql`
-                                        select "courseConversationMessages"."createdAt" as "createdAt"
-                                        from "courseConversationMessages"
+                                        select "courseForumConversationMessages"."createdAt" as "createdAt"
+                                        from "courseForumConversationMessages"
                                         join "courseConversations" on
-                                          "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                                          "courseForumConversationMessages"."courseConversation" = "courseConversations"."id" and
                                           "courseConversations"."course" = ${course.id}
-                                        order by "courseConversationMessages"."createdAt" desc
+                                        order by "courseForumConversationMessages"."createdAt" desc
                                         limit 1;
                                       `,
                                     );
@@ -1013,7 +1013,7 @@ export default async (application: Application): Promise<void> => {
             );
             application.database.run(
               sql`
-                update "courseConversationMessages"
+                update "courseForumConversationMessages"
                 set "createdByCourseParticipation" = null
                 where "createdByCourseParticipation" = ${courseParticipation.id};
               `,

@@ -2901,7 +2901,7 @@ You may also use the buttons on the message content editor to ${
                     application.database.get<{ publicId: string }>(
                       sql`
                         select "publicId"
-                        from "courseConversationMessages"
+                        from "courseForumConversationMessages"
                         where
                           "publicId" = ${courseConversationMessagePublicId} and
                           "courseConversation" = ${mentionCourseConversation.id} ${
@@ -2999,7 +2999,7 @@ You may also use the buttons on the message content editor to ${
         }>(
           sql`
             select "publicId"
-            from "courseConversationMessages"
+            from "courseForumConversationMessages"
             where
               "publicId" = ${match.groups.courseConversationMessagePublicId} and
               "courseConversation" = ${mentionCourseConversation.id} ${
@@ -3188,7 +3188,7 @@ You may also use the buttons on the message content editor to ${
       };
       application.database.run(
         sql`
-          update "courseConversationMessages"
+          update "courseForumConversationMessages"
           set
             "updatedAt" = ${Temporal.Now.instant().toString()},
             "content" = ${request.state.courseConversationMessage.content},

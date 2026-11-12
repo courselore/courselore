@@ -330,10 +330,10 @@ export default async (application: Application): Promise<void> => {
           id: number;
         }>(
           sql`
-            select * from "courseConversationMessages" where "id" = ${
+            select * from "courseForumConversationMessages" where "id" = ${
               application.database.run(
                 sql`
-                  insert into "courseConversationMessages" (
+                  insert into "courseForumConversationMessages" (
                     "publicId",
                     "courseConversation",
                     "createdByCourseParticipation",
@@ -445,7 +445,7 @@ export default async (application: Application): Promise<void> => {
               "courseForumConversationMessageVisibility",
               "courseForumConversationMessageAnonymity",
               "content"
-            from "courseConversationMessages"
+            from "courseForumConversationMessages"
             where "id" = ${parameters.courseConversationMessageId};
           `,
         );
@@ -477,7 +477,7 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             select "createdByCourseParticipation"
-            from "courseConversationMessages"
+            from "courseForumConversationMessages"
             where "courseConversation" = ${courseConversation.id}
             order by "id" asc
             limit 1;
@@ -634,7 +634,7 @@ export default async (application: Application): Promise<void> => {
                 application.database.get(
                   sql`
                     select true
-                    from "courseConversationMessages"
+                    from "courseForumConversationMessages"
                     where
                       "courseConversation" = ${courseConversation.id} and
                       "createdByCourseParticipation" = ${courseConversationMessageEmailNotificationCourseParticipation.id}
@@ -786,7 +786,7 @@ export default async (application: Application): Promise<void> => {
               "courseForumConversationMessageVisibility",
               "courseForumConversationMessageAnonymity",
               "content"
-            from "courseConversationMessages"
+            from "courseForumConversationMessages"
             where
               "courseConversation" = ${request.state.courseConversation.id} and
               "publicId" = ${request.pathname.courseConversationMessagePublicId} and (
@@ -899,7 +899,7 @@ export default async (application: Application): Promise<void> => {
                   }>(
                     sql`
                       select "id"
-                      from "courseConversationMessages"
+                      from "courseForumConversationMessages"
                       where "courseConversation" = ${request.state.courseConversation.id}
                       order by "id" asc
                       limit 1;
@@ -1388,7 +1388,7 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           select "id"
-          from "courseConversationMessages"
+          from "courseForumConversationMessages"
           where "courseConversation" = ${request.state.courseConversation.id}
           order by "id" asc
           limit 1;
@@ -1472,7 +1472,7 @@ export default async (application: Application): Promise<void> => {
       };
       application.database.run(
         sql`
-          update "courseConversationMessages"
+          update "courseForumConversationMessages"
           set
             "updatedAt" = ${Temporal.Now.instant().toString()},
             ${typeof request.body.courseForumConversationMessageType === "string" ? sql`"courseForumConversationMessageType" = ${request.body.courseForumConversationMessageType},` : sql``}
@@ -1534,7 +1534,7 @@ export default async (application: Application): Promise<void> => {
             application.database.get<{ id: number }>(
               sql`
                 select "id"
-                from "courseConversationMessages"
+                from "courseForumConversationMessages"
                 where "courseConversation" = ${request.state.courseConversation.id}
                 order by "id" asc
                 limit 1;
@@ -1561,7 +1561,7 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            delete from "courseConversationMessages"
+            delete from "courseForumConversationMessages"
             where "id" = ${request.state.courseConversationMessage!.id};
           `,
         );

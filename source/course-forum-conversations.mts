@@ -338,7 +338,7 @@ export default async (application: Application): Promise<void> => {
                             "content",
                             "contentSentimentAnalysisType",
                             "contentSentimentAnalysisIntensity"
-                          from "courseConversationMessages"
+                          from "courseForumConversationMessages"
                           where "courseConversation" = ${courseConversation.id}
                           order by "id" asc
                           limit 1;
@@ -413,33 +413,33 @@ export default async (application: Application): Promise<void> => {
                               `,
                             )
                           : undefined;
-                      const courseConversationMessagesCount =
+                      const courseForumConversationMessagesCount =
                         application.database.get<{ count: number }>(
                           sql`
                             select count(*) as "count"
-                            from "courseConversationMessages"
+                            from "courseForumConversationMessages"
                             where "courseConversation" = ${courseConversation.id};
                           `,
                         )!.count;
-                      const includesUnviewedCourseConversationMessages =
+                      const includesUnviewedcourseForumConversationMessages =
                         (request.state.courseConversation === undefined ||
                           request.state.courseConversation.id !==
                             courseConversation.id) &&
                         application.database.get(
                           sql`
                             select true
-                            from "courseConversationMessages"
+                            from "courseForumConversationMessages"
                             left join "courseForumConversationMessageViews" on
-                              "courseConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
+                              "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
                               "courseForumConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
                             where
-                              "courseConversationMessages"."courseConversation" = ${courseConversation.id} ${
+                              "courseForumConversationMessages"."courseConversation" = ${courseConversation.id} ${
                                 request.state.courseParticipation!
                                   .courseParticipationRole !==
                                 "courseParticipationRoleInstructor"
                                   ? sql`
                                       and
-                                      "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                      "courseForumConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                                     `
                                   : sql``
                               } and
@@ -453,8 +453,8 @@ export default async (application: Application): Promise<void> => {
                         firstCourseConversationMessageAnonymous,
                         firstCourseConversationMessageCreatedByCourseParticipation,
                         firstCourseConversationMessageCreatedByCourseParticipationUser,
-                        courseConversationMessagesCount,
-                        includesUnviewedCourseConversationMessages,
+                        courseForumConversationMessagesCount,
+                        includesUnviewedcourseForumConversationMessages,
                       };
                     }),
                   (courseConversation) => {
@@ -503,7 +503,7 @@ export default async (application: Application): Promise<void> => {
                               (courseConversationsGroupKey === "Pinned" &&
                                 courseConversations.some(
                                   (courseConversation) =>
-                                    courseConversation.includesUnviewedCourseConversationMessages,
+                                    courseConversation.includesUnviewedcourseForumConversationMessages,
                                 )) ||
                               (courseConversationsGroupKey !== "Pinned" &&
                                 courseConversationsGroupIndex < 5) ||
@@ -588,7 +588,7 @@ export default async (application: Application): Promise<void> => {
                                 !courseConversationsCurrent &&
                                 courseConversations.some(
                                   (courseConversation) =>
-                                    courseConversation.includesUnviewedCourseConversationMessages,
+                                    courseConversation.includesUnviewedcourseForumConversationMessages,
                                 )
                                   ? html`
                                       <div
@@ -731,7 +731,7 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           $${
                                             !courseConversationCurrent &&
-                                            courseConversation.includesUnviewedCourseConversationMessages
+                                            courseConversation.includesUnviewedcourseForumConversationMessages
                                               ? html`
                                                   <div
                                                     css="${css`
@@ -794,7 +794,7 @@ export default async (application: Application): Promise<void> => {
                                               Boolean(
                                                 courseConversation.courseForumConversationTypeQuestionResolved,
                                               ) === false &&
-                                              courseConversation.courseConversationMessagesCount ===
+                                              courseConversation.courseForumConversationMessagesCount ===
                                                 1 &&
                                               courseConversation
                                                 .firstCourseConversationMessage
@@ -1422,13 +1422,13 @@ export default async (application: Application): Promise<void> => {
             application.database
               .all<{ id: number }>(
                 sql`
-                  select "courseConversationMessages"."id" as "id"
-                  from "courseConversationMessages"
+                  select "courseForumConversationMessages"."id" as "id"
+                  from "courseForumConversationMessages"
                   join "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" on
-                    "courseConversationMessages"."id" = "lexicalSearch_courseForumConversationMessages_contentLexicalSearch"."rowid" and
+                    "courseForumConversationMessages"."id" = "lexicalSearch_courseForumConversationMessages_contentLexicalSearch"."rowid" and
                     "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" match ${lexicalSearchString}
                   join "courseConversations" on
-                    "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                    "courseForumConversationMessages"."courseConversation" = "courseConversations"."id" and
                     "courseConversations"."course" = ${request.state.course.id} and (
                       "courseConversations"."courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                       ${
@@ -1455,7 +1455,7 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipationRoleInstructor"
                       ? sql`
                           where
-                            "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
+                            "courseForumConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                         `
                       : sql``
                   }
@@ -1467,10 +1467,10 @@ export default async (application: Application): Promise<void> => {
             application.database
               .all<{ id: number }>(
                 sql`
-                  select "courseConversationMessages"."id" as "id"
-                  from "courseConversationMessages"
+                  select "courseForumConversationMessages"."id" as "id"
+                  from "courseForumConversationMessages"
                   join "courseConversations" on
-                    "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                    "courseForumConversationMessages"."courseConversation" = "courseConversations"."id" and
                     "courseConversations"."course" = ${request.state.course.id} and (
                       "courseConversations"."courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                       ${
@@ -1497,11 +1497,11 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipationRoleInstructor"
                       ? sql`
                           where
-                            "courseConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
+                            "courseForumConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
                         `
                       : sql``
                   }
-                  order by vec_distance_L2("courseConversationMessages"."contentSemanticSearch", ${semanticSearch}) asc
+                  order by vec_distance_L2("courseForumConversationMessages"."contentSemanticSearch", ${semanticSearch}) asc
                   limit 20;
                 `,
               )
@@ -1522,7 +1522,7 @@ export default async (application: Application): Promise<void> => {
                 "createdByCourseParticipation",
                 "updatedAt",
                 "content"
-              from "courseConversationMessages"
+              from "courseForumConversationMessages"
               where "id" = ${courseConversationMessageId};
             `,
           );
@@ -1815,7 +1815,7 @@ export default async (application: Application): Promise<void> => {
               }>(
                 sql`
                   select "content", "courseForumConversationMessageAnonymity"
-                  from "courseConversationMessages"
+                  from "courseForumConversationMessages"
                   where "courseConversation" = ${courseConversation.id}
                   order by "id" asc
                   limit 1;
@@ -3420,10 +3420,10 @@ export default async (application: Application): Promise<void> => {
           id: number;
         }>(
           sql`
-            select * from "courseConversationMessages" where "id" = ${
+            select * from "courseForumConversationMessages" where "id" = ${
               application.database.run(
                 sql`
-                  insert into "courseConversationMessages" (
+                  insert into "courseForumConversationMessages" (
                     "publicId",
                     "courseConversation",
                     "createdByCourseParticipation",
@@ -3610,7 +3610,7 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           select "id", "createdByCourseParticipation"
-          from "courseConversationMessages"
+          from "courseForumConversationMessages"
           where "courseConversation" = ${request.state.courseConversation.id}
           order by "id" asc
           limit 1;
@@ -5254,7 +5254,7 @@ export default async (application: Application): Promise<void> => {
                 })()}
               </div>
               <div
-                key="courseConversationMessages"
+                key="courseForumConversationMessages"
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -5295,7 +5295,7 @@ export default async (application: Application): Promise<void> => {
                           "courseForumConversationMessageAnonymity",
                           "sentViaEmail",
                           "content"
-                        from "courseConversationMessages"
+                        from "courseForumConversationMessages"
                         where
                           "courseConversation" = ${request.state.courseConversation!.id} ${
                             request.state.courseParticipation!
@@ -7231,7 +7231,7 @@ export default async (application: Application): Promise<void> => {
               }>(
                 sql`
                   select "createdByCourseParticipation"
-                  from "courseConversationMessages"
+                  from "courseForumConversationMessages"
                   where "courseConversation" = ${request.state.courseConversation.id}
                   order by "id" asc
                   limit 1;
@@ -7447,7 +7447,7 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             select "id"
-            from "courseConversationMessages"
+            from "courseForumConversationMessages"
             where "courseConversation" = ${request.state.courseConversation!.id}
             order by "id" asc;
           `,
@@ -7466,7 +7466,7 @@ export default async (application: Application): Promise<void> => {
           );
           application.database.run(
             sql`
-              delete from "courseConversationMessages"
+              delete from "courseForumConversationMessages"
               where "id" = ${courseConversationMessage.id};
             `,
           );
