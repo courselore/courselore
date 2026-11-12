@@ -515,7 +515,7 @@ export default async (application: Application): Promise<void> => {
                               )
                             )
                           left join "courseForumConversationMessageViews" on
-                            "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
+                            "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseForumConversationMessage" and
                             "courseForumConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation.id}
                           where
                             ${
@@ -848,7 +848,7 @@ export default async (application: Application): Promise<void> => {
                                           )
                                         )
                                       left join "courseForumConversationMessageViews" on
-                                        "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
+                                        "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseForumConversationMessage" and
                                         "courseForumConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
                                       where
                                         ${

@@ -26,7 +26,7 @@ export default async (application: Application): Promise<void> => {
   if (application.commandLineArguments.values.type === "emailServer") {
     type SMTPServerSessionStates = {
       states: {
-        courseConversationMessageEmailNotificationReplyToken: {
+        courseForumConversationMessageEmailNotificationReplyToken: {
           id: number;
           courseConversation: number;
           courseParticipation: number;
@@ -90,7 +90,7 @@ export default async (application: Application): Promise<void> => {
           pinned: number;
           title: string;
         };
-        courseConversationMessage: {
+        courseForumConversationMessage: {
           id: number;
         };
       }[];
@@ -129,12 +129,12 @@ export default async (application: Application): Promise<void> => {
           )
             throw new Error();
           const [
-            courseConversationMessageEmailNotificationReplyTokenToken,
+            courseForumConversationMessageEmailNotificationReplyTokenToken,
             hostname,
           ] = address.address.split("@");
           if (hostname !== application.userConfiguration.email.receive.hostname)
             throw new Error();
-          const courseConversationMessageEmailNotificationReplyToken =
+          const courseForumConversationMessageEmailNotificationReplyToken =
             application.database.get<{
               id: number;
               courseConversation: number;
@@ -147,7 +147,7 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipation"
                 from "courseForumConversationMessageEmailNotificationReplyTokens"
                 where "tokenTokenHash" = ${cryptography.TokenHash.hash(
-                  courseConversationMessageEmailNotificationReplyTokenToken,
+                  courseForumConversationMessageEmailNotificationReplyTokenToken,
                 )};
               `,
             ) ??
@@ -188,7 +188,7 @@ export default async (application: Application): Promise<void> => {
                   "decorationColor",
                   "mostRecentlyVisitedCourseForumConversation"
                 from "courseParticipations"
-                where "id" = ${courseConversationMessageEmailNotificationReplyToken.courseParticipation};
+                where "id" = ${courseForumConversationMessageEmailNotificationReplyToken.courseParticipation};
               `,
             ) ??
             (() => {
@@ -271,7 +271,7 @@ export default async (application: Application): Promise<void> => {
                 from "courseConversations"
                 where
                   "course" = ${course.id} and
-                  "id" = ${courseConversationMessageEmailNotificationReplyToken.courseConversation} and (
+                  "id" = ${courseForumConversationMessageEmailNotificationReplyToken.courseConversation} and (
                     "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
                     ${
                       courseParticipation.courseParticipationRole ===
@@ -296,7 +296,7 @@ export default async (application: Application): Promise<void> => {
               throw new Error();
             })();
           session.states.push({
-            courseConversationMessageEmailNotificationReplyToken,
+            courseForumConversationMessageEmailNotificationReplyToken,
             course,
             courseParticipation,
             courseConversation,
@@ -405,10 +405,10 @@ export default async (application: Application): Promise<void> => {
                 : "");
             for (const state of session.states) {
               const contentTextContent =
-                await application.partials.courseConversationMessageContentProcessor(
+                await application.partials.courseForumConversationMessageContentProcessor(
                   {
                     course: state.course,
-                    courseConversationMessageContent: content,
+                    courseForumConversationMessageContent: content,
                     mode: "textContent",
                   },
                 );
@@ -443,7 +443,7 @@ export default async (application: Application): Promise<void> => {
                       where "id" = ${state.courseConversation.id};
                     `,
                   );
-                state.courseConversationMessage = application.database.get<{
+                state.courseForumConversationMessage = application.database.get<{
                   id: number;
                 }>(
                   sql`
@@ -510,25 +510,25 @@ export default async (application: Application): Promise<void> => {
                 application.database.run(
                   sql`
                     insert into "courseForumConversationMessageViews" (
-                      "courseConversationMessage",
+                      "courseForumConversationMessage",
                       "courseParticipation",
                       "createdAt"
                     )
                     values (
-                      ${state.courseConversationMessage.id},
+                      ${state.courseForumConversationMessage.id},
                       ${state.courseParticipation.id},
                       ${Temporal.Now.instant().toString()}
                     );
                   `,
                 );
                 application.database.backgroundJob({
-                  type: "courseConversationMessageEmailNotification",
+                  type: "courseForumConversationMessageEmailNotification",
                   startAt: Temporal.Now.instant()
                     .add({ minutes: 5 })
                     .toString(),
                   parameters: {
-                    courseConversationMessageId:
-                      state.courseConversationMessage.id,
+                    courseForumConversationMessageId:
+                      state.courseForumConversationMessage.id,
                   },
                 });
               });
@@ -547,7 +547,7 @@ export default async (application: Application): Promise<void> => {
                   course: state.course.id,
                   courseParticipation: state.courseParticipation.id,
                   courseConversation: state.courseConversation.id,
-                  courseConversationMessage: state.courseConversationMessage.id,
+                  courseForumConversationMessage: state.courseForumConversationMessage.id,
                 }),
               );
             }

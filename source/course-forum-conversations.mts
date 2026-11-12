@@ -311,7 +311,7 @@ export default async (application: Application): Promise<void> => {
                     `,
                     )
                     .map((courseConversation) => {
-                      const firstCourseConversationMessage =
+                      const firstcourseForumConversationMessage =
                         application.database.get<{
                           id: number;
                           publicId: string;
@@ -344,21 +344,21 @@ export default async (application: Application): Promise<void> => {
                           limit 1;
                         `,
                         );
-                      if (firstCourseConversationMessage === undefined)
+                      if (firstcourseForumConversationMessage === undefined)
                         throw new Error();
-                      const firstCourseConversationMessageAnonymous =
-                        firstCourseConversationMessage.createdByCourseParticipation !==
+                      const firstcourseForumConversationMessageAnonymous =
+                        firstcourseForumConversationMessage.createdByCourseParticipation !==
                           request.state.courseParticipation!.id &&
-                        ((firstCourseConversationMessage.courseForumConversationMessageAnonymity ===
+                        ((firstcourseForumConversationMessage.courseForumConversationMessageAnonymity ===
                           "courseForumConversationMessageAnonymityCourseParticipationRoleStudents" &&
                           request.state.courseParticipation!
                             .courseParticipationRole ===
                             "courseParticipationRoleStudent") ||
-                          firstCourseConversationMessage.courseForumConversationMessageAnonymity ===
+                          firstcourseForumConversationMessage.courseForumConversationMessageAnonymity ===
                             "courseForumConversationMessageAnonymityEveryone");
-                      const firstCourseConversationMessageCreatedByCourseParticipation =
-                        typeof firstCourseConversationMessage.createdByCourseParticipation ===
-                          "number" && !firstCourseConversationMessageAnonymous
+                      const firstcourseForumConversationMessageCreatedByCourseParticipation =
+                        typeof firstcourseForumConversationMessage.createdByCourseParticipation ===
+                          "number" && !firstcourseForumConversationMessageAnonymous
                           ? application.database.get<{
                               user: number;
                               courseParticipationRole:
@@ -370,12 +370,12 @@ export default async (application: Application): Promise<void> => {
                                   "user",
                                   "courseParticipationRole"
                                 from "courseParticipations"
-                                where "id" = ${firstCourseConversationMessage.createdByCourseParticipation};
+                                where "id" = ${firstcourseForumConversationMessage.createdByCourseParticipation};
                               `,
                             )
                           : undefined;
-                      const firstCourseConversationMessageCreatedByCourseParticipationUser =
-                        typeof firstCourseConversationMessageCreatedByCourseParticipation ===
+                      const firstcourseForumConversationMessageCreatedByCourseParticipationUser =
+                        typeof firstcourseForumConversationMessageCreatedByCourseParticipation ===
                         "object"
                           ? application.database.get<{
                               id: number;
@@ -409,7 +409,7 @@ export default async (application: Application): Promise<void> => {
                                   "avatarColor",
                                   "avatarImage"
                                 from "users"
-                                where "id" = ${firstCourseConversationMessageCreatedByCourseParticipation.user};
+                                where "id" = ${firstcourseForumConversationMessageCreatedByCourseParticipation.user};
                               `,
                             )
                           : undefined;
@@ -430,7 +430,7 @@ export default async (application: Application): Promise<void> => {
                             select true
                             from "courseForumConversationMessages"
                             left join "courseForumConversationMessageViews" on
-                              "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseConversationMessage" and
+                              "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseForumConversationMessage" and
                               "courseForumConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
                             where
                               "courseForumConversationMessages"."courseConversation" = ${courseConversation.id} ${
@@ -449,23 +449,23 @@ export default async (application: Application): Promise<void> => {
                         ) !== undefined;
                       return {
                         ...courseConversation,
-                        firstCourseConversationMessage,
-                        firstCourseConversationMessageAnonymous,
-                        firstCourseConversationMessageCreatedByCourseParticipation,
-                        firstCourseConversationMessageCreatedByCourseParticipationUser,
+                        firstcourseForumConversationMessage,
+                        firstcourseForumConversationMessageAnonymous,
+                        firstcourseForumConversationMessageCreatedByCourseParticipation,
+                        firstcourseForumConversationMessageCreatedByCourseParticipationUser,
                         courseForumConversationMessagesCount,
                         includesUnviewedcourseForumConversationMessages,
                       };
                     }),
                   (courseConversation) => {
-                    const courseConversationFirstCourseConversationMessageCreatedAt =
+                    const courseConversationFirstcourseForumConversationMessageCreatedAt =
                       Temporal.Instant.from(
-                        courseConversation.firstCourseConversationMessage
+                        courseConversation.firstcourseForumConversationMessage
                           .createdAt,
                       ).toZonedDateTimeISO(request.state.userSession!.timeZone);
                     return Boolean(courseConversation.pinned)
                       ? "Pinned"
-                      : `${utilities.formatDate(courseConversationFirstCourseConversationMessageCreatedAt.subtract({ days: courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek - 1 }))} — ${utilities.formatDate(courseConversationFirstCourseConversationMessageCreatedAt.add({ days: 7 - courseConversationFirstCourseConversationMessageCreatedAt.dayOfWeek }))}`;
+                      : `${utilities.formatDate(courseConversationFirstcourseForumConversationMessageCreatedAt.subtract({ days: courseConversationFirstcourseForumConversationMessageCreatedAt.dayOfWeek - 1 }))} — ${utilities.formatDate(courseConversationFirstcourseForumConversationMessageCreatedAt.add({ days: 7 - courseConversationFirstcourseForumConversationMessageCreatedAt.dayOfWeek }))}`;
                   },
                 );
                 const courseConversationsGroupsKeys = Object.keys(
@@ -757,9 +757,9 @@ export default async (application: Application): Promise<void> => {
                                           }
                                           <div>
                                             $${application.partials.userAvatar({
-                                              user: courseConversation.firstCourseConversationMessageAnonymous
+                                              user: courseConversation.firstcourseForumConversationMessageAnonymous
                                                 ? "anonymous"
-                                                : (courseConversation.firstCourseConversationMessageCreatedByCourseParticipationUser ??
+                                                : (courseConversation.firstcourseForumConversationMessageCreatedByCourseParticipationUser ??
                                                   "courseParticipationDeleted"),
                                               size: 9,
                                             })}
@@ -797,12 +797,12 @@ export default async (application: Application): Promise<void> => {
                                               courseConversation.courseForumConversationMessagesCount ===
                                                 1 &&
                                               courseConversation
-                                                .firstCourseConversationMessage
+                                                .firstcourseForumConversationMessage
                                                 .contentSentimentAnalysisType ===
                                                 "negative" &&
                                               0.6 <
                                                 courseConversation
-                                                  .firstCourseConversationMessage
+                                                  .firstcourseForumConversationMessage
                                                   .contentSentimentAnalysisIntensity
                                                 ? html`
                                                     <span
@@ -889,30 +889,30 @@ export default async (application: Application): Promise<void> => {
                                               font-weight: 600;
                                             `}"
                                             >${
-                                              courseConversation.firstCourseConversationMessageAnonymous
+                                              courseConversation.firstcourseForumConversationMessageAnonymous
                                                 ? "Anonymous"
                                                 : (courseConversation
-                                                    .firstCourseConversationMessageCreatedByCourseParticipationUser
+                                                    .firstcourseForumConversationMessageCreatedByCourseParticipationUser
                                                     ?.name ??
                                                   "Deleted course participant")
                                             }</span
                                           >${
-                                            !courseConversation.firstCourseConversationMessageAnonymous
+                                            !courseConversation.firstcourseForumConversationMessageAnonymous
                                               ? `${
                                                   courseConversation
-                                                    .firstCourseConversationMessageCreatedByCourseParticipation
+                                                    .firstcourseForumConversationMessageCreatedByCourseParticipation
                                                     ?.courseParticipationRole ===
                                                   "courseParticipationRoleInstructor"
                                                     ? " (instructor)"
                                                     : ""
                                                 }${
                                                   courseConversation
-                                                    .firstCourseConversationMessage
+                                                    .firstcourseForumConversationMessage
                                                     .courseForumConversationMessageAnonymity ===
                                                   "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
                                                     ? " (anonymous to students)"
                                                     : courseConversation
-                                                          .firstCourseConversationMessage
+                                                          .firstcourseForumConversationMessage
                                                           .courseForumConversationMessageAnonymity ===
                                                         "courseForumConversationMessageAnonymityEveryone"
                                                       ? " (anonymous to everyone)"
@@ -924,10 +924,10 @@ export default async (application: Application): Promise<void> => {
                                             javascript="${javascript`
                                               javascript.popover({ element: this });
                                             `}"
-                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseConversation.firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseConversation.firstcourseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
                                           >
                                           <span type="popover"
-                                            >${utilities.formatDateTime(Temporal.Instant.from(courseConversation.firstCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                                            >${utilities.formatDateTime(Temporal.Instant.from(courseConversation.firstcourseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
                                           >
                                         </div>
                                         <div
@@ -1042,7 +1042,7 @@ export default async (application: Application): Promise<void> => {
                                               join "courseParticipations" on
                                                 "courseForumConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
                                                 "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                              where "courseForumConversationMessageLikes"."courseConversationMessage" = ${courseConversation.firstCourseConversationMessage.id}
+                                              where "courseForumConversationMessageLikes"."courseForumConversationMessage" = ${courseConversation.firstcourseForumConversationMessage.id}
                                               limit 1;
                                             `,
                                           ) !== undefined
@@ -1111,15 +1111,15 @@ export default async (application: Application): Promise<void> => {
                                           }"
                                         >
                                           ${(
-                                            await application.partials.courseConversationMessageContentProcessor(
+                                            await application.partials.courseForumConversationMessageContentProcessor(
                                               {
                                                 course: request.state.course!,
                                                 courseParticipation:
                                                   request.state
                                                     .courseParticipation,
                                                 courseConversation,
-                                                courseConversationMessage:
-                                                  courseConversation.firstCourseConversationMessage,
+                                                courseForumConversationMessage:
+                                                  courseConversation.firstcourseForumConversationMessage,
                                                 mode: "textContent",
                                               },
                                             )
@@ -1417,7 +1417,7 @@ export default async (application: Application): Promise<void> => {
             </a>
           `);
         }
-        for (const courseConversationMessageId of utilities
+        for (const courseForumConversationMessageId of utilities
           .reciprocalRankFusion(
             application.database
               .all<{ id: number }>(
@@ -1463,7 +1463,7 @@ export default async (application: Application): Promise<void> => {
                   limit 20;
                 `,
               )
-              .map((courseConversationMessage) => courseConversationMessage.id),
+              .map((courseForumConversationMessage) => courseForumConversationMessage.id),
             application.database
               .all<{ id: number }>(
                 sql`
@@ -1505,10 +1505,10 @@ export default async (application: Application): Promise<void> => {
                   limit 20;
                 `,
               )
-              .map((courseConversationMessage) => courseConversationMessage.id),
+              .map((courseForumConversationMessage) => courseForumConversationMessage.id),
           )
           .slice(0, 5)) {
-          const courseConversationMessage = application.database.get<{
+          const courseForumConversationMessage = application.database.get<{
             publicId: string;
             courseConversation: number;
             createdByCourseParticipation: number | null;
@@ -1523,10 +1523,10 @@ export default async (application: Application): Promise<void> => {
                 "updatedAt",
                 "content"
               from "courseForumConversationMessages"
-              where "id" = ${courseConversationMessageId};
+              where "id" = ${courseForumConversationMessageId};
             `,
           );
-          if (courseConversationMessage === undefined) throw new Error();
+          if (courseForumConversationMessage === undefined) throw new Error();
           const courseConversation = application.database.get<{
             publicId: string;
             title: string;
@@ -1536,7 +1536,7 @@ export default async (application: Application): Promise<void> => {
                 "publicId",
                 "title"
               from "courseConversations"
-              where "id" = ${courseConversationMessage.courseConversation};
+              where "id" = ${courseForumConversationMessage.courseConversation};
             `,
           );
           if (courseConversation === undefined) throw new Error();
@@ -1545,7 +1545,7 @@ export default async (application: Application): Promise<void> => {
               href="/courses/${
                 request.state.course.publicId
               }/forum/${courseConversation.publicId}?${new URLSearchParams({
-                message: courseConversationMessage.publicId,
+                message: courseForumConversationMessage.publicId,
               }).toString()}"
               class="button button--rectangle button--transparent button--dropdown-menu"
             >
@@ -1575,12 +1575,12 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 $${utilities.snippet(
-                  html`${await application.partials.courseConversationMessageContentProcessor(
+                  html`${await application.partials.courseForumConversationMessageContentProcessor(
                     {
                       course: request.state.course,
                       courseParticipation: request.state.courseParticipation,
                       courseConversation,
-                      courseConversationMessage,
+                      courseForumConversationMessage,
                       mode: "textContent",
                     },
                   )}`,
@@ -1804,7 +1804,7 @@ export default async (application: Application): Promise<void> => {
                 `,
               )
             : undefined;
-        const firstCourseConversationMessage =
+        const firstcourseForumConversationMessage =
           courseConversation !== undefined
             ? application.database.get<{
                 content: string;
@@ -1824,13 +1824,13 @@ export default async (application: Application): Promise<void> => {
             : undefined;
         if (
           courseConversation !== undefined &&
-          firstCourseConversationMessage !== undefined
+          firstcourseForumConversationMessage !== undefined
         )
           prefill = {
             ...prefill,
             ...courseConversation,
             pinned: Boolean(courseConversation.pinned) ? "true" : "false",
-            ...firstCourseConversationMessage,
+            ...firstcourseForumConversationMessage,
           };
       }
       prefill = { ...prefill, ...request.search };
@@ -2678,12 +2678,12 @@ export default async (application: Application): Promise<void> => {
                             `
                           : html``
                       }
-                      $${application.partials.courseConversationMessageContentEditor(
+                      $${application.partials.courseForumConversationMessageContentEditor(
                         {
                           course: request.state.course,
                           courseParticipation:
                             request.state.courseParticipation,
-                          courseConversationMessageContent:
+                          courseForumConversationMessageContent:
                             typeof prefill.content === "string"
                               ? prefill.content
                               : undefined,
@@ -3279,9 +3279,9 @@ export default async (application: Application): Promise<void> => {
         title: string;
       };
       const contentTextContent =
-        await application.partials.courseConversationMessageContentProcessor({
+        await application.partials.courseForumConversationMessageContentProcessor({
           course: request.state.course,
-          courseConversationMessageContent: request.body.content,
+          courseForumConversationMessageContent: request.body.content,
           mode: "textContent",
         });
       const contentSemanticSearch = await (
@@ -3416,7 +3416,7 @@ export default async (application: Application): Promise<void> => {
               );
             `,
           );
-        const courseConversationMessage = application.database.get<{
+        const courseForumConversationMessage = application.database.get<{
           id: number;
         }>(
           sql`
@@ -3470,22 +3470,22 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             insert into "courseForumConversationMessageViews" (
-              "courseConversationMessage",
+              "courseForumConversationMessage",
               "courseParticipation",
               "createdAt"
             )
             values (
-              ${courseConversationMessage.id},
+              ${courseForumConversationMessage.id},
               ${request.state.courseParticipation!.id},
               ${Temporal.Now.instant().toString()}
             );
           `,
         );
         application.database.backgroundJob({
-          type: "courseConversationMessageEmailNotification",
+          type: "courseForumConversationMessageEmailNotification",
           startAt: Temporal.Now.instant().add({ minutes: 5 }).toString(),
           parameters: {
-            courseConversationMessageId: courseConversationMessage.id,
+            courseForumConversationMessageId: courseForumConversationMessage.id,
             announcement: request.body.announcement === "on",
           },
         });
@@ -3604,7 +3604,7 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversation === undefined
       )
         return;
-      const firstCourseConversationMessage = application.database.get<{
+      const firstcourseForumConversationMessage = application.database.get<{
         id: number;
         createdByCourseParticipation: number | null;
       }>(
@@ -3616,7 +3616,7 @@ export default async (application: Application): Promise<void> => {
           limit 1;
         `,
       );
-      if (firstCourseConversationMessage === undefined) throw new Error();
+      if (firstcourseForumConversationMessage === undefined) throw new Error();
       response.send(
         await courseConversationsLayout({
           request,
@@ -3640,7 +3640,7 @@ export default async (application: Application): Promise<void> => {
               javascript="${javascript`
                 const element =
                   ${typeof request.search.message === "string" && !request.liveConnection} ? (
-                    this.querySelector(${`[key~="courseConversationMessage"][key~="/courses/${
+                    this.querySelector(${`[key~="courseForumConversationMessage"][key~="/courses/${
                       request.state.course.publicId
                     }/forum/${
                       request.state.courseConversation.publicId
@@ -3648,14 +3648,14 @@ export default async (application: Application): Promise<void> => {
                     undefined
                   ) :
                   this.hasScrolled !== true ? (
-                    this.querySelector('[key~="courseConversationMessage--sidebar--courseConversationMessageView"]')?.closest('[key~="courseConversationMessage"]') ??
-                    this.querySelector('[key~="courseConversationMessage--new"]') ??
+                    this.querySelector('[key~="courseForumConversationMessage--sidebar--courseForumConversationMessageView"]')?.closest('[key~="courseForumConversationMessage"]') ??
+                    this.querySelector('[key~="courseForumConversationMessage--new"]') ??
                     undefined
                   ) :
                   undefined;
                 if (
                   element !== undefined &&
-                  element !== this.querySelectorAll('[key~="courseConversationMessage"]')[0]
+                  element !== this.querySelectorAll('[key~="courseForumConversationMessage"]')[0]
                 )
                   element.scrollIntoView();
                 this.hasScrolled = true;
@@ -3695,7 +3695,7 @@ export default async (application: Application): Promise<void> => {
                       .courseParticipationRole ===
                       "courseParticipationRoleInstructor" ||
                       request.state.courseParticipation.id ===
-                        firstCourseConversationMessage.createdByCourseParticipation);
+                        firstcourseForumConversationMessage.createdByCourseParticipation);
                   return html`
                     $${
                       request.state.course.courseState === "courseStateArchived"
@@ -4627,7 +4627,7 @@ export default async (application: Application): Promise<void> => {
                                                 `,
                                                   ) !== undefined ||
                                                   (courseParticipation.id ===
-                                                    firstCourseConversationMessage.createdByCourseParticipation &&
+                                                    firstcourseForumConversationMessage.createdByCourseParticipation &&
                                                     (request.state
                                                       .courseConversation!
                                                       .courseForumConversationVisibility ===
@@ -5310,28 +5310,28 @@ export default async (application: Application): Promise<void> => {
                         order by "id" asc;
                       `,
                     )
-                    .map(async (courseConversationMessage) => {
-                      const mayEditCourseConversationMessage =
+                    .map(async (courseForumConversationMessage) => {
+                      const mayEditcourseForumConversationMessage =
                         request.state.course!.courseState ===
                           "courseStateActive" &&
                         (request.state.courseParticipation!
                           .courseParticipationRole ===
                           "courseParticipationRoleInstructor" ||
                           request.state.courseParticipation!.id ===
-                            courseConversationMessage.createdByCourseParticipation);
-                      const courseConversationMessageAnonymous =
-                        courseConversationMessage.createdByCourseParticipation !==
+                            courseForumConversationMessage.createdByCourseParticipation);
+                      const courseForumConversationMessageAnonymous =
+                        courseForumConversationMessage.createdByCourseParticipation !==
                           request.state.courseParticipation!.id &&
-                        ((courseConversationMessage.courseForumConversationMessageAnonymity ===
+                        ((courseForumConversationMessage.courseForumConversationMessageAnonymity ===
                           "courseForumConversationMessageAnonymityCourseParticipationRoleStudents" &&
                           request.state.courseParticipation!
                             .courseParticipationRole ===
                             "courseParticipationRoleStudent") ||
-                          courseConversationMessage.courseForumConversationMessageAnonymity ===
+                          courseForumConversationMessage.courseForumConversationMessageAnonymity ===
                             "courseForumConversationMessageAnonymityEveryone");
-                      const courseConversationMessageCreatedByCourseParticipation =
-                        typeof courseConversationMessage.createdByCourseParticipation ===
-                          "number" && !courseConversationMessageAnonymous
+                      const courseForumConversationMessageCreatedByCourseParticipation =
+                        typeof courseForumConversationMessage.createdByCourseParticipation ===
+                          "number" && !courseForumConversationMessageAnonymous
                           ? application.database.get<{
                               user: number;
                               courseParticipationRole:
@@ -5343,12 +5343,12 @@ export default async (application: Application): Promise<void> => {
                                   "user",
                                   "courseParticipationRole"
                                 from "courseParticipations"
-                                where "id" = ${courseConversationMessage.createdByCourseParticipation};
+                                where "id" = ${courseForumConversationMessage.createdByCourseParticipation};
                               `,
                             )
                           : undefined;
-                      const courseConversationMessageCreatedByUser =
-                        typeof courseConversationMessageCreatedByCourseParticipation ===
+                      const courseForumConversationMessageCreatedByUser =
+                        typeof courseForumConversationMessageCreatedByCourseParticipation ===
                         "object"
                           ? application.database.get<{
                               id: number;
@@ -5382,17 +5382,17 @@ export default async (application: Application): Promise<void> => {
                                   "avatarColor",
                                   "avatarImage"
                                 from "users"
-                                where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
+                                where "id" = ${courseForumConversationMessageCreatedByCourseParticipation.user};
                               `,
                             )
                           : undefined;
                       return html`
                         <div
-                          key="courseConversationMessage /courses/${
+                          key="courseForumConversationMessage /courses/${
                             request.state.course!.publicId
                           }/forum/${
                             request.state.courseConversation!.publicId
-                          }/messages/${courseConversationMessage.publicId}"
+                          }/messages/${courseForumConversationMessage.publicId}"
                           css="${css`
                             padding: var(--size--2);
                             border-radius: var(--border-radius--1);
@@ -5401,7 +5401,7 @@ export default async (application: Application): Promise<void> => {
                             gap: var(--size--2);
                           `} ${
                             request.search.message ===
-                            courseConversationMessage.publicId
+                            courseForumConversationMessage.publicId
                               ? css`
                                   background-color: light-dark(
                                     var(--color--slate--50),
@@ -5411,10 +5411,10 @@ export default async (application: Application): Promise<void> => {
                               : css``
                           }"
                           javascript="${javascript`
-                            this.content = ${courseConversationMessage.content};
+                            this.content = ${courseForumConversationMessage.content};
                           `}"
                         >
-                          <div key="courseConversationMessage--sidebar">
+                          <div key="courseForumConversationMessage--sidebar">
                             <div
                               css="${css`
                                 display: flex;
@@ -5427,13 +5427,13 @@ export default async (application: Application): Promise<void> => {
                                   select true
                                   from "courseForumConversationMessageViews"
                                   where
-                                    "courseConversationMessage" = ${courseConversationMessage.id} and
+                                    "courseForumConversationMessage" = ${courseForumConversationMessage.id} and
                                     "courseParticipation" = ${request.state.courseParticipation!.id};
                                 `,
                                 ) === undefined
                                   ? html`
                                       <div
-                                        key="courseConversationMessage--sidebar--courseConversationMessageView"
+                                        key="courseForumConversationMessage--sidebar--courseForumConversationMessageView"
                                         css="${css`
                                           font-size: var(--size--1-5);
                                           color: light-dark(
@@ -5470,7 +5470,7 @@ export default async (application: Application): Promise<void> => {
                                           }/forum/${
                                             request.state.courseConversation!
                                               .publicId
-                                          }/messages/${courseConversationMessage.publicId}/view`}, {
+                                          }/messages/${courseForumConversationMessage.publicId}/view`}, {
                                             method: "POST",
                                             headers: { "CSRF-Protection": "true" },
                                           });
@@ -5487,12 +5487,12 @@ export default async (application: Application): Promise<void> => {
                                   : html``
                               }
                               <div
-                                key="courseConversationMessage--sidebar--userAvatar"
+                                key="courseForumConversationMessage--sidebar--userAvatar"
                               >
                                 $${application.partials.userAvatar({
-                                  user: courseConversationMessageAnonymous
+                                  user: courseForumConversationMessageAnonymous
                                     ? "anonymous"
-                                    : (courseConversationMessageCreatedByUser ??
+                                    : (courseForumConversationMessageCreatedByUser ??
                                       "courseParticipationDeleted"),
                                   size: 9,
                                 })}
@@ -5500,7 +5500,7 @@ export default async (application: Application): Promise<void> => {
                             </div>
                           </div>
                           <div
-                            key="courseConversationMessage--main"
+                            key="courseForumConversationMessage--main"
                             css="${css`
                               flex: 1;
                               min-width: var(--size--0);
@@ -5510,7 +5510,7 @@ export default async (application: Application): Promise<void> => {
                             `}"
                           >
                             <div
-                              key="courseConversationMessage--main--header"
+                              key="courseForumConversationMessage--main--header"
                               css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
@@ -5523,37 +5523,37 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             >
                               <div
-                                key="courseConversationMessage--main--header--byline"
+                                key="courseForumConversationMessage--main--header--byline"
                                 css="${css`
                                   flex: 1;
                                 `}"
                               >
                                 $${(() => {
-                                  let courseConversationMessageMainHeaderBylineHTMLs: HTML[] =
+                                  let courseForumConversationMessageMainHeaderBylineHTMLs: HTML[] =
                                     [];
-                                  courseConversationMessageMainHeaderBylineHTMLs.push(
+                                  courseForumConversationMessageMainHeaderBylineHTMLs.push(
                                     html`<span
                                         css="${css`
                                           font-weight: 600;
                                         `}"
                                         >${
-                                          courseConversationMessageAnonymous
+                                          courseForumConversationMessageAnonymous
                                             ? "Anonymous"
-                                            : (courseConversationMessageCreatedByUser?.name ??
+                                            : (courseForumConversationMessageCreatedByUser?.name ??
                                               "Deleted course participant")
                                         }</span
                                       >${
-                                        !courseConversationMessageAnonymous
+                                        !courseForumConversationMessageAnonymous
                                           ? `${
-                                              courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                              courseForumConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
                                               "courseParticipationRoleInstructor"
                                                 ? " (instructor)"
                                                 : ""
                                             }${
-                                              courseConversationMessage.courseForumConversationMessageAnonymity ===
+                                              courseForumConversationMessage.courseForumConversationMessageAnonymity ===
                                               "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
                                                 ? " (anonymous to students)"
-                                                : courseConversationMessage.courseForumConversationMessageAnonymity ===
+                                                : courseForumConversationMessage.courseForumConversationMessageAnonymity ===
                                                     "courseForumConversationMessageAnonymityEveryone"
                                                   ? " (anonymous to everyone)"
                                                   : ""
@@ -5561,26 +5561,26 @@ export default async (application: Application): Promise<void> => {
                                           : ``
                                       }`,
                                   );
-                                  courseConversationMessageMainHeaderBylineHTMLs.push(
+                                  courseForumConversationMessageMainHeaderBylineHTMLs.push(
                                     html`<span
                                         javascript="${javascript`
                                           javascript.popover({ element: this });
                                         `}"
-                                        >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                        >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
                                       ><span type="popover"
-                                        >${utilities.formatDateTime(Temporal.Instant.from(courseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                                        >${utilities.formatDateTime(Temporal.Instant.from(courseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
                                       ></span
                                       >$${
-                                        typeof courseConversationMessage.updatedAt ===
+                                        typeof courseForumConversationMessage.updatedAt ===
                                         "string"
                                           ? html` (updated
                                               <span
                                                 javascript="${javascript`
                                                   javascript.popover({ element: this });
                                                 `}"
-                                                >${utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseConversationMessage.updatedAt).toZonedDateTimeISO(request.state.userSession!.timeZone), { preposition: true })}</span
+                                                >${utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseForumConversationMessage.updatedAt).toZonedDateTimeISO(request.state.userSession!.timeZone), { preposition: true })}</span
                                               ><span type="popover"
-                                                >${utilities.formatDateTime(Temporal.Instant.from(courseConversationMessage.updatedAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                                                >${utilities.formatDateTime(Temporal.Instant.from(courseForumConversationMessage.updatedAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
                                               >)`
                                           : html``
                                       }`,
@@ -5591,15 +5591,15 @@ export default async (application: Application): Promise<void> => {
                                     "courseForumConversationTypeQuestion"
                                   ) {
                                     if (
-                                      courseConversationMessage.courseForumConversationMessageType ===
+                                      courseForumConversationMessage.courseForumConversationMessageType ===
                                       "courseForumConversationMessageTypeMessage"
                                     )
                                       "NOOP";
                                     else if (
-                                      courseConversationMessage.courseForumConversationMessageType ===
+                                      courseForumConversationMessage.courseForumConversationMessageType ===
                                       "courseForumConversationMessageTypeAnswer"
                                     )
-                                      courseConversationMessageMainHeaderBylineHTMLs.push(
+                                      courseForumConversationMessageMainHeaderBylineHTMLs.push(
                                         html`<span
                                           css="${css`
                                             font-weight: 700;
@@ -5612,10 +5612,10 @@ export default async (application: Application): Promise<void> => {
                                         >`,
                                       );
                                     else if (
-                                      courseConversationMessage.courseForumConversationMessageType ===
+                                      courseForumConversationMessage.courseForumConversationMessageType ===
                                       "courseForumConversationMessageTypeFollowUpQuestion"
                                     )
-                                      courseConversationMessageMainHeaderBylineHTMLs.push(
+                                      courseForumConversationMessageMainHeaderBylineHTMLs.push(
                                         html`<span
                                           css="${css`
                                             font-weight: 700;
@@ -5630,10 +5630,10 @@ export default async (application: Application): Promise<void> => {
                                     else throw new Error();
                                   }
                                   if (
-                                    courseConversationMessage.courseForumConversationMessageVisibility ===
+                                    courseForumConversationMessage.courseForumConversationMessageVisibility ===
                                     "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                                   )
-                                    courseConversationMessageMainHeaderBylineHTMLs.push(
+                                    courseForumConversationMessageMainHeaderBylineHTMLs.push(
                                       html`<span
                                         css="${css`
                                           font-weight: 700;
@@ -5653,12 +5653,12 @@ export default async (application: Application): Promise<void> => {
                                         join "courseParticipations" on
                                           "courseForumConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
                                           "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                        where "courseForumConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id}
+                                        where "courseForumConversationMessageLikes"."courseForumConversationMessage" = ${courseForumConversationMessage.id}
                                         limit 1;
                                       `,
                                     ) !== undefined
                                   )
-                                    courseConversationMessageMainHeaderBylineHTMLs.push(
+                                    courseForumConversationMessageMainHeaderBylineHTMLs.push(
                                       html`<span
                                         css="${css`
                                           font-weight: 700;
@@ -5672,19 +5672,19 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   if (
                                     Boolean(
-                                      courseConversationMessage.sentViaEmail,
+                                      courseForumConversationMessage.sentViaEmail,
                                     ) === true
                                   )
-                                    courseConversationMessageMainHeaderBylineHTMLs.push(
+                                    courseForumConversationMessageMainHeaderBylineHTMLs.push(
                                       html`<span>Sent via email</span>`,
                                     );
-                                  return courseConversationMessageMainHeaderBylineHTMLs.join(
+                                  return courseForumConversationMessageMainHeaderBylineHTMLs.join(
                                     " · ",
                                   );
                                 })()}
                               </div>
                               <div
-                                key="courseConversationMessage--main--header--menu"
+                                key="courseForumConversationMessage--main--header--menu"
                               >
                                 <button
                                   type="button"
@@ -5712,7 +5712,7 @@ export default async (application: Application): Promise<void> => {
                                     javascript="${javascript`
                                       const popover = javascript.popover({ element: this, trigger: "none" });
                                       this.onclick = async () => {
-                                        await navigator.clipboard.writeText(${`https://${application.userConfiguration.hostname}/courses/${request.state.course!.publicId}/forum/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
+                                        await navigator.clipboard.writeText(${`https://${application.userConfiguration.hostname}/courses/${request.state.course!.publicId}/forum/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseForumConversationMessage.publicId }).toString()}`});
                                         popover.showPopover();
                                         await utilities.sleep(1000);
                                         popover.hidePopover();
@@ -5731,12 +5731,12 @@ export default async (application: Application): Promise<void> => {
                                             class="button button--rectangle button--transparent button--dropdown-menu"
                                             javascript="${javascript`
                                             this.onclick = () => {
-                                              const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--textarea"]');
+                                              const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseForumConversationMessage--new"] [key~="courseForumConversationMessageContentEditor--textarea"]');
                                               element.focus();
                                               element.click();
                                               const previousSelectionEnd = element.selectionEnd;
                                               element.selectionStart = element.selectionEnd;
-                                              document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + ${`> Reply to #${request.state.courseConversation!.publicId}/${courseConversationMessage.publicId}\n>\n> `} + this.closest('[key~="courseConversationMessage"]').content.replaceAll("\\n", "\\n> ") + "\\n\\n");
+                                              document.execCommand("insertText", false, (0 < element.selectionStart ? "\\n\\n" : "") + ${`> Reply to #${request.state.courseConversation!.publicId}/${courseForumConversationMessage.publicId}\n>\n> `} + this.closest('[key~="courseForumConversationMessage"]').content.replaceAll("\\n", "\\n> ") + "\\n\\n");
                                               element.selectionStart = element.selectionEnd = previousSelectionEnd;
                                             };
                                           `}"
@@ -5747,27 +5747,27 @@ export default async (application: Application): Promise<void> => {
                                       : html``
                                   }
                                   $${
-                                    mayEditCourseConversationMessage
+                                    mayEditcourseForumConversationMessage
                                       ? html`
                                           <button
                                             type="button"
                                             class="button button--rectangle button--transparent button--dropdown-menu"
                                             javascript="${javascript`
                                             this.onclick = async () => {
-                                              if (this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').getAttribute("state") === null) {
-                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "loading");
+                                              if (this.closest('[key~="courseForumConversationMessage"]').querySelector('[key~="courseForumConversationMessage--main--content--body"]').getAttribute("state") === null) {
+                                                this.closest('[key~="courseForumConversationMessage"]').querySelector('[key~="courseForumConversationMessage--main--content--body"]').setAttribute("state", "loading");
                                                 javascript.mount(
-                                                  this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').firstElementChild,
+                                                  this.closest('[key~="courseForumConversationMessage"]').querySelector('[key~="courseForumConversationMessage--main--content--edit"]').firstElementChild,
                                                   await (
                                                     await fetch(
-                                                      ${`/courses/${request.state.course!.publicId}/forum/${request.state.courseConversation!.publicId}/messages/${courseConversationMessage.publicId}/edit`}
+                                                      ${`/courses/${request.state.course!.publicId}/forum/${request.state.courseConversation!.publicId}/messages/${courseForumConversationMessage.publicId}/edit`}
                                                     )
                                                   ).text()
                                                 );
-                                                this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--body"]').setAttribute("state", "edit");
+                                                this.closest('[key~="courseForumConversationMessage"]').querySelector('[key~="courseForumConversationMessage--main--content--body"]').setAttribute("state", "edit");
                                               }
-                                              this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').click();
-                                              this.closest('[key~="courseConversationMessage"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').focus();
+                                              this.closest('[key~="courseForumConversationMessage"]').querySelector('[key~="courseForumConversationMessage--main--content--edit"] [name="content"]').click();
+                                              this.closest('[key~="courseForumConversationMessage"]').querySelector('[key~="courseForumConversationMessage--main--content--edit"] [name="content"]').focus();
                                             };
                                           `}"
                                           >
@@ -5777,12 +5777,12 @@ export default async (application: Application): Promise<void> => {
                                       : html``
                                   }
                                   $${
-                                    mayEditCourseConversationMessage &&
+                                    mayEditcourseForumConversationMessage &&
                                     request.state.courseParticipation!
                                       .courseParticipationRole ===
                                       "courseParticipationRoleInstructor" &&
-                                    courseConversationMessage.id !==
-                                      firstCourseConversationMessage.id
+                                    courseForumConversationMessage.id !==
+                                      firstcourseForumConversationMessage.id
                                       ? html`
                                           <button
                                             type="button"
@@ -5801,7 +5801,7 @@ export default async (application: Application): Promise<void> => {
                                             }/forum/${
                                               request.state.courseConversation!
                                                 .publicId
-                                            }/messages/${courseConversationMessage.publicId}"
+                                            }/messages/${courseForumConversationMessage.publicId}"
                                             css="${css`
                                               display: flex;
                                               flex-direction: column;
@@ -5850,22 +5850,22 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             </div>
                             <div
-                              key="courseConversationMessage--main--content--body"
+                              key="courseForumConversationMessage--main--content--body"
                             >
                               <div
-                                key="courseConversationMessage--main--content--show"
+                                key="courseForumConversationMessage--main--content--show"
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--size--1);
-                                  [key~="courseConversationMessage--main--content--body"][state]
+                                  [key~="courseForumConversationMessage--main--content--body"][state]
                                     & {
                                     display: none;
                                   }
                                 `}"
                               >
                                 <div
-                                  key="courseConversationMessage--main--content--show--content"
+                                  key="courseForumConversationMessage--main--content--show--content"
                                   javascript="${javascript`
                                     let popoverElementBoundingClientRect;
                                     const popover = javascript.popover({
@@ -5902,7 +5902,7 @@ export default async (application: Application): Promise<void> => {
                                         const startElement = (startNode.nodeType === startNode.ELEMENT_NODE ? startNode : startNode.parentElement).closest("[data-position]");
                                         const endElement = (endNode.nodeType === endNode.ELEMENT_NODE ? endNode : endNode.parentElement).closest("[data-position]");
                                         if (startElement === null || endElement === null) return;
-                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = this.closest('[key~="courseConversationMessage"]').content.slice(
+                                        this.nextElementSibling.querySelector('[key~="quoteReply"]').quote = this.closest('[key~="courseForumConversationMessage"]').content.slice(
                                           JSON.parse(startElement.getAttribute("data-position")).start,
                                           JSON.parse(endElement.getAttribute("data-position")).end,
                                         );
@@ -5927,14 +5927,14 @@ export default async (application: Application): Promise<void> => {
                                     };
                                   `}"
                                 >
-                                  $${await application.partials.courseConversationMessageContentProcessor(
+                                  $${await application.partials.courseForumConversationMessageContentProcessor(
                                     {
                                       course: request.state.course!,
                                       courseParticipation:
                                         request.state.courseParticipation!,
                                       courseConversation:
                                         request.state.courseConversation!,
-                                      courseConversationMessage,
+                                      courseForumConversationMessage,
                                     },
                                   )}
                                 </div>
@@ -5952,9 +5952,9 @@ export default async (application: Application): Promise<void> => {
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
                                       this.onclick = () => {
-                                        if (typeof this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
-                                          this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--preview--button"]').click();
-                                        const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage--new"] [key~="courseConversationMessageContentEditor--textarea"]');
+                                        if (typeof this.closest('[key~="courseConversation"]').querySelector('[key~="courseForumConversationMessage--new"] [key~="courseForumConversationMessageContentEditor"]').getAttribute("state") === "string")
+                                          this.closest('[key~="courseConversation"]').querySelector('[key~="courseForumConversationMessage--new"] [key~="courseForumConversationMessageContentEditor--preview--button"]').click();
+                                        const element = this.closest('[key~="courseConversation"]').querySelector('[key~="courseForumConversationMessage--new"] [key~="courseForumConversationMessageContentEditor--textarea"]');
                                         element.focus();
                                         element.click();
                                         const previousSelectionEnd = element.selectionEnd;
@@ -5968,24 +5968,24 @@ export default async (application: Application): Promise<void> => {
                                   </button>
                                 </div>
                                 $${(() => {
-                                  let courseConversationMessageMainContentShowFooterHTML = html``;
+                                  let courseForumConversationMessageMainContentShowFooterHTML = html``;
                                   if (
                                     request.state.course!.courseState ===
                                     "courseStateActive"
                                   )
-                                    courseConversationMessageMainContentShowFooterHTML +=
+                                    courseForumConversationMessageMainContentShowFooterHTML +=
                                       application.database.get(
                                         sql`
                                           select true
                                           from "courseForumConversationMessageLikes"
                                           where
-                                            "courseConversationMessage" = ${courseConversationMessage.id} and
+                                            "courseForumConversationMessage" = ${courseForumConversationMessage.id} and
                                             "courseParticipation" = ${request.state.courseParticipation!.id};
                                         `,
                                       ) === undefined
                                         ? html`
                                             <div
-                                              key="courseConversationMessage--main--content--show--footer--like"
+                                              key="courseForumConversationMessage--main--content--show--footer--like"
                                               type="form"
                                               method="POST"
                                               action="/courses/${
@@ -5993,7 +5993,7 @@ export default async (application: Application): Promise<void> => {
                                               }/forum/${
                                                 request.state
                                                   .courseConversation!.publicId
-                                              }/messages/${courseConversationMessage.publicId}/like"
+                                              }/messages/${courseForumConversationMessage.publicId}/like"
                                             >
                                               <button
                                                 type="submit"
@@ -6005,7 +6005,7 @@ export default async (application: Application): Promise<void> => {
                                           `
                                         : html`
                                             <div
-                                              key="courseConversationMessage--main--content--show--footer--like"
+                                              key="courseForumConversationMessage--main--content--show--footer--like"
                                               type="form"
                                               method="DELETE"
                                               action="/courses/${
@@ -6013,7 +6013,7 @@ export default async (application: Application): Promise<void> => {
                                               }/forum/${
                                                 request.state
                                                   .courseConversation!.publicId
-                                              }/messages/${courseConversationMessage.publicId}/like"
+                                              }/messages/${courseForumConversationMessage.publicId}/like"
                                             >
                                               <button
                                                 type="submit"
@@ -6036,14 +6036,14 @@ export default async (application: Application): Promise<void> => {
                                       sql`
                                         select "courseParticipation"
                                         from "courseForumConversationMessageLikes"
-                                        where "courseConversationMessage" = ${courseConversationMessage.id}
+                                        where "courseForumConversationMessage" = ${courseForumConversationMessage.id}
                                         order by "id" asc;
                                       `,
                                     );
                                   if (courseForumConversationMessageLikes.length > 0)
-                                    courseConversationMessageMainContentShowFooterHTML += html`
+                                    courseForumConversationMessageMainContentShowFooterHTML += html`
                                       <button
-                                        key="courseConversationMessage--main--content--show--footer--likes"
+                                        key="courseForumConversationMessage--main--content--show--footer--likes"
                                         type="button"
                                         class="button button--rectangle button--transparent"
                                         javascript="${javascript`
@@ -6069,9 +6069,9 @@ export default async (application: Application): Promise<void> => {
                                         `}"
                                       >
                                         $${courseForumConversationMessageLikes.map(
-                                          (courseConversationMessageLike) => {
-                                            const courseConversationMessageLikeCourseParticipation =
-                                              typeof courseConversationMessageLike.courseParticipation ===
+                                          (courseForumConversationMessageLike) => {
+                                            const courseForumConversationMessageLikeCourseParticipation =
+                                              typeof courseForumConversationMessageLike.courseParticipation ===
                                               "number"
                                                 ? application.database.get<{
                                                     user: number;
@@ -6084,12 +6084,12 @@ export default async (application: Application): Promise<void> => {
                                                         "user",
                                                         "courseParticipationRole"
                                                       from "courseParticipations"
-                                                      where "id" = ${courseConversationMessageLike.courseParticipation};
+                                                      where "id" = ${courseForumConversationMessageLike.courseParticipation};
                                                     `,
                                                   )
                                                 : undefined;
-                                            const courseConversationMessageLikeUser =
-                                              courseConversationMessageLikeCourseParticipation !==
+                                            const courseForumConversationMessageLikeUser =
+                                              courseForumConversationMessageLikeCourseParticipation !==
                                               undefined
                                                 ? application.database.get<{
                                                     id: number;
@@ -6123,7 +6123,7 @@ export default async (application: Application): Promise<void> => {
                                                         "avatarColor",
                                                         "avatarImage"
                                                       from "users"
-                                                      where "id" = ${courseConversationMessageLikeCourseParticipation.user};
+                                                      where "id" = ${courseForumConversationMessageLikeCourseParticipation.user};
                                                     `,
                                                   )
                                                 : undefined;
@@ -6137,7 +6137,7 @@ export default async (application: Application): Promise<void> => {
                                                 $${application.partials.userAvatar(
                                                   {
                                                     user:
-                                                      courseConversationMessageLikeUser ??
+                                                      courseForumConversationMessageLikeUser ??
                                                       "courseParticipationDeleted",
                                                   },
                                                 )}
@@ -6149,10 +6149,10 @@ export default async (application: Application): Promise<void> => {
                                                   `}"
                                                 >
                                                   ${
-                                                    courseConversationMessageLikeUser?.name ??
+                                                    courseForumConversationMessageLikeUser?.name ??
                                                     "Deleted course participant"
                                                   }$${
-                                                    courseConversationMessageLikeCourseParticipation?.courseParticipationRole ===
+                                                    courseForumConversationMessageLikeCourseParticipation?.courseParticipationRole ===
                                                     "courseParticipationRoleInstructor"
                                                       ? html`<span
                                                           css="${css`
@@ -6196,15 +6196,15 @@ export default async (application: Application): Promise<void> => {
                                         sql`
                                           select "createdAt", "courseParticipation"
                                           from "courseForumConversationMessageViews"
-                                          where "courseConversationMessage" = ${courseConversationMessage.id}
+                                          where "courseForumConversationMessage" = ${courseForumConversationMessage.id}
                                           order by "id" asc;
                                         `,
                                       );
-                                    courseConversationMessageMainContentShowFooterHTML +=
+                                    courseForumConversationMessageMainContentShowFooterHTML +=
                                       courseForumConversationMessageViews.length > 0
                                         ? html`
                                             <button
-                                              key="courseConversationMessage--main--content--show--footer--views"
+                                              key="courseForumConversationMessage--main--content--show--footer--views"
                                               type="button"
                                               class="button button--rectangle button--transparent"
                                               javascript="${javascript`
@@ -6233,10 +6233,10 @@ export default async (application: Application): Promise<void> => {
                                             >
                                               $${courseForumConversationMessageViews.map(
                                                 (
-                                                  courseConversationMessageView,
+                                                  courseForumConversationMessageView,
                                                 ) => {
-                                                  const courseConversationMessageViewCourseParticipation =
-                                                    typeof courseConversationMessageView.courseParticipation ===
+                                                  const courseForumConversationMessageViewCourseParticipation =
+                                                    typeof courseForumConversationMessageView.courseParticipation ===
                                                     "number"
                                                       ? application.database.get<{
                                                           user: number;
@@ -6249,12 +6249,12 @@ export default async (application: Application): Promise<void> => {
                                                               "user",
                                                               "courseParticipationRole"
                                                             from "courseParticipations"
-                                                            where "id" = ${courseConversationMessageView.courseParticipation};
+                                                            where "id" = ${courseForumConversationMessageView.courseParticipation};
                                                           `,
                                                         )
                                                       : undefined;
-                                                  const courseConversationMessageViewUser =
-                                                    courseConversationMessageViewCourseParticipation !==
+                                                  const courseForumConversationMessageViewUser =
+                                                    courseForumConversationMessageViewCourseParticipation !==
                                                     undefined
                                                       ? application.database.get<{
                                                           id: number;
@@ -6289,7 +6289,7 @@ export default async (application: Application): Promise<void> => {
                                                               "avatarColor",
                                                               "avatarImage"
                                                             from "users"
-                                                            where "id" = ${courseConversationMessageViewCourseParticipation.user};
+                                                            where "id" = ${courseForumConversationMessageViewCourseParticipation.user};
                                                           `,
                                                         )
                                                       : undefined;
@@ -6303,7 +6303,7 @@ export default async (application: Application): Promise<void> => {
                                                       $${application.partials.userAvatar(
                                                         {
                                                           user:
-                                                            courseConversationMessageViewUser ??
+                                                            courseForumConversationMessageViewUser ??
                                                             "courseParticipationDeleted",
                                                         },
                                                       )}
@@ -6315,7 +6315,7 @@ export default async (application: Application): Promise<void> => {
                                                         `}"
                                                       >
                                                         ${
-                                                          courseConversationMessageViewUser?.name ??
+                                                          courseForumConversationMessageViewUser?.name ??
                                                           "Deleted course participant"
                                                         }<span
                                                           css="${css`
@@ -6335,7 +6335,7 @@ export default async (application: Application): Promise<void> => {
                                                             );
                                                           `}"
                                                           >${
-                                                            courseConversationMessageViewCourseParticipation?.courseParticipationRole ===
+                                                            courseForumConversationMessageViewCourseParticipation?.courseParticipationRole ===
                                                             "courseParticipationRoleInstructor"
                                                               ? " (instructor)"
                                                               : ""
@@ -6344,9 +6344,9 @@ export default async (application: Application): Promise<void> => {
                                                             javascript="${javascript`
                                                               javascript.popover({ element: this });
                                                             `}"
-                                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseConversationMessageView.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseForumConversationMessageView.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
                                                           ><span type="popover"
-                                                            >${utilities.formatDateTime(Temporal.Instant.from(courseConversationMessageView.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                                                            >${utilities.formatDateTime(Temporal.Instant.from(courseForumConversationMessageView.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
                                                           ></span
                                                         >
                                                       </div>
@@ -6358,17 +6358,17 @@ export default async (application: Application): Promise<void> => {
                                           `
                                         : html`
                                             <div
-                                              key="courseConversationMessage--main--content--show--footer--views"
+                                              key="courseForumConversationMessage--main--content--show--footer--views"
                                             >
                                               0 views
                                             </div>
                                           `;
                                   }
-                                  return courseConversationMessageMainContentShowFooterHTML !==
+                                  return courseForumConversationMessageMainContentShowFooterHTML !==
                                     html``
                                     ? html`
                                         <div
-                                          key="courseConversationMessage--main--content--show--footer"
+                                          key="courseForumConversationMessage--main--content--show--footer"
                                           css="${css`
                                             font-size: var(--font-size--3);
                                             line-height: var(
@@ -6386,17 +6386,17 @@ export default async (application: Application): Promise<void> => {
                                             row-gap: var(--size--2);
                                           `}"
                                         >
-                                          $${courseConversationMessageMainContentShowFooterHTML}
+                                          $${courseForumConversationMessageMainContentShowFooterHTML}
                                         </div>
                                       `
                                     : html``;
                                 })()}
                               </div>
                               $${
-                                mayEditCourseConversationMessage
+                                mayEditcourseForumConversationMessage
                                   ? html`
                                       <div
-                                        key="courseConversationMessage--main--content--loading"
+                                        key="courseForumConversationMessage--main--content--loading"
                                         css="${css`
                                           font-size: var(--size--12);
                                           color: light-dark(
@@ -6408,7 +6408,7 @@ export default async (application: Application): Promise<void> => {
                                           justify-content: center;
                                           align-items: center;
                                           animation: var(--animation--pulse);
-                                          [key~="courseConversationMessage--main--content--body"]:not(
+                                          [key~="courseForumConversationMessage--main--content--body"]:not(
                                               [state~="loading"]
                                             )
                                             & {
@@ -6419,9 +6419,9 @@ export default async (application: Application): Promise<void> => {
                                         <i class="bi bi-three-dots"></i>
                                       </div>
                                       <div
-                                        key="courseConversationMessage--main--content--edit"
+                                        key="courseForumConversationMessage--main--content--edit"
                                         css="${css`
-                                          [key~="courseConversationMessage--main--content--body"]:not(
+                                          [key~="courseForumConversationMessage--main--content--body"]:not(
                                               [state~="edit"]
                                             )
                                             & {
@@ -6441,7 +6441,7 @@ export default async (application: Application): Promise<void> => {
                     }),
                 )}
                 <div
-                  key="courseConversationMessage latencyCompensation"
+                  key="courseForumConversationMessage latencyCompensation"
                   hidden
                   css="${css`
                     display: flex;
@@ -6452,8 +6452,8 @@ export default async (application: Application): Promise<void> => {
                     if (${!request.liveConnection}) this.hidden = true;
                   `}"
                 >
-                  <div key="courseConversationMessage--sidebar">
-                    <div key="courseConversationMessage--sidebar--userAvatar">
+                  <div key="courseForumConversationMessage--sidebar">
+                    <div key="courseForumConversationMessage--sidebar--userAvatar">
                       $${application.partials.userAvatar({
                         user: request.state.user,
                         size: 9,
@@ -6461,7 +6461,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   </div>
                   <div
-                    key="courseConversationMessage--main"
+                    key="courseForumConversationMessage--main"
                     css="${css`
                       flex: 1;
                       min-width: var(--size--0);
@@ -6471,7 +6471,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      key="courseConversationMessage--main--header"
+                      key="courseForumConversationMessage--main--header"
                       css="${css`
                         font-size: var(--font-size--3);
                         line-height: var(--font-size--3--line-height);
@@ -6484,7 +6484,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <div
-                        key="courseConversationMessage--main--header--byline"
+                        key="courseForumConversationMessage--main--header--byline"
                         css="${css`
                           flex: 1;
                         `}"
@@ -6498,7 +6498,7 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
                     <div
-                      key="courseConversationMessage--main--content--show"
+                      key="courseForumConversationMessage--main--content--show"
                       css="${css`
                         display: flex;
                         flex-direction: column;
@@ -6506,7 +6506,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <div
-                        key="courseConversationMessage--main--content--show--content"
+                        key="courseForumConversationMessage--main--content--show--content"
                         css="${css`
                           white-space: pre-line;
                         `}"
@@ -6521,7 +6521,7 @@ export default async (application: Application): Promise<void> => {
               $${
                 request.state.course.courseState === "courseStateActive"
                   ? (() => {
-                      const courseConversationMessageDraft =
+                      const courseForumConversationMessageDraft =
                         application.database.get<{
                           courseForumConversationMessageType:
                             | "courseForumConversationMessageTypeMessage"
@@ -6551,7 +6551,7 @@ export default async (application: Application): Promise<void> => {
                       return html`
                         <div
                           type="form"
-                          key="courseConversationMessage--new"
+                          key="courseForumConversationMessage--new"
                           method="POST"
                           action="/courses/${
                             request.state.course.publicId
@@ -6575,11 +6575,11 @@ export default async (application: Application): Promise<void> => {
                             });
                           });
                           this.onsubmit = async () => {
-                            this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"] [key~="courseConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value.trim();
-                            this.closest('[key~="courseConversation"]').querySelector('[key~="courseConversationMessage"][key~="latencyCompensation"]').hidden = false;
+                            this.closest('[key~="courseConversation"]').querySelector('[key~="courseForumConversationMessage"][key~="latencyCompensation"] [key~="courseForumConversationMessage--main--content--show--content"]').textContent = this.querySelector('[name="content"]').value.trim();
+                            this.closest('[key~="courseConversation"]').querySelector('[key~="courseForumConversationMessage"][key~="latencyCompensation"]').hidden = false;
                             this.querySelector('[name="content"]').value = "";
-                            if (typeof this.querySelector('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
-                              this.querySelector('[key~="courseConversationMessageContentEditor--preview--button"]').click();
+                            if (typeof this.querySelector('[key~="courseForumConversationMessageContentEditor"]').getAttribute("state") === "string")
+                              this.querySelector('[key~="courseForumConversationMessageContentEditor--preview--button"]').click();
                             await this.oninput.promise;
                           };
                         `}"
@@ -6673,14 +6673,14 @@ export default async (application: Application): Promise<void> => {
                           }
                           <div
                             javascript="${javascript`
-                            if (this.loadedCourseConversationMessageDraft === undefined && ${courseConversationMessageDraft !== undefined})
+                            if (this.loadedcourseForumConversationMessageDraft === undefined && ${courseForumConversationMessageDraft !== undefined})
                               this.querySelector('[name="content"]').value = ${
-                                courseConversationMessageDraft?.content ?? ""
+                                courseForumConversationMessageDraft?.content ?? ""
                               };
-                            this.loadedCourseConversationMessageDraft = true;
+                            this.loadedcourseForumConversationMessageDraft = true;
                           `}"
                           >
-                            $${application.partials.courseConversationMessageContentEditor(
+                            $${application.partials.courseForumConversationMessageContentEditor(
                               {
                                 course: request.state.course,
                                 courseParticipation:
@@ -6713,13 +6713,13 @@ export default async (application: Application): Promise<void> => {
                               </button>
                             </div>
                             $${(() => {
-                              let courseConversationMessageNewOptionsHTML = html``;
+                              let courseForumConversationMessageNewOptionsHTML = html``;
                               if (
                                 request.state.courseConversation
                                   .courseForumConversationType ===
                                 "courseForumConversationTypeQuestion"
                               )
-                                courseConversationMessageNewOptionsHTML += html`
+                                courseForumConversationMessageNewOptionsHTML += html`
                                   <button
                                     type="button"
                                     class="button button--rectangle button--transparent"
@@ -6742,7 +6742,7 @@ export default async (application: Application): Promise<void> => {
                                         value="courseForumConversationMessageTypeMessage"
                                         required
                                         $${
-                                          (courseConversationMessageDraft ===
+                                          (courseForumConversationMessageDraft ===
                                             undefined &&
                                             !(
                                               request.state.courseConversation
@@ -6756,7 +6756,7 @@ export default async (application: Application): Promise<void> => {
                                                 .courseParticipationRole ===
                                                 "courseParticipationRoleInstructor"
                                             )) ||
-                                          courseConversationMessageDraft?.courseForumConversationMessageType ===
+                                          courseForumConversationMessageDraft?.courseForumConversationMessageType ===
                                             "courseForumConversationMessageTypeMessage"
                                             ? html`checked`
                                             : html``
@@ -6775,7 +6775,7 @@ export default async (application: Application): Promise<void> => {
                                         value="courseForumConversationMessageTypeAnswer"
                                         required
                                         $${
-                                          (courseConversationMessageDraft ===
+                                          (courseForumConversationMessageDraft ===
                                             undefined &&
                                             request.state.courseConversation
                                               .courseForumConversationType ===
@@ -6787,7 +6787,7 @@ export default async (application: Application): Promise<void> => {
                                             request.state.courseParticipation
                                               .courseParticipationRole ===
                                               "courseParticipationRoleInstructor") ||
-                                          courseConversationMessageDraft?.courseForumConversationMessageType ===
+                                          courseForumConversationMessageDraft?.courseForumConversationMessageType ===
                                             "courseForumConversationMessageTypeAnswer"
                                             ? html`checked`
                                             : html``
@@ -6810,7 +6810,7 @@ export default async (application: Application): Promise<void> => {
                                         value="courseForumConversationMessageTypeFollowUpQuestion"
                                         required
                                         $${
-                                          courseConversationMessageDraft?.courseForumConversationMessageType ===
+                                          courseForumConversationMessageDraft?.courseForumConversationMessageType ===
                                           "courseForumConversationMessageTypeFollowUpQuestion"
                                             ? html`checked`
                                             : html``
@@ -6878,7 +6878,7 @@ export default async (application: Application): Promise<void> => {
                                   .courseParticipationRole ===
                                 "courseParticipationRoleInstructor"
                               )
-                                courseConversationMessageNewOptionsHTML += html`
+                                courseForumConversationMessageNewOptionsHTML += html`
                                   <button
                                     type="button"
                                     class="button button--rectangle button--transparent"
@@ -6901,9 +6901,9 @@ export default async (application: Application): Promise<void> => {
                                         value="courseForumConversationMessageVisibilityEveryone"
                                         required
                                         $${
-                                          courseConversationMessageDraft ===
+                                          courseForumConversationMessageDraft ===
                                             undefined ||
-                                          courseConversationMessageDraft.courseForumConversationMessageVisibility ===
+                                          courseForumConversationMessageDraft.courseForumConversationMessageVisibility ===
                                             "courseForumConversationMessageVisibilityEveryone"
                                             ? html`checked`
                                             : html``
@@ -6922,7 +6922,7 @@ export default async (application: Application): Promise<void> => {
                                         value="courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                                         required
                                         $${
-                                          courseConversationMessageDraft?.courseForumConversationMessageVisibility ===
+                                          courseForumConversationMessageDraft?.courseForumConversationMessageVisibility ===
                                           "courseForumConversationMessageVisibilityCourseParticipationRoleInstructors"
                                             ? html`checked`
                                             : html``
@@ -6985,7 +6985,7 @@ export default async (application: Application): Promise<void> => {
                                     .courseParticipationRoleStudentsAnonymityAllowed ===
                                     "courseParticipationRoleStudentsAnonymityAllowedEveryone")
                               )
-                                courseConversationMessageNewOptionsHTML += html`
+                                courseForumConversationMessageNewOptionsHTML += html`
                                   <button
                                     type="button"
                                     class="button button--rectangle button--transparent"
@@ -7019,9 +7019,9 @@ export default async (application: Application): Promise<void> => {
                                         name="courseForumConversationMessageAnonymity"
                                         value="courseForumConversationMessageAnonymityNone"
                                         $${
-                                          courseConversationMessageDraft?.courseForumConversationMessageAnonymity ===
+                                          courseForumConversationMessageDraft?.courseForumConversationMessageAnonymity ===
                                             "courseForumConversationMessageAnonymityNone" ||
-                                          (courseConversationMessageDraft ===
+                                          (courseForumConversationMessageDraft ===
                                             undefined &&
                                             request.state.user
                                               .userAnonymityPreferred ===
@@ -7044,9 +7044,9 @@ export default async (application: Application): Promise<void> => {
                                         value="courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
                                         required
                                         $${
-                                          courseConversationMessageDraft?.courseForumConversationMessageAnonymity ===
+                                          courseForumConversationMessageDraft?.courseForumConversationMessageAnonymity ===
                                             "courseForumConversationMessageAnonymityCourseParticipationRoleStudents" ||
-                                          (courseConversationMessageDraft ===
+                                          (courseForumConversationMessageDraft ===
                                             undefined &&
                                             (request.state.user
                                               .userAnonymityPreferred ===
@@ -7057,7 +7057,7 @@ export default async (application: Application): Promise<void> => {
                                                 request.state.course
                                                   .courseParticipationRoleStudentsAnonymityAllowed !==
                                                   "courseParticipationRoleStudentsAnonymityAllowedEveryone"))) ||
-                                          (courseConversationMessageDraft?.courseForumConversationMessageAnonymity ===
+                                          (courseForumConversationMessageDraft?.courseForumConversationMessageAnonymity ===
                                             "courseForumConversationMessageAnonymityEveryone" &&
                                             request.state.course
                                               .courseParticipationRoleStudentsAnonymityAllowed !==
@@ -7083,9 +7083,9 @@ export default async (application: Application): Promise<void> => {
                                                 value="courseForumConversationMessageAnonymityEveryone"
                                                 required
                                                 $${
-                                                  courseConversationMessageDraft?.courseForumConversationMessageAnonymity ===
+                                                  courseForumConversationMessageDraft?.courseForumConversationMessageAnonymity ===
                                                     "courseForumConversationMessageAnonymityEveryone" ||
-                                                  (courseConversationMessageDraft ===
+                                                  (courseForumConversationMessageDraft ===
                                                     undefined &&
                                                     request.state.user
                                                       .userAnonymityPreferred ===
@@ -7157,7 +7157,7 @@ export default async (application: Application): Promise<void> => {
                                     }
                                   </div>
                                 `;
-                              return courseConversationMessageNewOptionsHTML !==
+                              return courseForumConversationMessageNewOptionsHTML !==
                                 html``
                                 ? html`
                                     <div
@@ -7170,7 +7170,7 @@ export default async (application: Application): Promise<void> => {
                                         row-gap: var(--size--2);
                                       `}"
                                     >
-                                      $${courseConversationMessageNewOptionsHTML}
+                                      $${courseForumConversationMessageNewOptionsHTML}
                                     </div>
                                   `
                                 : html``;
@@ -7442,7 +7442,7 @@ export default async (application: Application): Promise<void> => {
             where "courseConversation" = ${request.state.courseConversation!.id};
           `,
         );
-        for (const courseConversationMessage of application.database.all<{
+        for (const courseForumConversationMessage of application.database.all<{
           id: number;
         }>(
           sql`
@@ -7455,19 +7455,19 @@ export default async (application: Application): Promise<void> => {
           application.database.run(
             sql`
               delete from "courseForumConversationMessageViews"
-              where "courseConversationMessage" = ${courseConversationMessage.id};
+              where "courseForumConversationMessage" = ${courseForumConversationMessage.id};
             `,
           );
           application.database.run(
             sql`
               delete from "courseForumConversationMessageLikes"
-              where "courseConversationMessage" = ${courseConversationMessage.id};
+              where "courseForumConversationMessage" = ${courseForumConversationMessage.id};
             `,
           );
           application.database.run(
             sql`
               delete from "courseForumConversationMessages"
-              where "id" = ${courseConversationMessage.id};
+              where "id" = ${courseForumConversationMessage.id};
             `,
           );
         }

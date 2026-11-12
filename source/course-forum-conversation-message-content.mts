@@ -32,12 +32,12 @@ import { Application } from "./application.mjs";
 
 export type ApplicationCourseForumConversationMessageContent = {
   partials: {
-    courseConversationMessageContentEditor: ({
+    courseForumConversationMessageContentEditor: ({
       course,
       courseParticipation,
       courseConversation,
-      courseConversationMessage,
-      courseConversationMessageContent,
+      courseForumConversationMessage,
+      courseForumConversationMessageContent,
     }: {
       course: {
         id: number;
@@ -58,19 +58,19 @@ export type ApplicationCourseForumConversationMessageContent = {
           | "courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations"
           | "courseForumConversationVisibilityCourseForumConversationParticipations";
       };
-      courseConversationMessage?: {
+      courseForumConversationMessage?: {
         publicId: string;
         content: string;
       };
-      courseConversationMessageContent?: string;
+      courseForumConversationMessageContent?: string;
     }) => HTML;
-    courseConversationMessageContentProcessor: {
+    courseForumConversationMessageContentProcessor: {
       ({
         course,
         courseParticipation,
         courseConversation,
-        courseConversationMessage,
-        courseConversationMessageContent,
+        courseForumConversationMessage,
+        courseForumConversationMessageContent,
         mode,
       }: {
         course: {
@@ -88,26 +88,26 @@ export type ApplicationCourseForumConversationMessageContent = {
         courseConversation?: {
           publicId: string;
         };
-        courseConversationMessage?: {
+        courseForumConversationMessage?: {
           publicId: string;
           createdByCourseParticipation: number | null;
           updatedAt: string | null;
           content: string;
         };
-        courseConversationMessageContent?: string;
+        courseForumConversationMessageContent?: string;
         mode?:
           | "normal"
           | "preview"
           | "textContent"
-          | "programmaticEditingOfCourseConversationMessageContent"
+          | "programmaticEditingOfcourseForumConversationMessageContent"
           | "emailNotification";
       }): Promise<HTML>;
       ({
         course,
         courseParticipation,
         courseConversation,
-        courseConversationMessage,
-        courseConversationMessageContent,
+        courseForumConversationMessage,
+        courseForumConversationMessageContent,
         mode,
       }: {
         course: {
@@ -125,13 +125,13 @@ export type ApplicationCourseForumConversationMessageContent = {
         courseConversation?: {
           publicId: string;
         };
-        courseConversationMessage?: {
+        courseForumConversationMessage?: {
           publicId: string;
           createdByCourseParticipation: number | null;
           updatedAt: string | null;
           content: string;
         };
-        courseConversationMessageContent?: string;
+        courseForumConversationMessageContent?: string;
         mode?: "mentions";
       }): Promise<Set<string>>;
     };
@@ -139,15 +139,15 @@ export type ApplicationCourseForumConversationMessageContent = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.partials.courseConversationMessageContentEditor = ({
+  application.partials.courseForumConversationMessageContentEditor = ({
     course,
     courseParticipation,
     courseConversation,
-    courseConversationMessage,
-    courseConversationMessageContent = courseConversationMessage?.content ?? "",
+    courseForumConversationMessage,
+    courseForumConversationMessageContent = courseForumConversationMessage?.content ?? "",
   }) => html`
     <div
-      key="courseConversationMessageContentEditor"
+      key="courseForumConversationMessageContentEditor"
       class="input--text"
       css="${css`
         padding: var(--size--0);
@@ -156,7 +156,7 @@ export default async (application: Application): Promise<void> => {
       `}"
     >
       <div
-        key="courseConversationMessageContentEditor--menu"
+        key="courseForumConversationMessageContentEditor--menu"
         css="${css`
           color: light-dark(var(--color--slate--600), var(--color--slate--400));
           padding: var(--size--1-5) var(--size--2);
@@ -179,7 +179,7 @@ export default async (application: Application): Promise<void> => {
             javascript="${javascript`
               javascript.popover({ element: this });
               this.onclick = () => {
-                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                 element.focus();
                 const previousSelectionStart = element.selectionStart;
                 if (element.selectionStart === element.selectionEnd) {
@@ -204,7 +204,7 @@ export default async (application: Application): Promise<void> => {
             javascript="${javascript`
               javascript.popover({ element: this });
               this.onclick = () => {
-                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                 element.focus();
                 const previousSelectionStart = element.selectionStart;
                 if (element.selectionStart === element.selectionEnd) {
@@ -272,7 +272,7 @@ export default async (application: Application): Promise<void> => {
                           }
                         )
                       ).text();
-                      const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                      const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                       element.focus();
                       element.selectionStart = element.selectionEnd;
                       document.execCommand("insertText", false, (0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : "") + responseText + " ");
@@ -313,7 +313,7 @@ export default async (application: Application): Promise<void> => {
             javascript="${javascript`
               javascript.popover({ element: this });
               this.onclick = () => {
-                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                 element.focus();
                 element.selectionEnd = element.selectionStart;
                 const previousSelectionStart = element.selectionStart;
@@ -332,7 +332,7 @@ export default async (application: Application): Promise<void> => {
             javascript="${javascript`
               javascript.popover({ element: this });
               this.onclick = () => {
-                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                 element.focus();
                 const previousSelectionStart = element.selectionStart;
                 if (element.selectionStart === element.selectionEnd) {
@@ -357,7 +357,7 @@ export default async (application: Application): Promise<void> => {
             javascript="${javascript`
               javascript.popover({ element: this });
               this.onclick = () => {
-                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                 element.focus();
                 const previousSelectionStart = element.selectionStart;
                 if (element.selectionStart === element.selectionEnd) {
@@ -388,8 +388,8 @@ export default async (application: Application): Promise<void> => {
                 remainOpenWhileFocused: true,
                 placement: "top-start",
                 onshow: () => {
-                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').focus();
-                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').select();
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseForumConversationMessageContentEditor--mention--input"]').focus();
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseForumConversationMessageContentEditor--mention--input"]').select();
                 },
               });
             `}"
@@ -398,7 +398,7 @@ export default async (application: Application): Promise<void> => {
           </button>
           <div type="popover">Mention</div>
           <div
-            key="courseConversationMessageContentEditor--mention"
+            key="courseForumConversationMessageContentEditor--mention"
             type="popover"
             css="${css`
               display: flex;
@@ -411,7 +411,7 @@ export default async (application: Application): Promise<void> => {
               class="button button--rectangle button--transparent button--dropdown-menu"
               javascript="${javascript`
                 this.onclick = () => {
-                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                  const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                   element.click();
                   element.focus();
                   element.selectionEnd = element.selectionStart;
@@ -426,7 +426,7 @@ export default async (application: Application): Promise<void> => {
               class="button button--rectangle button--transparent button--dropdown-menu"
               javascript="${javascript`
                 this.onclick = () => {
-                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                  const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                   element.click();
                   element.focus();
                   element.selectionEnd = element.selectionStart;
@@ -441,7 +441,7 @@ export default async (application: Application): Promise<void> => {
               class="button button--rectangle button--transparent button--dropdown-menu"
               javascript="${javascript`
                 this.onclick = () => {
-                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                  const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                   element.click();
                   element.focus();
                   element.selectionEnd = element.selectionStart;
@@ -453,7 +453,7 @@ export default async (application: Application): Promise<void> => {
             </button>
             <hr class="separator" />
             <input
-              key="courseConversationMessageContentEditor--mention--input"
+              key="courseForumConversationMessageContentEditor--mention--input"
               type="text"
               placeholder="Search…"
               maxlength="3000"
@@ -462,8 +462,8 @@ export default async (application: Application): Promise<void> => {
                 this.isModified = false;
                 this.onkeyup = utilities.throttle(() => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                  for (const element of this.closest('[key~="courseConversationMessageContentEditor--mention"]').querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipations"]').children) {
-                    const nameElement = element.querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipation--name"]');
+                  for (const element of this.closest('[key~="courseForumConversationMessageContentEditor--mention"]').querySelector('[key~="courseForumConversationMessageContentEditor--mention--courseParticipations"]').children) {
+                    const nameElement = element.querySelector('[key~="courseForumConversationMessageContentEditor--mention--courseParticipation--name"]');
                     nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
                     nameElement.morph = nameElement.querySelector("span") === null;
                     element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
@@ -472,7 +472,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             />
             <div
-              key="courseConversationMessageContentEditor--mention--courseParticipations"
+              key="courseForumConversationMessageContentEditor--mention--courseParticipations"
               css="${css`
                 height: var(--size--28);
                 padding: var(--size--1) var(--size--2);
@@ -586,7 +586,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                       javascript="${javascript`
                         this.onclick = () => {
-                          const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                          const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                           element.click();
                           element.focus();
                           element.selectionEnd = element.selectionStart;
@@ -603,7 +603,7 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         <span
-                          key="courseConversationMessageContentEditor--mention--courseParticipation--name"
+                          key="courseForumConversationMessageContentEditor--mention--courseParticipation--name"
                           javascript="${javascript`
                             this.name = ${courseParticipationUser.name};
                           `}"
@@ -643,8 +643,8 @@ export default async (application: Application): Promise<void> => {
                 remainOpenWhileFocused: true,
                 placement: "top-start",
                 onshow: () => {
-                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--reference--input"]').focus();
-                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--reference--input"]').select();
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseForumConversationMessageContentEditor--reference--input"]').focus();
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseForumConversationMessageContentEditor--reference--input"]').select();
                 },
               });
             `}"
@@ -653,7 +653,7 @@ export default async (application: Application): Promise<void> => {
           </button>
           <div type="popover">Reference</div>
           <div
-            key="courseConversationMessageContentEditor--reference"
+            key="courseForumConversationMessageContentEditor--reference"
             type="popover"
             css="${css`
               display: flex;
@@ -662,7 +662,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <input
-              key="courseConversationMessageContentEditor--reference--input"
+              key="courseForumConversationMessageContentEditor--reference--input"
               type="text"
               placeholder="Search…"
               maxlength="3000"
@@ -671,8 +671,8 @@ export default async (application: Application): Promise<void> => {
                 this.isModified = false;
                 this.onkeyup = utilities.throttle(() => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                  for (const element of this.closest('[key~="courseConversationMessageContentEditor--reference"]').querySelector('[key~="courseConversationMessageContentEditor--reference--courseConversations"]').children) {
-                    const titleElement = element.querySelector('[key~="courseConversationMessageContentEditor--reference--courseConversation--title"]');
+                  for (const element of this.closest('[key~="courseForumConversationMessageContentEditor--reference"]').querySelector('[key~="courseForumConversationMessageContentEditor--reference--courseConversations"]').children) {
+                    const titleElement = element.querySelector('[key~="courseForumConversationMessageContentEditor--reference--courseConversation--title"]');
                     titleElement.innerHTML = utilities.highlight(html\`\${titleElement.title}\`, search, { prefix: true });
                     titleElement.morph = titleElement.querySelector("span") === null;
                     element.hidden = 0 < search.size && titleElement.querySelector("span") === null;
@@ -681,7 +681,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             />
             <div
-              key="courseConversationMessageContentEditor--reference--courseConversations"
+              key="courseForumConversationMessageContentEditor--reference--courseConversations"
               css="${css`
                 height: var(--size--60);
                 padding: var(--size--1) var(--size--2);
@@ -732,7 +732,7 @@ export default async (application: Application): Promise<void> => {
                       class="button button--rectangle button--transparent button--dropdown-menu"
                       javascript="${javascript`
                         this.onclick = () => {
-                          const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                          const element = this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]');
                           element.click();
                           element.focus();
                           element.selectionEnd = element.selectionStart;
@@ -753,7 +753,7 @@ export default async (application: Application): Promise<void> => {
                         >#${courseConversation.publicId}</span
                       >
                       <span
-                        key="courseConversationMessageContentEditor--reference--courseConversation--title"
+                        key="courseForumConversationMessageContentEditor--reference--courseConversation--title"
                         javascript="${javascript`
                           this.title = ${courseConversation.title};
                         `}"
@@ -783,7 +783,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <input
-              key="courseConversationMessageContentEditor--richTextClipboard"
+              key="courseForumConversationMessageContentEditor--richTextClipboard"
               type="checkbox"
               hidden
             />
@@ -815,7 +815,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </label>
           <button
-            key="courseConversationMessageContentEditor--preview--button"
+            key="courseForumConversationMessageContentEditor--preview--button"
             type="button"
             class="button button--square button--icon button--transparent"
             css="${css`
@@ -824,37 +824,37 @@ export default async (application: Application): Promise<void> => {
             javascript="${javascript`
               javascript.popover({ element: this });
               this.onclick = async () => {
-                if (this.closest('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === null)
+                if (this.closest('[key~="courseForumConversationMessageContentEditor"]').getAttribute("state") === null)
                   try {
-                    if (!javascript.validate(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]'))) return;
-                    this.closest('[key~="courseConversationMessageContentEditor"]').setAttribute("state", "loading");
+                    if (!javascript.validate(this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]'))) return;
+                    this.closest('[key~="courseForumConversationMessageContentEditor"]').setAttribute("state", "loading");
                     this.updateClass();
                     this.abortController = new AbortController();
                     javascript.mount(
-                      this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--preview"]').firstElementChild,
+                      this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--preview"]').firstElementChild,
                       await (
                         await fetch(
-                          ${`/courses/${course.publicId}${courseConversation !== undefined ? `/forum/${courseConversation.publicId}` : ""}/messages${courseConversationMessage !== undefined ? `/${courseConversationMessage.publicId}` : ""}/preview`}, {
+                          ${`/courses/${course.publicId}${courseConversation !== undefined ? `/forum/${courseConversation.publicId}` : ""}/messages${courseForumConversationMessage !== undefined ? `/${courseForumConversationMessage.publicId}` : ""}/preview`}, {
                             method: "POST",
                             headers: { "CSRF-Protection": "true" },
-                            body: new URLSearchParams(javascript.serialize(this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]'))),
+                            body: new URLSearchParams(javascript.serialize(this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--textarea"]'))),
                             signal: this.abortController.signal,
                           }
                         )
                       ).text()
                     );
-                    this.closest('[key~="courseConversationMessageContentEditor"]').setAttribute("state", "preview");
+                    this.closest('[key~="courseForumConversationMessageContentEditor"]').setAttribute("state", "preview");
                   } catch (error) {
                     if (error.name !== "AbortError") throw error;
                   }
                 else {
                   this.abortController.abort();
-                  this.closest('[key~="courseConversationMessageContentEditor"]').removeAttribute("state");
+                  this.closest('[key~="courseForumConversationMessageContentEditor"]').removeAttribute("state");
                   this.updateClass();
                 }
               };
               this.updateClass = () => {
-                if (typeof this.closest('[key~="courseConversationMessageContentEditor"]').getAttribute("state") === "string")
+                if (typeof this.closest('[key~="courseForumConversationMessageContentEditor"]').getAttribute("state") === "string")
                   this.classList.add("button--blue");
                 else
                   this.classList.remove("button--blue");
@@ -879,7 +879,7 @@ export default async (application: Application): Promise<void> => {
         </div>
       </div>
       <div
-        key="courseConversationMessageContentEditor--main"
+        key="courseForumConversationMessageContentEditor--main"
         css="${css`
           display: flex;
           justify-content: center;
@@ -891,7 +891,7 @@ export default async (application: Application): Promise<void> => {
         `}"
       >
         <textarea
-          key="courseConversationMessageContentEditor--textarea"
+          key="courseForumConversationMessageContentEditor--textarea"
           name="content"
           required
           css="${css`
@@ -910,12 +910,12 @@ export default async (application: Application): Promise<void> => {
                 var(--color--blue--800)
               );
             }
-            [key~="courseConversationMessageContentEditor"][state] & {
+            [key~="courseForumConversationMessageContentEditor"][state] & {
               display: none;
             }
           `}"
           javascript="${javascript`
-            const mayAttachFileOrImagesToCourseConversationMessageContent = ${!(
+            const mayAttachFileOrImagesTocourseForumConversationMessageContent = ${!(
               Boolean(
                 course.courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages,
               ) === false &&
@@ -923,14 +923,14 @@ export default async (application: Application): Promise<void> => {
                 "courseParticipationRoleStudent"
             )};
             this.onpaste = async (event) => {
-              if (mayAttachFileOrImagesToCourseConversationMessageContent && 0 < event.clipboardData.files.length) {
+              if (mayAttachFileOrImagesTocourseForumConversationMessageContent && 0 < event.clipboardData.files.length) {
                 event.preventDefault();
-                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.clipboardData.files;
-                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(new Event("input", { bubbles: true }));
+                this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.clipboardData.files;
+                this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(new Event("input", { bubbles: true }));
                 return;
               }
               if (
-                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--richTextClipboard"]').checked &&
+                this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[key~="courseForumConversationMessageContentEditor--richTextClipboard"]').checked &&
                 event.clipboardData.types.includes("text/html")
               ) {
                 event.preventDefault();
@@ -950,7 +950,7 @@ export default async (application: Application): Promise<void> => {
                 return;
               }
             };
-            if (mayAttachFileOrImagesToCourseConversationMessageContent) {
+            if (mayAttachFileOrImagesTocourseForumConversationMessageContent) {
               this.ondragenter = (event) => {
                 if (!event.dataTransfer.types.includes("Files")) return;
                 event.preventDefault();
@@ -969,15 +969,15 @@ export default async (application: Application): Promise<void> => {
                 if (event.dataTransfer.files.length === 0) return;
                 event.preventDefault();
                 javascript.stateRemove(this, "dragging");
-                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.dataTransfer.files;
-                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(new Event("input", { bubbles: true }));
+                this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').files = event.dataTransfer.files;
+                this.closest('[key~="courseForumConversationMessageContentEditor"]').querySelector('[name="attachments[]"]').dispatchEvent(new Event("input", { bubbles: true }));
               };
             }
           `}"
         >
-${courseConversationMessageContent}</textarea>
+${courseForumConversationMessageContent}</textarea>
         <div
-          key="courseConversationMessageContentEditor--loading"
+          key="courseForumConversationMessageContentEditor--loading"
           css="${css`
             font-size: var(--size--12);
             color: light-dark(
@@ -989,7 +989,7 @@ ${courseConversationMessageContent}</textarea>
             justify-content: center;
             align-items: center;
             animation: var(--animation--pulse);
-            [key~="courseConversationMessageContentEditor"]:not(
+            [key~="courseForumConversationMessageContentEditor"]:not(
                 [state~="loading"]
               )
               & {
@@ -1000,10 +1000,10 @@ ${courseConversationMessageContent}</textarea>
           <i class="bi bi-three-dots"></i>
         </div>
         <div
-          key="courseConversationMessageContentEditor--preview"
+          key="courseForumConversationMessageContentEditor--preview"
           css="${css`
             min-width: var(--size--0);
-            [key~="courseConversationMessageContentEditor"]:not(
+            [key~="courseForumConversationMessageContentEditor"]:not(
                 [state~="preview"]
               )
               & {
@@ -1148,18 +1148,18 @@ ${courseConversationMessageContent}</textarea>
   application.webServer?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)(?:/forum/(?<courseConversationPublicId>[0-9]+))?/messages(?:/(?<courseConversationMessagePublicId>[0-9]+))?/preview$",
+      "^/courses/(?<coursePublicId>[0-9]+)(?:/forum/(?<courseConversationPublicId>[0-9]+))?/messages(?:/(?<courseForumConversationMessagePublicId>[0-9]+))?/preview$",
     ),
     handler: async (
       request: serverTypes.Request<
         {
           courseConversationPublicId: string;
-          courseConversationMessagePublicId: string;
+          courseForumConversationMessagePublicId: string;
         },
         {},
         {},
         { content: string },
-        Application["types"]["states"]["CourseConversationMessage"]
+        Application["types"]["states"]["courseForumConversationMessage"]
       >,
       response,
     ) => {
@@ -1169,9 +1169,9 @@ ${courseConversationMessageContent}</textarea>
         request.state.courseParticipation === undefined ||
         (typeof request.pathname.courseConversationPublicId === "string" &&
           request.state.courseConversation === undefined) ||
-        (typeof request.pathname.courseConversationMessagePublicId ===
+        (typeof request.pathname.courseForumConversationMessagePublicId ===
           "string" &&
-          request.state.courseConversationMessage === undefined)
+          request.state.courseForumConversationMessage === undefined)
       )
         return;
       if (
@@ -1180,12 +1180,12 @@ ${courseConversationMessageContent}</textarea>
       )
         throw "validation";
       response.send(
-        await application.partials.courseConversationMessageContentProcessor({
+        await application.partials.courseForumConversationMessageContentProcessor({
           course: request.state.course,
           courseParticipation: request.state.courseParticipation,
           courseConversation: request.state.courseConversation,
-          courseConversationMessage: request.state.courseConversationMessage,
-          courseConversationMessageContent: request.body.content,
+          courseForumConversationMessage: request.state.courseForumConversationMessage,
+          courseForumConversationMessageContent: request.body.content,
           mode: "preview",
         }),
       );
@@ -1238,11 +1238,11 @@ ${courseConversationMessageContent}</textarea>
               >
                 Help · Message formatting
               </div>
-              $${await application.partials.courseConversationMessageContentProcessor(
+              $${await application.partials.courseForumConversationMessageContentProcessor(
                 {
                   course: request.state.course,
                   courseParticipation: request.state.courseParticipation,
-                  courseConversationMessageContent: markdown`
+                  courseForumConversationMessageContent: markdown`
 <table>
 <thead>
 <tr>
@@ -1691,11 +1691,11 @@ const hello = "world";
                   mode: "preview",
                 },
               )}
-              $${await application.partials.courseConversationMessageContentProcessor(
+              $${await application.partials.courseForumConversationMessageContentProcessor(
                 {
                   course: request.state.course,
                   courseParticipation: request.state.courseParticipation,
-                  courseConversationMessageContent: markdown`
+                  courseForumConversationMessageContent: markdown`
 ---
 
 You may also use the buttons on the message content editor to ${
@@ -1717,7 +1717,7 @@ You may also use the buttons on the message content editor to ${
                   mode: "preview",
                 },
               )}
-              $${application.partials.courseConversationMessageContentEditor({
+              $${application.partials.courseForumConversationMessageContentEditor({
                 course: request.state.course,
                 courseParticipation: request.state.courseParticipation,
               })}
@@ -1728,12 +1728,12 @@ You may also use the buttons on the message content editor to ${
     },
   });
 
-  application.partials.courseConversationMessageContentProcessor = async ({
+  application.partials.courseForumConversationMessageContentProcessor = async ({
     course,
     courseParticipation,
     courseConversation,
-    courseConversationMessage,
-    courseConversationMessageContent = courseConversationMessage?.content ??
+    courseForumConversationMessage,
+    courseForumConversationMessageContent = courseForumConversationMessage?.content ??
       (() => {
         throw new Error();
       })(),
@@ -1746,15 +1746,15 @@ You may also use the buttons on the message content editor to ${
             coursePublicId: course.publicId,
             courseParticipationPublicId: courseParticipation?.publicId,
             courseConversationPublicId: courseConversation?.publicId,
-            courseConversationMessagePublicId:
-              courseConversationMessage?.publicId,
-            courseConversationMessageUpdatedAt:
-              courseConversationMessage?.updatedAt,
+            courseForumConversationMessagePublicId:
+              courseForumConversationMessage?.publicId,
+            courseForumConversationMessageUpdatedAt:
+              courseForumConversationMessage?.updatedAt,
           }),
-          courseConversationMessageContentProcessor,
+          courseForumConversationMessageContentProcessor,
         )
-      : courseConversationMessageContentProcessor());
-    async function courseConversationMessageContentProcessor() {
+      : courseForumConversationMessageContentProcessor());
+    async function courseForumConversationMessageContentProcessor() {
       const mentions = new Set<string>();
       const processedMarkdown = (
         await unified()
@@ -1770,7 +1770,7 @@ You may also use the buttons on the message content editor to ${
                 if (
                   ((mode === "normal" && topLevel) ||
                     mode ===
-                      "programmaticEditingOfCourseConversationMessageContent") &&
+                      "programmaticEditingOfcourseForumConversationMessageContent") &&
                   typeof node.position?.start?.offset === "number" &&
                   typeof node.position?.end?.offset === "number"
                 )
@@ -1786,7 +1786,7 @@ You may also use the buttons on the message content editor to ${
             }
           })
           .use(rehypeStringify)
-          .process(courseConversationMessageContent)
+          .process(courseForumConversationMessageContent)
       ).value;
       if (typeof processedMarkdown !== "string") throw new Error();
       const document = new DOMParser()
@@ -1796,8 +1796,8 @@ You may also use the buttons on the message content editor to ${
             <html>
               <body>
                 <div
-                  key="courseConversationMessageContent ${
-                    courseConversationMessage?.publicId ?? ""
+                  key="courseForumConversationMessageContent ${
+                    courseForumConversationMessage?.publicId ?? ""
                   }"
                   css="${css`
                     h1,
@@ -2239,7 +2239,7 @@ You may also use the buttons on the message content editor to ${
             }/courses/${course.publicId}/forum/${
               courseConversation!.publicId
             }?${new URLSearchParams({
-              message: courseConversationMessage!.publicId,
+              message: courseForumConversationMessage!.publicId,
             }).toString()}"
             >[Video]</a
           >`;
@@ -2262,7 +2262,7 @@ You may also use the buttons on the message content editor to ${
             }/courses/${course.publicId}/forum/${
               courseConversation!.publicId
             }?${new URLSearchParams({
-              message: courseConversationMessage!.publicId,
+              message: courseForumConversationMessage!.publicId,
             }).toString()}"
             >[Audio]</a
           >`;
@@ -2285,7 +2285,7 @@ You may also use the buttons on the message content editor to ${
                 }/courses/${course.publicId}/forum/${
                   courseConversation!.publicId
                 }?${new URLSearchParams({
-                  message: courseConversationMessage!.publicId,
+                  message: courseForumConversationMessage!.publicId,
                 }).toString()}"
                 >[Poll]</a
               >
@@ -2298,7 +2298,7 @@ You may also use the buttons on the message content editor to ${
           ...element.children[0].children,
         ].entries()) {
           const votesElement = pollOption.querySelector("votes");
-          if (mode !== "programmaticEditingOfCourseConversationMessageContent")
+          if (mode !== "programmaticEditingOfcourseForumConversationMessageContent")
             votesElement?.remove();
           pollOption.votes =
             votesElement === null ? [] : JSON.parse(votesElement.textContent);
@@ -2307,7 +2307,7 @@ You may also use the buttons on the message content editor to ${
             .querySelector("input")
             .setAttribute(
               "name",
-              "courseConversationMessageContentPollOptions[]",
+              "courseForumConversationMessageContentPollOptions[]",
             );
           pollOption
             .querySelector("input")
@@ -2340,7 +2340,7 @@ You may also use the buttons on the message content editor to ${
             (courseParticipation.courseParticipationRole ===
               "courseParticipationRoleInstructor" ||
               courseParticipation.id ===
-                courseConversationMessage?.createdByCourseParticipation)) ||
+                courseForumConversationMessage?.createdByCourseParticipation)) ||
             element.querySelector("input:checked") !== null ||
             course.courseState === "courseStateArchived")
         )
@@ -2402,7 +2402,7 @@ You may also use the buttons on the message content editor to ${
                   >
                     $${pollOption.votes.map(
                       (voteCourseParticipationPublicId: string) => {
-                        const courseConversationMessageContentPollOptionVoteCourseParticipation =
+                        const courseForumConversationMessageContentPollOptionVoteCourseParticipation =
                           application.database.get<{
                             user: number;
                             courseParticipationRole:
@@ -2419,8 +2419,8 @@ You may also use the buttons on the message content editor to ${
                                 "course" = ${course.id};
                             `,
                           );
-                        const courseConversationMessageContentPollOptionVoteUser =
-                          courseConversationMessageContentPollOptionVoteCourseParticipation !==
+                        const courseForumConversationMessageContentPollOptionVoteUser =
+                          courseForumConversationMessageContentPollOptionVoteCourseParticipation !==
                           undefined
                             ? application.database.get<{
                                 id: number;
@@ -2454,7 +2454,7 @@ You may also use the buttons on the message content editor to ${
                                     "avatarColor",
                                     "avatarImage"
                                   from "users"
-                                  where "id" = ${courseConversationMessageContentPollOptionVoteCourseParticipation.user};
+                                  where "id" = ${courseForumConversationMessageContentPollOptionVoteCourseParticipation.user};
                                 `,
                               )
                             : undefined;
@@ -2467,7 +2467,7 @@ You may also use the buttons on the message content editor to ${
                           >
                             $${application.partials.userAvatar({
                               user:
-                                courseConversationMessageContentPollOptionVoteUser ??
+                                courseForumConversationMessageContentPollOptionVoteUser ??
                                 "courseParticipationDeleted",
                             })}
                             <div
@@ -2476,10 +2476,10 @@ You may also use the buttons on the message content editor to ${
                               `}"
                             >
                               ${
-                                courseConversationMessageContentPollOptionVoteUser?.name ??
+                                courseForumConversationMessageContentPollOptionVoteUser?.name ??
                                 "Deleted course participant"
                               }$${
-                                courseConversationMessageContentPollOptionVoteCourseParticipation?.courseParticipationRole ===
+                                courseForumConversationMessageContentPollOptionVoteCourseParticipation?.courseParticipationRole ===
                                 "courseParticipationRoleInstructor"
                                   ? html`<span
                                       css="${css`
@@ -2544,8 +2544,8 @@ You may also use the buttons on the message content editor to ${
                 ? `/forum/${courseConversation.publicId}`
                 : ""
             }${
-              courseConversationMessage !== undefined
-                ? `/messages/${courseConversationMessage.publicId}`
+              courseForumConversationMessage !== undefined
+                ? `/messages/${courseForumConversationMessage.publicId}`
                 : ""
             }/polls/${String(elementIndex)}"
           >
@@ -2637,7 +2637,7 @@ You may also use the buttons on the message content editor to ${
                   }/courses/${course.publicId}/forum/${
                     courseConversation!.publicId
                   }${new URLSearchParams({
-                    message: courseConversationMessage!.publicId,
+                    message: courseForumConversationMessage!.publicId,
                   }).toString()}"
                   >[Mathematics]</a
                 >
@@ -2650,7 +2650,7 @@ You may also use the buttons on the message content editor to ${
               }/courses/${course.publicId}/forum/${
                 courseConversation!.publicId
               }${new URLSearchParams({
-                message: courseConversationMessage!.publicId,
+                message: courseForumConversationMessage!.publicId,
               }).toString()}"
               >[mathematics]</a
             >`;
@@ -2723,7 +2723,7 @@ You may also use the buttons on the message content editor to ${
         const githubSlugger = new GitHubSlugger();
         for (const element of document.querySelectorAll("[id]")) {
           const originalId = element.getAttribute("id");
-          const newId = `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(originalId)}`;
+          const newId = `${courseForumConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(originalId)}`;
           element.setAttribute("id", newId);
           for (const element of document.querySelectorAll(
             `a[href="#${originalId}"]`,
@@ -2735,7 +2735,7 @@ You may also use the buttons on the message content editor to ${
         )) {
           const id =
             element.getAttribute("id") ??
-            `${courseConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(element.textContent)}`;
+            `${courseForumConversationMessage?.publicId ?? "new-message"}--${githubSlugger.slug(element.textContent)}`;
           element.setAttribute("id", id);
           element.insertAdjacentHTML(
             "afterbegin",
@@ -2844,11 +2844,11 @@ You may also use the buttons on the message content editor to ${
                 },
               )
               .replaceAll(
-                /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseConversationMessagePublicId>\d+))?/g,
+                /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseForumConversationMessagePublicId>\d+))?/g,
                 (
                   match,
                   courseConversationPublicId,
-                  courseConversationMessagePublicId,
+                  courseForumConversationMessagePublicId,
                 ) => {
                   const mentionCourseConversation = application.database.get<{
                     id: number;
@@ -2889,7 +2889,7 @@ You may also use the buttons on the message content editor to ${
                     `,
                   );
                   if (mentionCourseConversation === undefined) return match;
-                  if (courseConversationMessagePublicId === undefined)
+                  if (courseForumConversationMessagePublicId === undefined)
                     return html`
                       <a
                         href="/courses/${course.publicId}/forum/${mentionCourseConversation.publicId}"
@@ -2897,13 +2897,13 @@ You may also use the buttons on the message content editor to ${
                         >${match}</a
                       >
                     `;
-                  const mentionCourseConversationMessage =
+                  const mentioncourseForumConversationMessage =
                     application.database.get<{ publicId: string }>(
                       sql`
                         select "publicId"
                         from "courseForumConversationMessages"
                         where
-                          "publicId" = ${courseConversationMessagePublicId} and
+                          "publicId" = ${courseForumConversationMessagePublicId} and
                           "courseConversation" = ${mentionCourseConversation.id} ${
                             courseParticipation === undefined ||
                             courseParticipation.courseParticipationRole ===
@@ -2916,12 +2916,12 @@ You may also use the buttons on the message content editor to ${
                           };
                       `,
                     );
-                  if (mentionCourseConversationMessage === undefined)
+                  if (mentioncourseForumConversationMessage === undefined)
                     return match;
                   return html`
                     <a
                       href="/courses/${course.publicId}/forum/${mentionCourseConversation.publicId}?${new URLSearchParams(
-                        { message: mentionCourseConversationMessage.publicId },
+                        { message: mentioncourseForumConversationMessage.publicId },
                       ).toString()}"
                       class="link"
                       >${match}</a
@@ -2948,7 +2948,7 @@ You may also use the buttons on the message content editor to ${
           .getAttribute("href")
           .match(
             new RegExp(
-              `^https://${RegExp.escape(application.userConfiguration.hostname)}/courses/${course.publicId}/(?:forum|conversations)/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
+              `^https://${RegExp.escape(application.userConfiguration.hostname)}/courses/${course.publicId}/(?:forum|conversations)/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseForumConversationMessagePublicId>\\d+))?$`,
             ),
           );
         if (match === null) continue;
@@ -2990,18 +2990,18 @@ You may also use the buttons on the message content editor to ${
           `,
         );
         if (mentionCourseConversation === undefined) continue;
-        if (match.groups.courseConversationMessagePublicId === undefined) {
+        if (match.groups.courseForumConversationMessagePublicId === undefined) {
           element.textContent = `#${mentionCourseConversation.publicId}`;
           continue;
         }
-        const mentionCourseConversationMessage = application.database.get<{
+        const mentioncourseForumConversationMessage = application.database.get<{
           publicId: string;
         }>(
           sql`
             select "publicId"
             from "courseForumConversationMessages"
             where
-              "publicId" = ${match.groups.courseConversationMessagePublicId} and
+              "publicId" = ${match.groups.courseForumConversationMessagePublicId} and
               "courseConversation" = ${mentionCourseConversation.id} ${
                 courseParticipation === undefined ||
                 courseParticipation.courseParticipationRole ===
@@ -3014,8 +3014,8 @@ You may also use the buttons on the message content editor to ${
               };
           `,
         );
-        if (mentionCourseConversationMessage === undefined) continue;
-        element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
+        if (mentioncourseForumConversationMessage === undefined) continue;
+        element.textContent = `#${mentionCourseConversation.publicId}/${mentioncourseForumConversationMessage.publicId}`;
       }
       for (const element of document.querySelectorAll("a"))
         if (mode === "emailNotification")
@@ -3052,38 +3052,38 @@ You may also use the buttons on the message content editor to ${
   application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/polls/(?<courseConversationMessageContentPollIndex>[0-9]+)$",
+      "^/courses/(?<coursePublicId>[0-9]+)/forum/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseForumConversationMessagePublicId>[0-9]+)/polls/(?<courseForumConversationMessageContentPollIndex>[0-9]+)$",
     ),
     handler: async (
       request: serverTypes.Request<
-        { courseConversationMessageContentPollIndex: string },
+        { courseForumConversationMessageContentPollIndex: string },
         {},
         {},
-        { courseConversationMessageContentPollOptions: string[] },
-        Application["types"]["states"]["CourseConversationMessage"]
+        { courseForumConversationMessageContentPollOptions: string[] },
+        Application["types"]["states"]["courseForumConversationMessage"]
       >,
       response,
     ) => {
       if (
-        typeof request.pathname.courseConversationMessageContentPollIndex !==
+        typeof request.pathname.courseForumConversationMessageContentPollIndex !==
           "string" ||
         request.state.course === undefined ||
         request.state.course.courseState !== "courseStateActive" ||
         request.state.courseParticipation === undefined ||
         request.state.courseConversation === undefined ||
-        request.state.courseConversationMessage === undefined
+        request.state.courseForumConversationMessage === undefined
       )
         return;
-      request.body.courseConversationMessageContentPollOptions ??= [];
+      request.body.courseForumConversationMessageContentPollOptions ??= [];
       if (
         !Array.isArray(
-          request.body.courseConversationMessageContentPollOptions,
+          request.body.courseForumConversationMessageContentPollOptions,
         ) ||
-        request.body.courseConversationMessageContentPollOptions.length === 0 ||
-        request.body.courseConversationMessageContentPollOptions.some(
-          (courseConversationMessageContentPollOption) =>
-            typeof courseConversationMessageContentPollOption !== "string" ||
-            !courseConversationMessageContentPollOption.match(/^[0-9]+$/),
+        request.body.courseForumConversationMessageContentPollOptions.length === 0 ||
+        request.body.courseForumConversationMessageContentPollOptions.some(
+          (courseForumConversationMessageContentPollOption) =>
+            typeof courseForumConversationMessageContentPollOption !== "string" ||
+            !courseForumConversationMessageContentPollOption.match(/^[0-9]+$/),
         )
       )
         throw "validation";
@@ -3093,14 +3093,14 @@ You may also use the buttons on the message content editor to ${
             <!doctype html>
             <html>
               <body>
-                $${await application.partials.courseConversationMessageContentProcessor(
+                $${await application.partials.courseForumConversationMessageContentProcessor(
                   {
                     course: request.state.course,
                     courseParticipation: request.state.courseParticipation,
                     courseConversation: request.state.courseConversation,
-                    courseConversationMessage:
-                      request.state.courseConversationMessage,
-                    mode: "programmaticEditingOfCourseConversationMessageContent",
+                    courseForumConversationMessage:
+                      request.state.courseForumConversationMessage,
+                    mode: "programmaticEditingOfcourseForumConversationMessageContent",
                   },
                 )}
               </body>
@@ -3110,27 +3110,27 @@ You may also use the buttons on the message content editor to ${
         )
         .querySelector("div");
       for (const [
-        courseConversationMessageContentPollOptionIndex,
-        courseConversationMessageContentPollOption,
+        courseForumConversationMessageContentPollOptionIndex,
+        courseForumConversationMessageContentPollOption,
       ] of [
         ...(
           document
             .querySelectorAll('[type~="poll"]')
             [
-              Number(request.pathname.courseConversationMessageContentPollIndex)
+              Number(request.pathname.courseForumConversationMessageContentPollIndex)
             ]?.querySelectorAll(":scope > ul > li") ?? []
         ).entries(),
       ].reverse()) {
         const votesElement =
-          courseConversationMessageContentPollOption.querySelector("votes");
+          courseForumConversationMessageContentPollOption.querySelector("votes");
         const votes = new Set(
           votesElement !== null
             ? JSON.parse(votesElement.textContent)
             : undefined,
         );
         if (
-          request.body.courseConversationMessageContentPollOptions.includes(
-            String(courseConversationMessageContentPollOptionIndex),
+          request.body.courseForumConversationMessageContentPollOptions.includes(
+            String(courseForumConversationMessageContentPollOptionIndex),
           )
         )
           votes.add(request.state.courseParticipation.publicId);
@@ -3140,13 +3140,13 @@ You may also use the buttons on the message content editor to ${
             ? JSON.parse(votesElement.getAttribute("data-position"))
             : (() => {
                 const position = JSON.parse(
-                  courseConversationMessageContentPollOption.getAttribute(
+                  courseForumConversationMessageContentPollOption.getAttribute(
                     "data-position",
                   ),
                 );
                 const votesStart =
                   position.start +
-                  (request.state.courseConversationMessage.content
+                  (request.state.courseForumConversationMessage.content
                     .slice(position.start)
                     .match(/^-\s+\[[\sx]+\]\s+/)?.[0]?.length ??
                     (() => {
@@ -3154,19 +3154,19 @@ You may also use the buttons on the message content editor to ${
                     })());
                 return { start: votesStart, end: votesStart };
               })();
-        request.state.courseConversationMessage.content =
-          request.state.courseConversationMessage.content.slice(
+        request.state.courseForumConversationMessage.content =
+          request.state.courseForumConversationMessage.content.slice(
             0,
             position.start,
           ) +
           html`<votes>${JSON.stringify([...votes])}</votes>` +
-          request.state.courseConversationMessage.content.slice(position.end);
+          request.state.courseForumConversationMessage.content.slice(position.end);
       }
       const contentTextContent =
-        await application.partials.courseConversationMessageContentProcessor({
+        await application.partials.courseForumConversationMessageContentProcessor({
           course: request.state.course,
-          courseConversationMessageContent:
-            request.state.courseConversationMessage.content,
+          courseForumConversationMessageContent:
+            request.state.courseForumConversationMessage.content,
           mode: "textContent",
         });
       const contentSemanticSearch = await (
@@ -3191,7 +3191,7 @@ You may also use the buttons on the message content editor to ${
           update "courseForumConversationMessages"
           set
             "updatedAt" = ${Temporal.Now.instant().toString()},
-            "content" = ${request.state.courseConversationMessage.content},
+            "content" = ${request.state.courseForumConversationMessage.content},
             "contentLexicalSearch" = ${utilities
               .tokenize(contentTextContent, {
                 stopWords: application.applicationConfiguration.stopWords,
@@ -3202,7 +3202,7 @@ You may also use the buttons on the message content editor to ${
             "contentSemanticSearch" = vec_f32(${contentSemanticSearch}),
             "contentSentimentAnalysisType" = ${contentSentimentAnalysis.label},
             "contentSentimentAnalysisIntensity" = ${contentSentimentAnalysis.score}
-          where "id" = ${request.state.courseConversationMessage.id};
+          where "id" = ${request.state.courseForumConversationMessage.id};
         `,
       );
       response.redirect!(

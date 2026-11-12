@@ -789,7 +789,7 @@ export default async (application: Application): Promise<void> => {
                                   )}
                                 </div>
                                 $${(() => {
-                                  const mostRecentCourseConversationMessage =
+                                  const mostRecentcourseForumConversationMessage =
                                     application.database.get<{
                                       createdAt: string;
                                     }>(
@@ -803,7 +803,7 @@ export default async (application: Application): Promise<void> => {
                                         limit 1;
                                       `,
                                     );
-                                  return mostRecentCourseConversationMessage !==
+                                  return mostRecentcourseForumConversationMessage !==
                                     undefined
                                     ? html`
                                         <div>
@@ -819,9 +819,9 @@ export default async (application: Application): Promise<void> => {
                                             javascript="${javascript`
                                               javascript.popover({ element: this });
                                             `}"
-                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(mostRecentCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(mostRecentcourseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
                                           ><span type="popover"
-                                            >${utilities.formatDateTime(Temporal.Instant.from(mostRecentCourseConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                                            >${utilities.formatDateTime(Temporal.Instant.from(mostRecentcourseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
                                           >
                                         </div>
                                       `
