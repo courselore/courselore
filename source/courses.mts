@@ -30,12 +30,12 @@ export type ApplicationCourses = {
           invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
           invitationLinkCourseParticipationRoleStudentsEnabled: number;
           invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
-          courseConversationRequiresTagging: number;
+          courseForumConversationRequiresTagging: number;
           courseParticipationRoleStudentsAnonymityAllowed:
             | "courseParticipationRoleStudentsAnonymityAllowedNone"
             | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
             | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-          courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+          courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
           courseState: "courseStateActive" | "courseStateArchived";
           courseConversationsNextPublicId: number;
           ltiPlatformId: string | null;
@@ -280,12 +280,12 @@ export default async (application: Application): Promise<void> => {
         invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
         invitationLinkCourseParticipationRoleStudentsEnabled: number;
         invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
-        courseConversationRequiresTagging: number;
+        courseForumConversationRequiresTagging: number;
         courseParticipationRoleStudentsAnonymityAllowed:
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-        courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+        courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
         ltiPlatformId: string | null;
@@ -311,9 +311,9 @@ export default async (application: Application): Promise<void> => {
                 "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
                 "invitationLinkCourseParticipationRoleStudentsEnabled",
                 "invitationLinkCourseParticipationRoleStudentsTokenEncrypted",
-                "courseConversationRequiresTagging",
+                "courseForumConversationRequiresTagging",
                 "courseParticipationRoleStudentsAnonymityAllowed",
-                "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+                "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages",
                 "courseState",
                 "courseConversationsNextPublicId",
                 "ltiPlatformId",
@@ -449,12 +449,12 @@ export default async (application: Application): Promise<void> => {
         invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
         invitationLinkCourseParticipationRoleStudentsEnabled: number;
         invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
-        courseConversationRequiresTagging: number;
+        courseForumConversationRequiresTagging: number;
         courseParticipationRoleStudentsAnonymityAllowed:
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-        courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+        courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
         ltiPlatformId: string | null;
@@ -478,9 +478,9 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
             "invitationLinkCourseParticipationRoleStudentsEnabled",
             "invitationLinkCourseParticipationRoleStudentsTokenEncrypted",
-            "courseConversationRequiresTagging",
+            "courseForumConversationRequiresTagging",
             "courseParticipationRoleStudentsAnonymityAllowed",
-            "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+            "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages",
             "courseState",
             "courseConversationsNextPublicId",
             "ltiPlatformId",
@@ -999,11 +999,11 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <input
                                   type="checkbox"
-                                  name="courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent"
+                                  name="courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages"
                                   $${
                                     Boolean(
                                       request.state.course
-                                        .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+                                        .courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages,
                                     )
                                       ? html`checked`
                                       : html``
@@ -2138,11 +2138,11 @@ export default async (application: Application): Promise<void> => {
                           >
                             <input
                               type="checkbox"
-                              name="courseConversationRequiresTagging"
+                              name="courseForumConversationRequiresTagging"
                               $${
                                 Boolean(
                                   request.state.course
-                                    .courseConversationRequiresTagging,
+                                    .courseForumConversationRequiresTagging,
                                 )
                                   ? html`checked`
                                   : html``
@@ -4580,7 +4580,7 @@ export default async (application: Application): Promise<void> => {
             | "courseParticipationRoleStudentsAnonymityAllowedNone"
             | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
             | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-          courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: "on";
+          courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: "on";
           courseState: "courseStateActive" | "courseStateArchived";
         },
         Application["types"]["states"]["Course"]
@@ -4615,7 +4615,7 @@ export default async (application: Application): Promise<void> => {
             "name" = ${request.body.name},
             "information" = ${request.body.information.trim() !== "" ? request.body.information : null},
             "courseParticipationRoleStudentsAnonymityAllowed" = ${request.body.courseParticipationRoleStudentsAnonymityAllowed},
-            "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent" = ${Number(request.body.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent === "on")},
+            "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages" = ${Number(request.body.courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages === "on")},
             "courseState" = ${request.body.courseState}
           where "id" = ${request.state.course.id};
         `,
@@ -5035,7 +5035,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {
-          courseConversationRequiresTagging: "on";
+          courseForumConversationRequiresTagging: "on";
           courseConversationsTagsPublicIds: string[];
           [
             courseConversationsTagsName: `courseConversationsTags[${string}].name`
@@ -5084,7 +5084,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             update "courses"
-            set "courseConversationRequiresTagging" = ${Number(request.body.courseConversationRequiresTagging === "on")}
+            set "courseForumConversationRequiresTagging" = ${Number(request.body.courseForumConversationRequiresTagging === "on")}
             where "id" = ${request.state.course!.id};
           `,
         );
@@ -5302,12 +5302,12 @@ export default async (application: Application): Promise<void> => {
         invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
         invitationLinkCourseParticipationRoleStudentsEnabled: number;
         invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
-        courseConversationRequiresTagging: number;
+        courseForumConversationRequiresTagging: number;
         courseParticipationRoleStudentsAnonymityAllowed:
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-        courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+        courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
         ltiPlatformId: string | null;
@@ -5331,9 +5331,9 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
             "invitationLinkCourseParticipationRoleStudentsEnabled",
             "invitationLinkCourseParticipationRoleStudentsTokenEncrypted",
-            "courseConversationRequiresTagging",
+            "courseForumConversationRequiresTagging",
             "courseParticipationRoleStudentsAnonymityAllowed",
-            "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+            "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages",
             "courseState",
             "courseConversationsNextPublicId",
             "ltiPlatformId",
@@ -5815,12 +5815,12 @@ export default async (application: Application): Promise<void> => {
         invitationLinkCourseParticipationRoleInstructorsTokenEncrypted: string;
         invitationLinkCourseParticipationRoleStudentsEnabled: number;
         invitationLinkCourseParticipationRoleStudentsTokenEncrypted: string;
-        courseConversationRequiresTagging: number;
+        courseForumConversationRequiresTagging: number;
         courseParticipationRoleStudentsAnonymityAllowed:
           | "courseParticipationRoleStudentsAnonymityAllowedNone"
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
           | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
-        courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+        courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
         ltiPlatformId: string | null;
@@ -5844,9 +5844,9 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseParticipationRoleInstructorsTokenEncrypted",
             "invitationLinkCourseParticipationRoleStudentsEnabled",
             "invitationLinkCourseParticipationRoleStudentsTokenEncrypted",
-            "courseConversationRequiresTagging",
+            "courseForumConversationRequiresTagging",
             "courseParticipationRoleStudentsAnonymityAllowed",
-            "courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent",
+            "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages",
             "courseState",
             "courseConversationsNextPublicId",
             "ltiPlatformId",

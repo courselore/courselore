@@ -2655,7 +2655,7 @@ export default async (application: Application): Promise<void> => {
                                           $${
                                             Boolean(
                                               request.state.course!
-                                                .courseConversationRequiresTagging,
+                                                .courseForumConversationRequiresTagging,
                                             )
                                               ? html`required`
                                               : html``
@@ -3219,7 +3219,7 @@ export default async (application: Application): Promise<void> => {
             request.state.courseParticipation.courseParticipationRole !==
               "courseParticipationRoleInstructor")) ||
         !Array.isArray(request.body.tags) ||
-        (Boolean(request.state.course.courseConversationRequiresTagging) &&
+        (Boolean(request.state.course.courseForumConversationRequiresTagging) &&
           0 < request.state.courseConversationsTags.length &&
           request.body.tags.length === 0) ||
         request.body.tags.some(
@@ -5127,7 +5127,7 @@ export default async (application: Application): Promise<void> => {
                                             $${
                                               Boolean(
                                                 request.state.course!
-                                                  .courseConversationRequiresTagging,
+                                                  .courseForumConversationRequiresTagging,
                                               )
                                                 ? html`required`
                                                 : html``
@@ -7267,7 +7267,7 @@ export default async (application: Application): Promise<void> => {
           request.state.courseParticipation.courseParticipationRole !==
             "courseParticipationRoleInstructor") ||
         !Array.isArray(request.body.tags) ||
-        (Boolean(request.state.course.courseConversationRequiresTagging) &&
+        (Boolean(request.state.course.courseForumConversationRequiresTagging) &&
           0 < request.state.courseConversationsTags.length &&
           request.body.tags.length === 0) ||
         request.body.tags.some(

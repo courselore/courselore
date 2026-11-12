@@ -42,7 +42,7 @@ export type ApplicationCourseForumConversationMessageContent = {
       course: {
         id: number;
         publicId: string;
-        courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent: number;
+        courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: number;
       };
       courseParticipation: {
         id: number;
@@ -241,7 +241,7 @@ export default async (application: Application): Promise<void> => {
           $${
             !(
               Boolean(
-                course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+                course.courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages,
               ) === false &&
               courseParticipation.courseParticipationRole ===
                 "courseParticipationRoleStudent"
@@ -917,7 +917,7 @@ export default async (application: Application): Promise<void> => {
           javascript="${javascript`
             const mayAttachFileOrImagesToCourseConversationMessageContent = ${!(
               Boolean(
-                course.courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+                course.courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages,
               ) === false &&
               courseParticipation.courseParticipationRole ===
                 "courseParticipationRoleStudent"
@@ -1038,7 +1038,7 @@ ${courseConversationMessageContent}</textarea>
         request.state.courseParticipation === undefined ||
         (Boolean(
           request.state.course
-            .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+            .courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages,
         ) === false &&
           request.state.courseParticipation.courseParticipationRole ===
             "courseParticipationRoleStudent")
@@ -1702,7 +1702,7 @@ You may also use the buttons on the message content editor to ${
                     !(
                       Boolean(
                         request.state.course
-                          .courseParticipationRoleStudentsMayAttachFileOrImagesToCourseConversationMessageContent,
+                          .courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages,
                       ) === false &&
                       request.state.courseParticipation
                         .courseParticipationRole ===
