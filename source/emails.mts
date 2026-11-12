@@ -81,7 +81,7 @@ export default async (application: Application): Promise<void> => {
           id: number;
           publicId: string;
           courseConversationType:
-            "courseConversationTypeNote" | "courseConversationTypeQuestion";
+            "courseForumConversationTypeNote" | "courseConversationTypeQuestion";
           questionResolved: number;
           courseConversationVisibility:
             | "courseConversationVisibilityEveryone"
@@ -250,7 +250,7 @@ export default async (application: Application): Promise<void> => {
               id: number;
               publicId: string;
               courseConversationType:
-                "courseConversationTypeNote" | "courseConversationTypeQuestion";
+                "courseForumConversationTypeNote" | "courseConversationTypeQuestion";
               questionResolved: number;
               courseConversationVisibility:
                 | "courseConversationVisibilityEveryone"
