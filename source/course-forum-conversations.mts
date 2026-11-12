@@ -1019,7 +1019,7 @@ export default async (application: Application): Promise<void> => {
                                                 application.database.get(
                                                   sql`
                                                     select true
-                                                    from "courseConversationTaggings"
+                                                    from "courseForumConversationTaggings"
                                                     where
                                                       "courseConversation" = ${courseConversation.id} and
                                                       "courseConversationsTag" = ${courseConversationsTag.id};
@@ -3406,7 +3406,7 @@ export default async (application: Application): Promise<void> => {
         for (const tag of request.body.tags!)
           application.database.run(
             sql`
-              insert into "courseConversationTaggings" (
+              insert into "courseForumConversationTaggings" (
                 "courseConversation",
                 "courseConversationsTag"
               )
@@ -5080,7 +5080,7 @@ export default async (application: Application): Promise<void> => {
                                   application.database.get(
                                     sql`
                                     select true
-                                    from "courseConversationTaggings"
+                                    from "courseForumConversationTaggings"
                                     where
                                       "courseConversation" = ${request.state.courseConversation!.id} and
                                       "courseConversationsTag" = ${courseConversationsTag.id};
@@ -7360,14 +7360,14 @@ export default async (application: Application): Promise<void> => {
         }
         application.database.run(
           sql`
-            delete from "courseConversationTaggings"
+            delete from "courseForumConversationTaggings"
             where "courseConversation" = ${request.state.courseConversation!.id};
           `,
         );
         for (const tag of request.body.tags!)
           application.database.run(
             sql`
-              insert into "courseConversationTaggings" (
+              insert into "courseForumConversationTaggings" (
                 "courseConversation",
                 "courseConversationsTag"
               )
@@ -7432,7 +7432,7 @@ export default async (application: Application): Promise<void> => {
         );
         application.database.run(
           sql`
-            delete from "courseConversationTaggings"
+            delete from "courseForumConversationTaggings"
             where "courseConversation" = ${request.state.courseConversation!.id};
           `,
         );

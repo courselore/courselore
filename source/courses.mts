@@ -2317,11 +2317,11 @@ export default async (application: Application): Promise<void> => {
                                         application.database.get(
                                           sql`
                                             select true
-                                            from "courseConversationTaggings"
+                                            from "courseForumConversationTaggings"
                                             join "courseConversations" on
-                                              "courseConversationTaggings"."courseConversation" = "courseConversations"."id" and
+                                              "courseForumConversationTaggings"."courseConversation" = "courseConversations"."id" and
                                               "courseConversations"."course" = ${request.state.course!.id}
-                                            where "courseConversationTaggings"."courseConversationsTag" = ${courseConversationsTag.id};
+                                            where "courseForumConversationTaggings"."courseConversationsTag" = ${courseConversationsTag.id};
                                           `,
                                         ) !== undefined
                                       })
@@ -5140,7 +5140,7 @@ export default async (application: Application): Promise<void> => {
           if (courseConversationsTag === undefined) continue;
           application.database.run(
             sql`
-              delete from "courseConversationTaggings" where "courseConversationsTag" = ${courseConversationsTag.id};
+              delete from "courseForumConversationTaggings" where "courseConversationsTag" = ${courseConversationsTag.id};
             `,
           );
           application.database.run(
