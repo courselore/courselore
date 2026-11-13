@@ -8218,6 +8218,7 @@ export default async (application: Application): Promise<void> => {
         drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_insert";
         drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_update";
         drop trigger "lexicalSearch_courseConversations_titleLexicalSearch_delete";
+        drop table "lexicalSearch_courseConversations_titleLexicalSearch";
         alter table "courseConversations" rename to "courseForumConversations";
         alter table "courseForumConversations" rename column "courseConversationType" to "courseForumConversationType";
         update "courseForumConversations" set "courseForumConversationType" = 'courseForumConversationTypeNote' where "courseForumConversationType" = 'courseConversationTypeNote';
@@ -8233,7 +8234,12 @@ export default async (application: Application): Promise<void> => {
         create index "index_courseForumConversations_courseForumConversationTypeQuestionResolved" on "courseForumConversations" ("courseForumConversationTypeQuestionResolved");
         drop index "index_courseConversations_pinned";
         create index "index_courseForumConversations_pinned" on "courseForumConversations" ("pinned");
-        alter table "lexicalSearch_courseConversations_titleLexicalSearch" rename to "lexicalSearch_courseForumConversations_titleLexicalSearch";
+        create virtual table "lexicalSearch_courseForumConversations_titleLexicalSearch" using fts5(
+          "titleLexicalSearch",
+          content = "courseForumConversations",
+          content_rowid = "id",
+          prefix = '1 2 3'
+        );
         create trigger "lexicalSearch_courseForumConversations_titleLexicalSearch_insert" after insert on "courseForumConversations" begin
           insert into "lexicalSearch_courseForumConversations_titleLexicalSearch" ("rowid", "titleLexicalSearch") values ("new"."id", "new"."titleLexicalSearch");
         end;
@@ -8243,6 +8249,7 @@ export default async (application: Application): Promise<void> => {
         create trigger "lexicalSearch_courseForumConversations_titleLexicalSearch_delete" after delete on "courseForumConversations" begin
           delete from "lexicalSearch_courseForumConversations_titleLexicalSearch" where "rowid" = "old"."id";
         end;
+        insert into "lexicalSearch_courseForumConversations_titleLexicalSearch" ("lexicalSearch_courseForumConversations_titleLexicalSearch") values ('rebuild');
         
         alter table "courseConversationParticipations" rename to "courseForumConversationParticipations";
         alter table "courseForumConversationParticipations" rename column "courseConversation" to "courseForumConversation";
@@ -8268,6 +8275,7 @@ export default async (application: Application): Promise<void> => {
         drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_insert";
         drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_update";
         drop trigger "lexicalSearch_courseConversationMessages_contentLexicalSearch_delete";
+        drop table "lexicalSearch_courseConversationMessages_contentLexicalSearch";
         alter table "courseConversationMessages" rename to "courseForumConversationMessages";
         alter table "courseForumConversationMessages" rename column "courseConversation" to "courseForumConversation";
         alter table "courseForumConversationMessages" rename column "courseConversationMessageType" to "courseForumConversationMessageType";
@@ -8287,7 +8295,12 @@ export default async (application: Application): Promise<void> => {
         create index "index_courseForumConversationMessages_createdByCourseParticipation" on "courseForumConversationMessages" ("createdByCourseParticipation");
         drop index "index_courseConversationMessages_courseConversationMessageType";
         create index "index_courseForumConversationMessages_courseForumConversationMessageType" on "courseForumConversationMessages" ("courseForumConversationMessageType");
-        alter table "lexicalSearch_courseConversationMessages_contentLexicalSearch" rename to "lexicalSearch_courseForumConversationMessages_contentLexicalSearch";
+        create virtual table "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" using fts5(
+          "contentLexicalSearch",
+          content = "courseForumConversationMessages",
+          content_rowid = "id",
+          prefix = '1 2 3'
+        );
         create trigger "lexicalSearch_courseForumConversationMessages_contentLexicalSearch_insert" after insert on "courseForumConversationMessages" begin
           insert into "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" ("rowid", "contentLexicalSearch") values ("new"."id", "new"."contentLexicalSearch");
         end;
@@ -8297,6 +8310,7 @@ export default async (application: Application): Promise<void> => {
         create trigger "lexicalSearch_courseForumConversationMessages_contentLexicalSearch_delete" after delete on "courseForumConversationMessages" begin
           delete from "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" where "rowid" = "old"."id";
         end;
+        insert into "lexicalSearch_courseForumConversationMessages_contentLexicalSearch" ("lexicalSearch_courseForumConversationMessages_contentLexicalSearch") values ('rebuild');
         
         alter table "courseConversationMessageViews" rename to "courseForumConversationMessageViews";
         alter table "courseForumConversationMessageViews" rename column "courseConversationMessage" to "courseForumConversationMessage";
