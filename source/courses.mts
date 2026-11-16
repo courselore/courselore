@@ -70,6 +70,8 @@ export type ApplicationCourses = {
             | "fuchsia"
             | "pink"
             | "rose";
+          mostRecentlyVisitedMode:
+            "courseForum" | "courseAI" | "courseSettings";
           mostRecentlyVisitedCourseForumConversation: number | null;
         };
         courseForumConversationsTags: {
@@ -367,6 +369,7 @@ export default async (application: Application): Promise<void> => {
           | "fuchsia"
           | "pink"
           | "rose";
+        mostRecentlyVisitedMode: "courseForum" | "courseAI" | "courseSettings";
         mostRecentlyVisitedCourseForumConversation: number | null;
       }>(
         sql`
@@ -379,6 +382,7 @@ export default async (application: Application): Promise<void> => {
                   "course",
                   "courseParticipationRole",
                   "decorationColor",
+                  "mostRecentlyVisitedMode",
                   "mostRecentlyVisitedCourseForumConversation"
                 )
                 values (
@@ -412,6 +416,7 @@ export default async (application: Application): Promise<void> => {
                       )!.count % 14
                     ]
                   },
+                  ${"courseForum"},
                   ${null}
                 );
               `,
@@ -518,6 +523,7 @@ export default async (application: Application): Promise<void> => {
           | "fuchsia"
           | "pink"
           | "rose";
+        mostRecentlyVisitedMode: "courseForum" | "courseAI" | "courseSettings";
         mostRecentlyVisitedCourseForumConversation: number | null;
       }>(
         sql`
@@ -526,6 +532,7 @@ export default async (application: Application): Promise<void> => {
             "publicId",
             "courseParticipationRole",
             "decorationColor",
+            "mostRecentlyVisitedMode",
             "mostRecentlyVisitedCourseForumConversation"
           from "courseParticipations"
           where
