@@ -1687,6 +1687,98 @@ export default async (application: Application): Promise<void> => {
 
   application.webServer?.push({
     method: "GET",
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/forum$"),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.liveConnection
+      )
+        return;
+      response.redirect!(
+        `/courses/${request.state.course.publicId}/forum/${
+          (typeof request.state.courseParticipation
+            .mostRecentlyVisitedCourseForumConversation === "number"
+            ? application.database.get<{
+                publicId: string;
+              }>(
+                sql`
+                  select "publicId"
+                  from "courseForumConversations"
+                  where "id" = ${
+                    request.state.courseParticipation
+                      .mostRecentlyVisitedCourseForumConversation
+                  } and (
+                    "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
+                    ${
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                        ? sql`
+                            or
+                            "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
+                          `
+                        : sql``
+                    }
+                    or (
+                      select true
+                      from "courseForumConversationParticipations"
+                      where
+                        "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
+                        "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                    )
+                  );
+                `,
+              )?.publicId
+            : application.database.get<{
+                publicId: string;
+              }>(
+                sql`
+                  select "publicId"
+                  from "courseForumConversations"
+                  where
+                    "course" = ${request.state.course.id} and (
+                      "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
+                      ${
+                        request.state.courseParticipation
+                          .courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? sql`
+                              or
+                              "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
+                            `
+                          : sql``
+                      }
+                      or (
+                        select true
+                        from "courseForumConversationParticipations"
+                        where
+                          "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
+                          "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                      )
+                    )
+                  order by
+                    "pinned" = true desc,
+                    "id" desc
+                  limit 1;
+                `,
+              )?.publicId) ?? "new"
+        }`,
+      );
+    },
+  });
+
+  application.webServer?.push({
+    method: "GET",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/forum/new$"),
     handler: async (
       request: serverTypes.Request<
