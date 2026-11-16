@@ -470,7 +470,7 @@ export default async (application: Application): Promise<void> => {
             request.state.courseParticipation !== undefined
               ? html`
                   <a
-                    href="/courses/${request.state.course.publicId}"
+                    href="/courses/${request.state.course.publicId}/forum"
                     class="button button--rectangle button--transparent"
                     css="${css`
                       display: flex;
