@@ -206,7 +206,7 @@ export default async (application: Application): Promise<void> => {
                 key="sidebar--menu--search"
                 type="form"
                 method="GET"
-                action="/courses/${request.state.course.publicId}/search"
+                action="/courses/${request.state.course.publicId}/forum/search"
                 css="${css`
                   flex: 1;
                   min-width: var(--size--0);
@@ -1265,7 +1265,7 @@ export default async (application: Application): Promise<void> => {
 
   application.webServer?.push({
     method: "GET",
-    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/search$"),
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/forum/search$"),
     handler: async (
       request: serverTypes.Request<
         {},
