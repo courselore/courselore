@@ -3973,6 +3973,7 @@ export default async (application: Application): Promise<void> => {
                 "course",
                 "courseParticipationRole",
                 "decorationColor",
+                "mostRecentlyVisitedMode",
                 "mostRecentlyVisitedCourseForumConversation"
               )
               values (
@@ -4006,6 +4007,7 @@ export default async (application: Application): Promise<void> => {
                     )!.count % 14
                   ]
                 },
+                ${"courseForum"},
                 ${null}
               );
             `,
