@@ -4447,6 +4447,120 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--size--4);
                   `}"
                 >
+                  $${
+                    request.state.courseParticipation
+                      .courseParticipationRole ===
+                    "courseParticipationRoleInstructor"
+                      ? html`
+                          <div
+                            type="form"
+                            method="PATCH"
+                            action="/courses/${
+                              request.state.course.publicId
+                            }/settings/course-state"
+                            css="${css`
+                              padding: var(--size--2) var(--size--0);
+                              border-bottom: var(--border-width--1) solid
+                                light-dark(
+                                  var(--color--slate--200),
+                                  var(--color--slate--800)
+                                );
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--4);
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--1);
+                              `}"
+                            >
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                              >
+                                Course state
+                              </div>
+                              <form
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="courseState"
+                                    value="courseStateActive"
+                                    $${
+                                      request.state.course.courseState ===
+                                      "courseStateActive"
+                                        ? html`checked`
+                                        : html``
+                                    }
+                                    class="input--radio"
+                                  />  Active
+                                </label>
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="courseState"
+                                    value="courseStateArchived"
+                                    $${
+                                      request.state.course.courseState ===
+                                      "courseStateArchived"
+                                        ? html`checked`
+                                        : html``
+                                    }
+                                    class="input--radio"
+                                  />  Archived
+                                  <span
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                    `}"
+                                    >(read-only)</span
+                                  >
+                                </label>
+                              </form>
+                            </div>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                              `}"
+                            >
+                              <button
+                                type="submit"
+                                class="button button--rectangle button--blue"
+                              >
+                                Update course state
+                              </button>
+                            </div>
+                          </div>
+                        `
+                      : html``
+                  }
                   <div
                     css="${css`
                       font-size: var(--font-size--3);
@@ -6971,12 +7085,12 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       if (
-        (request.body.courseParticipationRoleStudentsAnonymityAllowed !==
+        request.body.courseParticipationRoleStudentsAnonymityAllowed !==
           "courseParticipationRoleStudentsAnonymityAllowedNone" &&
-          request.body.courseParticipationRoleStudentsAnonymityAllowed !==
-            "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
-          request.body.courseParticipationRoleStudentsAnonymityAllowed !==
-            "courseParticipationRoleStudentsAnonymityAllowedEveryone") 
+        request.body.courseParticipationRoleStudentsAnonymityAllowed !==
+          "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
+        request.body.courseParticipationRoleStudentsAnonymityAllowed !==
+          "courseParticipationRoleStudentsAnonymityAllowedEveryone"
       )
         throw "validation";
       application.database.run(
