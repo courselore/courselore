@@ -925,6 +925,418 @@ export default async (application: Application): Promise<void> => {
                           >
                             <i class="bi bi-chevron-right"></i>
                           </span>
+                          Forum
+                        </summary>
+                        <div
+                          type="form"
+                          method="PATCH"
+                          action="/courses/${
+                            request.state.course.publicId
+                          }/settings/conversation-tags"
+                          css="${css`
+                            padding: var(--size--2) var(--size--0);
+                            border-bottom: var(--border-width--1) solid
+                              light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--4);
+                          `}"
+                          javascript="${javascript`
+                            this.morph = false;
+                            this.onsubmit = () => {
+                              delete this.morph;
+                              for (const element of javascript.children(this)) delete element.isModified;
+                            };
+                          `}"
+                        >
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--1);
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Conversation tags
+                            </div>
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="courseForumConversationRequiresTagging"
+                                $${
+                                  Boolean(
+                                    request.state.course
+                                      .courseForumConversationRequiresTagging,
+                                  )
+                                    ? html`checked`
+                                    : html``
+                                }
+                                class="input--checkbox"
+                              />  Tags are required when creating a conversation
+                            </label>
+                          </div>
+                          $${(() => {
+                            const courseForumConversationsTagPartial = (
+                              courseForumConversationsTag?: (typeof request.state.courseForumConversationsTags)[number],
+                            ): HTML =>
+                              html`<div
+                                key="courseForumConversationsTag ${
+                                  courseForumConversationsTag?.publicId ?? ""
+                                }"
+                                css="${css`
+                                  display: flex;
+                                  align-items: center;
+                                  gap: var(--size--3);
+                                `}"
+                                javascript="${javascript`
+                                if (${courseForumConversationsTag === undefined}) this.isModified = true;
+                              `}"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="courseForumConversationsTagsPublicIds[]"
+                                  $${
+                                    courseForumConversationsTag !== undefined
+                                      ? html`
+                                          value="${courseForumConversationsTag.publicId}"
+                                        `
+                                      : html`
+                                          javascript="${javascript`
+                                        this.setAttribute("value", utilities.randomString());
+                                      `}"
+                                        `
+                                  }
+                                />
+                                <div
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--1);
+                                  `}"
+                                >
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--square button--icon button--transparent"
+                                      javascript="${javascript`
+                                      this.onclick = () => {
+                                        const element = this.closest('[key~="courseForumConversationsTag"]');
+                                        const previousElement = element.previousElementSibling;
+                                        if (previousElement !== null) {
+                                          this.isModified = true;
+                                          previousElement.insertAdjacentElement("beforebegin", element);
+                                        }
+                                      };
+                                    `}"
+                                    >
+                                      <i class="bi bi-caret-up-fill"></i>
+                                    </button>
+                                  </div>
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--square button--icon button--transparent"
+                                      javascript="${javascript`
+                                      this.onclick = () => {
+                                        const element = this.closest('[key~="courseForumConversationsTag"]');
+                                        const nextElement = element.nextElementSibling;
+                                        if (nextElement !== null) {
+                                          this.isModified = true;
+                                          nextElement.insertAdjacentElement("afterend", element);
+                                        }
+                                      };
+                                    `}"
+                                    >
+                                      <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                                <div
+                                  css="${css`
+                                    flex: 1;
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--size--2);
+                                  `}"
+                                >
+                                  <input
+                                    type="text"
+                                    name="courseForumConversationsTags[${
+                                      courseForumConversationsTag?.publicId ??
+                                      "{tag}"
+                                    }].name"
+                                    value="${courseForumConversationsTag?.name ?? ""}"
+                                    required
+                                    maxlength="2000"
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                    $${
+                                      courseForumConversationsTag === undefined
+                                        ? html`
+                                            javascript="${javascript`
+                                          this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseForumConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")));
+                                        `}"
+                                          `
+                                        : html``
+                                    }
+                                  />
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                      display: flex;
+                                      align-items: baseline;
+                                      flex-wrap: wrap;
+                                      column-gap: var(--size--4);
+                                      row-gap: var(--size--2);
+                                    `}"
+                                  >
+                                    <label
+                                      class="button button--rectangle button--transparent"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="courseForumConversationsTags[${
+                                          courseForumConversationsTag?.publicId ??
+                                          "{tag}"
+                                        }].privateToCourseParticipationRoleInstructors"
+                                        $${
+                                          Boolean(
+                                            courseForumConversationsTag?.privateToCourseParticipationRoleInstructors ??
+                                            false,
+                                          )
+                                            ? html`checked`
+                                            : html``
+                                        }
+                                        class="input--checkbox"
+                                        $${
+                                          courseForumConversationsTag ===
+                                          undefined
+                                            ? html`
+                                                javascript="${javascript`
+                                              this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseForumConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")));
+                                            `}"
+                                              `
+                                            : html``
+                                        }
+                                      />  Private to instructors
+                                    </label>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--transparent"
+                                      javascript="${javascript`
+                                      if (${
+                                        courseForumConversationsTag !==
+                                          undefined &&
+                                        application.database.get(
+                                          sql`
+                                            select true
+                                            from "courseForumConversationTaggings"
+                                            join "courseForumConversations" on
+                                              "courseForumConversationTaggings"."courseForumConversation" = "courseForumConversations"."id" and
+                                              "courseForumConversations"."course" = ${request.state.course!.id}
+                                            where "courseForumConversationTaggings"."courseForumConversationsTag" = ${courseForumConversationsTag.id};
+                                          `,
+                                        ) !== undefined
+                                      })
+                                        javascript.popover({ element: this, trigger: "click" });
+                                      else 
+                                        this.onclick = () => {
+                                          this.nextElementSibling.querySelector("button").click();
+                                        };
+                                    `}"
+                                    >
+                                      Remove
+                                    </button>
+                                    <div
+                                      type="popover"
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                      >
+                                        <i
+                                          class="bi bi-exclamation-triangle-fill"
+                                        ></i
+                                        > The tag will be removed from the
+                                        conversations that use it, but the
+                                        conversations themselves will be
+                                        preserved.
+                                      </div>
+                                      <div>
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--red"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
+                                          javascript="${javascript`
+                                          this.onclick = () => {
+                                            if (${courseForumConversationsTag !== undefined})
+                                              javascript.execute(
+                                                this.closest('[type~="form"]')
+                                                  .insertAdjacentElement(
+                                                    "beforeend",
+                                                    javascript.stringToElement(html\`
+                                                      <input
+                                                        type="hidden"
+                                                        name="courseForumConversationsTagsPublicIdsToRemove[]"
+                                                        value="\${this.closest('[key~="courseForumConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")}"
+                                                        javascript="\${${javascript`
+                                                          this.isModified = true;
+                                                        `}}"
+                                                      />
+                                                    \`)
+                                                  )
+                                              );
+                                            this.closest('[key~="courseForumConversationsTag"]').remove();
+                                          };
+                                        `}"
+                                        >
+                                          Remove tag
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>`;
+                            return html`
+                              <!-- prettier-ignore -->
+                              <div
+                                key="courseForumConversationsTags"
+                                css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+
+                                &:empty {
+                                  display: none;
+                                }
+                              `}"
+                              >$${request.state.courseForumConversationsTags.map(
+                                (courseForumConversationsTag) =>
+                                  courseForumConversationsTagPartial(
+                                    courseForumConversationsTag,
+                                  ),
+                              )}</div>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent"
+                                  javascript="${javascript`
+                                  this.onclick = () => {
+                                    javascript.execute(
+                                      this.closest('[type~="form"]')
+                                        .querySelector('[key~="courseForumConversationsTags"]')
+                                        .insertAdjacentElement(
+                                          "beforeend",
+                                          javascript.stringToElement(${courseForumConversationsTagPartial()})
+                                        )
+                                    );
+                                  };
+                                `}"
+                                >
+                                  Add tag
+                                </button>
+                              </div>
+                            `;
+                          })()}
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                            `}"
+                          >
+                            <button
+                              type="submit"
+                              class="button button--rectangle button--blue"
+                            >
+                              Update conversation tags
+                            </button>
+                          </div>
+                        </div>
+                      </details>
+                      <details>
+                        <summary
+                          class="button button--rectangle button--transparent"
+                          css="${css`
+                            font-weight: 500;
+                          `}"
+                        >
+                          <span
+                            css="${css`
+                              display: inline-block;
+                              transition-property: var(
+                                --transition-property--transform
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              details[open] > summary > & {
+                                rotate: var(--rotate--90);
+                              }
+                            `}"
+                          >
+                            <i class="bi bi-chevron-right"></i>
+                          </span>
                           Course AI
                         </summary>
                         <div
@@ -1874,418 +2286,6 @@ export default async (application: Application): Promise<void> => {
                                 `
                               : html``
                           }
-                        </div>
-                      </details>
-                      <details>
-                        <summary
-                          class="button button--rectangle button--transparent"
-                          css="${css`
-                            font-weight: 500;
-                          `}"
-                        >
-                          <span
-                            css="${css`
-                              display: inline-block;
-                              transition-property: var(
-                                --transition-property--transform
-                              );
-                              transition-duration: var(
-                                --transition-duration--150
-                              );
-                              transition-timing-function: var(
-                                --transition-timing-function--ease-in-out
-                              );
-                              details[open] > summary > & {
-                                rotate: var(--rotate--90);
-                              }
-                            `}"
-                          >
-                            <i class="bi bi-chevron-right"></i>
-                          </span>
-                          Forum
-                        </summary>
-                        <div
-                          type="form"
-                          method="PATCH"
-                          action="/courses/${
-                            request.state.course.publicId
-                          }/settings/conversation-tags"
-                          css="${css`
-                            padding: var(--size--2) var(--size--0);
-                            border-bottom: var(--border-width--1) solid
-                              light-dark(
-                                var(--color--slate--200),
-                                var(--color--slate--800)
-                              );
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--size--4);
-                          `}"
-                          javascript="${javascript`
-                            this.morph = false;
-                            this.onsubmit = () => {
-                              delete this.morph;
-                              for (const element of javascript.children(this)) delete element.isModified;
-                            };
-                          `}"
-                        >
-                          <div
-                            css="${css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--1);
-                            `}"
-                          >
-                            <div
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                color: light-dark(
-                                  var(--color--slate--500),
-                                  var(--color--slate--500)
-                                );
-                              `}"
-                            >
-                              Conversation tags
-                            </div>
-                            <label
-                              class="button button--rectangle button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="courseForumConversationRequiresTagging"
-                                $${
-                                  Boolean(
-                                    request.state.course
-                                      .courseForumConversationRequiresTagging,
-                                  )
-                                    ? html`checked`
-                                    : html``
-                                }
-                                class="input--checkbox"
-                              />  Tags are required when creating a conversation
-                            </label>
-                          </div>
-                          $${(() => {
-                            const courseForumConversationsTagPartial = (
-                              courseForumConversationsTag?: (typeof request.state.courseForumConversationsTags)[number],
-                            ): HTML =>
-                              html`<div
-                                key="courseForumConversationsTag ${
-                                  courseForumConversationsTag?.publicId ?? ""
-                                }"
-                                css="${css`
-                                  display: flex;
-                                  align-items: center;
-                                  gap: var(--size--3);
-                                `}"
-                                javascript="${javascript`
-                                if (${courseForumConversationsTag === undefined}) this.isModified = true;
-                              `}"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="courseForumConversationsTagsPublicIds[]"
-                                  $${
-                                    courseForumConversationsTag !== undefined
-                                      ? html`
-                                          value="${courseForumConversationsTag.publicId}"
-                                        `
-                                      : html`
-                                          javascript="${javascript`
-                                        this.setAttribute("value", utilities.randomString());
-                                      `}"
-                                        `
-                                  }
-                                />
-                                <div
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--slate--600),
-                                      var(--color--slate--400)
-                                    );
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--1);
-                                  `}"
-                                >
-                                  <div>
-                                    <button
-                                      type="button"
-                                      class="button button--square button--icon button--transparent"
-                                      javascript="${javascript`
-                                      this.onclick = () => {
-                                        const element = this.closest('[key~="courseForumConversationsTag"]');
-                                        const previousElement = element.previousElementSibling;
-                                        if (previousElement !== null) {
-                                          this.isModified = true;
-                                          previousElement.insertAdjacentElement("beforebegin", element);
-                                        }
-                                      };
-                                    `}"
-                                    >
-                                      <i class="bi bi-caret-up-fill"></i>
-                                    </button>
-                                  </div>
-                                  <div>
-                                    <button
-                                      type="button"
-                                      class="button button--square button--icon button--transparent"
-                                      javascript="${javascript`
-                                      this.onclick = () => {
-                                        const element = this.closest('[key~="courseForumConversationsTag"]');
-                                        const nextElement = element.nextElementSibling;
-                                        if (nextElement !== null) {
-                                          this.isModified = true;
-                                          nextElement.insertAdjacentElement("afterend", element);
-                                        }
-                                      };
-                                    `}"
-                                    >
-                                      <i class="bi bi-caret-down-fill"></i>
-                                    </button>
-                                  </div>
-                                </div>
-                                <div
-                                  css="${css`
-                                    flex: 1;
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
-                                  `}"
-                                >
-                                  <input
-                                    type="text"
-                                    name="courseForumConversationsTags[${
-                                      courseForumConversationsTag?.publicId ??
-                                      "{tag}"
-                                    }].name"
-                                    value="${courseForumConversationsTag?.name ?? ""}"
-                                    required
-                                    maxlength="2000"
-                                    class="input--text"
-                                    css="${css`
-                                      flex: 1;
-                                    `}"
-                                    $${
-                                      courseForumConversationsTag === undefined
-                                        ? html`
-                                            javascript="${javascript`
-                                          this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseForumConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")));
-                                        `}"
-                                          `
-                                        : html``
-                                    }
-                                  />
-                                  <div
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      font-weight: 600;
-                                      color: light-dark(
-                                        var(--color--slate--600),
-                                        var(--color--slate--400)
-                                      );
-                                      display: flex;
-                                      align-items: baseline;
-                                      flex-wrap: wrap;
-                                      column-gap: var(--size--4);
-                                      row-gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <label
-                                      class="button button--rectangle button--transparent"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        name="courseForumConversationsTags[${
-                                          courseForumConversationsTag?.publicId ??
-                                          "{tag}"
-                                        }].privateToCourseParticipationRoleInstructors"
-                                        $${
-                                          Boolean(
-                                            courseForumConversationsTag?.privateToCourseParticipationRoleInstructors ??
-                                            false,
-                                          )
-                                            ? html`checked`
-                                            : html``
-                                        }
-                                        class="input--checkbox"
-                                        $${
-                                          courseForumConversationsTag ===
-                                          undefined
-                                            ? html`
-                                                javascript="${javascript`
-                                              this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseForumConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")));
-                                            `}"
-                                              `
-                                            : html``
-                                        }
-                                      />  Private to instructors
-                                    </label>
-                                    <button
-                                      type="button"
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                      if (${
-                                        courseForumConversationsTag !==
-                                          undefined &&
-                                        application.database.get(
-                                          sql`
-                                            select true
-                                            from "courseForumConversationTaggings"
-                                            join "courseForumConversations" on
-                                              "courseForumConversationTaggings"."courseForumConversation" = "courseForumConversations"."id" and
-                                              "courseForumConversations"."course" = ${request.state.course!.id}
-                                            where "courseForumConversationTaggings"."courseForumConversationsTag" = ${courseForumConversationsTag.id};
-                                          `,
-                                        ) !== undefined
-                                      })
-                                        javascript.popover({ element: this, trigger: "click" });
-                                      else 
-                                        this.onclick = () => {
-                                          this.nextElementSibling.querySelector("button").click();
-                                        };
-                                    `}"
-                                    >
-                                      Remove
-                                    </button>
-                                    <div
-                                      type="popover"
-                                      css="${css`
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--size--2);
-                                      `}"
-                                    >
-                                      <div
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                          font-weight: 600;
-                                          color: light-dark(
-                                            var(--color--red--500),
-                                            var(--color--red--500)
-                                          );
-                                        `}"
-                                      >
-                                        <i
-                                          class="bi bi-exclamation-triangle-fill"
-                                        ></i
-                                        > The tag will be removed from the
-                                        conversations that use it, but the
-                                        conversations themselves will be
-                                        preserved.
-                                      </div>
-                                      <div>
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--red"
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                          `}"
-                                          javascript="${javascript`
-                                          this.onclick = () => {
-                                            if (${courseForumConversationsTag !== undefined})
-                                              javascript.execute(
-                                                this.closest('[type~="form"]')
-                                                  .insertAdjacentElement(
-                                                    "beforeend",
-                                                    javascript.stringToElement(html\`
-                                                      <input
-                                                        type="hidden"
-                                                        name="courseForumConversationsTagsPublicIdsToRemove[]"
-                                                        value="\${this.closest('[key~="courseForumConversationsTag"]').querySelector('[name="courseForumConversationsTagsPublicIds[]"]').getAttribute("value")}"
-                                                        javascript="\${${javascript`
-                                                          this.isModified = true;
-                                                        `}}"
-                                                      />
-                                                    \`)
-                                                  )
-                                              );
-                                            this.closest('[key~="courseForumConversationsTag"]').remove();
-                                          };
-                                        `}"
-                                        >
-                                          Remove tag
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>`;
-                            return html`
-                              <!-- prettier-ignore -->
-                              <div
-                                key="courseForumConversationsTags"
-                                css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--4);
-
-                                &:empty {
-                                  display: none;
-                                }
-                              `}"
-                              >$${request.state.courseForumConversationsTags.map(
-                                (courseForumConversationsTag) =>
-                                  courseForumConversationsTagPartial(
-                                    courseForumConversationsTag,
-                                  ),
-                              )}</div>
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
-                                `}"
-                              >
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                  this.onclick = () => {
-                                    javascript.execute(
-                                      this.closest('[type~="form"]')
-                                        .querySelector('[key~="courseForumConversationsTags"]')
-                                        .insertAdjacentElement(
-                                          "beforeend",
-                                          javascript.stringToElement(${courseForumConversationsTagPartial()})
-                                        )
-                                    );
-                                  };
-                                `}"
-                                >
-                                  Add tag
-                                </button>
-                              </div>
-                            `;
-                          })()}
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                            `}"
-                          >
-                            <button
-                              type="submit"
-                              class="button button--rectangle button--blue"
-                            >
-                              Update conversation tags
-                            </button>
-                          </div>
                         </div>
                       </details>
                       <details>
@@ -4734,6 +4734,149 @@ export default async (application: Application): Promise<void> => {
   application.webServer?.push({
     method: "PATCH",
     pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/conversation-tags$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseForumConversationRequiresTagging: "on";
+          courseForumConversationsTagsPublicIds: string[];
+          [
+            courseForumConversationsTagsName: `courseForumConversationsTags[${string}].name`
+          ]: string;
+          [
+            courseForumConversationsTagsPrivateToCourseParticipationRoleInstructors: `courseForumConversationsTags[${string}].privateToCourseParticipationRoleInstructors`
+          ]: "on";
+          courseForumConversationsTagsPublicIdsToRemove: string[];
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor" ||
+        request.state.courseForumConversationsTags === undefined
+      )
+        return;
+      request.body.courseForumConversationsTagsPublicIds ??= [];
+      request.body.courseForumConversationsTagsPublicIdsToRemove ??= [];
+      if (
+        !Array.isArray(request.body.courseForumConversationsTagsPublicIds) ||
+        request.body.courseForumConversationsTagsPublicIds.some(
+          (courseForumConversationsTagPublicId) =>
+            typeof courseForumConversationsTagPublicId !== "string" ||
+            courseForumConversationsTagPublicId.trim() === "" ||
+            typeof request.body[
+              `courseForumConversationsTags[${courseForumConversationsTagPublicId}].name`
+            ] !== "string" ||
+            request.body[
+              `courseForumConversationsTags[${courseForumConversationsTagPublicId}].name`
+            ]!.trim() === "",
+        ) ||
+        !Array.isArray(
+          request.body.courseForumConversationsTagsPublicIdsToRemove,
+        ) ||
+        request.body.courseForumConversationsTagsPublicIdsToRemove.some(
+          (courseForumConversationsTagPublicId) =>
+            typeof courseForumConversationsTagPublicId !== "string" ||
+            courseForumConversationsTagPublicId.trim() === "",
+        )
+      )
+        throw "validation";
+      application.database.transaction(() => {
+        application.database.run(
+          sql`
+            update "courses"
+            set "courseForumConversationRequiresTagging" = ${Number(request.body.courseForumConversationRequiresTagging === "on")}
+            where "id" = ${request.state.course!.id};
+          `,
+        );
+        for (const [
+          order,
+          courseForumConversationsTagPublicId,
+        ] of request.body.courseForumConversationsTagsPublicIds!.entries()) {
+          const courseForumConversationsTag =
+            request.state.courseForumConversationsTags!.find(
+              (courseForumConversationsTag) =>
+                courseForumConversationsTagPublicId ===
+                courseForumConversationsTag.publicId,
+            );
+          if (courseForumConversationsTag === undefined)
+            application.database.run(
+              sql`
+                insert into "courseForumConversationsTags" (
+                  "publicId",
+                  "course",
+                  "order",
+                  "name",
+                  "privateToCourseParticipationRoleInstructors"
+                )
+                values (
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${request.state.course!.id},
+                  ${order},
+                  ${request.body[`courseForumConversationsTags[${courseForumConversationsTagPublicId}].name`]!},
+                  ${Number(request.body[`courseForumConversationsTags[${courseForumConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
+                );
+              `,
+            );
+          else
+            application.database.run(
+              sql`
+                update "courseForumConversationsTags"
+                set
+                  "order" = ${order},
+                  "name" = ${request.body[`courseForumConversationsTags[${courseForumConversationsTagPublicId}].name`]!},
+                  "privateToCourseParticipationRoleInstructors" = ${Number(request.body[`courseForumConversationsTags[${courseForumConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
+                where "id" = ${courseForumConversationsTag.id};
+              `,
+            );
+        }
+        for (const courseForumConversationsTagPublicId of request.body
+          .courseForumConversationsTagsPublicIdsToRemove!) {
+          const courseForumConversationsTag =
+            request.state.courseForumConversationsTags!.find(
+              (courseForumConversationsTag) =>
+                courseForumConversationsTagPublicId ===
+                courseForumConversationsTag.publicId,
+            );
+          if (courseForumConversationsTag === undefined) continue;
+          application.database.run(
+            sql`
+              delete from "courseForumConversationTaggings" where "courseForumConversationsTag" = ${courseForumConversationsTag.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseForumConversationsTags" where "id" = ${courseForumConversationsTag.id};
+            `,
+          );
+        }
+      });
+      response.setFlash!(html`
+        <div class="flash--green">Conversation tags updated successfully.</div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+      for (const port of application.applicationConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
+          }),
+        });
+    },
+  });
+
+  application.webServer?.push({
+    method: "PATCH",
+    pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/course-ai$",
     ),
     handler: (
@@ -5121,147 +5264,6 @@ export default async (application: Application): Promise<void> => {
       },
     );
   }
-
-  application.webServer?.push({
-    method: "PATCH",
-    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/settings/conversation-tags$"),
-    handler: (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {
-          courseForumConversationRequiresTagging: "on";
-          courseForumConversationsTagsPublicIds: string[];
-          [
-            courseForumConversationsTagsName: `courseForumConversationsTags[${string}].name`
-          ]: string;
-          [
-            courseForumConversationsTagsPrivateToCourseParticipationRoleInstructors: `courseForumConversationsTags[${string}].privateToCourseParticipationRoleInstructors`
-          ]: "on";
-          courseForumConversationsTagsPublicIdsToRemove: string[];
-        },
-        Application["types"]["states"]["Course"]
-      >,
-      response,
-    ) => {
-      if (
-        request.state.course === undefined ||
-        request.state.courseParticipation === undefined ||
-        request.state.courseParticipation.courseParticipationRole !==
-          "courseParticipationRoleInstructor" ||
-        request.state.courseForumConversationsTags === undefined
-      )
-        return;
-      request.body.courseForumConversationsTagsPublicIds ??= [];
-      request.body.courseForumConversationsTagsPublicIdsToRemove ??= [];
-      if (
-        !Array.isArray(request.body.courseForumConversationsTagsPublicIds) ||
-        request.body.courseForumConversationsTagsPublicIds.some(
-          (courseForumConversationsTagPublicId) =>
-            typeof courseForumConversationsTagPublicId !== "string" ||
-            courseForumConversationsTagPublicId.trim() === "" ||
-            typeof request.body[
-              `courseForumConversationsTags[${courseForumConversationsTagPublicId}].name`
-            ] !== "string" ||
-            request.body[
-              `courseForumConversationsTags[${courseForumConversationsTagPublicId}].name`
-            ]!.trim() === "",
-        ) ||
-        !Array.isArray(
-          request.body.courseForumConversationsTagsPublicIdsToRemove,
-        ) ||
-        request.body.courseForumConversationsTagsPublicIdsToRemove.some(
-          (courseForumConversationsTagPublicId) =>
-            typeof courseForumConversationsTagPublicId !== "string" ||
-            courseForumConversationsTagPublicId.trim() === "",
-        )
-      )
-        throw "validation";
-      application.database.transaction(() => {
-        application.database.run(
-          sql`
-            update "courses"
-            set "courseForumConversationRequiresTagging" = ${Number(request.body.courseForumConversationRequiresTagging === "on")}
-            where "id" = ${request.state.course!.id};
-          `,
-        );
-        for (const [
-          order,
-          courseForumConversationsTagPublicId,
-        ] of request.body.courseForumConversationsTagsPublicIds!.entries()) {
-          const courseForumConversationsTag =
-            request.state.courseForumConversationsTags!.find(
-              (courseForumConversationsTag) =>
-                courseForumConversationsTagPublicId ===
-                courseForumConversationsTag.publicId,
-            );
-          if (courseForumConversationsTag === undefined)
-            application.database.run(
-              sql`
-                insert into "courseForumConversationsTags" (
-                  "publicId",
-                  "course",
-                  "order",
-                  "name",
-                  "privateToCourseParticipationRoleInstructors"
-                )
-                values (
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${request.state.course!.id},
-                  ${order},
-                  ${request.body[`courseForumConversationsTags[${courseForumConversationsTagPublicId}].name`]!},
-                  ${Number(request.body[`courseForumConversationsTags[${courseForumConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
-                );
-              `,
-            );
-          else
-            application.database.run(
-              sql`
-                update "courseForumConversationsTags"
-                set
-                  "order" = ${order},
-                  "name" = ${request.body[`courseForumConversationsTags[${courseForumConversationsTagPublicId}].name`]!},
-                  "privateToCourseParticipationRoleInstructors" = ${Number(request.body[`courseForumConversationsTags[${courseForumConversationsTagPublicId}].privateToCourseParticipationRoleInstructors`] === "on")}
-                where "id" = ${courseForumConversationsTag.id};
-              `,
-            );
-        }
-        for (const courseForumConversationsTagPublicId of request.body
-          .courseForumConversationsTagsPublicIdsToRemove!) {
-          const courseForumConversationsTag =
-            request.state.courseForumConversationsTags!.find(
-              (courseForumConversationsTag) =>
-                courseForumConversationsTagPublicId ===
-                courseForumConversationsTag.publicId,
-            );
-          if (courseForumConversationsTag === undefined) continue;
-          application.database.run(
-            sql`
-              delete from "courseForumConversationTaggings" where "courseForumConversationsTag" = ${courseForumConversationsTag.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseForumConversationsTags" where "id" = ${courseForumConversationsTag.id};
-            `,
-          );
-        }
-      });
-      response.setFlash!(html`
-        <div class="flash--green">Conversation tags updated successfully.</div>
-      `);
-      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-      for (const port of application.applicationConfiguration.ports)
-        fetch(`http://localhost:${port}/__live-connections`, {
-          method: "POST",
-          headers: { "CSRF-Protection": "true" },
-          body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
-          }),
-        });
-    },
-  });
 
   application.webServer?.push({
     method: "PATCH",
