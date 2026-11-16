@@ -3694,7 +3694,9 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           update "courseParticipations"
-          set "mostRecentlyVisitedCourseForumConversation" = ${request.state.courseForumConversation.id}
+          set
+            "mostRecentlyVisitedMode" = ${"courseForum"},
+            "mostRecentlyVisitedCourseForumConversation" = ${request.state.courseForumConversation.id}
           where "id" = ${request.state.courseParticipation.id};
         `,
       );

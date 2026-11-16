@@ -637,6 +637,13 @@ export default async (application: Application): Promise<void> => {
         request.state.courseForumConversationsTags === undefined
       )
         return;
+      application.database.run(
+        sql`
+          update "courseParticipations"
+          set "mostRecentlyVisitedMode" = ${"courseSettings"}
+          where "id" = ${request.state.courseParticipation.id};
+        `,
+      );
       response.send(
         application.layouts.main({
           request,
