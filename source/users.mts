@@ -1341,7 +1341,7 @@ export default async (application: Application): Promise<void> => {
                                 element.checked = true;
                           };
                         `}"
-                      />  Email notifications for all messages
+                      />  Email notifications for all forum messages
                     </label>
                     <label class="button button--rectangle button--transparent">
                       <input
@@ -1362,7 +1362,7 @@ export default async (application: Application): Promise<void> => {
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForCourseForumForAllMessages"]').checked = false;
                           };
                         `}"
-                      />  Email notifications for messages including a
+                      />  Email notifications for forum messages including a
                       <strong
                         css="${css`
                           font-weight: 500;
@@ -1391,8 +1391,8 @@ export default async (application: Application): Promise<void> => {
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted"]').checked = true;
                           };
                         `}"
-                      />  Email notifications for messages in conversations in
-                      which you participated
+                      />  Email notifications for forum messages in
+                      conversations in which you participated
                     </label>
                     <label class="button button--rectangle button--transparent">
                       <input
@@ -1415,8 +1415,8 @@ export default async (application: Application): Promise<void> => {
                             }
                           };
                         `}"
-                      />  Email notifications for messages in conversations that
-                      you started
+                      />  Email notifications for forum messages in
+                      conversations that you started
                     </label>
                     <div
                       css="${css`
