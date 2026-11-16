@@ -899,6 +899,887 @@ export default async (application: Application): Promise<void> => {
                           </div>
                         </div>
                       </details>
+                      <details key="courseParticipations">
+                        <summary
+                          class="button button--rectangle button--transparent"
+                          css="${css`
+                            font-weight: 500;
+                          `}"
+                        >
+                          <span
+                            css="${css`
+                              display: inline-block;
+                              transition-property: var(
+                                --transition-property--transform
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              details[open] > summary > & {
+                                rotate: var(--rotate--90);
+                              }
+                            `}"
+                          >
+                            <i class="bi bi-chevron-right"></i>
+                          </span>
+                          Course participants
+                        </summary>
+                        <div
+                          css="${css`
+                            padding: var(--size--2) var(--size--0);
+                            border-bottom: var(--border-width--1) solid
+                              light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--4);
+                          `}"
+                        >
+                          $${
+                            request.state.course.ltiPlatformId !== null
+                              ? html`
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      display: flex;
+                                      align-items: baseline;
+                                      flex-wrap: wrap;
+                                      column-gap: var(--size--4);
+                                      row-gap: var(--size--2);
+                                    `}"
+                                  >
+                                    <div
+                                      type="form"
+                                      method="POST"
+                                      action="/courses/${
+                                        request.state.course.publicId
+                                      }/settings/participations/lti/sync"
+                                      javascript="${javascript`
+                                        this.onsubmit = () => {
+                                          delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                          delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                        };
+                                      `}"
+                                    >
+                                      <button
+                                        type="submit"
+                                        class="button button--rectangle button--blue"
+                                      >
+                                        Sync with Learning Management System
+                                        (LMS)
+                                      </button>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--red"
+                                      javascript="${javascript`
+                                        javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                                      `}"
+                                    >
+                                      Disconnect from LMS
+                                    </button>
+                                    <div
+                                      type="form popover"
+                                      method="DELETE"
+                                      action="/courses/${
+                                        request.state.course.publicId
+                                      }/settings/participations/lti"
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                      >
+                                        <i
+                                          class="bi bi-exclamation-triangle-fill"
+                                        ></i
+                                        > Once you disconnect the Courselore
+                                        course from the LMS course, students
+                                        following the resource link from the LMS
+                                        to Courselore will see an error message.
+                                      </div>
+                                      <div>
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--red"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
+                                        >
+                                          Disconnect from LMS
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  $${(() => {
+                                    const courseParticipations =
+                                      application.database.all<{
+                                        id: number;
+                                        publicId: string;
+                                        user: number;
+                                        courseParticipationRole:
+                                          | "courseParticipationRoleInstructor"
+                                          | "courseParticipationRoleStudent";
+                                      }>(
+                                        sql`
+                                          select
+                                            "courseParticipations"."id" as "id",
+                                            "courseParticipations"."publicId" as "publicId",
+                                            "courseParticipations"."user" as "user",
+                                            "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                          from "courseParticipations"
+                                          join "users" on "courseParticipations"."user" = "users"."id"
+                                          where
+                                            "courseParticipations"."course" = ${request.state.course.id} and
+                                            "courseParticipations"."ltiState" = 'ltiStateMissingInLMS'
+                                          order by
+                                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                            "users"."name" asc;
+                                        `,
+                                      );
+                                    return 0 < courseParticipations.length
+                                      ? html`
+                                          <div
+                                            css="${css`
+                                              font-size: var(--font-size--3);
+                                              line-height: var(
+                                                --font-size--3--line-height
+                                              );
+                                              font-weight: 600;
+                                              color: light-dark(
+                                                var(--color--red--500),
+                                                var(--color--red--500)
+                                              );
+                                            `}"
+                                          >
+                                            <i
+                                              class="bi bi-exclamation-triangle-fill"
+                                            ></i
+                                            > The following course participants
+                                            are missing in the LMS
+                                          </div>
+                                          <div
+                                            type="form"
+                                            method="PATCH"
+                                            action="/courses/${
+                                              request.state.course.publicId
+                                            }/settings/participations/lti/sync/missing"
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--size--4);
+                                            `}"
+                                            javascript="${javascript`
+                                              this.onsubmit = () => {
+                                                delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
+                                                delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
+                                              };
+                                            `}"
+                                          >
+                                            $${courseParticipations.map(
+                                              (courseParticipation) => {
+                                                const user =
+                                                  application.database.get<{
+                                                    id: number;
+                                                    publicId: string;
+                                                    name: string;
+                                                    email: string;
+                                                    avatarColor:
+                                                      | "red"
+                                                      | "orange"
+                                                      | "amber"
+                                                      | "yellow"
+                                                      | "lime"
+                                                      | "green"
+                                                      | "emerald"
+                                                      | "teal"
+                                                      | "cyan"
+                                                      | "sky"
+                                                      | "blue"
+                                                      | "indigo"
+                                                      | "violet"
+                                                      | "purple"
+                                                      | "fuchsia"
+                                                      | "pink"
+                                                      | "rose";
+                                                    avatarImage: string | null;
+                                                  }>(
+                                                    sql`
+                                                      select
+                                                        "id",
+                                                        "publicId",
+                                                        "name",
+                                                        "email",
+                                                        "avatarColor",
+                                                        "avatarImage"
+                                                      from "users"
+                                                      where "id" = ${courseParticipation.user};
+                                                    `,
+                                                  );
+                                                if (user === undefined)
+                                                  throw new Error();
+                                                return html`
+                                                  <div
+                                                    key="courseParticipation ${courseParticipation.publicId}"
+                                                    css="${css`
+                                                      display: flex;
+                                                      align-items: center;
+                                                      gap: var(--size--3);
+                                                    `}"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="courseParticipationsPublicIds[]"
+                                                      value="${courseParticipation.publicId}"
+                                                    />
+                                                    <div>
+                                                      $${application.partials.userAvatar(
+                                                        {
+                                                          user,
+                                                          size: 9,
+                                                        },
+                                                      )}
+                                                    </div>
+                                                    <div
+                                                      css="${css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--size--1);
+                                                      `}"
+                                                    >
+                                                      <div>
+                                                        <span
+                                                          css="${css`
+                                                            font-weight: 500;
+                                                          `}"
+                                                          >${user.name}</span
+                                                        >  <span
+                                                          css="${css`
+                                                            font-family:
+                                                              "Roboto Mono Variable",
+                                                              var(
+                                                                --font-family--monospace
+                                                              );
+                                                            font-size: var(
+                                                              --font-size--3
+                                                            );
+                                                            line-height: var(
+                                                              --font-size--3--line-height
+                                                            );
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--slate--600
+                                                              ),
+                                                              var(
+                                                                --color--slate--400
+                                                              )
+                                                            );
+                                                          `}"
+                                                          >${`<${user.email}>`}</span
+                                                        >
+                                                      </div>
+                                                      <div
+                                                        css="${css`
+                                                          font-size: var(
+                                                            --font-size--3
+                                                          );
+                                                          line-height: var(
+                                                            --font-size--3--line-height
+                                                          );
+                                                          font-weight: 600;
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--slate--600
+                                                            ),
+                                                            var(
+                                                              --color--slate--400
+                                                            )
+                                                          );
+                                                          display: flex;
+                                                          align-items: baseline;
+                                                          flex-wrap: wrap;
+                                                          column-gap: var(
+                                                            --size--4
+                                                          );
+                                                          row-gap: var(
+                                                            --size--2
+                                                          );
+                                                        `}"
+                                                      >
+                                                        <span>
+                                                          <span
+                                                            css="${css`
+                                                              color: light-dark(
+                                                                var(
+                                                                  --color--slate--500
+                                                                ),
+                                                                var(
+                                                                  --color--slate--500
+                                                                )
+                                                              );
+                                                            `}"
+                                                            >Role:</span
+                                                          >  $${
+                                                            courseParticipation.courseParticipationRole ===
+                                                            "courseParticipationRoleInstructor"
+                                                              ? html`Instructor`
+                                                              : html`Student`
+                                                          }
+                                                        </span>
+                                                        <label
+                                                          class="button button--rectangle button--transparent"
+                                                          css="${css`
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--green--500
+                                                              ),
+                                                              var(
+                                                                --color--green--500
+                                                              )
+                                                            );
+                                                          `}"
+                                                        >
+                                                          <input
+                                                            type="radio"
+                                                            name="courseParticipations[${courseParticipation.publicId}].action"
+                                                            value="keep"
+                                                            required
+                                                            class="input--radio"
+                                                          />  Keep
+                                                        </label>
+                                                        <label
+                                                          class="button button--rectangle button--transparent"
+                                                          css="${css`
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--red--500
+                                                              ),
+                                                              var(
+                                                                --color--red--500
+                                                              )
+                                                            );
+                                                          `}"
+                                                        >
+                                                          <input
+                                                            type="radio"
+                                                            name="courseParticipations[${courseParticipation.publicId}].action"
+                                                            value="remove"
+                                                            required
+                                                            class="input--radio"
+                                                          />  Remove
+                                                        </label>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                `;
+                                              },
+                                            )}
+                                            <div
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                              `}"
+                                            >
+                                              <button
+                                                type="button"
+                                                class="button button--rectangle button--blue"
+                                                javascript="${javascript`
+                                                  javascript.popover({ element: this, trigger: "click" });
+                                                `}"
+                                              >
+                                                Update course participants
+                                                missing in LMS
+                                              </button>
+                                              <div
+                                                type="popover"
+                                                css="${css`
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--size--2);
+                                                `}"
+                                              >
+                                                <div
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--3
+                                                    );
+                                                    line-height: var(
+                                                      --font-size--3--line-height
+                                                    );
+                                                    font-weight: 600;
+                                                    color: light-dark(
+                                                      var(--color--red--500),
+                                                      var(--color--red--500)
+                                                    );
+                                                  `}"
+                                                >
+                                                  <i
+                                                    class="bi bi-exclamation-triangle-fill"
+                                                  ></i
+                                                  > The participants that you
+                                                  remove from the course may
+                                                  only participate again with an
+                                                  invitation.
+                                                </div>
+                                                <div>
+                                                  <button
+                                                    type="submit"
+                                                    class="button button--rectangle button--red"
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--3
+                                                      );
+                                                      line-height: var(
+                                                        --font-size--3--line-height
+                                                      );
+                                                    `}"
+                                                  >
+                                                    Update course participants
+                                                    missing in LMS
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <hr class="separator" />
+                                        `
+                                      : html``;
+                                  })()}
+                                `
+                              : html``
+                          }
+                          <div
+                            key="courseParticipations--update"
+                            type="form"
+                            method="PATCH"
+                            action="/courses/${
+                              request.state.course.publicId
+                            }/settings/participations"
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--4);
+                            `}"
+                            javascript="${javascript`
+                              this.morph = false;
+                              this.onsubmit = () => {
+                                delete this.morph;
+                              };
+                            `}"
+                          >
+                            $${(() => {
+                              const courseParticipations =
+                                application.database.all<{
+                                  id: number;
+                                  publicId: string;
+                                  user: number;
+                                  courseParticipationRole:
+                                    | "courseParticipationRoleInstructor"
+                                    | "courseParticipationRoleStudent";
+                                }>(
+                                  sql`
+                                    select
+                                      "courseParticipations"."id" as "id",
+                                      "courseParticipations"."publicId" as "publicId",
+                                      "courseParticipations"."user" as "user",
+                                      "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                    from "courseParticipations"
+                                    join "users" on "courseParticipations"."user" = "users"."id"
+                                    where "courseParticipations"."course" = ${request.state.course.id}
+                                    order by
+                                      "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                                      "users"."name" asc;
+                                  `,
+                                );
+                              const courseParticipationsCourseParticipationRoleInstructors =
+                                courseParticipations.filter(
+                                  (courseParticipation) =>
+                                    courseParticipation.courseParticipationRole ===
+                                    "courseParticipationRoleInstructor",
+                                );
+                              const courseParticipationsCourseParticipationRoleStudents =
+                                courseParticipations.filter(
+                                  (courseParticipation) =>
+                                    courseParticipation.courseParticipationRole ===
+                                    "courseParticipationRoleStudent",
+                                );
+                              return html`
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                  `}"
+                                >
+                                  ${String(courseParticipations.length)} course
+                                  participant${
+                                    courseParticipations.length === 1 ? "" : "s"
+                                  } /
+                                  ${String(
+                                    courseParticipationsCourseParticipationRoleInstructors.length,
+                                  )}
+                                  instructor${
+                                    courseParticipationsCourseParticipationRoleInstructors.length ===
+                                    1
+                                      ? ""
+                                      : "s"
+                                  } ·
+                                  ${String(
+                                    courseParticipationsCourseParticipationRoleStudents.length,
+                                  )}
+                                  student${
+                                    courseParticipationsCourseParticipationRoleStudents.length ===
+                                    1
+                                      ? ""
+                                      : "s"
+                                  } /
+                                  ${String(
+                                    courseParticipations.filter(
+                                      (courseParticipation) =>
+                                        application.database.get(
+                                          sql`
+                                            select true
+                                            from "userSessions"
+                                            where
+                                              "user" = ${courseParticipation.user} and
+                                              ${Temporal.Now.instant().subtract({ minutes: 6 }).toString()} < "lastUsedAt";
+                                          `,
+                                        ) !== undefined,
+                                    ).length,
+                                  )}
+                                  online
+                                </div>
+                                $${courseParticipations.map(
+                                  (courseParticipation) => {
+                                    const user = application.database.get<{
+                                      id: number;
+                                      publicId: string;
+                                      name: string;
+                                      email: string;
+                                      avatarColor:
+                                        | "red"
+                                        | "orange"
+                                        | "amber"
+                                        | "yellow"
+                                        | "lime"
+                                        | "green"
+                                        | "emerald"
+                                        | "teal"
+                                        | "cyan"
+                                        | "sky"
+                                        | "blue"
+                                        | "indigo"
+                                        | "violet"
+                                        | "purple"
+                                        | "fuchsia"
+                                        | "pink"
+                                        | "rose";
+                                      avatarImage: string | null;
+                                    }>(
+                                      sql`
+                                      select
+                                        "id",
+                                        "publicId",
+                                        "name",
+                                        "email",
+                                        "avatarColor",
+                                        "avatarImage"
+                                      from "users"
+                                      where "id" = ${courseParticipation.user};
+                                    `,
+                                    );
+                                    if (user === undefined) throw new Error();
+                                    return html`
+                                      <div
+                                        key="courseParticipation ${courseParticipation.publicId}"
+                                        css="${css`
+                                          display: flex;
+                                          align-items: center;
+                                          gap: var(--size--3);
+                                        `}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="courseParticipationsPublicIds[]"
+                                          value="${courseParticipation.publicId}"
+                                        />
+                                        <div>
+                                          $${application.partials.userAvatar({
+                                            user,
+                                            size: 9,
+                                          })}
+                                        </div>
+                                        <div
+                                          css="${css`
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--size--1);
+                                          `}"
+                                        >
+                                          <div>
+                                            <span
+                                              css="${css`
+                                                font-weight: 500;
+                                              `}"
+                                              >${user.name}</span
+                                            >  <span
+                                              css="${css`
+                                                font-family:
+                                                  "Roboto Mono Variable",
+                                                  var(--font-family--monospace);
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                                color: light-dark(
+                                                  var(--color--slate--600),
+                                                  var(--color--slate--400)
+                                                );
+                                              `}"
+                                              >${`<${user.email}>`}</span
+                                            >
+                                          </div>
+                                          <div
+                                            css="${css`
+                                              font-size: var(--font-size--3);
+                                              line-height: var(
+                                                --font-size--3--line-height
+                                              );
+                                              font-weight: 600;
+                                              color: light-dark(
+                                                var(--color--slate--600),
+                                                var(--color--slate--400)
+                                              );
+                                              display: flex;
+                                              align-items: baseline;
+                                              flex-wrap: wrap;
+                                              column-gap: var(--size--4);
+                                              row-gap: var(--size--2);
+                                            `}"
+                                          >
+                                            <button
+                                              type="button"
+                                              class="button button--rectangle button--transparent"
+                                              javascript="${javascript`
+                                              javascript.popover({ element: this, trigger: "click" });
+                                            `}"
+                                            >
+                                              <form>
+                                                <span
+                                                  css="${css`
+                                                    color: light-dark(
+                                                      var(--color--slate--500),
+                                                      var(--color--slate--500)
+                                                    );
+                                                  `}"
+                                                  >Role:</span
+                                                >  <input
+                                                  type="radio"
+                                                  name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
+                                                  value="courseParticipationRoleInstructor"
+                                                  required
+                                                  $${
+                                                    courseParticipation.courseParticipationRole ===
+                                                    "courseParticipationRoleInstructor"
+                                                      ? html`checked`
+                                                      : html``
+                                                  }
+                                                  hidden
+                                                /><span
+                                                  css="${css`
+                                                    :not(:checked) + & {
+                                                      display: none;
+                                                    }
+                                                  `}"
+                                                  >Instructor</span
+                                                ><input
+                                                  type="radio"
+                                                  name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
+                                                  value="courseParticipationRoleStudent"
+                                                  required
+                                                  $${
+                                                    courseParticipation.courseParticipationRole ===
+                                                    "courseParticipationRoleStudent"
+                                                      ? html`checked`
+                                                      : html``
+                                                  }
+                                                  hidden
+                                                /><span
+                                                  css="${css`
+                                                    :not(:checked) + & {
+                                                      display: none;
+                                                    }
+                                                  `}"
+                                                  >Student</span
+                                                > <i
+                                                  class="bi bi-chevron-down"
+                                                ></i>
+                                              </form>
+                                            </button>
+                                            <div
+                                              type="popover"
+                                              css="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--size--2);
+                                              `}"
+                                            >
+                                              <button
+                                                type="button"
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                javascript="${javascript`
+                                                this.onclick = () => {
+                                                  this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
+                                                };
+                                              `}"
+                                              >
+                                                Instructor
+                                              </button>
+                                              <button
+                                                type="button"
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                javascript="${javascript`
+                                                this.onclick = () => {
+                                                  this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                                };
+                                              `}"
+                                              >
+                                                Student
+                                              </button>
+                                            </div>
+                                            <button
+                                              type="button"
+                                              class="button button--rectangle button--transparent"
+                                              javascript="${javascript`
+                                              javascript.popover({ element: this, trigger: "click" });
+                                            `}"
+                                            >
+                                              Remove
+                                            </button>
+                                            <div
+                                              type="popover"
+                                              css="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--size--2);
+                                              `}"
+                                            >
+                                              <div
+                                                css="${css`
+                                                  font-size: var(
+                                                    --font-size--3
+                                                  );
+                                                  line-height: var(
+                                                    --font-size--3--line-height
+                                                  );
+                                                  font-weight: 600;
+                                                  color: light-dark(
+                                                    var(--color--red--500),
+                                                    var(--color--red--500)
+                                                  );
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-exclamation-triangle-fill"
+                                                ></i
+                                                > Once you remove this course
+                                                participant from the course,
+                                                they may only participate again
+                                                with an invitation.
+                                              </div>
+                                              <div>
+                                                <button
+                                                  type="button"
+                                                  class="button button--rectangle button--red"
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--3
+                                                    );
+                                                    line-height: var(
+                                                      --font-size--3--line-height
+                                                    );
+                                                  `}"
+                                                  javascript="${javascript`
+                                                  this.onclick = () => {
+                                                    javascript.execute(
+                                                      this.closest('[type~="form"]')
+                                                        .insertAdjacentElement(
+                                                          "beforeend",
+                                                          javascript.stringToElement(${html`
+                                                            <input
+                                                              type="hidden"
+                                                              name="courseParticipationsPublicIdsToRemove[]"
+                                                              value="${courseParticipation.publicId}"
+                                                              javascript="${javascript`
+                                                                this.isModified = true;
+                                                              `}"
+                                                            />
+                                                          `})
+                                                        )
+                                                    );
+                                                    this.closest('[key~="courseParticipation"]').remove();
+                                                  };
+                                                `}"
+                                                >
+                                                  Remove course participant
+                                                </button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    `;
+                                  },
+                                )}
+                              `;
+                            })()}
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                              `}"
+                            >
+                              <button
+                                type="submit"
+                                class="button button--rectangle button--blue"
+                              >
+                                Update course participants
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </details>
                       <details>
                         <summary
                           class="button button--rectangle button--transparent"
@@ -3357,7 +4238,7 @@ export default async (application: Application): Promise<void> => {
                           })()}
                         </div>
                       </details>
-                      <details key="courseParticipations">
+                      <details>
                         <summary
                           class="button button--rectangle button--transparent"
                           css="${css`
@@ -3383,9 +4264,14 @@ export default async (application: Application): Promise<void> => {
                           >
                             <i class="bi bi-chevron-right"></i>
                           </span>
-                          Course participants
+                          Permissions
                         </summary>
                         <div
+                          type="form"
+                          method="PATCH"
+                          action="/courses/${
+                            request.state.course.publicId
+                          }/settings/permissions"
                           css="${css`
                             padding: var(--size--2) var(--size--0);
                             border-bottom: var(--border-width--1) solid
@@ -3398,1037 +4284,154 @@ export default async (application: Application): Promise<void> => {
                             gap: var(--size--4);
                           `}"
                         >
-                          $${
-                            request.state.course.ltiPlatformId !== null
-                              ? html`
-                                  <div
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      display: flex;
-                                      align-items: baseline;
-                                      flex-wrap: wrap;
-                                      column-gap: var(--size--4);
-                                      row-gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <div
-                                      type="form"
-                                      method="POST"
-                                      action="/courses/${
-                                        request.state.course.publicId
-                                      }/settings/participations/lti/sync"
-                                      javascript="${javascript`
-                                        this.onsubmit = () => {
-                                          delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
-                                          delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
-                                        };
-                                      `}"
-                                    >
-                                      <button
-                                        type="submit"
-                                        class="button button--rectangle button--blue"
-                                      >
-                                        Sync with Learning Management System
-                                        (LMS)
-                                      </button>
-                                    </div>
-                                    <button
-                                      type="button"
-                                      class="button button--rectangle button--red"
-                                      javascript="${javascript`
-                                        javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
-                                      `}"
-                                    >
-                                      Disconnect from LMS
-                                    </button>
-                                    <div
-                                      type="form popover"
-                                      method="DELETE"
-                                      action="/courses/${
-                                        request.state.course.publicId
-                                      }/settings/participations/lti"
-                                      css="${css`
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--size--2);
-                                      `}"
-                                    >
-                                      <div
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                          font-weight: 600;
-                                          color: light-dark(
-                                            var(--color--red--500),
-                                            var(--color--red--500)
-                                          );
-                                        `}"
-                                      >
-                                        <i
-                                          class="bi bi-exclamation-triangle-fill"
-                                        ></i
-                                        > Once you disconnect the Courselore
-                                        course from the LMS course, students
-                                        following the resource link from the LMS
-                                        to Courselore will see an error message.
-                                      </div>
-                                      <div>
-                                        <button
-                                          type="submit"
-                                          class="button button--rectangle button--red"
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                          `}"
-                                        >
-                                          Disconnect from LMS
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  $${(() => {
-                                    const courseParticipations =
-                                      application.database.all<{
-                                        id: number;
-                                        publicId: string;
-                                        user: number;
-                                        courseParticipationRole:
-                                          | "courseParticipationRoleInstructor"
-                                          | "courseParticipationRoleStudent";
-                                      }>(
-                                        sql`
-                                          select
-                                            "courseParticipations"."id" as "id",
-                                            "courseParticipations"."publicId" as "publicId",
-                                            "courseParticipations"."user" as "user",
-                                            "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                          from "courseParticipations"
-                                          join "users" on "courseParticipations"."user" = "users"."id"
-                                          where
-                                            "courseParticipations"."course" = ${request.state.course.id} and
-                                            "courseParticipations"."ltiState" = 'ltiStateMissingInLMS'
-                                          order by
-                                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                            "users"."name" asc;
-                                        `,
-                                      );
-                                    return 0 < courseParticipations.length
-                                      ? html`
-                                          <div
-                                            css="${css`
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
-                                              );
-                                              font-weight: 600;
-                                              color: light-dark(
-                                                var(--color--red--500),
-                                                var(--color--red--500)
-                                              );
-                                            `}"
-                                          >
-                                            <i
-                                              class="bi bi-exclamation-triangle-fill"
-                                            ></i
-                                            > The following course participants
-                                            are missing in the LMS
-                                          </div>
-                                          <div
-                                            type="form"
-                                            method="PATCH"
-                                            action="/courses/${
-                                              request.state.course.publicId
-                                            }/settings/participations/lti/sync/missing"
-                                            css="${css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--size--4);
-                                            `}"
-                                            javascript="${javascript`
-                                              this.onsubmit = () => {
-                                                delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').morph;
-                                                delete this.closest('[key~="courseParticipations"]').querySelector('[key~="courseParticipations--update"]').isModified;
-                                              };
-                                            `}"
-                                          >
-                                            $${courseParticipations.map(
-                                              (courseParticipation) => {
-                                                const user =
-                                                  application.database.get<{
-                                                    id: number;
-                                                    publicId: string;
-                                                    name: string;
-                                                    email: string;
-                                                    avatarColor:
-                                                      | "red"
-                                                      | "orange"
-                                                      | "amber"
-                                                      | "yellow"
-                                                      | "lime"
-                                                      | "green"
-                                                      | "emerald"
-                                                      | "teal"
-                                                      | "cyan"
-                                                      | "sky"
-                                                      | "blue"
-                                                      | "indigo"
-                                                      | "violet"
-                                                      | "purple"
-                                                      | "fuchsia"
-                                                      | "pink"
-                                                      | "rose";
-                                                    avatarImage: string | null;
-                                                  }>(
-                                                    sql`
-                                                      select
-                                                        "id",
-                                                        "publicId",
-                                                        "name",
-                                                        "email",
-                                                        "avatarColor",
-                                                        "avatarImage"
-                                                      from "users"
-                                                      where "id" = ${courseParticipation.user};
-                                                    `,
-                                                  );
-                                                if (user === undefined)
-                                                  throw new Error();
-                                                return html`
-                                                  <div
-                                                    key="courseParticipation ${courseParticipation.publicId}"
-                                                    css="${css`
-                                                      display: flex;
-                                                      align-items: center;
-                                                      gap: var(--size--3);
-                                                    `}"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="courseParticipationsPublicIds[]"
-                                                      value="${courseParticipation.publicId}"
-                                                    />
-                                                    <div>
-                                                      $${application.partials.userAvatar(
-                                                        {
-                                                          user,
-                                                          size: 9,
-                                                        },
-                                                      )}
-                                                    </div>
-                                                    <div
-                                                      css="${css`
-                                                        display: flex;
-                                                        flex-direction: column;
-                                                        gap: var(--size--1);
-                                                      `}"
-                                                    >
-                                                      <div>
-                                                        <span
-                                                          css="${css`
-                                                            font-weight: 500;
-                                                          `}"
-                                                          >${user.name}</span
-                                                        >  <span
-                                                          css="${css`
-                                                            font-family:
-                                                              "Roboto Mono Variable",
-                                                              var(
-                                                                --font-family--monospace
-                                                              );
-                                                            font-size: var(
-                                                              --font-size--3
-                                                            );
-                                                            line-height: var(
-                                                              --font-size--3--line-height
-                                                            );
-                                                            color: light-dark(
-                                                              var(
-                                                                --color--slate--600
-                                                              ),
-                                                              var(
-                                                                --color--slate--400
-                                                              )
-                                                            );
-                                                          `}"
-                                                          >${`<${user.email}>`}</span
-                                                        >
-                                                      </div>
-                                                      <div
-                                                        css="${css`
-                                                          font-size: var(
-                                                            --font-size--3
-                                                          );
-                                                          line-height: var(
-                                                            --font-size--3--line-height
-                                                          );
-                                                          font-weight: 600;
-                                                          color: light-dark(
-                                                            var(
-                                                              --color--slate--600
-                                                            ),
-                                                            var(
-                                                              --color--slate--400
-                                                            )
-                                                          );
-                                                          display: flex;
-                                                          align-items: baseline;
-                                                          flex-wrap: wrap;
-                                                          column-gap: var(
-                                                            --size--4
-                                                          );
-                                                          row-gap: var(
-                                                            --size--2
-                                                          );
-                                                        `}"
-                                                      >
-                                                        <span>
-                                                          <span
-                                                            css="${css`
-                                                              color: light-dark(
-                                                                var(
-                                                                  --color--slate--500
-                                                                ),
-                                                                var(
-                                                                  --color--slate--500
-                                                                )
-                                                              );
-                                                            `}"
-                                                            >Role:</span
-                                                          >  $${
-                                                            courseParticipation.courseParticipationRole ===
-                                                            "courseParticipationRoleInstructor"
-                                                              ? html`Instructor`
-                                                              : html`Student`
-                                                          }
-                                                        </span>
-                                                        <label
-                                                          class="button button--rectangle button--transparent"
-                                                          css="${css`
-                                                            color: light-dark(
-                                                              var(
-                                                                --color--green--500
-                                                              ),
-                                                              var(
-                                                                --color--green--500
-                                                              )
-                                                            );
-                                                          `}"
-                                                        >
-                                                          <input
-                                                            type="radio"
-                                                            name="courseParticipations[${courseParticipation.publicId}].action"
-                                                            value="keep"
-                                                            required
-                                                            class="input--radio"
-                                                          />  Keep
-                                                        </label>
-                                                        <label
-                                                          class="button button--rectangle button--transparent"
-                                                          css="${css`
-                                                            color: light-dark(
-                                                              var(
-                                                                --color--red--500
-                                                              ),
-                                                              var(
-                                                                --color--red--500
-                                                              )
-                                                            );
-                                                          `}"
-                                                        >
-                                                          <input
-                                                            type="radio"
-                                                            name="courseParticipations[${courseParticipation.publicId}].action"
-                                                            value="remove"
-                                                            required
-                                                            class="input--radio"
-                                                          />  Remove
-                                                        </label>
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                `;
-                                              },
-                                            )}
-                                            <div
-                                              css="${css`
-                                                font-size: var(--font-size--3);
-                                                line-height: var(
-                                                  --font-size--3--line-height
-                                                );
-                                              `}"
-                                            >
-                                              <button
-                                                type="button"
-                                                class="button button--rectangle button--blue"
-                                                javascript="${javascript`
-                                                  javascript.popover({ element: this, trigger: "click" });
-                                                `}"
-                                              >
-                                                Update course participants
-                                                missing in LMS
-                                              </button>
-                                              <div
-                                                type="popover"
-                                                css="${css`
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--size--2);
-                                                `}"
-                                              >
-                                                <div
-                                                  css="${css`
-                                                    font-size: var(
-                                                      --font-size--3
-                                                    );
-                                                    line-height: var(
-                                                      --font-size--3--line-height
-                                                    );
-                                                    font-weight: 600;
-                                                    color: light-dark(
-                                                      var(--color--red--500),
-                                                      var(--color--red--500)
-                                                    );
-                                                  `}"
-                                                >
-                                                  <i
-                                                    class="bi bi-exclamation-triangle-fill"
-                                                  ></i
-                                                  > The participants that you
-                                                  remove from the course may
-                                                  only participate again with an
-                                                  invitation.
-                                                </div>
-                                                <div>
-                                                  <button
-                                                    type="submit"
-                                                    class="button button--rectangle button--red"
-                                                    css="${css`
-                                                      font-size: var(
-                                                        --font-size--3
-                                                      );
-                                                      line-height: var(
-                                                        --font-size--3--line-height
-                                                      );
-                                                    `}"
-                                                  >
-                                                    Update course participants
-                                                    missing in LMS
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <hr class="separator" />
-                                        `
-                                      : html``;
-                                  })()}
-                                `
-                              : html``
-                          }
                           <div
-                            key="courseParticipations--update"
-                            type="form"
-                            method="PATCH"
-                            action="/courses/${
-                              request.state.course.publicId
-                            }/settings/participations"
                             css="${css`
                               display: flex;
                               flex-direction: column;
-                              gap: var(--size--4);
-                            `}"
-                            javascript="${javascript`
-                              this.morph = false;
-                              this.onsubmit = () => {
-                                delete this.morph;
-                              };
+                              gap: var(--size--1);
                             `}"
                           >
-                            $${(() => {
-                              const courseParticipations =
-                                application.database.all<{
-                                  id: number;
-                                  publicId: string;
-                                  user: number;
-                                  courseParticipationRole:
-                                    | "courseParticipationRoleInstructor"
-                                    | "courseParticipationRoleStudent";
-                                }>(
-                                  sql`
-                                    select
-                                      "courseParticipations"."id" as "id",
-                                      "courseParticipations"."publicId" as "publicId",
-                                      "courseParticipations"."user" as "user",
-                                      "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
-                                    from "courseParticipations"
-                                    join "users" on "courseParticipations"."user" = "users"."id"
-                                    where "courseParticipations"."course" = ${request.state.course.id}
-                                    order by
-                                      "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                                      "users"."name" asc;
-                                  `,
-                                );
-                              const courseParticipationsCourseParticipationRoleInstructors =
-                                courseParticipations.filter(
-                                  (courseParticipation) =>
-                                    courseParticipation.courseParticipationRole ===
-                                    "courseParticipationRoleInstructor",
-                                );
-                              const courseParticipationsCourseParticipationRoleStudents =
-                                courseParticipations.filter(
-                                  (courseParticipation) =>
-                                    courseParticipation.courseParticipationRole ===
-                                    "courseParticipationRoleStudent",
-                                );
-                              return html`
-                                <div
-                                  css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    color: light-dark(
-                                      var(--color--slate--600),
-                                      var(--color--slate--400)
-                                    );
-                                  `}"
-                                >
-                                  ${String(courseParticipations.length)} course
-                                  participant${
-                                    courseParticipations.length === 1 ? "" : "s"
-                                  } /
-                                  ${String(
-                                    courseParticipationsCourseParticipationRoleInstructors.length,
-                                  )}
-                                  instructor${
-                                    courseParticipationsCourseParticipationRoleInstructors.length ===
-                                    1
-                                      ? ""
-                                      : "s"
-                                  } ·
-                                  ${String(
-                                    courseParticipationsCourseParticipationRoleStudents.length,
-                                  )}
-                                  student${
-                                    courseParticipationsCourseParticipationRoleStudents.length ===
-                                    1
-                                      ? ""
-                                      : "s"
-                                  } /
-                                  ${String(
-                                    courseParticipations.filter(
-                                      (courseParticipation) =>
-                                        application.database.get(
-                                          sql`
-                                            select true
-                                            from "userSessions"
-                                            where
-                                              "user" = ${courseParticipation.user} and
-                                              ${Temporal.Now.instant().subtract({ minutes: 6 }).toString()} < "lastUsedAt";
-                                          `,
-                                        ) !== undefined,
-                                    ).length,
-                                  )}
-                                  online
-                                </div>
-                                $${courseParticipations.map(
-                                  (courseParticipation) => {
-                                    const user = application.database.get<{
-                                      id: number;
-                                      publicId: string;
-                                      name: string;
-                                      email: string;
-                                      avatarColor:
-                                        | "red"
-                                        | "orange"
-                                        | "amber"
-                                        | "yellow"
-                                        | "lime"
-                                        | "green"
-                                        | "emerald"
-                                        | "teal"
-                                        | "cyan"
-                                        | "sky"
-                                        | "blue"
-                                        | "indigo"
-                                        | "violet"
-                                        | "purple"
-                                        | "fuchsia"
-                                        | "pink"
-                                        | "rose";
-                                      avatarImage: string | null;
-                                    }>(
-                                      sql`
-                                      select
-                                        "id",
-                                        "publicId",
-                                        "name",
-                                        "email",
-                                        "avatarColor",
-                                        "avatarImage"
-                                      from "users"
-                                      where "id" = ${courseParticipation.user};
-                                    `,
-                                    );
-                                    if (user === undefined) throw new Error();
-                                    return html`
-                                      <div
-                                        key="courseParticipation ${courseParticipation.publicId}"
-                                        css="${css`
-                                          display: flex;
-                                          align-items: center;
-                                          gap: var(--size--3);
-                                        `}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="courseParticipationsPublicIds[]"
-                                          value="${courseParticipation.publicId}"
-                                        />
-                                        <div>
-                                          $${application.partials.userAvatar({
-                                            user,
-                                            size: 9,
-                                          })}
-                                        </div>
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--size--1);
-                                          `}"
-                                        >
-                                          <div>
-                                            <span
-                                              css="${css`
-                                                font-weight: 500;
-                                              `}"
-                                              >${user.name}</span
-                                            >  <span
-                                              css="${css`
-                                                font-family:
-                                                  "Roboto Mono Variable",
-                                                  var(--font-family--monospace);
-                                                font-size: var(--font-size--3);
-                                                line-height: var(
-                                                  --font-size--3--line-height
-                                                );
-                                                color: light-dark(
-                                                  var(--color--slate--600),
-                                                  var(--color--slate--400)
-                                                );
-                                              `}"
-                                              >${`<${user.email}>`}</span
-                                            >
-                                          </div>
-                                          <div
-                                            css="${css`
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
-                                              );
-                                              font-weight: 600;
-                                              color: light-dark(
-                                                var(--color--slate--600),
-                                                var(--color--slate--400)
-                                              );
-                                              display: flex;
-                                              align-items: baseline;
-                                              flex-wrap: wrap;
-                                              column-gap: var(--size--4);
-                                              row-gap: var(--size--2);
-                                            `}"
-                                          >
-                                            <button
-                                              type="button"
-                                              class="button button--rectangle button--transparent"
-                                              javascript="${javascript`
-                                              javascript.popover({ element: this, trigger: "click" });
-                                            `}"
-                                            >
-                                              <form>
-                                                <span
-                                                  css="${css`
-                                                    color: light-dark(
-                                                      var(--color--slate--500),
-                                                      var(--color--slate--500)
-                                                    );
-                                                  `}"
-                                                  >Role:</span
-                                                >  <input
-                                                  type="radio"
-                                                  name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
-                                                  value="courseParticipationRoleInstructor"
-                                                  required
-                                                  $${
-                                                    courseParticipation.courseParticipationRole ===
-                                                    "courseParticipationRoleInstructor"
-                                                      ? html`checked`
-                                                      : html``
-                                                  }
-                                                  hidden
-                                                /><span
-                                                  css="${css`
-                                                    :not(:checked) + & {
-                                                      display: none;
-                                                    }
-                                                  `}"
-                                                  >Instructor</span
-                                                ><input
-                                                  type="radio"
-                                                  name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"
-                                                  value="courseParticipationRoleStudent"
-                                                  required
-                                                  $${
-                                                    courseParticipation.courseParticipationRole ===
-                                                    "courseParticipationRoleStudent"
-                                                      ? html`checked`
-                                                      : html``
-                                                  }
-                                                  hidden
-                                                /><span
-                                                  css="${css`
-                                                    :not(:checked) + & {
-                                                      display: none;
-                                                    }
-                                                  `}"
-                                                  >Student</span
-                                                > <i
-                                                  class="bi bi-chevron-down"
-                                                ></i>
-                                              </form>
-                                            </button>
-                                            <div
-                                              type="popover"
-                                              css="${css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--size--2);
-                                              `}"
-                                            >
-                                              <button
-                                                type="button"
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                                javascript="${javascript`
-                                                this.onclick = () => {
-                                                  this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
-                                                };
-                                              `}"
-                                              >
-                                                Instructor
-                                              </button>
-                                              <button
-                                                type="button"
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                                javascript="${javascript`
-                                                this.onclick = () => {
-                                                  this.closest('[key~="courseParticipation"]').querySelector(${`[name="courseParticipations[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
-                                                };
-                                              `}"
-                                              >
-                                                Student
-                                              </button>
-                                            </div>
-                                            <button
-                                              type="button"
-                                              class="button button--rectangle button--transparent"
-                                              javascript="${javascript`
-                                              javascript.popover({ element: this, trigger: "click" });
-                                            `}"
-                                            >
-                                              Remove
-                                            </button>
-                                            <div
-                                              type="popover"
-                                              css="${css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--size--2);
-                                              `}"
-                                            >
-                                              <div
-                                                css="${css`
-                                                  font-size: var(
-                                                    --font-size--3
-                                                  );
-                                                  line-height: var(
-                                                    --font-size--3--line-height
-                                                  );
-                                                  font-weight: 600;
-                                                  color: light-dark(
-                                                    var(--color--red--500),
-                                                    var(--color--red--500)
-                                                  );
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-exclamation-triangle-fill"
-                                                ></i
-                                                > Once you remove this course
-                                                participant from the course,
-                                                they may only participate again
-                                                with an invitation.
-                                              </div>
-                                              <div>
-                                                <button
-                                                  type="button"
-                                                  class="button button--rectangle button--red"
-                                                  css="${css`
-                                                    font-size: var(
-                                                      --font-size--3
-                                                    );
-                                                    line-height: var(
-                                                      --font-size--3--line-height
-                                                    );
-                                                  `}"
-                                                  javascript="${javascript`
-                                                  this.onclick = () => {
-                                                    javascript.execute(
-                                                      this.closest('[type~="form"]')
-                                                        .insertAdjacentElement(
-                                                          "beforeend",
-                                                          javascript.stringToElement(${html`
-                                                            <input
-                                                              type="hidden"
-                                                              name="courseParticipationsPublicIdsToRemove[]"
-                                                              value="${courseParticipation.publicId}"
-                                                              javascript="${javascript`
-                                                                this.isModified = true;
-                                                              `}"
-                                                            />
-                                                          `})
-                                                        )
-                                                    );
-                                                    this.closest('[key~="courseParticipation"]').remove();
-                                                  };
-                                                `}"
-                                                >
-                                                  Remove course participant
-                                                </button>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    `;
-                                  },
-                                )}
-                              `;
-                            })()}
                             <div
                               css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
                               `}"
                             >
-                              <button
-                                type="submit"
-                                class="button button--rectangle button--blue"
-                              >
-                                Update course participants
-                              </button>
+                              Anonymity
                             </div>
+                            <form
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="radio"
+                                  name="courseParticipationRoleStudentsAnonymityAllowed"
+                                  value="courseParticipationRoleStudentsAnonymityAllowedNone"
+                                  $${
+                                    request.state.course
+                                      .courseParticipationRoleStudentsAnonymityAllowed ===
+                                    "courseParticipationRoleStudentsAnonymityAllowedNone"
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--radio"
+                                />  Students may not send anonymous messages
+                              </label>
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="radio"
+                                  name="courseParticipationRoleStudentsAnonymityAllowed"
+                                  value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                                  $${
+                                    request.state.course
+                                      .courseParticipationRoleStudentsAnonymityAllowed ===
+                                    "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--radio"
+                                />  Students may send messages that are
+                                anonymous to other students, but not anonymous
+                                to instructors
+                              </label>
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="radio"
+                                  name="courseParticipationRoleStudentsAnonymityAllowed"
+                                  value="courseParticipationRoleStudentsAnonymityAllowedEveryone"
+                                  $${
+                                    request.state.course
+                                      .courseParticipationRoleStudentsAnonymityAllowed ===
+                                    "courseParticipationRoleStudentsAnonymityAllowedEveryone"
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--radio"
+                                />  Students may send messages that are
+                                anonymous to everyone, including instructors
+                              </label>
+                            </form>
+                          </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--1);
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Attachments
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages"
+                                  $${
+                                    Boolean(
+                                      request.state.course
+                                        .courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages,
+                                    )
+                                      ? html`checked`
+                                      : html``
+                                  }
+                                  class="input--checkbox"
+                                />  Students may attach files or images to their
+                                messages
+                              </label>
+                            </div>
+                          </div>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                            `}"
+                          >
+                            <button
+                              type="submit"
+                              class="button button--rectangle button--blue"
+                            >
+                              Update permissions
+                            </button>
                           </div>
                         </div>
                       </details>
                     `
                   : html``
               }
-              <details>
-                <summary
-                  class="button button--rectangle button--transparent"
-                  css="${css`
-                    font-weight: 500;
-                  `}"
-                >
-                  <span
-                    css="${css`
-                      display: inline-block;
-                      transition-property: var(
-                        --transition-property--transform
-                      );
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--ease-in-out
-                      );
-                      details[open] > summary > & {
-                        rotate: var(--rotate--90);
-                      }
-                    `}"
-                  >
-                    <i class="bi bi-chevron-right"></i>
-                  </span>
-                  Permissions
-                </summary>
-                <div
-                  type="form"
-                  method="PATCH"
-                  action="/courses/${
-                    request.state.course.publicId
-                  }/settings/permissions"
-                  css="${css`
-                    padding: var(--size--2) var(--size--0);
-                    border-bottom: var(--border-width--1) solid
-                      light-dark(
-                        var(--color--slate--200),
-                        var(--color--slate--800)
-                      );
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size--4);
-                  `}"
-                >
-                  <div
-                    css="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--size--1);
-                    `}"
-                  >
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Anonymity
-                    </div>
-                    <form
-                      css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--size--2);
-                      `}"
-                    >
-                      <label
-                        class="button button--rectangle button--transparent"
-                      >
-                        <input
-                          type="radio"
-                          name="courseParticipationRoleStudentsAnonymityAllowed"
-                          value="courseParticipationRoleStudentsAnonymityAllowedNone"
-                          $${
-                            request.state.course
-                              .courseParticipationRoleStudentsAnonymityAllowed ===
-                            "courseParticipationRoleStudentsAnonymityAllowedNone"
-                              ? html`checked`
-                              : html``
-                          }
-                          class="input--radio"
-                        />  Students may not send anonymous messages
-                      </label>
-                      <label
-                        class="button button--rectangle button--transparent"
-                      >
-                        <input
-                          type="radio"
-                          name="courseParticipationRoleStudentsAnonymityAllowed"
-                          value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-                          $${
-                            request.state.course
-                              .courseParticipationRoleStudentsAnonymityAllowed ===
-                            "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-                              ? html`checked`
-                              : html``
-                          }
-                          class="input--radio"
-                        />  Students may send messages that are anonymous to
-                        other students, but not anonymous to instructors
-                      </label>
-                      <label
-                        class="button button--rectangle button--transparent"
-                      >
-                        <input
-                          type="radio"
-                          name="courseParticipationRoleStudentsAnonymityAllowed"
-                          value="courseParticipationRoleStudentsAnonymityAllowedEveryone"
-                          $${
-                            request.state.course
-                              .courseParticipationRoleStudentsAnonymityAllowed ===
-                            "courseParticipationRoleStudentsAnonymityAllowedEveryone"
-                              ? html`checked`
-                              : html``
-                          }
-                          class="input--radio"
-                        />  Students may send messages that are anonymous to
-                        everyone, including instructors
-                      </label>
-                    </form>
-                  </div>
-                  <div
-                    css="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--size--1);
-                    `}"
-                  >
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Attachments
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--size--2);
-                      `}"
-                    >
-                      <label
-                        class="button button--rectangle button--transparent"
-                      >
-                        <input
-                          type="checkbox"
-                          name="courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages"
-                          $${
-                            Boolean(
-                              request.state.course
-                                .courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages,
-                            )
-                              ? html`checked`
-                              : html``
-                          }
-                          class="input--checkbox"
-                        />  Students may attach files or images to their
-                        messages
-                      </label>
-                    </div>
-                  </div>
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--3);
-                      line-height: var(--font-size--3--line-height);
-                    `}"
-                  >
-                    <button
-                      type="submit"
-                      class="button button--rectangle button--blue"
-                    >
-                      Update permissions
-                    </button>
-                  </div>
-                </div>
-              </details>
               <details>
                 <summary
                   class="button button--rectangle button--transparent"
@@ -4726,6 +4729,780 @@ export default async (application: Application): Promise<void> => {
       );
       response.setFlash!(html`
         <div class="flash--green">General settings updated successfully.</div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.webServer?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseParticipationsPublicIds: string[];
+          [
+            courseParticipationsCourseParticipationRole: `courseParticipations[${string}].courseParticipationRole`
+          ]:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
+          courseParticipationsPublicIdsToRemove: string[];
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      request.body.courseParticipationsPublicIds ??= [];
+      request.body.courseParticipationsPublicIdsToRemove ??= [];
+      if (
+        !Array.isArray(request.body.courseParticipationsPublicIds) ||
+        request.body.courseParticipationsPublicIds.some(
+          (courseParticipationPublicId) =>
+            typeof courseParticipationPublicId !== "string" ||
+            courseParticipationPublicId.trim() === "" ||
+            (request.body[
+              `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
+            ] !== "courseParticipationRoleInstructor" &&
+              request.body[
+                `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
+              ] !== "courseParticipationRoleStudent"),
+        ) ||
+        !Array.isArray(request.body.courseParticipationsPublicIdsToRemove) ||
+        request.body.courseParticipationsPublicIdsToRemove.some(
+          (courseParticipationPublicId) =>
+            typeof courseParticipationPublicId !== "string" ||
+            courseParticipationPublicId.trim() === "",
+        )
+      )
+        throw "validation";
+      application.database.transaction(() => {
+        for (const courseParticipationPublicId of request.body
+          .courseParticipationsPublicIds!) {
+          const courseParticipation = application.database.get<{
+            id: number;
+            publicId: string;
+          }>(
+            sql`
+              select "id", "publicId"
+              from "courseParticipations"
+              where
+                "course" = ${request.state.course!.id} and
+                "publicId" = ${courseParticipationPublicId};
+            `,
+          );
+          if (courseParticipation === undefined) continue;
+          application.database.run(
+            sql`
+              update "courseParticipations"
+              set "courseParticipationRole" = ${
+                request.body[
+                  `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
+                ]!
+              }
+              where "id" = ${courseParticipation.id};
+            `,
+          );
+        }
+        for (const courseParticipationPublicId of request.body
+          .courseParticipationsPublicIdsToRemove!) {
+          const courseParticipation = application.database.get<{
+            id: number;
+          }>(
+            sql`
+              select "id"
+              from "courseParticipations"
+              where
+                "course" = ${request.state.course!.id} and
+                "publicId" = ${courseParticipationPublicId};
+            `,
+          );
+          if (courseParticipation === undefined) continue;
+          application.database.run(
+            sql`
+              update "users"
+              set "mostRecentlyVisitedCourseParticipation" = null
+              where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseForumConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseForumConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseForumConversationMessages"
+              set "createdByCourseParticipation" = null
+              where "createdByCourseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseForumConversationMessageViews"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              update "courseForumConversationMessageLikes"
+              set "courseParticipation" = null
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseForumConversationMessageEmailNotificationReplyTokens"
+              where "courseParticipation" = ${courseParticipation.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseParticipations" where "id" = ${courseParticipation.id};
+            `,
+          );
+        }
+      });
+      response.setFlash!(html`
+        <div class="flash--green">
+          Course participants updated successfully.
+        </div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+      for (const port of application.applicationConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
+          }),
+        });
+    },
+  });
+
+  application.webServer?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          ltiPlatformId: string;
+          ltiClientId: string;
+          ltiContextId: string;
+          ltiNamesAndRoleProvisioningServicesURL: string;
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      if (
+        typeof request.body.ltiPlatformId !== "string" ||
+        request.body.ltiPlatformId.trim() === "" ||
+        typeof request.body.ltiClientId !== "string" ||
+        request.body.ltiClientId.trim() === "" ||
+        typeof request.body.ltiContextId !== "string" ||
+        request.body.ltiContextId.trim() === "" ||
+        typeof request.body.ltiNamesAndRoleProvisioningServicesURL !==
+          "string" ||
+        (() => {
+          try {
+            new URL(request.body.ltiNamesAndRoleProvisioningServicesURL);
+            return false;
+          } catch {
+            return true;
+          }
+        })()
+      )
+        throw "validation";
+      request.state.course.ltiPlatformId = request.body.ltiPlatformId;
+      request.state.course.ltiClientId = request.body.ltiClientId;
+      request.state.course.ltiContextId = request.body.ltiContextId;
+      request.state.course.ltiNamesAndRoleProvisioningServicesURL =
+        request.body.ltiNamesAndRoleProvisioningServicesURL;
+      application.database.run(
+        sql`
+          update "courses"
+          set
+            "ltiPlatformId" = ${request.state.course.ltiPlatformId},
+            "ltiClientId" = ${request.state.course.ltiClientId},
+            "ltiContextId" = ${request.state.course.ltiContextId},
+            "ltiNamesAndRoleProvisioningServicesURL" = ${request.state.course.ltiNamesAndRoleProvisioningServicesURL}
+          where "id" = ${request.state.course.id};
+        `,
+      );
+      response.setFlash!(html`
+        <div class="flash--green">
+          Learning Management System (LMS) course connected successfully.
+        </div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.webServer?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        application.userConfiguration.lti === undefined ||
+        request.state.course === undefined ||
+        typeof request.state.course.ltiPlatformId !== "string" ||
+        typeof request.state.course.ltiClientId !== "string" ||
+        typeof request.state.course.ltiContextId !== "string" ||
+        typeof request.state.course.ltiNamesAndRoleProvisioningServicesURL !==
+          "string" ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      const platform = application.userConfiguration.lti.platforms.find(
+        (platform) =>
+          request.state.course!.ltiPlatformId === platform.platformId &&
+          request.state.course!.ltiClientId === platform.clientId,
+      );
+      if (platform === undefined) throw "validation";
+      let ltiCourseMembers: {
+        email: string;
+        name: string;
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
+      }[] = [];
+      try {
+        const accessToken = (
+          (await (
+            await fetch(platform.accessTokenURL, {
+              method: "POST",
+              body: new URLSearchParams({
+                grant_type: "client_credentials",
+                scope:
+                  "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
+                client_assertion_type:
+                  "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                client_assertion: await new jose.SignJWT()
+                  .setProtectedHeader({
+                    typ: "JWT",
+                    alg: "RS256",
+                    kid: await jose.calculateJwkThumbprint(
+                      crypto
+                        .createPublicKey(
+                          application.userConfiguration.lti.publicKey,
+                        )
+                        .export({ format: "jwk" }),
+                    ),
+                  })
+                  .setJti(
+                    cryptoRandomString({ length: 50, type: "alphanumeric" }),
+                  )
+                  .setIssuer(platform.clientId)
+                  .setAudience(platform.platformId)
+                  .setSubject(platform.clientId)
+                  .setIssuedAt()
+                  .setExpirationTime("5 minutes")
+                  .sign(
+                    crypto.createPrivateKey(
+                      application.userConfiguration.lti.privateKey,
+                    ),
+                  ),
+              }),
+            })
+          ).json()) as { access_token: string }
+        ).access_token;
+        let ltiNamesAndRoleProvisioningServicesURL: string | undefined =
+          request.state.course.ltiNamesAndRoleProvisioningServicesURL;
+        while (typeof ltiNamesAndRoleProvisioningServicesURL === "string") {
+          const ltiNamesAndRoleProvisioningServicesResponse = await fetch(
+            ltiNamesAndRoleProvisioningServicesURL,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                Accept:
+                  "application/vnd.ims.lti-nrps.v2.membershipcontainer+json",
+              },
+            },
+          );
+          ltiNamesAndRoleProvisioningServicesURL =
+            ltiNamesAndRoleProvisioningServicesResponse.headers
+              .get("Link")
+              ?.match(/<(?<url>[^>]+)>;\s*rel="next"/)?.groups?.url;
+          for (const ltiCourseMember of (
+            (await ltiNamesAndRoleProvisioningServicesResponse.json()) as {
+              members: {
+                status: string;
+                email: string;
+                name: string;
+                roles: string[];
+              }[];
+            }
+          ).members)
+            if (
+              typeof ltiCourseMember.status === "string" &&
+              ltiCourseMember.status.toLowerCase() === "active" &&
+              typeof ltiCourseMember.email === "string" &&
+              ltiCourseMember.email.match(utilities.emailRegExp) &&
+              platform.domains.some((domain) =>
+                `.${(ltiCourseMember.email as string).split("@")[1]}`.endsWith(
+                  `.${domain}`,
+                ),
+              ) &&
+              typeof ltiCourseMember.name === "string" &&
+              ltiCourseMember.name.trim() !== ""
+            )
+              ltiCourseMembers.push({
+                email: ltiCourseMember.email,
+                name: ltiCourseMember.name,
+                courseParticipationRole:
+                  Array.isArray(ltiCourseMember.roles) &&
+                  (ltiCourseMember.roles.includes(
+                    "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
+                  ) ||
+                    ltiCourseMember.roles.includes("Instructor"))
+                    ? "courseParticipationRoleInstructor"
+                    : "courseParticipationRoleStudent",
+              });
+        }
+      } catch (error) {
+        request.log("ERROR", String(error));
+        response.setFlash!(html`
+          <div class="flash--red">
+            Failed to sync Course participants from Learning Management System
+            (LMS).
+          </div>
+        `);
+        response.redirect!(
+          `/courses/${request.state.course.publicId}/settings`,
+        );
+        return;
+      }
+      application.database.transaction(() => {
+        for (const ltiCourseMember of ltiCourseMembers) {
+          const user =
+            application.database.get<{ id: number }>(
+              sql`
+                select "id"
+                from "users"
+                where "email" = ${ltiCourseMember.email};
+              `,
+            ) ??
+            application.database.get<{ id: number }>(
+              sql`
+                select *
+                from "users"
+                where "id" = ${
+                  application.database.run(
+                    sql`
+                      insert into "users" (
+                        "publicId",
+                        "name",
+                        "email",
+                        "emailVerificationEmail",
+                        "emailVerificationNonceTokenHash",
+                        "emailVerificationNonceCreatedAt",
+                        "passwordPasswordHash",
+                        "passwordResetNonceTokenHash",
+                        "passwordResetNonceCreatedAt",
+                        "twoFactorAuthenticationEnabled",
+                        "twoFactorAuthenticationSecretEncrypted",
+                        "twoFactorAuthenticationRecoveryCodesPasswordHashes",
+                        "avatarColor",
+                        "avatarImage",
+                        "userRole",
+                        "darkMode",
+                        "sidebarWidth",
+                        "emailNotificationsForCourseForumForAllMessages",
+                        "emailNotificationsForCourseForumForMessagesIncludingAMention",
+                        "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
+                        "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
+                        "userAnonymityPreferred",
+                        "mostRecentlyVisitedCourseParticipation",
+                        "deleteMyAccountNonceTokenHash",
+                        "deleteMyAccountNonceCreatedAt"
+                      )
+                      values (
+                        ${cryptoRandomString({ length: 20, type: "numeric" })},
+                        ${ltiCourseMember.name},
+                        ${ltiCourseMember.email},
+                        ${null},
+                        ${null},
+                        ${null},
+                        ${null},
+                        ${null},
+                        ${null},
+                        ${Number(false)},
+                        ${null},
+                        ${null},
+                        ${
+                          [
+                            "red",
+                            "orange",
+                            "amber",
+                            "yellow",
+                            "lime",
+                            "green",
+                            "emerald",
+                            "teal",
+                            "cyan",
+                            "sky",
+                            "blue",
+                            "indigo",
+                            "violet",
+                            "purple",
+                            "fuchsia",
+                            "pink",
+                            "rose",
+                          ][Math.floor(Math.random() * 17)]
+                        },
+                        ${null},
+                        ${"userRoleUser"},
+                        ${"userDarkModeSystem"},
+                        ${80 * 4},
+                        ${Number(false)},
+                        ${Number(true)},
+                        ${Number(true)},
+                        ${Number(true)},
+                        ${"userAnonymityPreferredNone"},
+                        ${null},
+                        ${null},
+                        ${null}
+                      );
+                    `,
+                  ).lastInsertRowid
+                };
+              `,
+            )!;
+          if (
+            application.database.get(
+              sql`
+                select true
+                from "courseParticipations"
+                where
+                  "user" = ${user.id} and
+                  "course" = ${request.state.course!.id};
+              `,
+            ) === undefined
+          )
+            application.database.run(
+              sql`
+                insert into "courseParticipations" (
+                  "publicId",
+                  "user",
+                  "course",
+                  "courseParticipationRole",
+                  "decorationColor",
+                  "mostRecentlyVisitedCourseForumConversation"
+                )
+                values (
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${user.id},
+                  ${request.state.course!.id},
+                  ${ltiCourseMember.courseParticipationRole},
+                  ${
+                    [
+                      "red",
+                      "orange",
+                      "amber",
+                      "yellow",
+                      "lime",
+                      "green",
+                      "emerald",
+                      "teal",
+                      "cyan",
+                      "violet",
+                      "purple",
+                      "fuchsia",
+                      "pink",
+                      "rose",
+                    ][
+                      application.database.get<{ count: number }>(
+                        sql`
+                          select count(*) as "count"
+                          from "courseParticipations"
+                          where "user" = ${user.id};
+                        `,
+                      )!.count % 14
+                    ]
+                  },
+                  ${null}
+                );
+              `,
+            );
+        }
+        for (const courseParticipation of application.database.all<{
+          id: number;
+          user: number;
+          ltiState:
+            | "ltiStateMissingInLMS"
+            | "ltiStateMissingInLMSAndExplicitlyKept"
+            | null;
+        }>(
+          sql`
+            select "id", "user", "ltiState"
+            from "courseParticipations"
+            where "course" = ${request.state.course!.id};
+          `,
+        )) {
+          const user = application.database.get<{ id: number; email: string }>(
+            sql`
+              select "id", "email"
+              from "users"
+              where "id" = ${courseParticipation.user};
+            `,
+          );
+          if (user === undefined) throw new Error();
+          application.database.run(
+            sql`
+              update "courseParticipations"
+              set "ltiState" = ${
+                ltiCourseMembers.find(
+                  (ltiCourseMember) => ltiCourseMember.email === user.email,
+                ) !== undefined
+                  ? null
+                  : courseParticipation.ltiState === null
+                    ? "ltiStateMissingInLMS"
+                    : courseParticipation.ltiState
+              }
+              where "id" = ${courseParticipation.id};
+            `,
+          );
+        }
+      });
+      response.setFlash!(html`
+        <div class="flash--green">
+          Course participants from Learning Management System (LMS) synced
+          successfully.
+        </div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.webServer?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync/missing$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseParticipationsPublicIds: string[];
+          [
+            courseParticipationsAction: `courseParticipations[${string}].action`
+          ]: "keep" | "remove";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      request.body.courseParticipationsPublicIds ??= [];
+      if (
+        !Array.isArray(request.body.courseParticipationsPublicIds) ||
+        request.body.courseParticipationsPublicIds.some(
+          (courseParticipationPublicId) =>
+            typeof courseParticipationPublicId !== "string" ||
+            courseParticipationPublicId.trim() === "" ||
+            (request.body[
+              `courseParticipations[${courseParticipationPublicId}].action`
+            ] !== "keep" &&
+              request.body[
+                `courseParticipations[${courseParticipationPublicId}].action`
+              ] !== "remove"),
+        )
+      )
+        throw "validation";
+      application.database.transaction(() => {
+        for (const courseParticipationPublicId of request.body
+          .courseParticipationsPublicIds!) {
+          const courseParticipation = application.database.get<{
+            id: number;
+            publicId: string;
+          }>(
+            sql`
+              select "id", "publicId"
+              from "courseParticipations"
+              where
+                "course" = ${request.state.course!.id} and
+                "publicId" = ${courseParticipationPublicId};
+            `,
+          );
+          if (courseParticipation === undefined) continue;
+          if (
+            request.body[
+              `courseParticipations[${courseParticipation.publicId}].action`
+            ] === "keep"
+          )
+            application.database.run(
+              sql`
+                update "courseParticipations"
+                set "ltiState" = 'ltiStateMissingInLMSAndExplicitlyKept'
+                where "id" = ${courseParticipation.id};
+              `,
+            );
+          else if (
+            request.body[
+              `courseParticipations[${courseParticipation.publicId}].action`
+            ] === "remove"
+          ) {
+            application.database.run(
+              sql`
+                update "users"
+                set "mostRecentlyVisitedCourseParticipation" = null
+                where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseForumConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseForumConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseForumConversationMessages"
+                set "createdByCourseParticipation" = null
+                where "createdByCourseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseForumConversationMessageViews"
+                set "courseParticipation" = null
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                update "courseForumConversationMessageLikes"
+                set "courseParticipation" = null
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseForumConversationMessageEmailNotificationReplyTokens"
+                where "courseParticipation" = ${courseParticipation.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseParticipations" where "id" = ${courseParticipation.id};
+              `,
+            );
+          }
+        }
+      });
+      response.setFlash!(html`
+        <div class="flash--green">
+          Course participants missing in LMS updated successfully.
+        </div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+      for (const port of application.applicationConfiguration.ports)
+        fetch(`http://localhost:${port}/__live-connections`, {
+          method: "POST",
+          headers: { "CSRF-Protection": "true" },
+          body: new URLSearchParams({
+            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
+          }),
+        });
+    },
+  });
+
+  application.webServer?.push({
+    method: "DELETE",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      request.state.course.ltiPlatformId = null;
+      request.state.course.ltiClientId = null;
+      request.state.course.ltiContextId = null;
+      request.state.course.ltiNamesAndRoleProvisioningServicesURL = null;
+      application.database.run(
+        sql`
+          update "courses"
+          set
+            "ltiPlatformId" = ${request.state.course.ltiPlatformId},
+            "ltiClientId" = ${request.state.course.ltiClientId},
+            "ltiContextId" = ${request.state.course.ltiContextId},
+            "ltiNamesAndRoleProvisioningServicesURL" = ${request.state.course.ltiNamesAndRoleProvisioningServicesURL}
+          where "id" = ${request.state.course.id};
+        `,
+      );
+      response.setFlash!(html`
+        <div class="flash--green">
+          Learning Management System (LMS) course disconnected successfully.
+        </div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
     },
@@ -6299,780 +7076,6 @@ export default async (application: Application): Promise<void> => {
       response.setFlash!(html`
         <div class="flash--green">
           Pending invitation emails updated successfully.
-        </div>
-      `);
-      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-    },
-  });
-
-  application.webServer?.push({
-    method: "PATCH",
-    pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations$",
-    ),
-    handler: (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {
-          courseParticipationsPublicIds: string[];
-          [
-            courseParticipationsCourseParticipationRole: `courseParticipations[${string}].courseParticipationRole`
-          ]:
-            | "courseParticipationRoleInstructor"
-            | "courseParticipationRoleStudent";
-          courseParticipationsPublicIdsToRemove: string[];
-        },
-        Application["types"]["states"]["Course"]
-      >,
-      response,
-    ) => {
-      if (
-        request.state.course === undefined ||
-        request.state.courseParticipation === undefined ||
-        request.state.courseParticipation.courseParticipationRole !==
-          "courseParticipationRoleInstructor"
-      )
-        return;
-      request.body.courseParticipationsPublicIds ??= [];
-      request.body.courseParticipationsPublicIdsToRemove ??= [];
-      if (
-        !Array.isArray(request.body.courseParticipationsPublicIds) ||
-        request.body.courseParticipationsPublicIds.some(
-          (courseParticipationPublicId) =>
-            typeof courseParticipationPublicId !== "string" ||
-            courseParticipationPublicId.trim() === "" ||
-            (request.body[
-              `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
-            ] !== "courseParticipationRoleInstructor" &&
-              request.body[
-                `courseParticipations[${courseParticipationPublicId}].courseParticipationRole`
-              ] !== "courseParticipationRoleStudent"),
-        ) ||
-        !Array.isArray(request.body.courseParticipationsPublicIdsToRemove) ||
-        request.body.courseParticipationsPublicIdsToRemove.some(
-          (courseParticipationPublicId) =>
-            typeof courseParticipationPublicId !== "string" ||
-            courseParticipationPublicId.trim() === "",
-        )
-      )
-        throw "validation";
-      application.database.transaction(() => {
-        for (const courseParticipationPublicId of request.body
-          .courseParticipationsPublicIds!) {
-          const courseParticipation = application.database.get<{
-            id: number;
-            publicId: string;
-          }>(
-            sql`
-              select "id", "publicId"
-              from "courseParticipations"
-              where
-                "course" = ${request.state.course!.id} and
-                "publicId" = ${courseParticipationPublicId};
-            `,
-          );
-          if (courseParticipation === undefined) continue;
-          application.database.run(
-            sql`
-              update "courseParticipations"
-              set "courseParticipationRole" = ${
-                request.body[
-                  `courseParticipations[${courseParticipation.publicId}].courseParticipationRole`
-                ]!
-              }
-              where "id" = ${courseParticipation.id};
-            `,
-          );
-        }
-        for (const courseParticipationPublicId of request.body
-          .courseParticipationsPublicIdsToRemove!) {
-          const courseParticipation = application.database.get<{
-            id: number;
-          }>(
-            sql`
-              select "id"
-              from "courseParticipations"
-              where
-                "course" = ${request.state.course!.id} and
-                "publicId" = ${courseParticipationPublicId};
-            `,
-          );
-          if (courseParticipation === undefined) continue;
-          application.database.run(
-            sql`
-              update "users"
-              set "mostRecentlyVisitedCourseParticipation" = null
-              where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseForumConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseForumConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseForumConversationMessages"
-              set "createdByCourseParticipation" = null
-              where "createdByCourseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseForumConversationMessageViews"
-              set "courseParticipation" = null
-              where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              update "courseForumConversationMessageLikes"
-              set "courseParticipation" = null
-              where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseForumConversationMessageEmailNotificationReplyTokens"
-              where "courseParticipation" = ${courseParticipation.id};
-            `,
-          );
-          application.database.run(
-            sql`
-              delete from "courseParticipations" where "id" = ${courseParticipation.id};
-            `,
-          );
-        }
-      });
-      response.setFlash!(html`
-        <div class="flash--green">
-          Course participants updated successfully.
-        </div>
-      `);
-      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-      for (const port of application.applicationConfiguration.ports)
-        fetch(`http://localhost:${port}/__live-connections`, {
-          method: "POST",
-          headers: { "CSRF-Protection": "true" },
-          body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
-          }),
-        });
-    },
-  });
-
-  application.webServer?.push({
-    method: "PATCH",
-    pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti$",
-    ),
-    handler: async (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {
-          ltiPlatformId: string;
-          ltiClientId: string;
-          ltiContextId: string;
-          ltiNamesAndRoleProvisioningServicesURL: string;
-        },
-        Application["types"]["states"]["Course"]
-      >,
-      response,
-    ) => {
-      if (
-        request.state.course === undefined ||
-        request.state.courseParticipation === undefined ||
-        request.state.courseParticipation.courseParticipationRole !==
-          "courseParticipationRoleInstructor"
-      )
-        return;
-      if (
-        typeof request.body.ltiPlatformId !== "string" ||
-        request.body.ltiPlatformId.trim() === "" ||
-        typeof request.body.ltiClientId !== "string" ||
-        request.body.ltiClientId.trim() === "" ||
-        typeof request.body.ltiContextId !== "string" ||
-        request.body.ltiContextId.trim() === "" ||
-        typeof request.body.ltiNamesAndRoleProvisioningServicesURL !==
-          "string" ||
-        (() => {
-          try {
-            new URL(request.body.ltiNamesAndRoleProvisioningServicesURL);
-            return false;
-          } catch {
-            return true;
-          }
-        })()
-      )
-        throw "validation";
-      request.state.course.ltiPlatformId = request.body.ltiPlatformId;
-      request.state.course.ltiClientId = request.body.ltiClientId;
-      request.state.course.ltiContextId = request.body.ltiContextId;
-      request.state.course.ltiNamesAndRoleProvisioningServicesURL =
-        request.body.ltiNamesAndRoleProvisioningServicesURL;
-      application.database.run(
-        sql`
-          update "courses"
-          set
-            "ltiPlatformId" = ${request.state.course.ltiPlatformId},
-            "ltiClientId" = ${request.state.course.ltiClientId},
-            "ltiContextId" = ${request.state.course.ltiContextId},
-            "ltiNamesAndRoleProvisioningServicesURL" = ${request.state.course.ltiNamesAndRoleProvisioningServicesURL}
-          where "id" = ${request.state.course.id};
-        `,
-      );
-      response.setFlash!(html`
-        <div class="flash--green">
-          Learning Management System (LMS) course connected successfully.
-        </div>
-      `);
-      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-    },
-  });
-
-  application.webServer?.push({
-    method: "POST",
-    pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync$",
-    ),
-    handler: async (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {},
-        Application["types"]["states"]["Course"]
-      >,
-      response,
-    ) => {
-      if (
-        application.userConfiguration.lti === undefined ||
-        request.state.course === undefined ||
-        typeof request.state.course.ltiPlatformId !== "string" ||
-        typeof request.state.course.ltiClientId !== "string" ||
-        typeof request.state.course.ltiContextId !== "string" ||
-        typeof request.state.course.ltiNamesAndRoleProvisioningServicesURL !==
-          "string" ||
-        request.state.courseParticipation === undefined ||
-        request.state.courseParticipation.courseParticipationRole !==
-          "courseParticipationRoleInstructor"
-      )
-        return;
-      const platform = application.userConfiguration.lti.platforms.find(
-        (platform) =>
-          request.state.course!.ltiPlatformId === platform.platformId &&
-          request.state.course!.ltiClientId === platform.clientId,
-      );
-      if (platform === undefined) throw "validation";
-      let ltiCourseMembers: {
-        email: string;
-        name: string;
-        courseParticipationRole:
-          | "courseParticipationRoleInstructor"
-          | "courseParticipationRoleStudent";
-      }[] = [];
-      try {
-        const accessToken = (
-          (await (
-            await fetch(platform.accessTokenURL, {
-              method: "POST",
-              body: new URLSearchParams({
-                grant_type: "client_credentials",
-                scope:
-                  "https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly",
-                client_assertion_type:
-                  "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-                client_assertion: await new jose.SignJWT()
-                  .setProtectedHeader({
-                    typ: "JWT",
-                    alg: "RS256",
-                    kid: await jose.calculateJwkThumbprint(
-                      crypto
-                        .createPublicKey(
-                          application.userConfiguration.lti.publicKey,
-                        )
-                        .export({ format: "jwk" }),
-                    ),
-                  })
-                  .setJti(
-                    cryptoRandomString({ length: 50, type: "alphanumeric" }),
-                  )
-                  .setIssuer(platform.clientId)
-                  .setAudience(platform.platformId)
-                  .setSubject(platform.clientId)
-                  .setIssuedAt()
-                  .setExpirationTime("5 minutes")
-                  .sign(
-                    crypto.createPrivateKey(
-                      application.userConfiguration.lti.privateKey,
-                    ),
-                  ),
-              }),
-            })
-          ).json()) as { access_token: string }
-        ).access_token;
-        let ltiNamesAndRoleProvisioningServicesURL: string | undefined =
-          request.state.course.ltiNamesAndRoleProvisioningServicesURL;
-        while (typeof ltiNamesAndRoleProvisioningServicesURL === "string") {
-          const ltiNamesAndRoleProvisioningServicesResponse = await fetch(
-            ltiNamesAndRoleProvisioningServicesURL,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-                Accept:
-                  "application/vnd.ims.lti-nrps.v2.membershipcontainer+json",
-              },
-            },
-          );
-          ltiNamesAndRoleProvisioningServicesURL =
-            ltiNamesAndRoleProvisioningServicesResponse.headers
-              .get("Link")
-              ?.match(/<(?<url>[^>]+)>;\s*rel="next"/)?.groups?.url;
-          for (const ltiCourseMember of (
-            (await ltiNamesAndRoleProvisioningServicesResponse.json()) as {
-              members: {
-                status: string;
-                email: string;
-                name: string;
-                roles: string[];
-              }[];
-            }
-          ).members)
-            if (
-              typeof ltiCourseMember.status === "string" &&
-              ltiCourseMember.status.toLowerCase() === "active" &&
-              typeof ltiCourseMember.email === "string" &&
-              ltiCourseMember.email.match(utilities.emailRegExp) &&
-              platform.domains.some((domain) =>
-                `.${(ltiCourseMember.email as string).split("@")[1]}`.endsWith(
-                  `.${domain}`,
-                ),
-              ) &&
-              typeof ltiCourseMember.name === "string" &&
-              ltiCourseMember.name.trim() !== ""
-            )
-              ltiCourseMembers.push({
-                email: ltiCourseMember.email,
-                name: ltiCourseMember.name,
-                courseParticipationRole:
-                  Array.isArray(ltiCourseMember.roles) &&
-                  (ltiCourseMember.roles.includes(
-                    "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor",
-                  ) ||
-                    ltiCourseMember.roles.includes("Instructor"))
-                    ? "courseParticipationRoleInstructor"
-                    : "courseParticipationRoleStudent",
-              });
-        }
-      } catch (error) {
-        request.log("ERROR", String(error));
-        response.setFlash!(html`
-          <div class="flash--red">
-            Failed to sync Course participants from Learning Management System
-            (LMS).
-          </div>
-        `);
-        response.redirect!(
-          `/courses/${request.state.course.publicId}/settings`,
-        );
-        return;
-      }
-      application.database.transaction(() => {
-        for (const ltiCourseMember of ltiCourseMembers) {
-          const user =
-            application.database.get<{ id: number }>(
-              sql`
-                select "id"
-                from "users"
-                where "email" = ${ltiCourseMember.email};
-              `,
-            ) ??
-            application.database.get<{ id: number }>(
-              sql`
-                select *
-                from "users"
-                where "id" = ${
-                  application.database.run(
-                    sql`
-                      insert into "users" (
-                        "publicId",
-                        "name",
-                        "email",
-                        "emailVerificationEmail",
-                        "emailVerificationNonceTokenHash",
-                        "emailVerificationNonceCreatedAt",
-                        "passwordPasswordHash",
-                        "passwordResetNonceTokenHash",
-                        "passwordResetNonceCreatedAt",
-                        "twoFactorAuthenticationEnabled",
-                        "twoFactorAuthenticationSecretEncrypted",
-                        "twoFactorAuthenticationRecoveryCodesPasswordHashes",
-                        "avatarColor",
-                        "avatarImage",
-                        "userRole",
-                        "darkMode",
-                        "sidebarWidth",
-                        "emailNotificationsForCourseForumForAllMessages",
-                        "emailNotificationsForCourseForumForMessagesIncludingAMention",
-                        "emailNotificationsForCourseForumForMessagesInConversationsInWhichYouParticipated",
-                        "emailNotificationsForCourseForumForMessagesInConversationsThatYouStarted",
-                        "userAnonymityPreferred",
-                        "mostRecentlyVisitedCourseParticipation",
-                        "deleteMyAccountNonceTokenHash",
-                        "deleteMyAccountNonceCreatedAt"
-                      )
-                      values (
-                        ${cryptoRandomString({ length: 20, type: "numeric" })},
-                        ${ltiCourseMember.name},
-                        ${ltiCourseMember.email},
-                        ${null},
-                        ${null},
-                        ${null},
-                        ${null},
-                        ${null},
-                        ${null},
-                        ${Number(false)},
-                        ${null},
-                        ${null},
-                        ${
-                          [
-                            "red",
-                            "orange",
-                            "amber",
-                            "yellow",
-                            "lime",
-                            "green",
-                            "emerald",
-                            "teal",
-                            "cyan",
-                            "sky",
-                            "blue",
-                            "indigo",
-                            "violet",
-                            "purple",
-                            "fuchsia",
-                            "pink",
-                            "rose",
-                          ][Math.floor(Math.random() * 17)]
-                        },
-                        ${null},
-                        ${"userRoleUser"},
-                        ${"userDarkModeSystem"},
-                        ${80 * 4},
-                        ${Number(false)},
-                        ${Number(true)},
-                        ${Number(true)},
-                        ${Number(true)},
-                        ${"userAnonymityPreferredNone"},
-                        ${null},
-                        ${null},
-                        ${null}
-                      );
-                    `,
-                  ).lastInsertRowid
-                };
-              `,
-            )!;
-          if (
-            application.database.get(
-              sql`
-                select true
-                from "courseParticipations"
-                where
-                  "user" = ${user.id} and
-                  "course" = ${request.state.course!.id};
-              `,
-            ) === undefined
-          )
-            application.database.run(
-              sql`
-                insert into "courseParticipations" (
-                  "publicId",
-                  "user",
-                  "course",
-                  "courseParticipationRole",
-                  "decorationColor",
-                  "mostRecentlyVisitedCourseForumConversation"
-                )
-                values (
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${user.id},
-                  ${request.state.course!.id},
-                  ${ltiCourseMember.courseParticipationRole},
-                  ${
-                    [
-                      "red",
-                      "orange",
-                      "amber",
-                      "yellow",
-                      "lime",
-                      "green",
-                      "emerald",
-                      "teal",
-                      "cyan",
-                      "violet",
-                      "purple",
-                      "fuchsia",
-                      "pink",
-                      "rose",
-                    ][
-                      application.database.get<{ count: number }>(
-                        sql`
-                          select count(*) as "count"
-                          from "courseParticipations"
-                          where "user" = ${user.id};
-                        `,
-                      )!.count % 14
-                    ]
-                  },
-                  ${null}
-                );
-              `,
-            );
-        }
-        for (const courseParticipation of application.database.all<{
-          id: number;
-          user: number;
-          ltiState:
-            | "ltiStateMissingInLMS"
-            | "ltiStateMissingInLMSAndExplicitlyKept"
-            | null;
-        }>(
-          sql`
-            select "id", "user", "ltiState"
-            from "courseParticipations"
-            where "course" = ${request.state.course!.id};
-          `,
-        )) {
-          const user = application.database.get<{ id: number; email: string }>(
-            sql`
-              select "id", "email"
-              from "users"
-              where "id" = ${courseParticipation.user};
-            `,
-          );
-          if (user === undefined) throw new Error();
-          application.database.run(
-            sql`
-              update "courseParticipations"
-              set "ltiState" = ${
-                ltiCourseMembers.find(
-                  (ltiCourseMember) => ltiCourseMember.email === user.email,
-                ) !== undefined
-                  ? null
-                  : courseParticipation.ltiState === null
-                    ? "ltiStateMissingInLMS"
-                    : courseParticipation.ltiState
-              }
-              where "id" = ${courseParticipation.id};
-            `,
-          );
-        }
-      });
-      response.setFlash!(html`
-        <div class="flash--green">
-          Course participants from Learning Management System (LMS) synced
-          successfully.
-        </div>
-      `);
-      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-    },
-  });
-
-  application.webServer?.push({
-    method: "PATCH",
-    pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti/sync/missing$",
-    ),
-    handler: (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {
-          courseParticipationsPublicIds: string[];
-          [
-            courseParticipationsAction: `courseParticipations[${string}].action`
-          ]: "keep" | "remove";
-        },
-        Application["types"]["states"]["Course"]
-      >,
-      response,
-    ) => {
-      if (
-        request.state.course === undefined ||
-        request.state.courseParticipation === undefined ||
-        request.state.courseParticipation.courseParticipationRole !==
-          "courseParticipationRoleInstructor"
-      )
-        return;
-      request.body.courseParticipationsPublicIds ??= [];
-      if (
-        !Array.isArray(request.body.courseParticipationsPublicIds) ||
-        request.body.courseParticipationsPublicIds.some(
-          (courseParticipationPublicId) =>
-            typeof courseParticipationPublicId !== "string" ||
-            courseParticipationPublicId.trim() === "" ||
-            (request.body[
-              `courseParticipations[${courseParticipationPublicId}].action`
-            ] !== "keep" &&
-              request.body[
-                `courseParticipations[${courseParticipationPublicId}].action`
-              ] !== "remove"),
-        )
-      )
-        throw "validation";
-      application.database.transaction(() => {
-        for (const courseParticipationPublicId of request.body
-          .courseParticipationsPublicIds!) {
-          const courseParticipation = application.database.get<{
-            id: number;
-            publicId: string;
-          }>(
-            sql`
-              select "id", "publicId"
-              from "courseParticipations"
-              where
-                "course" = ${request.state.course!.id} and
-                "publicId" = ${courseParticipationPublicId};
-            `,
-          );
-          if (courseParticipation === undefined) continue;
-          if (
-            request.body[
-              `courseParticipations[${courseParticipation.publicId}].action`
-            ] === "keep"
-          )
-            application.database.run(
-              sql`
-                update "courseParticipations"
-                set "ltiState" = 'ltiStateMissingInLMSAndExplicitlyKept'
-                where "id" = ${courseParticipation.id};
-              `,
-            );
-          else if (
-            request.body[
-              `courseParticipations[${courseParticipation.publicId}].action`
-            ] === "remove"
-          ) {
-            application.database.run(
-              sql`
-                update "users"
-                set "mostRecentlyVisitedCourseParticipation" = null
-                where "mostRecentlyVisitedCourseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                delete from "courseForumConversationParticipations" where "courseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                delete from "courseForumConversationMessageDrafts" where "createdByCourseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                update "courseForumConversationMessages"
-                set "createdByCourseParticipation" = null
-                where "createdByCourseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                update "courseForumConversationMessageViews"
-                set "courseParticipation" = null
-                where "courseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                update "courseForumConversationMessageLikes"
-                set "courseParticipation" = null
-                where "courseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                delete from "courseForumConversationMessageEmailNotificationReplyTokens"
-                where "courseParticipation" = ${courseParticipation.id};
-              `,
-            );
-            application.database.run(
-              sql`
-                delete from "courseParticipations" where "id" = ${courseParticipation.id};
-              `,
-            );
-          }
-        }
-      });
-      response.setFlash!(html`
-        <div class="flash--green">
-          Course participants missing in LMS updated successfully.
-        </div>
-      `);
-      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
-      for (const port of application.applicationConfiguration.ports)
-        fetch(`http://localhost:${port}/__live-connections`, {
-          method: "POST",
-          headers: { "CSRF-Protection": "true" },
-          body: new URLSearchParams({
-            pathname: `^/courses/${request.state.course.publicId}(?:$|/)`,
-          }),
-        });
-    },
-  });
-
-  application.webServer?.push({
-    method: "DELETE",
-    pathname: new RegExp(
-      "^/courses/(?<coursePublicId>[0-9]+)/settings/participations/lti$",
-    ),
-    handler: async (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {},
-        Application["types"]["states"]["Course"]
-      >,
-      response,
-    ) => {
-      if (
-        request.state.course === undefined ||
-        request.state.courseParticipation === undefined ||
-        request.state.courseParticipation.courseParticipationRole !==
-          "courseParticipationRoleInstructor"
-      )
-        return;
-      request.state.course.ltiPlatformId = null;
-      request.state.course.ltiClientId = null;
-      request.state.course.ltiContextId = null;
-      request.state.course.ltiNamesAndRoleProvisioningServicesURL = null;
-      application.database.run(
-        sql`
-          update "courses"
-          set
-            "ltiPlatformId" = ${request.state.course.ltiPlatformId},
-            "ltiClientId" = ${request.state.course.ltiClientId},
-            "ltiContextId" = ${request.state.course.ltiContextId},
-            "ltiNamesAndRoleProvisioningServicesURL" = ${request.state.course.ltiNamesAndRoleProvisioningServicesURL}
-          where "id" = ${request.state.course.id};
-        `,
-      );
-      response.setFlash!(html`
-        <div class="flash--green">
-          Learning Management System (LMS) course disconnected successfully.
         </div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
