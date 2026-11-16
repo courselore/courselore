@@ -7110,6 +7110,49 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.webServer?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/course-state$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseState: "courseStateActive" | "courseStateArchived";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      if (
+        request.body.courseState !== "courseStateActive" &&
+        request.body.courseState !== "courseStateArchived"
+      )
+        throw "validation";
+      application.database.run(
+        sql`
+          update "courses"
+          set "courseState" = ${request.body.courseState}
+          where "id" = ${request.state.course.id};
+        `,
+      );
+      response.setFlash!(html`
+        <div class="flash--green">Course state updated successfully.</div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.webServer?.push({
     method: "DELETE",
     pathname: new RegExp(
       "^/courses/(?<coursePublicId>[0-9]+)/settings/participation$",
