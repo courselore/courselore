@@ -599,135 +599,21 @@ export default async (application: Application): Promise<void> => {
         request.liveConnection
       )
         return;
-      const courseForumConversation =
-        (typeof request.state.courseParticipation
-          .mostRecentlyVisitedCourseForumConversation === "number"
-          ? application.database.get<{
-              publicId: string;
-            }>(
-              sql`
-                select "publicId"
-                from "courseForumConversations"
-                where "id" = ${
-                  request.state.courseParticipation
-                    .mostRecentlyVisitedCourseForumConversation
-                } and (
-                  "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
-                  ${
-                    request.state.courseParticipation
-                      .courseParticipationRole ===
-                    "courseParticipationRoleInstructor"
-                      ? sql`
-                          or
-                          "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
-                        `
-                      : sql``
-                  }
-                  or (
-                    select true
-                    from "courseForumConversationParticipations"
-                    where
-                      "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
-                      "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                  )
-                );
-              `,
-            )
-          : undefined) ??
-        application.database.get<{
-          publicId: string;
-        }>(
-          sql`
-            select "publicId"
-            from "courseForumConversations"
-            where
-              "course" = ${request.state.course.id} and (
-                "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
-                ${
-                  request.state.courseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor"
-                    ? sql`
-                        or
-                        "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
-                      `
-                    : sql``
-                }
-                or (
-                  select true
-                  from "courseForumConversationParticipations"
-                  where
-                    "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
-                    "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                )
-              )
-            order by
-              "pinned" = true desc,
-              "id" desc
-            limit 1;
-          `,
-        );
-      if (courseForumConversation !== undefined) {
-        response.redirect!(
-          `/courses/${request.state.course.publicId}/forum/${courseForumConversation.publicId}`,
-        );
-        return;
-      }
-      if (
-        request.state.courseParticipation.courseParticipationRole ===
-        "courseParticipationRoleStudent"
-      ) {
-        response.redirect!(
-          `/courses/${request.state.course.publicId}/forum/new`,
-        );
-        return;
-      }
-      response.send(
-        application.layouts.main({
-          request,
-          response,
-          head: html`<title>${request.state.course.name} · Courselore</title>`,
-          body: html`
-            <div
-              css="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--size--2);
-              `}"
-            >
-              <div
-                css="${css`
-                  font-size: var(--font-size--4);
-                  line-height: var(--font-size--4--line-height);
-                  font-weight: 800;
-                `}"
-              >
-                ${request.state.course.name}
-              </div>
-              <div
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--size--4);
-                `}"
-              >
-                <div>
-                  <a
-                    href="/courses/${request.state.course.publicId}/settings"
-                    class="button button--rectangle button--blue"
-                    >Configure the course</a
-                  >
-                </div>
-                <div>
-                  <a
-                    href="/courses/${request.state.course.publicId}/forum/new"
-                    class="button button--rectangle button--transparent"
-                    >Start the first conversation</a
-                  >
-                </div>
-              </div>
-            </div>
-          `,
-        }),
+      response.redirect!(
+        `/courses/${request.state.course.publicId}/${
+          request.state.courseParticipation.mostRecentlyVisitedMode ===
+          "courseForum"
+            ? "forum"
+            : request.state.courseParticipation.mostRecentlyVisitedMode ===
+                "courseAI"
+              ? "ai"
+              : request.state.courseParticipation.mostRecentlyVisitedMode ===
+                  "courseSettings"
+                ? "settings"
+                : (() => {
+                    throw new Error();
+                  })()
+        }`,
       );
     },
   });
