@@ -1909,7 +1909,7 @@ export default async (application: Application): Promise<void> => {
                           method="PATCH"
                           action="/courses/${
                             request.state.course.publicId
-                          }/settings/tags"
+                          }/settings/conversation-tags"
                           css="${css`
                             padding: var(--size--2) var(--size--0);
                             border-bottom: var(--border-width--1) solid
@@ -5124,7 +5124,7 @@ export default async (application: Application): Promise<void> => {
 
   application.webServer?.push({
     method: "PATCH",
-    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/settings/tags$"),
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/settings/conversation-tags$"),
     handler: (
       request: serverTypes.Request<
         {},
