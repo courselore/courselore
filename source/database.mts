@@ -8325,5 +8325,12 @@ export default async (application: Application): Promise<void> => {
         drop index "index_courseConversationMessageEmailNotificationReplyTokens_courseParticipation";
         create index "index_courseForumConversationMessageEmailNotificationReplyTokens_courseParticipation" on "courseForumConversationMessageEmailNotificationReplyTokens" ("courseParticipation");
       `,
+
+      sql`
+        alter table "courseParticipations" add column "mostRecentlyVisitedMode" text null;
+        update "courseParticipations" set "mostRecentlyVisitedMode" = 'courseForum';
+        alter table "courseParticipations" alter column "mostRecentlyVisitedMode" set not null;
+        alter table "courseParticipations" add column "mostRecentlyVisitedCourseAIChat" integer null;
+      `,
     );
 };
