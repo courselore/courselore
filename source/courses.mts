@@ -1902,7 +1902,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             <i class="bi bi-chevron-right"></i>
                           </span>
-                          Conversation tags
+                          Forum
                         </summary>
                         <div
                           type="form"
@@ -1929,23 +1929,44 @@ export default async (application: Application): Promise<void> => {
                             };
                           `}"
                         >
-                          <label
-                            class="button button--rectangle button--transparent"
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--1);
+                            `}"
                           >
-                            <input
-                              type="checkbox"
-                              name="courseForumConversationRequiresTagging"
-                              $${
-                                Boolean(
-                                  request.state.course
-                                    .courseForumConversationRequiresTagging,
-                                )
-                                  ? html`checked`
-                                  : html``
-                              }
-                              class="input--checkbox"
-                            />  Tags are required when creating a conversation
-                          </label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Conversation tags
+                            </div>
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="courseForumConversationRequiresTagging"
+                                $${
+                                  Boolean(
+                                    request.state.course
+                                      .courseForumConversationRequiresTagging,
+                                  )
+                                    ? html`checked`
+                                    : html``
+                                }
+                                class="input--checkbox"
+                              />  Tags are required when creating a conversation
+                            </label>
+                          </div>
                           $${(() => {
                             const courseForumConversationsTagPartial = (
                               courseForumConversationsTag?: (typeof request.state.courseForumConversationsTags)[number],
