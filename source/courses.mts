@@ -6958,7 +6958,6 @@ export default async (application: Application): Promise<void> => {
             | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
             | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
           courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: "on";
-          courseState: "courseStateActive" | "courseStateArchived";
         },
         Application["types"]["states"]["Course"]
       >,
@@ -6977,9 +6976,7 @@ export default async (application: Application): Promise<void> => {
           request.body.courseParticipationRoleStudentsAnonymityAllowed !==
             "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
           request.body.courseParticipationRoleStudentsAnonymityAllowed !==
-            "courseParticipationRoleStudentsAnonymityAllowedEveryone") ||
-        (request.body.courseState !== "courseStateActive" &&
-          request.body.courseState !== "courseStateArchived")
+            "courseParticipationRoleStudentsAnonymityAllowedEveryone") 
       )
         throw "validation";
       application.database.run(
@@ -6987,8 +6984,7 @@ export default async (application: Application): Promise<void> => {
           update "courses"
           set
             "courseParticipationRoleStudentsAnonymityAllowed" = ${request.body.courseParticipationRoleStudentsAnonymityAllowed},
-            "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages" = ${Number(request.body.courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages === "on")},
-            "courseState" = ${request.body.courseState}
+            "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages" = ${Number(request.body.courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages === "on")}
           where "id" = ${request.state.course.id};
         `,
       );
