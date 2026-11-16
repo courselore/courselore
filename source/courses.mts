@@ -4244,6 +4244,194 @@ export default async (application: Application): Promise<void> => {
                   >
                     <i class="bi bi-chevron-right"></i>
                   </span>
+                  Permissions
+                </summary>
+                <div
+                  type="form"
+                  method="PATCH"
+                  action="/courses/${
+                    request.state.course.publicId
+                  }/settings/permissions"
+                  css="${css`
+                    padding: var(--size--2) var(--size--0);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--1);
+                    `}"
+                  >
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Anonymity
+                    </div>
+                    <form
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--2);
+                      `}"
+                    >
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="courseParticipationRoleStudentsAnonymityAllowed"
+                          value="courseParticipationRoleStudentsAnonymityAllowedNone"
+                          $${
+                            request.state.course
+                              .courseParticipationRoleStudentsAnonymityAllowed ===
+                            "courseParticipationRoleStudentsAnonymityAllowedNone"
+                              ? html`checked`
+                              : html``
+                          }
+                          class="input--radio"
+                        />  Students may not send anonymous messages
+                      </label>
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="courseParticipationRoleStudentsAnonymityAllowed"
+                          value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                          $${
+                            request.state.course
+                              .courseParticipationRoleStudentsAnonymityAllowed ===
+                            "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                              ? html`checked`
+                              : html``
+                          }
+                          class="input--radio"
+                        />  Students may send messages that are anonymous to
+                        other students, but not anonymous to instructors
+                      </label>
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="courseParticipationRoleStudentsAnonymityAllowed"
+                          value="courseParticipationRoleStudentsAnonymityAllowedEveryone"
+                          $${
+                            request.state.course
+                              .courseParticipationRoleStudentsAnonymityAllowed ===
+                            "courseParticipationRoleStudentsAnonymityAllowedEveryone"
+                              ? html`checked`
+                              : html``
+                          }
+                          class="input--radio"
+                        />  Students may send messages that are anonymous to
+                        everyone, including instructors
+                      </label>
+                    </form>
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--1);
+                    `}"
+                  >
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Attachments
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--2);
+                      `}"
+                    >
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="checkbox"
+                          name="courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages"
+                          $${
+                            Boolean(
+                              request.state.course
+                                .courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages,
+                            )
+                              ? html`checked`
+                              : html``
+                          }
+                          class="input--checkbox"
+                        />  Students may attach files or images to their
+                        messages
+                      </label>
+                    </div>
+                  </div>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                    `}"
+                  >
+                    <button
+                      type="submit"
+                      class="button button--rectangle button--blue"
+                    >
+                      Update permissions
+                    </button>
+                  </div>
+                </div>
+              </details>
+              <details>
+                <summary
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    font-weight: 500;
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] > summary > & {
+                        rotate: var(--rotate--90);
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
                   Danger zone
                 </summary>
                 <div
@@ -6749,6 +6937,63 @@ export default async (application: Application): Promise<void> => {
         <div class="flash--green">
           Learning Management System (LMS) course disconnected successfully.
         </div>
+      `);
+      response.redirect!(`/courses/${request.state.course.publicId}/settings`);
+    },
+  });
+
+  application.webServer?.push({
+    method: "PATCH",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/settings/permissions$",
+    ),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          courseParticipationRoleStudentsAnonymityAllowed:
+            | "courseParticipationRoleStudentsAnonymityAllowedNone"
+            | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+            | "courseParticipationRoleStudentsAnonymityAllowedEveryone";
+          courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages: "on";
+          courseState: "courseStateActive" | "courseStateArchived";
+        },
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation.courseParticipationRole !==
+          "courseParticipationRoleInstructor"
+      )
+        return;
+      if (
+        (request.body.courseParticipationRoleStudentsAnonymityAllowed !==
+          "courseParticipationRoleStudentsAnonymityAllowedNone" &&
+          request.body.courseParticipationRoleStudentsAnonymityAllowed !==
+            "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" &&
+          request.body.courseParticipationRoleStudentsAnonymityAllowed !==
+            "courseParticipationRoleStudentsAnonymityAllowedEveryone") ||
+        (request.body.courseState !== "courseStateActive" &&
+          request.body.courseState !== "courseStateArchived")
+      )
+        throw "validation";
+      application.database.run(
+        sql`
+          update "courses"
+          set
+            "courseParticipationRoleStudentsAnonymityAllowed" = ${request.body.courseParticipationRoleStudentsAnonymityAllowed},
+            "courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages" = ${Number(request.body.courseParticipationRoleStudentsMayAttachFileOrImagesToTheirMessages === "on")},
+            "courseState" = ${request.body.courseState}
+          where "id" = ${request.state.course.id};
+        `,
+      );
+      response.setFlash!(html`
+        <div class="flash--green">Permissions updated successfully.</div>
       `);
       response.redirect!(`/courses/${request.state.course.publicId}/settings`);
     },
