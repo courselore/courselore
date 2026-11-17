@@ -161,7 +161,7 @@ export default async (application: Application): Promise<void> => {
           </div>
         </div>
         <div
-          key="courseForumConversations"
+          key="courseForumConversations /courses/${request.state.course.publicId}"
           class="scroll"
           css="${css`
             flex: 1;

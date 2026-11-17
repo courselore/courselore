@@ -1154,8 +1154,9 @@ export default async (application: Application): Promise<void> => {
     head,
     sidebar,
     body,
-  }) =>
-    application.layouts.base({
+  }) => {
+    if (request.state.user === undefined) throw new Error();
+    return application.layouts.base({
       request,
       response,
       head,
@@ -1193,7 +1194,7 @@ export default async (application: Application): Promise<void> => {
           `}"
         >
           <div
-            key="sidebar /courses/${request.state.course.publicId}"
+            key="sidebar"
             style="--width: ${String(request.state.user.sidebarWidth)}px;"
             css="${css`
               border-right: var(--border-width--1) solid
@@ -1375,4 +1376,5 @@ export default async (application: Application): Promise<void> => {
         </div>
       `,
     });
+  };
 };
