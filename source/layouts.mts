@@ -46,6 +46,25 @@ export type ApplicationLayouts = {
       head: HTML;
       body: HTML;
     }) => HTML;
+    twoColumns: ({
+      request,
+      response,
+      head,
+      sidebar,
+      body,
+    }: {
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >;
+      response: serverTypes.Response;
+      head: HTML;
+      sidebar: HTML;
+      body: HTML;
+    }) => HTML;
   };
 };
 
@@ -1128,4 +1147,12 @@ export default async (application: Application): Promise<void> => {
         </div>
       `,
     });
+
+  application.layouts.twoColumns = ({
+    request,
+    response,
+    head,
+    sidebar,
+    body,
+  }) => html``;
 };
