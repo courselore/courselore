@@ -57,479 +57,465 @@ export default async (application: Application): Promise<void> => {
       request.state.courseForumConversationsTags === undefined
     )
       throw new Error();
-    return application.layouts.base({
+    return application.layouts.twoColumns({
       request,
       response,
       head,
-      headerBefore: html`
-        <button
-          key="header--hamburger"
-          type="button"
-          class="button button--square button--icon button--transparent"
-          css="${css`
-            font-size: var(--font-size--5);
-            line-height: var(--size--0);
-            @media (min-width: 900px) {
-              display: none;
-            }
-          `}"
-          javascript="${javascript`
-            this.onclick = () => {
-              javascript.stateAdd(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
-            };
-          `}"
-        >
-          <i class="bi bi-list"></i>
-        </button>
-      `,
-      body: html`
+      sidebar: html`
         <div
-          key="main--two-column-layout"
+          key="sidebar--menu"
           css="${css`
-            width: 100%;
-            height: 100%;
+            border-bottom: var(--border-width--1) solid
+              light-dark(var(--color--slate--200), var(--color--slate--800));
+            padding: var(--size--2) var(--size--4);
             display: flex;
-          `}"
-          javascript="${javascript`
-            if (${!request.liveConnection}) this.removeAttribute("state");
+            gap: var(--size--2);
           `}"
         >
+          $${
+            request.state.course.courseState === "courseStateActive"
+              ? html`
+                  <a
+                    key="sidebar--menu--new-conversation"
+                    href="/courses/${request.state.course.publicId}/forum/new"
+                    class="button button--rectangle button--blue"
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      display: flex;
+                      align-items: center;
+                    `}"
+                  >
+                    New
+                    ${
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                        ? "note"
+                        : request.state.courseParticipation
+                              .courseParticipationRole ===
+                            "courseParticipationRoleStudent"
+                          ? "question"
+                          : (() => {
+                              throw new Error();
+                            })()
+                    }
+                  </a>
+                `
+              : html``
+          }
           <div
-            key="sidebar /courses/${request.state.course.publicId}"
-            style="--width: ${String(request.state.user.sidebarWidth)}px;"
+            key="sidebar--menu--search"
+            type="form"
+            method="GET"
+            action="/courses/${request.state.course.publicId}/forum/search"
             css="${css`
-              border-right: var(--border-width--1) solid
-                light-dark(var(--color--slate--200), var(--color--slate--800));
+              flex: 1;
+              min-width: var(--size--0);
               display: flex;
-              flex-direction: column;
-              @media (max-width: 899px) {
-                background-color: light-dark(
-                  var(--color--white),
-                  var(--color--black)
-                );
-                max-width: var(--size--112);
-                position: fixed;
-                inset: var(--size--0) var(--size--14) var(--size--0)
-                  var(--size--0);
-                z-index: 100;
-                transition-property: var(--transition-property--transform);
-                transition-duration: var(--transition-duration--200);
-                transition-timing-function: var(
-                  --transition-timing-function--ease-in-out
-                );
-                [key~="main--two-column-layout"]:not([state~="sidebar--open"])
-                  & {
-                  translate: -101%;
+            `}"
+            javascript="${javascript`
+              this.isModified = false;
+              const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom-start" });
+              this.oninput = this.onfocusin = utilities.throttle(async () => {
+                if (this.querySelector('[name="search"]').value.trim() === "") {
+                  popover.hidePopover();
+                  return;
                 }
-                [key~="main--two-column-layout"][state~="sidebar--open"] & {
-                  box-shadow: var(--box-shadow--25);
-                }
-              }
-              @media (min-width: 900px) {
-                width: var(--width);
-              }
+                popover.showPopover();
+                javascript.mount(
+                  popover.firstElementChild,
+                  await (await fetch(this.getAttribute("action") + "?" + new URLSearchParams(javascript.serialize(this)))).text()
+                );
+                if (popover.matches('[state~="open"]')) popover.showPopover();
+              });
+              this.onfocusout = () => {
+                popover.hidePopover();
+              };
             `}"
           >
-            <div
-              key="sidebar--close"
-              css="${css`
-                border-bottom: var(--border-width--1) solid
-                  light-dark(var(--color--slate--200), var(--color--slate--800));
-                padding: var(--size--2) var(--size--4);
-                display: flex;
-                @media (min-width: 900px) {
-                  display: none;
-                }
-              `}"
-            >
-              <button
-                type="button"
-                class="button button--square button--icon button--transparent"
-                css="${css`
-                  font-size: var(--font-size--4);
-                  line-height: var(--size--0);
-                `}"
-                javascript="${javascript`
-                  this.onclick = () => {
-                    javascript.stateRemove(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
-                  };
-                `}"
-              >
-                <i class="bi bi-x-lg"></i>
-              </button>
-            </div>
-            <div
-              key="sidebar--menu"
-              css="${css`
-                border-bottom: var(--border-width--1) solid
-                  light-dark(var(--color--slate--200), var(--color--slate--800));
-                padding: var(--size--2) var(--size--4);
-                display: flex;
-                gap: var(--size--2);
-              `}"
-            >
-              $${
-                request.state.course.courseState === "courseStateActive"
-                  ? html`
-                      <a
-                        key="sidebar--menu--new-conversation"
-                        href="/courses/${
-                          request.state.course.publicId
-                        }/forum/new"
-                        class="button button--rectangle button--blue"
-                        css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                          display: flex;
-                          align-items: center;
-                        `}"
-                      >
-                        New
-                        ${
-                          request.state.courseParticipation
-                            .courseParticipationRole ===
-                          "courseParticipationRoleInstructor"
-                            ? "note"
-                            : request.state.courseParticipation
-                                  .courseParticipationRole ===
-                                "courseParticipationRoleStudent"
-                              ? "question"
-                              : (() => {
-                                  throw new Error();
-                                })()
-                        }
-                      </a>
-                    `
-                  : html``
-              }
-              <div
-                key="sidebar--menu--search"
-                type="form"
-                method="GET"
-                action="/courses/${request.state.course.publicId}/forum/search"
-                css="${css`
-                  flex: 1;
-                  min-width: var(--size--0);
-                  display: flex;
-                `}"
-                javascript="${javascript`
-                  this.isModified = false;
-                  const popover = javascript.popover({ element: this, trigger: "none", placement: "bottom-start" });
-                  this.oninput = this.onfocusin = utilities.throttle(async () => {
-                    if (this.querySelector('[name="search"]').value.trim() === "") {
-                      popover.hidePopover();
-                      return;
-                    }
-                    popover.showPopover();
-                    javascript.mount(
-                      popover.firstElementChild,
-                      await (await fetch(this.getAttribute("action") + "?" + new URLSearchParams(javascript.serialize(this)))).text()
-                    );
-                    if (popover.matches('[state~="open"]')) popover.showPopover();
-                  });
-                  this.onfocusout = () => {
-                    popover.hidePopover();
-                  };
-                `}"
-              >
-                <input
-                  type="text"
-                  name="search"
-                  placeholder="Search…"
-                  maxlength="3000"
-                  class="input--text"
-                  css="${css`
-                    flex: 1;
-                    min-width: var(--size--0);
-                  `}"
-                />
-              </div>
-              <div type="popover">
-                <div
-                  css="${css`
-                    color: light-dark(
-                      var(--color--slate--600),
-                      var(--color--slate--400)
-                    );
-                    animation: var(--animation--pulse);
-                  `}"
-                >
-                  <i class="bi bi-three-dots"></i>
-                </div>
-              </div>
-            </div>
-            <div
-              key="courseForumConversations"
-              class="scroll"
+            <input
+              type="text"
+              name="search"
+              placeholder="Search…"
+              maxlength="3000"
+              class="input--text"
               css="${css`
                 flex: 1;
+                min-width: var(--size--0);
+              `}"
+            />
+          </div>
+          <div type="popover">
+            <div
+              css="${css`
+                color: light-dark(
+                  var(--color--slate--600),
+                  var(--color--slate--400)
+                );
+                animation: var(--animation--pulse);
               `}"
             >
-              $${await (async () => {
-                const courseForumConversationsGroups = Object.groupBy(
-                  application.database
-                    .all<{
+              <i class="bi bi-three-dots"></i>
+            </div>
+          </div>
+        </div>
+        <div
+          key="courseForumConversations"
+          class="scroll"
+          css="${css`
+            flex: 1;
+          `}"
+        >
+          $${await (async () => {
+            const courseForumConversationsGroups = Object.groupBy(
+              application.database
+                .all<{
+                  id: number;
+                  publicId: string;
+                  courseForumConversationType:
+                    | "courseForumConversationTypeNote"
+                    | "courseForumConversationTypeQuestion";
+                  courseForumConversationTypeQuestionResolved: number;
+                  pinned: number;
+                  title: string;
+                }>(
+                  sql`
+                  select
+                    "id",
+                    "publicId",
+                    "courseForumConversationType",
+                    "courseForumConversationTypeQuestionResolved",
+                    "pinned",
+                    "title"
+                  from "courseForumConversations"
+                  where
+                    "course" = ${request.state.course!.id} and (
+                      "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
+                      ${
+                        request.state.courseParticipation!
+                          .courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? sql`
+                              or
+                              "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
+                            `
+                          : sql``
+                      }
+                      or (
+                        select true
+                        from "courseForumConversationParticipations"
+                        where
+                          "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
+                          "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation!.id}
+                      )
+                    )
+                  order by "id" desc;
+                `,
+                )
+                .map((courseForumConversation) => {
+                  const firstcourseForumConversationMessage =
+                    application.database.get<{
                       id: number;
                       publicId: string;
-                      courseForumConversationType:
-                        | "courseForumConversationTypeNote"
-                        | "courseForumConversationTypeQuestion";
-                      courseForumConversationTypeQuestionResolved: number;
-                      pinned: number;
-                      title: string;
+                      createdByCourseParticipation: number | null;
+                      createdAt: string;
+                      updatedAt: string | null;
+                      courseForumConversationMessageAnonymity:
+                        | "courseForumConversationMessageAnonymityNone"
+                        | "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
+                        | "courseForumConversationMessageAnonymityEveryone";
+                      content: string;
+                      contentSentimentAnalysisType:
+                        "positive" | "neutral" | "negative";
+                      contentSentimentAnalysisIntensity: number;
                     }>(
                       sql`
                       select
                         "id",
                         "publicId",
-                        "courseForumConversationType",
-                        "courseForumConversationTypeQuestionResolved",
-                        "pinned",
-                        "title"
-                      from "courseForumConversations"
-                      where
-                        "course" = ${request.state.course!.id} and (
-                          "courseForumConversationVisibility" = 'courseForumConversationVisibilityEveryone'
-                          ${
-                            request.state.courseParticipation!
-                              .courseParticipationRole ===
-                            "courseParticipationRoleInstructor"
-                              ? sql`
-                                  or
-                                  "courseForumConversationVisibility" = 'courseForumConversationVisibilityCourseParticipationRoleInstructorsAndCourseForumConversationParticipations'
-                                `
-                              : sql``
-                          }
-                          or (
-                            select true
-                            from "courseForumConversationParticipations"
-                            where
-                              "courseForumConversations"."id" = "courseForumConversationParticipations"."courseForumConversation" and
-                              "courseForumConversationParticipations"."courseParticipation" = ${request.state.courseParticipation!.id}
-                          )
-                        )
-                      order by "id" desc;
+                        "createdByCourseParticipation",
+                        "createdAt",
+                        "updatedAt",
+                        "courseForumConversationMessageAnonymity",
+                        "content",
+                        "contentSentimentAnalysisType",
+                        "contentSentimentAnalysisIntensity"
+                      from "courseForumConversationMessages"
+                      where "courseForumConversation" = ${courseForumConversation.id}
+                      order by "id" asc
+                      limit 1;
                     `,
-                    )
-                    .map((courseForumConversation) => {
-                      const firstcourseForumConversationMessage =
-                        application.database.get<{
-                          id: number;
-                          publicId: string;
-                          createdByCourseParticipation: number | null;
-                          createdAt: string;
-                          updatedAt: string | null;
-                          courseForumConversationMessageAnonymity:
-                            | "courseForumConversationMessageAnonymityNone"
-                            | "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
-                            | "courseForumConversationMessageAnonymityEveryone";
-                          content: string;
-                          contentSentimentAnalysisType:
-                            "positive" | "neutral" | "negative";
-                          contentSentimentAnalysisIntensity: number;
+                    );
+                  if (firstcourseForumConversationMessage === undefined)
+                    throw new Error();
+                  const firstcourseForumConversationMessageAnonymous =
+                    firstcourseForumConversationMessage.createdByCourseParticipation !==
+                      request.state.courseParticipation!.id &&
+                    ((firstcourseForumConversationMessage.courseForumConversationMessageAnonymity ===
+                      "courseForumConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                      request.state.courseParticipation!
+                        .courseParticipationRole ===
+                        "courseParticipationRoleStudent") ||
+                      firstcourseForumConversationMessage.courseForumConversationMessageAnonymity ===
+                        "courseForumConversationMessageAnonymityEveryone");
+                  const firstcourseForumConversationMessageCreatedByCourseParticipation =
+                    typeof firstcourseForumConversationMessage.createdByCourseParticipation ===
+                      "number" && !firstcourseForumConversationMessageAnonymous
+                      ? application.database.get<{
+                          user: number;
+                          courseParticipationRole:
+                            | "courseParticipationRoleInstructor"
+                            | "courseParticipationRoleStudent";
                         }>(
                           sql`
-                          select
-                            "id",
-                            "publicId",
-                            "createdByCourseParticipation",
-                            "createdAt",
-                            "updatedAt",
-                            "courseForumConversationMessageAnonymity",
-                            "content",
-                            "contentSentimentAnalysisType",
-                            "contentSentimentAnalysisIntensity"
-                          from "courseForumConversationMessages"
-                          where "courseForumConversation" = ${courseForumConversation.id}
-                          order by "id" asc
-                          limit 1;
-                        `,
-                        );
-                      if (firstcourseForumConversationMessage === undefined)
-                        throw new Error();
-                      const firstcourseForumConversationMessageAnonymous =
-                        firstcourseForumConversationMessage.createdByCourseParticipation !==
-                          request.state.courseParticipation!.id &&
-                        ((firstcourseForumConversationMessage.courseForumConversationMessageAnonymity ===
-                          "courseForumConversationMessageAnonymityCourseParticipationRoleStudents" &&
-                          request.state.courseParticipation!
-                            .courseParticipationRole ===
-                            "courseParticipationRoleStudent") ||
-                          firstcourseForumConversationMessage.courseForumConversationMessageAnonymity ===
-                            "courseForumConversationMessageAnonymityEveryone");
-                      const firstcourseForumConversationMessageCreatedByCourseParticipation =
-                        typeof firstcourseForumConversationMessage.createdByCourseParticipation ===
-                          "number" &&
-                        !firstcourseForumConversationMessageAnonymous
-                          ? application.database.get<{
-                              user: number;
-                              courseParticipationRole:
-                                | "courseParticipationRoleInstructor"
-                                | "courseParticipationRoleStudent";
-                            }>(
-                              sql`
-                                select
-                                  "user",
-                                  "courseParticipationRole"
-                                from "courseParticipations"
-                                where "id" = ${firstcourseForumConversationMessage.createdByCourseParticipation};
-                              `,
-                            )
-                          : undefined;
-                      const firstcourseForumConversationMessageCreatedByCourseParticipationUser =
-                        typeof firstcourseForumConversationMessageCreatedByCourseParticipation ===
-                        "object"
-                          ? application.database.get<{
-                              id: number;
-                              publicId: string;
-                              name: string;
-                              avatarColor:
-                                | "red"
-                                | "orange"
-                                | "amber"
-                                | "yellow"
-                                | "lime"
-                                | "green"
-                                | "emerald"
-                                | "teal"
-                                | "cyan"
-                                | "sky"
-                                | "blue"
-                                | "indigo"
-                                | "violet"
-                                | "purple"
-                                | "fuchsia"
-                                | "pink"
-                                | "rose";
-                              avatarImage: string | null;
-                            }>(
-                              sql`
-                                select
-                                  "id",
-                                  "publicId",
-                                  "name",
-                                  "avatarColor",
-                                  "avatarImage"
-                                from "users"
-                                where "id" = ${firstcourseForumConversationMessageCreatedByCourseParticipation.user};
-                              `,
-                            )
-                          : undefined;
-                      const courseForumConversationMessagesCount =
-                        application.database.get<{ count: number }>(
-                          sql`
-                            select count(*) as "count"
-                            from "courseForumConversationMessages"
-                            where "courseForumConversation" = ${courseForumConversation.id};
+                            select
+                              "user",
+                              "courseParticipationRole"
+                            from "courseParticipations"
+                            where "id" = ${firstcourseForumConversationMessage.createdByCourseParticipation};
                           `,
-                        )!.count;
-                      const includesUnviewedcourseForumConversationMessages =
-                        (request.state.courseForumConversation === undefined ||
-                          request.state.courseForumConversation.id !==
-                            courseForumConversation.id) &&
-                        application.database.get(
+                        )
+                      : undefined;
+                  const firstcourseForumConversationMessageCreatedByCourseParticipationUser =
+                    typeof firstcourseForumConversationMessageCreatedByCourseParticipation ===
+                    "object"
+                      ? application.database.get<{
+                          id: number;
+                          publicId: string;
+                          name: string;
+                          avatarColor:
+                            | "red"
+                            | "orange"
+                            | "amber"
+                            | "yellow"
+                            | "lime"
+                            | "green"
+                            | "emerald"
+                            | "teal"
+                            | "cyan"
+                            | "sky"
+                            | "blue"
+                            | "indigo"
+                            | "violet"
+                            | "purple"
+                            | "fuchsia"
+                            | "pink"
+                            | "rose";
+                          avatarImage: string | null;
+                        }>(
                           sql`
-                            select true
-                            from "courseForumConversationMessages"
-                            left join "courseForumConversationMessageViews" on
-                              "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseForumConversationMessage" and
-                              "courseForumConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
-                            where
-                              "courseForumConversationMessages"."courseForumConversation" = ${courseForumConversation.id} ${
-                                request.state.courseParticipation!
-                                  .courseParticipationRole !==
-                                "courseParticipationRoleInstructor"
-                                  ? sql`
-                                      and
-                                      "courseForumConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
-                                    `
-                                  : sql``
-                              } and
-                              "courseForumConversationMessageViews"."id" is null
-                            limit 1;
+                            select
+                              "id",
+                              "publicId",
+                              "name",
+                              "avatarColor",
+                              "avatarImage"
+                            from "users"
+                            where "id" = ${firstcourseForumConversationMessageCreatedByCourseParticipation.user};
                           `,
-                        ) !== undefined;
-                      return {
-                        ...courseForumConversation,
-                        firstcourseForumConversationMessage,
-                        firstcourseForumConversationMessageAnonymous,
-                        firstcourseForumConversationMessageCreatedByCourseParticipation,
-                        firstcourseForumConversationMessageCreatedByCourseParticipationUser,
-                        courseForumConversationMessagesCount,
-                        includesUnviewedcourseForumConversationMessages,
-                      };
-                    }),
-                  (courseForumConversation) => {
-                    const courseForumConversationFirstcourseForumConversationMessageCreatedAt =
-                      Temporal.Instant.from(
-                        courseForumConversation
-                          .firstcourseForumConversationMessage.createdAt,
-                      ).toZonedDateTimeISO(request.state.userSession!.timeZone);
-                    return Boolean(courseForumConversation.pinned)
-                      ? "Pinned"
-                      : `${utilities.formatDate(courseForumConversationFirstcourseForumConversationMessageCreatedAt.subtract({ days: courseForumConversationFirstcourseForumConversationMessageCreatedAt.dayOfWeek - 1 }))} — ${utilities.formatDate(courseForumConversationFirstcourseForumConversationMessageCreatedAt.add({ days: 7 - courseForumConversationFirstcourseForumConversationMessageCreatedAt.dayOfWeek }))}`;
-                  },
-                );
-                const courseForumConversationsGroupsKeys = Object.keys(
-                  courseForumConversationsGroups,
-                );
-                return html`
-                  $${await Promise.all(
-                    [
-                      ...(courseForumConversationsGroupsKeys.includes("Pinned")
-                        ? ["Pinned"]
-                        : []),
-                      ...courseForumConversationsGroupsKeys.filter(
-                        (key) => key !== "Pinned",
-                      ),
-                    ].map(
-                      async (
-                        courseForumConversationsGroupKey,
-                        courseForumConversationsGroupIndex,
-                      ) => {
-                        const courseForumConversations =
-                          courseForumConversationsGroups[
-                            courseForumConversationsGroupKey as any
-                          ]!;
-                        const courseForumConversationsCurrent =
-                          courseForumConversations.some(
-                            (courseForumConversation) =>
-                              request.state.courseForumConversation !==
-                                undefined &&
-                              request.state.courseForumConversation.id ===
-                                courseForumConversation.id,
-                          );
-                        return html`
-                          <details
-                            key="courseForumConversations--group ${courseForumConversationsGroupKey}"
-                            $${
-                              (courseForumConversationsGroupKey === "Pinned" &&
-                                courseForumConversations.some(
-                                  (courseForumConversation) =>
-                                    courseForumConversation.includesUnviewedcourseForumConversationMessages,
-                                )) ||
-                              (courseForumConversationsGroupKey !== "Pinned" &&
-                                courseForumConversationsGroupIndex < 5) ||
-                              courseForumConversationsCurrent
-                                ? html`open`
-                                : html``
-                            }
-                          >
-                            <summary
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                padding: var(--size--1-5) var(--size--4);
-                                border-bottom: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--color--slate--200),
-                                    var(--color--slate--800)
+                        )
+                      : undefined;
+                  const courseForumConversationMessagesCount =
+                    application.database.get<{ count: number }>(
+                      sql`
+                        select count(*) as "count"
+                        from "courseForumConversationMessages"
+                        where "courseForumConversation" = ${courseForumConversation.id};
+                      `,
+                    )!.count;
+                  const includesUnviewedcourseForumConversationMessages =
+                    (request.state.courseForumConversation === undefined ||
+                      request.state.courseForumConversation.id !==
+                        courseForumConversation.id) &&
+                    application.database.get(
+                      sql`
+                        select true
+                        from "courseForumConversationMessages"
+                        left join "courseForumConversationMessageViews" on
+                          "courseForumConversationMessages"."id" = "courseForumConversationMessageViews"."courseForumConversationMessage" and
+                          "courseForumConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
+                        where
+                          "courseForumConversationMessages"."courseForumConversation" = ${courseForumConversation.id} ${
+                            request.state.courseParticipation!
+                              .courseParticipationRole !==
+                            "courseParticipationRoleInstructor"
+                              ? sql`
+                                  and
+                                  "courseForumConversationMessages"."courseForumConversationMessageVisibility" != 'courseForumConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                `
+                              : sql``
+                          } and
+                          "courseForumConversationMessageViews"."id" is null
+                        limit 1;
+                      `,
+                    ) !== undefined;
+                  return {
+                    ...courseForumConversation,
+                    firstcourseForumConversationMessage,
+                    firstcourseForumConversationMessageAnonymous,
+                    firstcourseForumConversationMessageCreatedByCourseParticipation,
+                    firstcourseForumConversationMessageCreatedByCourseParticipationUser,
+                    courseForumConversationMessagesCount,
+                    includesUnviewedcourseForumConversationMessages,
+                  };
+                }),
+              (courseForumConversation) => {
+                const courseForumConversationFirstcourseForumConversationMessageCreatedAt =
+                  Temporal.Instant.from(
+                    courseForumConversation.firstcourseForumConversationMessage
+                      .createdAt,
+                  ).toZonedDateTimeISO(request.state.userSession!.timeZone);
+                return Boolean(courseForumConversation.pinned)
+                  ? "Pinned"
+                  : `${utilities.formatDate(courseForumConversationFirstcourseForumConversationMessageCreatedAt.subtract({ days: courseForumConversationFirstcourseForumConversationMessageCreatedAt.dayOfWeek - 1 }))} — ${utilities.formatDate(courseForumConversationFirstcourseForumConversationMessageCreatedAt.add({ days: 7 - courseForumConversationFirstcourseForumConversationMessageCreatedAt.dayOfWeek }))}`;
+              },
+            );
+            const courseForumConversationsGroupsKeys = Object.keys(
+              courseForumConversationsGroups,
+            );
+            return html`
+              $${await Promise.all(
+                [
+                  ...(courseForumConversationsGroupsKeys.includes("Pinned")
+                    ? ["Pinned"]
+                    : []),
+                  ...courseForumConversationsGroupsKeys.filter(
+                    (key) => key !== "Pinned",
+                  ),
+                ].map(
+                  async (
+                    courseForumConversationsGroupKey,
+                    courseForumConversationsGroupIndex,
+                  ) => {
+                    const courseForumConversations =
+                      courseForumConversationsGroups[
+                        courseForumConversationsGroupKey as any
+                      ]!;
+                    const courseForumConversationsCurrent =
+                      courseForumConversations.some(
+                        (courseForumConversation) =>
+                          request.state.courseForumConversation !== undefined &&
+                          request.state.courseForumConversation.id ===
+                            courseForumConversation.id,
+                      );
+                    return html`
+                      <details
+                        key="courseForumConversations--group ${courseForumConversationsGroupKey}"
+                        $${
+                          (courseForumConversationsGroupKey === "Pinned" &&
+                            courseForumConversations.some(
+                              (courseForumConversation) =>
+                                courseForumConversation.includesUnviewedcourseForumConversationMessages,
+                            )) ||
+                          (courseForumConversationsGroupKey !== "Pinned" &&
+                            courseForumConversationsGroupIndex < 5) ||
+                          courseForumConversationsCurrent
+                            ? html`open`
+                            : html``
+                        }
+                      >
+                        <summary
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            padding: var(--size--1-5) var(--size--4);
+                            border-bottom: var(--border-width--1) solid
+                              light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            cursor: pointer;
+                            user-select: none;
+                            transition-property: var(
+                              --transition-property--colors
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--ease-in-out
+                            );
+                          `} ${
+                            !courseForumConversationsCurrent
+                              ? css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
                                   );
-                                cursor: pointer;
-                                user-select: none;
+                                  background-color: light-dark(
+                                    var(--color--slate--100),
+                                    var(--color--slate--900)
+                                  );
+                                  &:hover,
+                                  &:focus-within {
+                                    background-color: light-dark(
+                                      var(--color--slate--200),
+                                      var(--color--slate--800)
+                                    );
+                                  }
+                                  &:active {
+                                    background-color: light-dark(
+                                      var(--color--slate--300),
+                                      var(--color--slate--700)
+                                    );
+                                  }
+                                `
+                              : css`
+                                  color: light-dark(
+                                    var(--color--white),
+                                    var(--color--white)
+                                  );
+                                  background-color: light-dark(
+                                    var(--color--blue--500),
+                                    var(--color--blue--500)
+                                  );
+                                  &:hover,
+                                  &:focus-within {
+                                    background-color: light-dark(
+                                      var(--color--blue--400),
+                                      var(--color--blue--400)
+                                    );
+                                  }
+                                  &:active {
+                                    background-color: light-dark(
+                                      var(--color--blue--600),
+                                      var(--color--blue--600)
+                                    );
+                                  }
+                                `
+                          }"
+                        >
+                          $${
+                            !courseForumConversationsCurrent &&
+                            courseForumConversations.some(
+                              (courseForumConversation) =>
+                                courseForumConversation.includesUnviewedcourseForumConversationMessages,
+                            )
+                              ? html`
+                                  <div
+                                    css="${css`
+                                      font-size: var(--size--1-5);
+                                      color: light-dark(
+                                        var(--color--blue--500),
+                                        var(--color--blue--500)
+                                      );
+                                      position: absolute;
+                                      translate: calc(-100% - var(--size--1));
+                                    `}"
+                                  >
+                                    <i class="bi bi-circle-fill"></i>
+                                  </div>
+                                `
+                              : html``
+                          }
+                          <div>
+                            <span
+                              css="${css`
+                                display: inline-block;
                                 transition-property: var(
-                                  --transition-property--colors
+                                  --transition-property--transform
                                 );
                                 transition-duration: var(
                                   --transition-duration--150
@@ -537,87 +523,47 @@ export default async (application: Application): Promise<void> => {
                                 transition-timing-function: var(
                                   --transition-timing-function--ease-in-out
                                 );
-                              `} ${
-                                !courseForumConversationsCurrent
-                                  ? css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
-                                      background-color: light-dark(
-                                        var(--color--slate--100),
-                                        var(--color--slate--900)
-                                      );
-                                      &:hover,
-                                      &:focus-within {
-                                        background-color: light-dark(
-                                          var(--color--slate--200),
-                                          var(--color--slate--800)
-                                        );
-                                      }
-                                      &:active {
-                                        background-color: light-dark(
-                                          var(--color--slate--300),
-                                          var(--color--slate--700)
-                                        );
-                                      }
-                                    `
-                                  : css`
-                                      color: light-dark(
-                                        var(--color--white),
-                                        var(--color--white)
-                                      );
-                                      background-color: light-dark(
-                                        var(--color--blue--500),
-                                        var(--color--blue--500)
-                                      );
-                                      &:hover,
-                                      &:focus-within {
-                                        background-color: light-dark(
-                                          var(--color--blue--400),
-                                          var(--color--blue--400)
-                                        );
-                                      }
-                                      &:active {
-                                        background-color: light-dark(
-                                          var(--color--blue--600),
-                                          var(--color--blue--600)
-                                        );
-                                      }
-                                    `
-                              }"
+                                [key~="courseForumConversations--group"][open]
+                                  > summary
+                                  > div
+                                  > & {
+                                  rotate: var(--rotate--90);
+                                }
+                              `}"
                             >
-                              $${
-                                !courseForumConversationsCurrent &&
-                                courseForumConversations.some(
-                                  (courseForumConversation) =>
-                                    courseForumConversation.includesUnviewedcourseForumConversationMessages,
-                                )
-                                  ? html`
-                                      <div
-                                        css="${css`
-                                          font-size: var(--size--1-5);
-                                          color: light-dark(
-                                            var(--color--blue--500),
-                                            var(--color--blue--500)
-                                          );
-                                          position: absolute;
-                                          translate: calc(
-                                            -100% - var(--size--1)
-                                          );
-                                        `}"
-                                      >
-                                        <i class="bi bi-circle-fill"></i>
-                                      </div>
-                                    `
-                                  : html``
-                              }
-                              <div>
-                                <span
+                              <i class="bi bi-chevron-right"></i>
+                            </span>
+                            ${courseForumConversationsGroupKey}
+                          </div>
+                        </summary>
+                        $${await Promise.all(
+                          courseForumConversations.map(
+                            async (courseForumConversation) => {
+                              const courseForumConversationCurrent =
+                                request.state.courseForumConversation !==
+                                  undefined &&
+                                request.state.courseForumConversation.id ===
+                                  courseForumConversation.id;
+                              return html`
+                                <a
+                                  key="courseForumConversation /courses/${
+                                    request.state.course!.publicId
+                                  }/forum/${courseForumConversation.publicId}"
+                                  href="/courses/${
+                                    request.state.course!.publicId
+                                  }/forum/${courseForumConversation.publicId}"
                                   css="${css`
-                                    display: inline-block;
+                                    padding: var(--size--2) var(--size--4);
+                                    border-bottom: var(--border-width--1) solid
+                                      light-dark(
+                                        var(--color--slate--200),
+                                        var(--color--slate--800)
+                                      );
+                                    display: flex;
+                                    gap: var(--size--2);
+                                    cursor: pointer;
                                     transition-property: var(
-                                      --transition-property--transform
+                                      --transition-property--colors
                                     );
                                     transition-duration: var(
                                       --transition-duration--150
@@ -625,641 +571,465 @@ export default async (application: Application): Promise<void> => {
                                     transition-timing-function: var(
                                       --transition-timing-function--ease-in-out
                                     );
-                                    [key~="courseForumConversations--group"][open]
-                                      > summary
-                                      > div
-                                      > & {
-                                      rotate: var(--rotate--90);
+                                  `} ${
+                                    !courseForumConversationCurrent
+                                      ? css`
+                                          &:hover,
+                                          &:focus-within {
+                                            background-color: light-dark(
+                                              var(--color--slate--50),
+                                              var(--color--slate--950)
+                                            );
+                                          }
+                                          &:active {
+                                            background-color: light-dark(
+                                              var(--color--slate--100),
+                                              var(--color--slate--900)
+                                            );
+                                          }
+                                        `
+                                      : css`
+                                          color: light-dark(
+                                            var(--color--white),
+                                            var(--color--white)
+                                          );
+                                          background-color: light-dark(
+                                            var(--color--blue--500),
+                                            var(--color--blue--500)
+                                          );
+                                          &:hover,
+                                          &:focus-within {
+                                            background-color: light-dark(
+                                              var(--color--blue--400),
+                                              var(--color--blue--400)
+                                            );
+                                          }
+                                          &:active {
+                                            background-color: light-dark(
+                                              var(--color--blue--600),
+                                              var(--color--blue--600)
+                                            );
+                                          }
+                                        `
+                                  }"
+                                  javascript="${javascript`
+                                    if (${request.liveConnection}) return;
+                                    if (${!courseForumConversationCurrent}) delete this.scrolled;
+                                    else if (this.scrolled === undefined) {
+                                      this.closest('[key~="courseForumConversations--group"]').open = true;
+                                      this.scrollIntoView({ block: "nearest" });
+                                      this.scrolled = true;
                                     }
                                   `}"
                                 >
-                                  <i class="bi bi-chevron-right"></i>
-                                </span>
-                                ${courseForumConversationsGroupKey}
-                              </div>
-                            </summary>
-                            $${await Promise.all(
-                              courseForumConversations.map(
-                                async (courseForumConversation) => {
-                                  const courseForumConversationCurrent =
-                                    request.state.courseForumConversation !==
-                                      undefined &&
-                                    request.state.courseForumConversation.id ===
-                                      courseForumConversation.id;
-                                  return html`
-                                    <a
-                                      key="courseForumConversation /courses/${
-                                        request.state.course!.publicId
-                                      }/forum/${courseForumConversation.publicId}"
-                                      href="/courses/${
-                                        request.state.course!.publicId
-                                      }/forum/${courseForumConversation.publicId}"
+                                  <div>
+                                    <div
                                       css="${css`
-                                        padding: var(--size--2) var(--size--4);
-                                        border-bottom: var(--border-width--1)
-                                          solid
-                                          light-dark(
-                                            var(--color--slate--200),
-                                            var(--color--slate--800)
-                                          );
                                         display: flex;
-                                        gap: var(--size--2);
-                                        cursor: pointer;
-                                        transition-property: var(
-                                          --transition-property--colors
-                                        );
-                                        transition-duration: var(
-                                          --transition-duration--150
-                                        );
-                                        transition-timing-function: var(
-                                          --transition-timing-function--ease-in-out
-                                        );
-                                      `} ${
-                                        !courseForumConversationCurrent
-                                          ? css`
-                                              &:hover,
-                                              &:focus-within {
-                                                background-color: light-dark(
-                                                  var(--color--slate--50),
-                                                  var(--color--slate--950)
-                                                );
-                                              }
-                                              &:active {
-                                                background-color: light-dark(
-                                                  var(--color--slate--100),
-                                                  var(--color--slate--900)
-                                                );
-                                              }
-                                            `
-                                          : css`
-                                              color: light-dark(
-                                                var(--color--white),
-                                                var(--color--white)
-                                              );
-                                              background-color: light-dark(
-                                                var(--color--blue--500),
-                                                var(--color--blue--500)
-                                              );
-                                              &:hover,
-                                              &:focus-within {
-                                                background-color: light-dark(
-                                                  var(--color--blue--400),
-                                                  var(--color--blue--400)
-                                                );
-                                              }
-                                              &:active {
-                                                background-color: light-dark(
-                                                  var(--color--blue--600),
-                                                  var(--color--blue--600)
-                                                );
-                                              }
-                                            `
-                                      }"
-                                      javascript="${javascript`
-                                        if (${request.liveConnection}) return;
-                                        if (${!courseForumConversationCurrent}) delete this.scrolled;
-                                        else if (this.scrolled === undefined) {
-                                          this.closest('[key~="courseForumConversations--group"]').open = true;
-                                          this.scrollIntoView({ block: "nearest" });
-                                          this.scrolled = true;
-                                        }
+                                        align-items: center;
                                       `}"
                                     >
+                                      $${
+                                        !courseForumConversationCurrent &&
+                                        courseForumConversation.includesUnviewedcourseForumConversationMessages
+                                          ? html`
+                                              <div
+                                                css="${css`
+                                                  font-size: var(--size--1-5);
+                                                  color: light-dark(
+                                                    var(--color--blue--500),
+                                                    var(--color--blue--500)
+                                                  );
+                                                  position: absolute;
+                                                  translate: calc(
+                                                    -100% - var(--size--1)
+                                                  );
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-circle-fill"
+                                                ></i>
+                                              </div>
+                                            `
+                                          : html``
+                                      }
                                       <div>
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                            align-items: center;
-                                          `}"
-                                        >
-                                          $${
-                                            !courseForumConversationCurrent &&
-                                            courseForumConversation.includesUnviewedcourseForumConversationMessages
-                                              ? html`
-                                                  <div
-                                                    css="${css`
-                                                      font-size: var(
-                                                        --size--1-5
-                                                      );
-                                                      color: light-dark(
-                                                        var(--color--blue--500),
-                                                        var(--color--blue--500)
-                                                      );
-                                                      position: absolute;
-                                                      translate: calc(
-                                                        -100% - var(--size--1)
-                                                      );
-                                                    `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-circle-fill"
-                                                    ></i>
-                                                  </div>
-                                                `
-                                              : html``
-                                          }
-                                          <div>
-                                            $${application.partials.userAvatar({
-                                              user: courseForumConversation.firstcourseForumConversationMessageAnonymous
-                                                ? "anonymous"
-                                                : (courseForumConversation.firstcourseForumConversationMessageCreatedByCourseParticipationUser ??
-                                                  "courseParticipationDeleted"),
-                                              size: 9,
-                                            })}
-                                          </div>
-                                        </div>
+                                        $${application.partials.userAvatar({
+                                          user: courseForumConversation.firstcourseForumConversationMessageAnonymous
+                                            ? "anonymous"
+                                            : (courseForumConversation.firstcourseForumConversationMessageCreatedByCourseParticipationUser ??
+                                              "courseParticipationDeleted"),
+                                          size: 9,
+                                        })}
                                       </div>
+                                    </div>
+                                  </div>
+                                  <div
+                                    css="${css`
+                                      flex: 1;
+                                      min-width: var(--size--0);
+                                    `}"
+                                  >
+                                    <div
+                                      css="${css`
+                                        display: flex;
+                                        align-items: baseline;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
                                       <div
                                         css="${css`
                                           flex: 1;
-                                          min-width: var(--size--0);
+                                          font-weight: 600;
                                         `}"
                                       >
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                            align-items: baseline;
-                                            gap: var(--size--2);
-                                          `}"
-                                        >
-                                          <div
-                                            css="${css`
-                                              flex: 1;
-                                              font-weight: 600;
-                                            `}"
-                                          >
-                                            $${
-                                              request.state.courseParticipation!
-                                                .courseParticipationRole ===
-                                                "courseParticipationRoleInstructor" &&
-                                              courseForumConversation.courseForumConversationType ===
-                                                "courseForumConversationTypeQuestion" &&
-                                              Boolean(
-                                                courseForumConversation.courseForumConversationTypeQuestionResolved,
-                                              ) === false &&
-                                              courseForumConversation.courseForumConversationMessagesCount ===
-                                                1 &&
-                                              courseForumConversation
-                                                .firstcourseForumConversationMessage
-                                                .contentSentimentAnalysisType ===
-                                                "negative" &&
-                                              0.6 <
-                                                courseForumConversation
-                                                  .firstcourseForumConversationMessage
-                                                  .contentSentimentAnalysisIntensity
-                                                ? html`
-                                                    <span
-                                                      css="${
-                                                        !courseForumConversationCurrent
-                                                          ? css`
-                                                              color: light-dark(
-                                                                var(
-                                                                  --color--red--400
-                                                                ),
-                                                                var(
-                                                                  --color--red--600
-                                                                )
-                                                              );
-                                                            `
-                                                          : css``
-                                                      }"
-                                                      javascript="${javascript`
-                                                        javascript.popover({ element: this });
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-exclamation-diamond-fill"
-                                                      ></i>
-                                                    </span>
-                                                    <span type="popover">
-                                                      High-priority question
-                                                    </span>
-                                                  `
-                                                : html``
-                                            }
-                                            ${courseForumConversation.title}
-                                          </div>
-                                          <div
-                                            css="${css`
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
-                                              );
-                                              font-weight: 500;
-                                            `} ${
-                                              !courseForumConversationCurrent
-                                                ? css`
-                                                    color: light-dark(
-                                                      var(--color--slate--400),
-                                                      var(--color--slate--600)
-                                                    );
-                                                  `
-                                                : css`
-                                                    color: light-dark(
-                                                      var(--color--blue--300),
-                                                      var(--color--blue--300)
-                                                    );
-                                                  `
-                                            }"
-                                          >
-                                            #${courseForumConversation.publicId}
-                                          </div>
-                                        </div>
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                          `} ${
-                                            !courseForumConversationCurrent
-                                              ? css`
-                                                  color: light-dark(
-                                                    var(--color--slate--600),
-                                                    var(--color--slate--400)
-                                                  );
-                                                `
-                                              : css`
-                                                  color: light-dark(
-                                                    var(--color--blue--200),
-                                                    var(--color--blue--200)
-                                                  );
-                                                `
-                                          }"
-                                        >
-                                          <span
-                                            css="${css`
-                                              font-weight: 600;
-                                            `}"
-                                            >${
-                                              courseForumConversation.firstcourseForumConversationMessageAnonymous
-                                                ? "Anonymous"
-                                                : (courseForumConversation
-                                                    .firstcourseForumConversationMessageCreatedByCourseParticipationUser
-                                                    ?.name ??
-                                                  "Deleted course participant")
-                                            }</span
-                                          >${
-                                            !courseForumConversation.firstcourseForumConversationMessageAnonymous
-                                              ? `${
-                                                  courseForumConversation
-                                                    .firstcourseForumConversationMessageCreatedByCourseParticipation
-                                                    ?.courseParticipationRole ===
-                                                  "courseParticipationRoleInstructor"
-                                                    ? " (instructor)"
-                                                    : ""
-                                                }${
-                                                  courseForumConversation
-                                                    .firstcourseForumConversationMessage
-                                                    .courseForumConversationMessageAnonymity ===
-                                                  "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
-                                                    ? " (anonymous to students)"
-                                                    : courseForumConversation
-                                                          .firstcourseForumConversationMessage
-                                                          .courseForumConversationMessageAnonymity ===
-                                                        "courseForumConversationMessageAnonymityEveryone"
-                                                      ? " (anonymous to everyone)"
-                                                      : ""
-                                                }`
-                                              : ``
-                                          } ·
-                                          <span
-                                            javascript="${javascript`
-                                              javascript.popover({ element: this });
-                                            `}"
-                                            >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseForumConversation.firstcourseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
-                                          >
-                                          <span type="popover"
-                                            >${utilities.formatDateTime(Temporal.Instant.from(courseForumConversation.firstcourseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
-                                          >
-                                        </div>
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                          `} ${
-                                            !courseForumConversationCurrent
-                                              ? css`
-                                                  color: light-dark(
-                                                    var(--color--slate--600),
-                                                    var(--color--slate--400)
-                                                  );
-                                                `
-                                              : css`
-                                                  color: light-dark(
-                                                    var(--color--blue--200),
-                                                    var(--color--blue--200)
-                                                  );
-                                                `
-                                          }"
-                                        >
-                                          $${(() => {
-                                            const courseForumConversationMainDetails =
-                                              [
-                                                html`<span
-                                                    css="${css`
-                                                      font-weight: 600;
-                                                    `}"
-                                                    >${
-                                                      courseForumConversation.courseForumConversationType ===
-                                                      "courseForumConversationTypeNote"
-                                                        ? "Note"
-                                                        : courseForumConversation.courseForumConversationType ===
-                                                            "courseForumConversationTypeQuestion"
-                                                          ? "Question"
-                                                          : (() => {
-                                                              throw new Error();
-                                                            })()
-                                                    }</span
-                                                  >$${
-                                                    courseForumConversation.courseForumConversationType ===
-                                                    "courseForumConversationTypeQuestion"
-                                                      ? Boolean(
-                                                          courseForumConversation.courseForumConversationTypeQuestionResolved,
-                                                        ) === false
-                                                        ? html` <span
-                                                            css="${
-                                                              !courseForumConversationCurrent
-                                                                ? css`
-                                                                    color: light-dark(
-                                                                      var(
-                                                                        --color--red--500
-                                                                      ),
-                                                                      var(
-                                                                        --color--red--500
-                                                                      )
-                                                                    );
-                                                                  `
-                                                                : css``
-                                                            }"
-                                                            >(unresolved)</span
-                                                          >`
-                                                        : html` <span
-                                                            css="${
-                                                              !courseForumConversationCurrent
-                                                                ? css`
-                                                                    color: light-dark(
-                                                                      var(
-                                                                        --color--green--500
-                                                                      ),
-                                                                      var(
-                                                                        --color--green--500
-                                                                      )
-                                                                    );
-                                                                  `
-                                                                : css``
-                                                            }"
-                                                            >(resolved)</span
-                                                          >`
-                                                      : ""
-                                                  }`,
-                                              ];
-                                            for (const courseForumConversationsTag of request
-                                              .state
-                                              .courseForumConversationsTags!)
-                                              if (
-                                                application.database.get(
-                                                  sql`
-                                                    select true
-                                                    from "courseForumConversationTaggings"
-                                                    where
-                                                      "courseForumConversation" = ${courseForumConversation.id} and
-                                                      "courseForumConversationsTag" = ${courseForumConversationsTag.id};
-                                                  `,
-                                                ) !== undefined
-                                              )
-                                                courseForumConversationMainDetails.push(
-                                                  html`${courseForumConversationsTag.name}`,
-                                                );
-                                            return courseForumConversationMainDetails.join(
-                                              " · ",
-                                            );
-                                          })()}
-                                        </div>
                                         $${
-                                          application.database.get(
-                                            sql`
-                                              select true
-                                              from "courseForumConversationMessageLikes"
-                                              join "courseParticipations" on
-                                                "courseForumConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
-                                                "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                              where "courseForumConversationMessageLikes"."courseForumConversationMessage" = ${courseForumConversation.firstcourseForumConversationMessage.id}
-                                              limit 1;
-                                            `,
-                                          ) !== undefined
+                                          request.state.courseParticipation!
+                                            .courseParticipationRole ===
+                                            "courseParticipationRoleInstructor" &&
+                                          courseForumConversation.courseForumConversationType ===
+                                            "courseForumConversationTypeQuestion" &&
+                                          Boolean(
+                                            courseForumConversation.courseForumConversationTypeQuestionResolved,
+                                          ) === false &&
+                                          courseForumConversation.courseForumConversationMessagesCount ===
+                                            1 &&
+                                          courseForumConversation
+                                            .firstcourseForumConversationMessage
+                                            .contentSentimentAnalysisType ===
+                                            "negative" &&
+                                          0.6 <
+                                            courseForumConversation
+                                              .firstcourseForumConversationMessage
+                                              .contentSentimentAnalysisIntensity
                                             ? html`
-                                                <div
-                                                  css="${css`
-                                                    font-size: var(
-                                                      --font-size--3
-                                                    );
-                                                    line-height: var(
-                                                      --font-size--3--line-height
-                                                    );
-                                                    font-weight: 600;
-                                                  `} ${
+                                                <span
+                                                  css="${
                                                     !courseForumConversationCurrent
                                                       ? css`
                                                           color: light-dark(
                                                             var(
-                                                              --color--green--500
+                                                              --color--red--400
                                                             ),
                                                             var(
-                                                              --color--green--500
+                                                              --color--red--600
                                                             )
                                                           );
                                                         `
-                                                      : css`
-                                                          color: light-dark(
-                                                            var(
-                                                              --color--blue--200
-                                                            ),
-                                                            var(
-                                                              --color--blue--200
-                                                            )
-                                                          );
-                                                        `
+                                                      : css``
                                                   }"
+                                                  javascript="${javascript`
+                                                    javascript.popover({ element: this });
+                                                  `}"
                                                 >
-                                                  Liked by instructor
-                                                </div>
+                                                  <i
+                                                    class="bi bi-exclamation-diamond-fill"
+                                                  ></i>
+                                                </span>
+                                                <span type="popover">
+                                                  High-priority question
+                                                </span>
                                               `
                                             : html``
                                         }
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            white-space: nowrap;
-                                            overflow: hidden;
-                                            text-overflow: ellipsis;
-                                          `} ${
-                                            !courseForumConversationCurrent
-                                              ? css`
-                                                  color: light-dark(
-                                                    var(--color--slate--400),
-                                                    var(--color--slate--600)
-                                                  );
-                                                `
-                                              : css`
-                                                  color: light-dark(
-                                                    var(--color--blue--300),
-                                                    var(--color--blue--300)
-                                                  );
-                                                `
-                                          }"
-                                        >
-                                          ${(
-                                            await application.partials.courseForumConversationMessageContentProcessor(
-                                              {
-                                                course: request.state.course!,
-                                                courseParticipation:
-                                                  request.state
-                                                    .courseParticipation,
-                                                courseForumConversation,
-                                                courseForumConversationMessage:
-                                                  courseForumConversation.firstcourseForumConversationMessage,
-                                                mode: "textContent",
-                                              },
-                                            )
-                                          ).slice(0, 1000)}
-                                        </div>
+                                        ${courseForumConversation.title}
                                       </div>
-                                    </a>
-                                  `;
-                                },
-                              ),
-                            )}
-                          </details>
-                        `;
-                      },
-                    ),
-                  )}
-                `;
-              })()}
-            </div>
-          </div>
-          <div
-            key="sidebar--backdrop"
-            css="${css`
-              background-color: light-dark(
-                var(--color--black),
-                var(--color--white)
-              );
-              position: fixed;
-              inset: var(--size--0);
-              z-index: 99;
-              visibility: hidden;
-              opacity: var(--opacity--0);
-              cursor: pointer;
-              transition-property: var(--transition-property--opacity);
-              transition-duration: var(--transition-duration--200);
-              transition-timing-function: var(
-                --transition-timing-function--ease-in-out
-              );
-              @media (max-width: 899px) {
-                [key~="main--two-column-layout"][state~="sidebar--open"] & {
-                  visibility: visible;
-                  opacity: var(--opacity--30);
-                }
-              }
-            `}"
-            javascript="${javascript`
-              this.onclick = () => {
-                javascript.stateRemove(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
-              };
-            `}"
-          ></div>
-          <div
-            key="sidebar--resize-handle"
-            css="${css`
-              position: relative;
-              @media (max-width: 899px) {
-                display: none;
-              }
-            `}"
-          >
-            <div
-              css="${css`
-                width: var(--border-width--4);
-                height: 100%;
-                position: absolute;
-                translate: -50%;
-                z-index: 100;
-                cursor: col-resize;
-                pointer-events: auto;
-                transition-property: var(--transition-property--colors);
-                transition-delay: var(--transition-duration--150);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--ease-in-out
-                );
-                &:hover,
-                &[state~="active"] {
-                  background-color: light-dark(
-                    var(--color--blue--500),
-                    var(--color--blue--500)
-                  );
-                }
-              `}"
-              javascript="${javascript`
-                this.onpointerdown = (event) => {
-                  if (event.button !== 0) return;
-                  javascript.stateAdd(this, "active");
-                  javascript.stateAdd(document.querySelector("body"), "noninteractive");
-                  document.querySelector("body").style.cursor = "col-resize";
-                  document.onpointermove = (event) => {
-                    this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
-                  };
-                  document.onpointerup = () => {
-                    javascript.stateRemove(this, "active");
-                    javascript.stateRemove(document.querySelector("body"), "noninteractive");
-                    document.querySelector("body").style.cursor = "";
-                    document.onpointermove = undefined;
-                    document.onpointerup = undefined;
-                    updateSidebarWidth();
-                  };
-                };
-                this.ondblclick = () => {
-                  this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
-                  updateSidebarWidth();
-                };
-                const updateSidebarWidth = utilities.throttle(async () => {
-                  await fetch("/settings/sidebar-width", {
-                    method: "PATCH",
-                    headers: { "CSRF-Protection": "true" },
-                    body: new URLSearchParams({ sidebarWidth: this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
-                  });
-                });
-              `}"
-            ></div>
-          </div>
-          <div
-            key="main--main ${request.URL.pathname}"
-            class="scroll"
-            css="${css`
-              flex: 1;
-            `}"
-          >
-            <div
-              css="${css`
-                max-width: var(--size--168);
-                padding: var(--size--2) var(--size--4);
-                @media (max-width: 899px) {
-                  margin: var(--size--0) auto;
-                }
-              `}"
-            >
-              $${body}
-            </div>
-          </div>
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 500;
+                                        `} ${
+                                          !courseForumConversationCurrent
+                                            ? css`
+                                                color: light-dark(
+                                                  var(--color--slate--400),
+                                                  var(--color--slate--600)
+                                                );
+                                              `
+                                            : css`
+                                                color: light-dark(
+                                                  var(--color--blue--300),
+                                                  var(--color--blue--300)
+                                                );
+                                              `
+                                        }"
+                                      >
+                                        #${courseForumConversation.publicId}
+                                      </div>
+                                    </div>
+                                    <div
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                      `} ${
+                                        !courseForumConversationCurrent
+                                          ? css`
+                                              color: light-dark(
+                                                var(--color--slate--600),
+                                                var(--color--slate--400)
+                                              );
+                                            `
+                                          : css`
+                                              color: light-dark(
+                                                var(--color--blue--200),
+                                                var(--color--blue--200)
+                                              );
+                                            `
+                                      }"
+                                    >
+                                      <span
+                                        css="${css`
+                                          font-weight: 600;
+                                        `}"
+                                        >${
+                                          courseForumConversation.firstcourseForumConversationMessageAnonymous
+                                            ? "Anonymous"
+                                            : (courseForumConversation
+                                                .firstcourseForumConversationMessageCreatedByCourseParticipationUser
+                                                ?.name ??
+                                              "Deleted course participant")
+                                        }</span
+                                      >${
+                                        !courseForumConversation.firstcourseForumConversationMessageAnonymous
+                                          ? `${
+                                              courseForumConversation
+                                                .firstcourseForumConversationMessageCreatedByCourseParticipation
+                                                ?.courseParticipationRole ===
+                                              "courseParticipationRoleInstructor"
+                                                ? " (instructor)"
+                                                : ""
+                                            }${
+                                              courseForumConversation
+                                                .firstcourseForumConversationMessage
+                                                .courseForumConversationMessageAnonymity ===
+                                              "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
+                                                ? " (anonymous to students)"
+                                                : courseForumConversation
+                                                      .firstcourseForumConversationMessage
+                                                      .courseForumConversationMessageAnonymity ===
+                                                    "courseForumConversationMessageAnonymityEveryone"
+                                                  ? " (anonymous to everyone)"
+                                                  : ""
+                                            }`
+                                          : ``
+                                      } ·
+                                      <span
+                                        javascript="${javascript`
+                                          javascript.popover({ element: this });
+                                        `}"
+                                        >${utilities.capitalize(utilities.zonedDateTimeToRelativeTimeFormat(Temporal.Instant.from(courseForumConversation.firstcourseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone)))}</span
+                                      >
+                                      <span type="popover"
+                                        >${utilities.formatDateTime(Temporal.Instant.from(courseForumConversation.firstcourseForumConversationMessage.createdAt).toZonedDateTimeISO(request.state.userSession!.timeZone))}</span
+                                      >
+                                    </div>
+                                    <div
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                      `} ${
+                                        !courseForumConversationCurrent
+                                          ? css`
+                                              color: light-dark(
+                                                var(--color--slate--600),
+                                                var(--color--slate--400)
+                                              );
+                                            `
+                                          : css`
+                                              color: light-dark(
+                                                var(--color--blue--200),
+                                                var(--color--blue--200)
+                                              );
+                                            `
+                                      }"
+                                    >
+                                      $${(() => {
+                                        const courseForumConversationMainDetails =
+                                          [
+                                            html`<span
+                                                css="${css`
+                                                  font-weight: 600;
+                                                `}"
+                                                >${
+                                                  courseForumConversation.courseForumConversationType ===
+                                                  "courseForumConversationTypeNote"
+                                                    ? "Note"
+                                                    : courseForumConversation.courseForumConversationType ===
+                                                        "courseForumConversationTypeQuestion"
+                                                      ? "Question"
+                                                      : (() => {
+                                                          throw new Error();
+                                                        })()
+                                                }</span
+                                              >$${
+                                                courseForumConversation.courseForumConversationType ===
+                                                "courseForumConversationTypeQuestion"
+                                                  ? Boolean(
+                                                      courseForumConversation.courseForumConversationTypeQuestionResolved,
+                                                    ) === false
+                                                    ? html` <span
+                                                        css="${
+                                                          !courseForumConversationCurrent
+                                                            ? css`
+                                                                color: light-dark(
+                                                                  var(
+                                                                    --color--red--500
+                                                                  ),
+                                                                  var(
+                                                                    --color--red--500
+                                                                  )
+                                                                );
+                                                              `
+                                                            : css``
+                                                        }"
+                                                        >(unresolved)</span
+                                                      >`
+                                                    : html` <span
+                                                        css="${
+                                                          !courseForumConversationCurrent
+                                                            ? css`
+                                                                color: light-dark(
+                                                                  var(
+                                                                    --color--green--500
+                                                                  ),
+                                                                  var(
+                                                                    --color--green--500
+                                                                  )
+                                                                );
+                                                              `
+                                                            : css``
+                                                        }"
+                                                        >(resolved)</span
+                                                      >`
+                                                  : ""
+                                              }`,
+                                          ];
+                                        for (const courseForumConversationsTag of request
+                                          .state.courseForumConversationsTags!)
+                                          if (
+                                            application.database.get(
+                                              sql`
+                                                select true
+                                                from "courseForumConversationTaggings"
+                                                where
+                                                  "courseForumConversation" = ${courseForumConversation.id} and
+                                                  "courseForumConversationsTag" = ${courseForumConversationsTag.id};
+                                              `,
+                                            ) !== undefined
+                                          )
+                                            courseForumConversationMainDetails.push(
+                                              html`${courseForumConversationsTag.name}`,
+                                            );
+                                        return courseForumConversationMainDetails.join(
+                                          " · ",
+                                        );
+                                      })()}
+                                    </div>
+                                    $${
+                                      application.database.get(
+                                        sql`
+                                          select true
+                                          from "courseForumConversationMessageLikes"
+                                          join "courseParticipations" on
+                                            "courseForumConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
+                                          where "courseForumConversationMessageLikes"."courseForumConversationMessage" = ${courseForumConversation.firstcourseForumConversationMessage.id}
+                                          limit 1;
+                                        `,
+                                      ) !== undefined
+                                        ? html`
+                                            <div
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                                font-weight: 600;
+                                              `} ${
+                                                !courseForumConversationCurrent
+                                                  ? css`
+                                                      color: light-dark(
+                                                        var(
+                                                          --color--green--500
+                                                        ),
+                                                        var(--color--green--500)
+                                                      );
+                                                    `
+                                                  : css`
+                                                      color: light-dark(
+                                                        var(--color--blue--200),
+                                                        var(--color--blue--200)
+                                                      );
+                                                    `
+                                              }"
+                                            >
+                                              Liked by instructor
+                                            </div>
+                                          `
+                                        : html``
+                                    }
+                                    <div
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                      `} ${
+                                        !courseForumConversationCurrent
+                                          ? css`
+                                              color: light-dark(
+                                                var(--color--slate--400),
+                                                var(--color--slate--600)
+                                              );
+                                            `
+                                          : css`
+                                              color: light-dark(
+                                                var(--color--blue--300),
+                                                var(--color--blue--300)
+                                              );
+                                            `
+                                      }"
+                                    >
+                                      ${(
+                                        await application.partials.courseForumConversationMessageContentProcessor(
+                                          {
+                                            course: request.state.course!,
+                                            courseParticipation:
+                                              request.state.courseParticipation,
+                                            courseForumConversation,
+                                            courseForumConversationMessage:
+                                              courseForumConversation.firstcourseForumConversationMessage,
+                                            mode: "textContent",
+                                          },
+                                        )
+                                      ).slice(0, 1000)}
+                                    </div>
+                                  </div>
+                                </a>
+                              `;
+                            },
+                          ),
+                        )}
+                      </details>
+                    `;
+                  },
+                ),
+              )}
+            `;
+          })()}
         </div>
       `,
+      body,
     });
   };
 

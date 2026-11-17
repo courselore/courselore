@@ -1154,5 +1154,225 @@ export default async (application: Application): Promise<void> => {
     head,
     sidebar,
     body,
-  }) => html``;
+  }) =>
+    application.layouts.base({
+      request,
+      response,
+      head,
+      headerBefore: html`
+        <button
+          key="header--hamburger"
+          type="button"
+          class="button button--square button--icon button--transparent"
+          css="${css`
+            font-size: var(--font-size--5);
+            line-height: var(--size--0);
+            @media (min-width: 900px) {
+              display: none;
+            }
+          `}"
+          javascript="${javascript`
+            this.onclick = () => {
+              javascript.stateAdd(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
+            };
+          `}"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+      `,
+      body: html`
+        <div
+          key="main--two-column-layout"
+          css="${css`
+            width: 100%;
+            height: 100%;
+            display: flex;
+          `}"
+          javascript="${javascript`
+            if (${!request.liveConnection}) this.removeAttribute("state");
+          `}"
+        >
+          <div
+            key="sidebar /courses/${request.state.course.publicId}"
+            style="--width: ${String(request.state.user.sidebarWidth)}px;"
+            css="${css`
+              border-right: var(--border-width--1) solid
+                light-dark(var(--color--slate--200), var(--color--slate--800));
+              display: flex;
+              flex-direction: column;
+              @media (max-width: 899px) {
+                background-color: light-dark(
+                  var(--color--white),
+                  var(--color--black)
+                );
+                max-width: var(--size--112);
+                position: fixed;
+                inset: var(--size--0) var(--size--14) var(--size--0)
+                  var(--size--0);
+                z-index: 100;
+                transition-property: var(--transition-property--transform);
+                transition-duration: var(--transition-duration--200);
+                transition-timing-function: var(
+                  --transition-timing-function--ease-in-out
+                );
+                [key~="main--two-column-layout"]:not([state~="sidebar--open"])
+                  & {
+                  translate: -101%;
+                }
+                [key~="main--two-column-layout"][state~="sidebar--open"] & {
+                  box-shadow: var(--box-shadow--25);
+                }
+              }
+              @media (min-width: 900px) {
+                width: var(--width);
+              }
+            `}"
+          >
+            <div
+              key="sidebar--close"
+              css="${css`
+                border-bottom: var(--border-width--1) solid
+                  light-dark(var(--color--slate--200), var(--color--slate--800));
+                padding: var(--size--2) var(--size--4);
+                display: flex;
+                @media (min-width: 900px) {
+                  display: none;
+                }
+              `}"
+            >
+              <button
+                type="button"
+                class="button button--square button--icon button--transparent"
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--size--0);
+                `}"
+                javascript="${javascript`
+                  this.onclick = () => {
+                    javascript.stateRemove(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
+                  };
+                `}"
+              >
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+            $${sidebar}
+          </div>
+          <div
+            key="sidebar--backdrop"
+            css="${css`
+              background-color: light-dark(
+                var(--color--black),
+                var(--color--white)
+              );
+              position: fixed;
+              inset: var(--size--0);
+              z-index: 99;
+              visibility: hidden;
+              opacity: var(--opacity--0);
+              cursor: pointer;
+              transition-property: var(--transition-property--opacity);
+              transition-duration: var(--transition-duration--200);
+              transition-timing-function: var(
+                --transition-timing-function--ease-in-out
+              );
+              @media (max-width: 899px) {
+                [key~="main--two-column-layout"][state~="sidebar--open"] & {
+                  visibility: visible;
+                  opacity: var(--opacity--30);
+                }
+              }
+            `}"
+            javascript="${javascript`
+              this.onclick = () => {
+                javascript.stateRemove(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
+              };
+            `}"
+          ></div>
+          <div
+            key="sidebar--resize-handle"
+            css="${css`
+              position: relative;
+              @media (max-width: 899px) {
+                display: none;
+              }
+            `}"
+          >
+            <div
+              css="${css`
+                width: var(--border-width--4);
+                height: 100%;
+                position: absolute;
+                translate: -50%;
+                z-index: 100;
+                cursor: col-resize;
+                pointer-events: auto;
+                transition-property: var(--transition-property--colors);
+                transition-delay: var(--transition-duration--150);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--ease-in-out
+                );
+                &:hover,
+                &[state~="active"] {
+                  background-color: light-dark(
+                    var(--color--blue--500),
+                    var(--color--blue--500)
+                  );
+                }
+              `}"
+              javascript="${javascript`
+                this.onpointerdown = (event) => {
+                  if (event.button !== 0) return;
+                  javascript.stateAdd(this, "active");
+                  javascript.stateAdd(document.querySelector("body"), "noninteractive");
+                  document.querySelector("body").style.cursor = "col-resize";
+                  document.onpointermove = (event) => {
+                    this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
+                  };
+                  document.onpointerup = () => {
+                    javascript.stateRemove(this, "active");
+                    javascript.stateRemove(document.querySelector("body"), "noninteractive");
+                    document.querySelector("body").style.cursor = "";
+                    document.onpointermove = undefined;
+                    document.onpointerup = undefined;
+                    updateSidebarWidth();
+                  };
+                };
+                this.ondblclick = () => {
+                  this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
+                  updateSidebarWidth();
+                };
+                const updateSidebarWidth = utilities.throttle(async () => {
+                  await fetch("/settings/sidebar-width", {
+                    method: "PATCH",
+                    headers: { "CSRF-Protection": "true" },
+                    body: new URLSearchParams({ sidebarWidth: this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
+                  });
+                });
+              `}"
+            ></div>
+          </div>
+          <div
+            key="main--main ${request.URL.pathname}"
+            class="scroll"
+            css="${css`
+              flex: 1;
+            `}"
+          >
+            <div
+              css="${css`
+                max-width: var(--size--168);
+                padding: var(--size--2) var(--size--4);
+                @media (max-width: 899px) {
+                  margin: var(--size--0) auto;
+                }
+              `}"
+            >
+              $${body}
+            </div>
+          </div>
+        </div>
+      `,
+    });
 };
