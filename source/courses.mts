@@ -5788,6 +5788,22 @@ export default async (application: Application): Promise<void> => {
               where "courseParticipation" = ${courseParticipation.id};
             `,
           );
+          for (const courseAIChat of application.database.all<{ id: number }>(
+            sql`
+              select "id" from "courseAIChats" where "courseParticipation" = ${courseParticipation.id};
+            `,
+          )) {
+            application.database.run(
+              sql`
+                delete from "courseAIChatMessages" where "courseAIChat" = ${courseAIChat.id};
+              `,
+            );
+            application.database.run(
+              sql`
+                delete from "courseAIChats" where "id" = ${courseAIChat.id};
+              `,
+            );
+          }
           application.database.run(
             sql`
               delete from "courseParticipations" where "id" = ${courseParticipation.id};
@@ -6354,6 +6370,22 @@ export default async (application: Application): Promise<void> => {
                 where "courseParticipation" = ${courseParticipation.id};
               `,
             );
+            for (const courseAIChat of application.database.all<{ id: number }>(
+              sql`
+                select "id" from "courseAIChats" where "courseParticipation" = ${courseParticipation.id};
+              `,
+            )) {
+              application.database.run(
+                sql`
+                  delete from "courseAIChatMessages" where "courseAIChat" = ${courseAIChat.id};
+                `,
+              );
+              application.database.run(
+                sql`
+                  delete from "courseAIChats" where "id" = ${courseAIChat.id};
+                `,
+              );
+            }
             application.database.run(
               sql`
                 delete from "courseParticipations" where "id" = ${courseParticipation.id};
@@ -7120,6 +7152,22 @@ export default async (application: Application): Promise<void> => {
             where "courseParticipation" = ${request.state.courseParticipation!.id};
           `,
         );
+        for (const courseAIChat of application.database.all<{ id: number }>(
+          sql`
+            select "id" from "courseAIChats" where "courseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        )) {
+          application.database.run(
+            sql`
+              delete from "courseAIChatMessages" where "courseAIChat" = ${courseAIChat.id};
+            `,
+          );
+          application.database.run(
+            sql`
+              delete from "courseAIChats" where "id" = ${courseAIChat.id};
+            `,
+          );
+        }
         application.database.run(
           sql`
             delete from "courseParticipations" where "id" = ${request.state.courseParticipation!.id};
