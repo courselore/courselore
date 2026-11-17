@@ -11,7 +11,7 @@ import { Application } from "./application.mjs";
 export type ApplicationCourseForumConversations = {
   types: {
     states: {
-      courseForumConversation: Application["types"]["states"]["Course"] & {
+      CourseForumConversation: Application["types"]["states"]["Course"] & {
         courseForumConversation: {
           id: number;
           publicId: string;
@@ -43,7 +43,7 @@ export default async (application: Application): Promise<void> => {
       {},
       {},
       {},
-      Application["types"]["states"]["courseForumConversation"]
+      Application["types"]["states"]["CourseForumConversation"]
     >;
     response: serverTypes.Response;
     head: HTML;
@@ -3660,7 +3660,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["courseForumConversation"]
+        Application["types"]["states"]["CourseForumConversation"]
       >,
       response,
     ) => {
@@ -3739,7 +3739,7 @@ export default async (application: Application): Promise<void> => {
         { message: string },
         {},
         {},
-        Application["types"]["states"]["courseForumConversation"]
+        Application["types"]["states"]["CourseForumConversation"]
       >,
       response,
     ) => {
@@ -7390,7 +7390,7 @@ export default async (application: Application): Promise<void> => {
           pinned: "false" | "true";
           tags: string[];
         },
-        Application["types"]["states"]["courseForumConversation"]
+        Application["types"]["states"]["CourseForumConversation"]
       >,
       response,
     ) => {
@@ -7583,7 +7583,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["courseForumConversation"]
+        Application["types"]["states"]["CourseForumConversation"]
       >,
       response,
     ) => {

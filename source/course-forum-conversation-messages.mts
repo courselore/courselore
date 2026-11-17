@@ -12,7 +12,7 @@ import { Application } from "./application.mjs";
 export type ApplicationCourseForumConversationMessages = {
   types: {
     states: {
-      courseForumConversationMessage: Application["types"]["states"]["courseForumConversation"] & {
+      CourseForumConversationMessage: Application["types"]["states"]["CourseForumConversation"] & {
         courseForumConversationMessage: {
           id: number;
           publicId: string;
@@ -62,7 +62,7 @@ export default async (application: Application): Promise<void> => {
             | "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
             | "courseForumConversationMessageAnonymityEveryone";
         },
-        Application["types"]["states"]["courseForumConversation"]
+        Application["types"]["states"]["CourseForumConversation"]
       >,
       response,
     ) => {
@@ -210,7 +210,7 @@ export default async (application: Application): Promise<void> => {
             | "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
             | "courseForumConversationMessageAnonymityEveryone";
         },
-        Application["types"]["states"]["courseForumConversation"]
+        Application["types"]["states"]["CourseForumConversation"]
       >,
       response,
     ) => {
@@ -756,7 +756,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["courseForumConversationMessage"]
+        Application["types"]["states"]["CourseForumConversationMessage"]
       >,
       response,
     ) => {
@@ -829,7 +829,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["courseForumConversationMessage"]
+        Application["types"]["states"]["CourseForumConversationMessage"]
       >,
       response,
     ) => {
@@ -1376,7 +1376,7 @@ export default async (application: Application): Promise<void> => {
             | "courseForumConversationMessageAnonymityCourseParticipationRoleStudents"
             | "courseForumConversationMessageAnonymityEveryone";
         },
-        Application["types"]["states"]["courseForumConversationMessage"]
+        Application["types"]["states"]["CourseForumConversationMessage"]
       >,
       response,
     ) => {
@@ -1534,7 +1534,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["courseForumConversationMessage"]
+        Application["types"]["states"]["CourseForumConversationMessage"]
       >,
       response,
     ) => {
@@ -1608,7 +1608,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["courseForumConversationMessage"]
+        Application["types"]["states"]["CourseForumConversationMessage"]
       >,
       response,
     ) => {
@@ -1659,7 +1659,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["courseForumConversationMessage"]
+        Application["types"]["states"]["CourseForumConversationMessage"]
       >,
       response,
     ) => {
@@ -1721,7 +1721,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["courseForumConversationMessage"]
+        Application["types"]["states"]["CourseForumConversationMessage"]
       >,
       response,
     ) => {

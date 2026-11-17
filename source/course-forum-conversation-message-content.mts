@@ -1160,7 +1160,7 @@ ${courseForumConversationMessageContent}</textarea>
         {},
         {},
         { content: string },
-        Application["types"]["states"]["courseForumConversationMessage"]
+        Application["types"]["states"]["CourseForumConversationMessage"]
       >,
       response,
     ) => {
@@ -3074,7 +3074,7 @@ You may also use the buttons on the message content editor to ${
         {},
         {},
         { courseForumConversationMessageContentPollOptions: string[] },
-        Application["types"]["states"]["courseForumConversationMessage"]
+        Application["types"]["states"]["CourseForumConversationMessage"]
       >,
       response,
     ) => {
