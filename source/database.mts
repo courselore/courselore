@@ -8332,5 +8332,51 @@ export default async (application: Application): Promise<void> => {
         alter table "courseParticipations" alter column "mostRecentlyVisitedMode" set not null;
         alter table "courseParticipations" add column "mostRecentlyVisitedCourseAIChat" integer null;
       `,
+
+      sql`
+        create table "courseAIChats" (
+          "id" integer primary key autoincrement,
+          "publicId" text not null,
+          "course" integer not null references "courses",
+          "courseParticipation" integer null references "courseParticipations",
+          "pinned" integer not null,
+          "title" text not null,
+          "titleLexicalSearch" text not null,
+          "titleSemanticSearch" blob null not null,
+          unique ("publicId", "course")
+        ) strict;
+        create index "index_courseAIChats_courseParticipation" on "courseAIChats" ("courseParticipation");
+        create index "index_courseAIChats_pinned" on "courseAIChats" ("pinned");
+        create virtual table "lexicalSearch_courseAIChats_titleLexicalSearch" using fts5(
+          "titleLexicalSearch",
+          content = "courseAIChats",
+          content_rowid = "id",
+          prefix = '1 2 3'
+        );
+        create trigger "lexicalSearch_courseAIChats_titleLexicalSearch_insert" after insert on "courseAIChats" begin
+          insert into "lexicalSearch_courseAIChats_titleLexicalSearch" ("rowid", "titleLexicalSearch") values ("new"."id", "new"."titleLexicalSearch");
+        end;
+        create trigger "lexicalSearch_courseAIChats_titleLexicalSearch_update" after update on "courseAIChats" begin
+          update "lexicalSearch_courseAIChats_titleLexicalSearch" set "titleLexicalSearch" = "new"."titleLexicalSearch" where "rowid" = "old"."id";
+        end;
+        create trigger "lexicalSearch_courseAIChats_titleLexicalSearch_delete" after delete on "courseAIChats" begin
+          delete from "lexicalSearch_courseAIChats_titleLexicalSearch" where "rowid" = "old"."id";
+        end;
+        
+        create table "courseAIChatMessages" (
+          "id" integer primary key autoincrement,
+          "publicId" text not null,
+          "courseAIChat" integer not null references "courseAIChats",
+          "role" text not null,
+          "createdAt" text not null,
+          "content" text not null,
+          "contentLexicalSearch" text not null,
+          "contentSemanticSearch" blob null not null,
+          "contentSentimentAnalysisType" text null not null,
+          "contentSentimentAnalysisIntensity" real null not null,
+          unique ("publicId", "courseAIChat")
+        ) strict;
+        create index "index_courseAIChatMessages_courseAIChat" on "courseAIChatMessages" ("courseAIChat");
+      `,
     );
 };
