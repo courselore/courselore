@@ -1686,6 +1686,33 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.webServer?.push({
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/forum(?:$|/)"),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined
+      )
+        return;
+      application.database.run(
+        sql`
+          update "courseParticipations"
+          set "mostRecentlyVisitedMode" = ${"courseForum"}
+          where "id" = ${request.state.courseParticipation.id};
+        `,
+      );
+    },
+  });
+
+  application.webServer?.push({
     method: "GET",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/forum$"),
     handler: async (
@@ -3694,9 +3721,7 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           update "courseParticipations"
-          set
-            "mostRecentlyVisitedMode" = ${"courseForum"},
-            "mostRecentlyVisitedCourseForumConversation" = ${request.state.courseForumConversation.id}
+          set "mostRecentlyVisitedCourseForumConversation" = ${request.state.courseForumConversation.id}
           where "id" = ${request.state.courseParticipation.id};
         `,
       );

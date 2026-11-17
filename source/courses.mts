@@ -602,7 +602,10 @@ export default async (application: Application): Promise<void> => {
       response.redirect!(
         `/courses/${request.state.course.publicId}/${
           request.state.courseParticipation.mostRecentlyVisitedMode ===
-          "courseForum"
+            "courseForum" ||
+          (request.state.courseParticipation.mostRecentlyVisitedMode ===
+            "courseAI" &&
+            Boolean(request.state.course.courseAIEnabled) === false)
             ? "forum"
             : request.state.courseParticipation.mostRecentlyVisitedMode ===
                 "courseAI"
