@@ -549,15 +549,7 @@ export default async (application: Application): Promise<void> => {
                     }
                   </a>
                   $${
-                    Boolean(request.state.course.courseAIEnabled) &&
-                    (request.state.courseParticipation
-                      .courseParticipationRole ===
-                      "courseParticipationRoleInstructor" ||
-                      application.database.get(
-                        sql`
-                          select true from "courseAISources" where "course" = ${request.state.course.id} limit 1;
-                        `,
-                      ) !== undefined)
+                    Boolean(request.state.course.courseAIEnabled)
                       ? html`
                           <a
                             href="/courses/${request.state.course.publicId}/ai"
