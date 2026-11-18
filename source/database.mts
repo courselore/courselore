@@ -8378,5 +8378,295 @@ export default async (application: Application): Promise<void> => {
         ) strict;
         create index "index_courseAIChatMessages_courseAIChat" on "courseAIChatMessages" ("courseAIChat");
       `,
+
+      async (database) => {
+        if (application.userConfiguration.environment !== "development") return;
+        for (const course of database.all<{
+          id: number;
+          publicId: string;
+          name: string;
+          courseState: "courseStateActive" | "courseStateArchived";
+          courseParticipation: number;
+        }>(
+          sql`
+            select
+              "courses"."id",
+              "courses"."publicId",
+              "courses"."name",
+              "courses"."courseState",
+              "courseParticipations"."id" as "courseParticipation"
+            from "courses"
+            join "courseParticipations" on "courseParticipations"."course" = "courses"."id"
+            join "users" on "users"."id" = "courseParticipations"."user"
+            where
+              "users"."email" = ${"system-administrator@courselore.org"} and
+              "courses"."name" in (${"Principles of Programming Languages"}, ${"Full-Stack JavaScript"});
+          `,
+        )) {
+          database.run(
+            sql`update "courses" set "courseAIEnabled" = ${Number(true)} where "id" = ${course.id};`,
+          );
+          for (const [chatIndex, chat] of (
+            {
+              "Principles of Programming Languages": [
+                {
+                  title: "Lexical vs. dynamic scoping",
+                  pinned: true,
+                  messages: [
+                    { role: "user", content: "What is lexical scoping?" },
+                    {
+                      role: "assistant",
+                      content:
+                        "With **lexical scoping**, a variable reference is resolved using the program's written nesting structure. A function retains access to the bindings in the environment where it was defined.",
+                    },
+                    {
+                      role: "user",
+                      content: "How is that different from dynamic scoping?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "Dynamic scoping looks for a binding along the runtime call chain instead. The same function can therefore see different bindings depending on who called it.",
+                    },
+                  ],
+                },
+                {
+                  title: "Beta reduction practice",
+                  messages: [
+                    {
+                      role: "user",
+                      content: "Can you walk me through $(\\lambda x. x)\\,y$?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "Substitute $y$ for the bound variable $x$ in the function body. The expression reduces to $y$ in one beta-reduction step.",
+                    },
+                  ],
+                },
+                {
+                  title: "Understanding closures",
+                  messages: [
+                    {
+                      role: "user",
+                      content: "Why does a closure need an environment?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "A closure pairs a function with the bindings of its free variables. For example, a function that adds `n` needs to remember which `n` was in scope when the function was created.",
+                    },
+                    {
+                      role: "user",
+                      content: "Does it copy the values or keep references?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "That depends on the language and its capture semantics. Some capture values, some capture references, and some offer both choices.",
+                    },
+                  ],
+                },
+                {
+                  title: "Progress and preservation",
+                  messages: [
+                    {
+                      role: "user",
+                      content:
+                        "How do progress and preservation relate to type safety?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "**Progress** says a well-typed closed expression is a value or can take a step. **Preservation** says taking a step preserves its type. Together they show evaluation cannot get stuck in a type error, assuming the language's formal rules.",
+                    },
+                  ],
+                },
+                {
+                  title: "Unification in type inference",
+                  messages: [
+                    {
+                      role: "user",
+                      content:
+                        "Why does unifying $\\alpha$ with $\\alpha \\to \\beta$ fail?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "The occurs check rejects it: replacing $\\alpha$ with a type containing $\\alpha$ would require an infinite type in the usual finite-type system.",
+                    },
+                  ],
+                },
+              ],
+              "Full-Stack JavaScript": [
+                {
+                  title: "Promises and async functions",
+                  pinned: true,
+                  messages: [
+                    {
+                      role: "user",
+                      content:
+                        "Does an async function always return a promise?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "Yes. Its return value becomes the fulfillment value of a promise; an uncaught exception rejects that promise.",
+                    },
+                    {
+                      role: "user",
+                      content: "What happens if I return an existing promise?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "The async function's promise adopts the existing promise's eventual state, although it is not necessarily the same promise object.",
+                    },
+                  ],
+                },
+                {
+                  title: "Event loop ordering",
+                  messages: [
+                    {
+                      role: "user",
+                      content:
+                        "Do promise callbacks run before a zero-delay timer?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "After the current JavaScript job finishes, promise callbacks run as microtasks before the next timer task. A zero-delay timer still waits for a later task.",
+                    },
+                  ],
+                },
+                {
+                  title: "Handling fetch errors",
+                  messages: [
+                    {
+                      role: "user",
+                      content:
+                        "Why didn't fetch throw when my server returned 404?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "`fetch` rejects on network failures, but HTTP error responses still resolve. Check `response.ok` and handle non-success status codes explicitly.",
+                    },
+                  ],
+                },
+                {
+                  title: "Database transactions",
+                  messages: [
+                    {
+                      role: "user",
+                      content: "When should I use a transaction?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "Use a transaction when several database operations must succeed or fail together. For example, updating an order and recording its payment should not leave only one of those changes committed.",
+                    },
+                  ],
+                },
+                {
+                  title: "Avoiding SQL injection",
+                  messages: [
+                    {
+                      role: "user",
+                      content:
+                        "How should I include user input in a SQL query?",
+                    },
+                    {
+                      role: "assistant",
+                      content:
+                        "Use parameterized queries instead of concatenating input into SQL. Parameters represent values, not table or column names; choose identifiers from an allowlist.",
+                    },
+                  ],
+                },
+              ],
+            } as any
+          )[course.name].entries()) {
+            const courseAIChat = database.run(
+              sql`
+                insert into "courseAIChats" (
+                  "publicId", "course", "courseParticipation", "pinned",
+                  "title", "titleLexicalSearch", "titleSemanticSearch"
+                )
+                values (
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${course.id}, ${course.courseParticipation}, ${Number(chat.pinned ?? false)},
+                  ${chat.title}, ${utilities
+                    .tokenize(chat.title, {
+                      stopWords: application.applicationConfiguration.stopWords,
+                      stem: (token) => natural.PorterStemmer.stem(token),
+                    })
+                    .map((tokenWithPosition) => tokenWithPosition.token)
+                    .join(" ")}, vec_f32(${await await (
+                    await fetch(`http://localhost:19000/vector-embedding`, {
+                      method: "POST",
+                      headers: { "CSRF-Protection": "true" },
+                      body: new URLSearchParams({ text: chat.title }),
+                    })
+                  ).text()})
+                );
+              `,
+            ).lastInsertRowid;
+            for (const [messageIndex, message] of chat.messages.entries()) {
+              const text =
+                await application.partials.courseForumConversationMessageContentProcessor(
+                  {
+                    course,
+                    courseForumConversationMessageContent: message.content,
+                    mode: "textContent",
+                  },
+                );
+              const sentiment = (await (
+                await (async (endpoint: string, text: string) => {
+                  return await fetch(`http://localhost:19000/${endpoint}`, {
+                    method: "POST",
+                    headers: { "CSRF-Protection": "true" },
+                    body: new URLSearchParams({ text }),
+                  });
+                })("sentiment-analysis", text)
+              ).json()) as {
+                label: "positive" | "neutral" | "negative";
+                score: number;
+              };
+              database.run(
+                sql`
+                  insert into "courseAIChatMessages" (
+                    "publicId", "courseAIChat", "role", "createdAt", "content",
+                    "contentLexicalSearch", "contentSemanticSearch",
+                    "contentSentimentAnalysisType", "contentSentimentAnalysisIntensity"
+                  )
+                  values (
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${courseAIChat}, ${message.role},
+                    ${Temporal.Now.instant()
+                      .subtract({ hours: (chatIndex * 7 + 1) * 24 })
+                      .add({ minutes: messageIndex })
+                      .toString()},
+                    ${message.content}, ${utilities
+                      .tokenize(text, {
+                        stopWords:
+                          application.applicationConfiguration.stopWords,
+                        stem: (token) => natural.PorterStemmer.stem(token),
+                      })
+                      .map((tokenWithPosition) => tokenWithPosition.token)
+                      .join(" ")}, vec_f32(${await (
+                      await fetch(`http://localhost:19000/vector-embedding`, {
+                        method: "POST",
+                        headers: { "CSRF-Protection": "true" },
+                        body: new URLSearchParams({ text }),
+                      })
+                    ).text()}),
+                    ${sentiment.label}, ${sentiment.score}
+                  );
+                `,
+              );
+            }
+          }
+        }
+      },
     );
 };
