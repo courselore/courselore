@@ -8381,39 +8381,56 @@ export default async (application: Application): Promise<void> => {
 
       async (database) => {
         if (application.userConfiguration.environment !== "development") return;
+        const user = database.get<{ id: number }>(
+          sql`
+            select "id"
+            from "users"
+            where "email" = ${"system-administrator@courselore.org"};
+          `,
+        );
+        if (user === undefined) throw new Error();
         for (const course of database.all<{
           id: number;
           publicId: string;
           name: string;
           courseState: "courseStateActive" | "courseStateArchived";
-          courseParticipation: number;
         }>(
           sql`
             select
-              "courses"."id",
-              "courses"."publicId",
-              "courses"."name",
-              "courses"."courseState",
-              "courseParticipations"."id" as "courseParticipation"
+              "id",
+              "publicId",
+              "name",
+              "courseState"
             from "courses"
-            join "courseParticipations" on "courseParticipations"."course" = "courses"."id"
-            join "users" on "users"."id" = "courseParticipations"."user"
-            where
-              "users"."email" = ${"system-administrator@courselore.org"} and
-              "courses"."name" in (${"Principles of Programming Languages"}, ${"Full-Stack JavaScript"});
+            where "name" in (${"Principles of Programming Languages"}, ${"Full-Stack JavaScript"});
           `,
         )) {
           database.run(
-            sql`update "courses" set "courseAIEnabled" = ${Number(true)} where "id" = ${course.id};`,
+            sql`
+              update "courses" set "courseAIEnabled" = ${Number(true)} where "id" = ${course.id};
+            `,
           );
-          for (const [chatIndex, chat] of (
+          const courseParticipation = database.get<{ id: number }>(
+            sql`
+              select "id"
+              from "courseParticipations"
+              where
+                "user" = ${user.id} and
+                "course" = ${course.id};
+            `,
+          );
+          if (courseParticipation === undefined) throw new Error();
+          for (const [courseAIChatIndex, courseAIChatData] of (
             {
               "Principles of Programming Languages": [
                 {
                   title: "Lexical vs. dynamic scoping",
                   pinned: true,
-                  messages: [
-                    { role: "user", content: "What is lexical scoping?" },
+                  courseAIChatMessages: [
+                    {
+                      role: "user",
+                      content: "What is lexical scoping?",
+                    },
                     {
                       role: "assistant",
                       content:
@@ -8432,7 +8449,7 @@ export default async (application: Application): Promise<void> => {
                 },
                 {
                   title: "Beta reduction practice",
-                  messages: [
+                  courseAIChatMessages: [
                     {
                       role: "user",
                       content: "Can you walk me through $(\\lambda x. x)\\,y$?",
@@ -8446,7 +8463,7 @@ export default async (application: Application): Promise<void> => {
                 },
                 {
                   title: "Understanding closures",
-                  messages: [
+                  courseAIChatMessages: [
                     {
                       role: "user",
                       content: "Why does a closure need an environment?",
@@ -8469,7 +8486,7 @@ export default async (application: Application): Promise<void> => {
                 },
                 {
                   title: "Progress and preservation",
-                  messages: [
+                  courseAIChatMessages: [
                     {
                       role: "user",
                       content:
@@ -8484,7 +8501,7 @@ export default async (application: Application): Promise<void> => {
                 },
                 {
                   title: "Unification in type inference",
-                  messages: [
+                  courseAIChatMessages: [
                     {
                       role: "user",
                       content:
@@ -8502,7 +8519,7 @@ export default async (application: Application): Promise<void> => {
                 {
                   title: "Promises and async functions",
                   pinned: true,
-                  messages: [
+                  courseAIChatMessages: [
                     {
                       role: "user",
                       content:
@@ -8526,7 +8543,7 @@ export default async (application: Application): Promise<void> => {
                 },
                 {
                   title: "Event loop ordering",
-                  messages: [
+                  courseAIChatMessages: [
                     {
                       role: "user",
                       content:
@@ -8541,7 +8558,7 @@ export default async (application: Application): Promise<void> => {
                 },
                 {
                   title: "Handling fetch errors",
-                  messages: [
+                  courseAIChatMessages: [
                     {
                       role: "user",
                       content:
@@ -8556,7 +8573,7 @@ export default async (application: Application): Promise<void> => {
                 },
                 {
                   title: "Database transactions",
-                  messages: [
+                  courseAIChatMessages: [
                     {
                       role: "user",
                       content: "When should I use a transaction?",
@@ -8570,7 +8587,7 @@ export default async (application: Application): Promise<void> => {
                 },
                 {
                   title: "Avoiding SQL injection",
-                  messages: [
+                  courseAIChatMessages: [
                     {
                       role: "user",
                       content:
@@ -8586,48 +8603,78 @@ export default async (application: Application): Promise<void> => {
               ],
             } as any
           )[course.name].entries()) {
-            const courseAIChat = database.run(
+            const courseAIChat = database.get<{ id: number }>(
               sql`
-                insert into "courseAIChats" (
-                  "publicId", "course", "courseParticipation", "pinned",
-                  "title", "titleLexicalSearch", "titleSemanticSearch"
-                )
-                values (
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${course.id}, ${course.courseParticipation}, ${Number(chat.pinned ?? false)},
-                  ${chat.title}, ${utilities
-                    .tokenize(chat.title, {
-                      stopWords: application.applicationConfiguration.stopWords,
-                      stem: (token) => natural.PorterStemmer.stem(token),
-                    })
-                    .map((tokenWithPosition) => tokenWithPosition.token)
-                    .join(" ")}, vec_f32(${await await (
-                    await fetch(`http://localhost:19000/vector-embedding`, {
-                      method: "POST",
-                      headers: { "CSRF-Protection": "true" },
-                      body: new URLSearchParams({ text: chat.title }),
-                    })
-                  ).text()})
-                );
+                select * from "courseAIChats" where "id" = ${
+                  database.run(
+                    sql`
+                      insert into "courseAIChats" (
+                        "publicId",
+                        "course",
+                        "courseParticipation",
+                        "pinned",
+                        "title",
+                        "titleLexicalSearch",
+                        "titleSemanticSearch"
+                      )
+                      values (
+                        ${cryptoRandomString({ length: 20, type: "numeric" })},
+                        ${course.id},
+                        ${courseParticipation.id},
+                        ${Number(courseAIChatData.pinned ?? false)},
+                        ${courseAIChatData.title},
+                        ${utilities
+                          .tokenize(courseAIChatData.title, {
+                            stopWords:
+                              application.applicationConfiguration.stopWords,
+                            stem: (token) => natural.PorterStemmer.stem(token),
+                          })
+                          .map((tokenWithPosition) => tokenWithPosition.token)
+                          .join(" ")},
+                        vec_f32(${await (
+                          await fetch(
+                            "http://localhost:19000/vector-embedding",
+                            {
+                              method: "POST",
+                              headers: { "CSRF-Protection": "true" },
+                              body: new URLSearchParams({
+                                text: courseAIChatData.title,
+                              }),
+                            },
+                          )
+                        ).text()})
+                      );
+                    `,
+                  ).lastInsertRowid
+                };
               `,
-            ).lastInsertRowid;
-            for (const [messageIndex, message] of chat.messages.entries()) {
-              const text =
+            )!;
+            for (const [
+              courseAIChatMessageIndex,
+              courseAIChatMessageData,
+            ] of courseAIChatData.courseAIChatMessages.entries()) {
+              const contentTextContent =
                 await application.partials.courseForumConversationMessageContentProcessor(
                   {
                     course,
-                    courseForumConversationMessageContent: message.content,
+                    courseForumConversationMessageContent:
+                      courseAIChatMessageData.content,
                     mode: "textContent",
                   },
                 );
-              const sentiment = (await (
-                await (async (endpoint: string, text: string) => {
-                  return await fetch(`http://localhost:19000/${endpoint}`, {
-                    method: "POST",
-                    headers: { "CSRF-Protection": "true" },
-                    body: new URLSearchParams({ text }),
-                  });
-                })("sentiment-analysis", text)
+              const contentSemanticSearch = await (
+                await fetch("http://localhost:19000/vector-embedding", {
+                  method: "POST",
+                  headers: { "CSRF-Protection": "true" },
+                  body: new URLSearchParams({ text: contentTextContent }),
+                })
+              ).text();
+              const contentSentimentAnalysis = (await (
+                await fetch("http://localhost:19000/sentiment-analysis", {
+                  method: "POST",
+                  headers: { "CSRF-Protection": "true" },
+                  body: new URLSearchParams({ text: contentTextContent }),
+                })
               ).json()) as {
                 label: "positive" | "neutral" | "negative";
                 score: number;
@@ -8635,32 +8682,36 @@ export default async (application: Application): Promise<void> => {
               database.run(
                 sql`
                   insert into "courseAIChatMessages" (
-                    "publicId", "courseAIChat", "role", "createdAt", "content",
-                    "contentLexicalSearch", "contentSemanticSearch",
-                    "contentSentimentAnalysisType", "contentSentimentAnalysisIntensity"
+                    "publicId",
+                    "courseAIChat",
+                    "role",
+                    "createdAt",
+                    "content",
+                    "contentLexicalSearch",
+                    "contentSemanticSearch",
+                    "contentSentimentAnalysisType",
+                    "contentSentimentAnalysisIntensity"
                   )
                   values (
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
-                    ${courseAIChat}, ${message.role},
+                    ${courseAIChat.id},
+                    ${courseAIChatMessageData.role},
                     ${Temporal.Now.instant()
-                      .subtract({ hours: (chatIndex * 7 + 1) * 24 })
-                      .add({ minutes: messageIndex })
+                      .subtract({ hours: (courseAIChatIndex * 7 + 1) * 24 })
+                      .add({ minutes: courseAIChatMessageIndex })
                       .toString()},
-                    ${message.content}, ${utilities
-                      .tokenize(text, {
+                    ${courseAIChatMessageData.content},
+                    ${utilities
+                      .tokenize(contentTextContent, {
                         stopWords:
                           application.applicationConfiguration.stopWords,
                         stem: (token) => natural.PorterStemmer.stem(token),
                       })
                       .map((tokenWithPosition) => tokenWithPosition.token)
-                      .join(" ")}, vec_f32(${await (
-                      await fetch(`http://localhost:19000/vector-embedding`, {
-                        method: "POST",
-                        headers: { "CSRF-Protection": "true" },
-                        body: new URLSearchParams({ text }),
-                      })
-                    ).text()}),
-                    ${sentiment.label}, ${sentiment.score}
+                      .join(" ")},
+                    vec_f32(${contentSemanticSearch}),
+                    ${contentSentimentAnalysis.label},
+                    ${contentSentimentAnalysis.score}
                   );
                 `,
               );
