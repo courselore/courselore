@@ -36,6 +36,9 @@ import applicationCourseForumConversationMessageContent, {
 import applicationCourseAIChats, {
   ApplicationCourseAIChats,
 } from "./course-ai-chats.mjs";
+import applicationCourseAIChatMessageContent, {
+  ApplicationCourseAIChatMessageContent,
+} from "./course-ai-chat-message-content.mjs";
 import applicationEmails from "./emails.mjs";
 import applicationErrors from "./errors.mjs";
 import applicationDatabase from "./database.mjs";
@@ -128,7 +131,8 @@ export type Application = {
   ApplicationCourseForumConversations &
   ApplicationCourseForumConversationMessages &
   ApplicationCourseForumConversationMessageContent &
-  ApplicationCourseAIChats;
+  ApplicationCourseAIChats &
+  ApplicationCourseAIChatMessageContent;
 const application = {} as Application;
 application.version = "10.3.1";
 application.commandLineArguments = util.parseArgs({
@@ -259,6 +263,7 @@ await applicationCourseForumConversations(application);
 await applicationCourseForumConversationMessages(application);
 await applicationCourseForumConversationMessageContent(application);
 await applicationCourseAIChats(application);
+await applicationCourseAIChatMessageContent(application);
 await applicationEmails(application);
 await applicationErrors(application);
 await applicationDatabase(application);

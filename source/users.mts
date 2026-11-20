@@ -47,7 +47,8 @@ export type ApplicationUsers = {
             avatarImage: string | null;
           }
         | "courseParticipationDeleted"
-        | "anonymous";
+        | "anonymous"
+        | "courseAI";
       onlineIndicator?: boolean;
       size?: 6 | 9;
     }) => HTML;
@@ -3595,254 +3596,210 @@ export default async (application: Application): Promise<void> => {
     user,
     onlineIndicator = true,
     size = 6,
-  }) => html`
-    <div
-      key="user--avatar/${typeof user === "object" ? user.publicId : user}"
-      css="${css`
-        user-select: none;
-        display: grid;
-        & > * {
-          grid-area: 1 / 1;
-        }
-      `}"
-    >
-      $${
-        typeof user === "object" && typeof user.avatarImage === "string"
-          ? html`
-              <img
-                src="${user.avatarImage}"
-                loading="lazy"
-                css="${css`
-                  background-color: light-dark(
-                    var(--color--white),
-                    var(--color--white)
-                  );
-                  border-radius: var(--border-radius--1);
-                  display: block;
-                  object-fit: cover;
-                `} ${
-                  size === 6
-                    ? css`
-                        width: var(--size--6);
-                        height: var(--size--6);
-                      `
-                    : size === 9
-                      ? css`
-                          width: var(--size--9);
-                          height: var(--size--9);
-                        `
-                      : (() => {
-                          throw new Error();
-                        })()
-                }"
-              />
-            `
-          : html`
-              <div
-                style="
-                --color--light: var(--color--${
-                  typeof user === "object"
-                    ? user.avatarColor
-                    : user === "courseParticipationDeleted"
-                      ? "red"
-                      : user === "anonymous"
-                        ? "blue"
-                        : (() => {
-                            throw new Error();
-                          })()
-                }--800);
-                --color--dark: var(--color--${
-                  typeof user === "object"
-                    ? user.avatarColor
-                    : user === "courseParticipationDeleted"
-                      ? "red"
-                      : user === "anonymous"
-                        ? "blue"
-                        : (() => {
-                            throw new Error();
-                          })()
-                }--200);
-                --background-color--light: var(--color--${
-                  typeof user === "object"
-                    ? user.avatarColor
-                    : user === "courseParticipationDeleted"
-                      ? "red"
-                      : user === "anonymous"
-                        ? "blue"
-                        : (() => {
-                            throw new Error();
-                          })()
-                }--200);
-                --background-color--dark: var(--color--${
-                  typeof user === "object"
-                    ? user.avatarColor
-                    : user === "courseParticipationDeleted"
-                      ? "red"
-                      : user === "anonymous"
-                        ? "blue"
-                        : (() => {
-                            throw new Error();
-                          })()
-                }--800);
-                --border-color--light: var(--color--${
-                  typeof user === "object"
-                    ? user.avatarColor
-                    : user === "courseParticipationDeleted"
-                      ? "red"
-                      : user === "anonymous"
-                        ? "blue"
-                        : (() => {
-                            throw new Error();
-                          })()
-                }--300);
-                --border-color--dark: var(--color--${
-                  typeof user === "object"
-                    ? user.avatarColor
-                    : user === "courseParticipationDeleted"
-                      ? "red"
-                      : user === "anonymous"
-                        ? "blue"
-                        : (() => {
-                            throw new Error();
-                          })()
-                }--900);
-              "
-                css="${css`
-                  font-family:
-                    "Roboto Serif Variable", var(--font-family--serif);
-                  line-height: var(--size--0);
-                  font-weight: 900;
-                  color: light-dark(var(--color--light), var(--color--dark));
-                  background-color: light-dark(
-                    var(--background-color--light),
-                    var(--background-color--dark)
-                  );
-                  border: var(--border-width--1) solid
-                    light-dark(
-                      var(--border-color--light),
-                      var(--border-color--dark)
+  }) => {
+    const color =
+      typeof user === "object"
+        ? user.avatarColor
+        : user === "courseParticipationDeleted"
+          ? "red"
+          : user === "anonymous"
+            ? "blue"
+            : user === "courseAI"
+              ? "yellow"
+              : (() => {
+                  throw new Error();
+                })();
+    return html`
+      <div
+        key="user--avatar/${typeof user === "object" ? user.publicId : user}"
+        css="${css`
+          user-select: none;
+          display: grid;
+          & > * {
+            grid-area: 1 / 1;
+          }
+        `}"
+      >
+        $${
+          typeof user === "object" && typeof user.avatarImage === "string"
+            ? html`
+                <img
+                  src="${user.avatarImage}"
+                  loading="lazy"
+                  css="${css`
+                    background-color: light-dark(
+                      var(--color--white),
+                      var(--color--white)
                     );
-                  border-radius: var(--border-radius--1);
-                  overflow: hidden;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                `} ${
-                  size === 6
-                    ? `${
-                        typeof user === "object"
-                          ? css`
-                              font-size: var(--font-size--2-5);
-                            `
-                          : css`
-                              font-size: var(--font-size--4);
-                            `
-                      } ${css`
-                        width: var(--size--6);
-                        height: var(--size--6);
-                      `}`
-                    : size === 9
+                    border-radius: var(--border-radius--1);
+                    display: block;
+                    object-fit: cover;
+                  `} ${
+                    size === 6
+                      ? css`
+                          width: var(--size--6);
+                          height: var(--size--6);
+                        `
+                      : size === 9
+                        ? css`
+                            width: var(--size--9);
+                            height: var(--size--9);
+                          `
+                        : (() => {
+                            throw new Error();
+                          })()
+                  }"
+                />
+              `
+            : html`
+                <div
+                  style="
+                --color--light: var(--color--${color}--800);
+                --color--dark: var(--color--${color}--200);
+                --background-color--light: var(--color--${color}--200);
+                --background-color--dark: var(--color--${color}--800);
+                --border-color--light: var(--color--${color}--300);
+                --border-color--dark: var(--color--${color}--900);
+              "
+                  css="${css`
+                    font-family:
+                      "Roboto Serif Variable", var(--font-family--serif);
+                    line-height: var(--size--0);
+                    font-weight: 900;
+                    color: light-dark(var(--color--light), var(--color--dark));
+                    background-color: light-dark(
+                      var(--background-color--light),
+                      var(--background-color--dark)
+                    );
+                    border: var(--border-width--1) solid
+                      light-dark(
+                        var(--border-color--light),
+                        var(--border-color--dark)
+                      );
+                    border-radius: var(--border-radius--1);
+                    overflow: hidden;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  `} ${
+                    size === 6
                       ? `${
                           typeof user === "object"
                             ? css`
-                                font-size: var(--font-size--3-5);
+                                font-size: var(--font-size--2-5);
                               `
                             : css`
-                                font-size: var(--font-size--6);
+                                font-size: var(--font-size--4);
                               `
                         } ${css`
-                          width: var(--size--9);
-                          height: var(--size--9);
+                          width: var(--size--6);
+                          height: var(--size--6);
                         `}`
-                      : (() => {
-                          throw new Error();
-                        })()
-                }"
-              >
-                $${
-                  typeof user === "object"
-                    ? (() => {
-                        const nameParts = [
-                          ...user.name.matchAll(
-                            /[\p{Letter}\p{Number}\p{Private_Use}]+/gu,
-                          ),
-                        ];
-                        return html`${
-                          nameParts.length === 0
-                            ? (() => {
-                                throw new Error();
-                              })()
-                            : nameParts.length === 1
-                              ? [
-                                  ...new Intl.Segmenter("en-US").segment(
-                                    nameParts[0][0],
-                                  ),
-                                ][0].segment
-                              : [
-                                  ...new Intl.Segmenter("en-US").segment(
-                                    nameParts.at(0)![0],
-                                  ),
-                                ][0].segment +
-                                [
-                                  ...new Intl.Segmenter("en-US").segment(
-                                    nameParts.at(-1)![0],
-                                  ),
-                                ][0].segment
-                        }`;
-                      })()
-                    : user === "courseParticipationDeleted"
-                      ? html`<i class="bi bi-person-x"></i>`
-                      : user === "anonymous"
-                        ? html`<i class="bi bi-person"></i>`
+                      : size === 9
+                        ? `${
+                            typeof user === "object"
+                              ? css`
+                                  font-size: var(--font-size--3-5);
+                                `
+                              : css`
+                                  font-size: var(--font-size--6);
+                                `
+                          } ${css`
+                            width: var(--size--9);
+                            height: var(--size--9);
+                          `}`
                         : (() => {
                             throw new Error();
                           })()
-                }
-              </div>
-            `
-      }
-      $${
-        onlineIndicator && typeof user === "object"
-          ? html`
-              <div
-                css="${css`
-                  font-size: var(--size--1-5);
-                  line-height: var(--size--0);
-                  color: light-dark(
-                    var(--color--green--500),
-                    var(--color--green--500)
-                  );
-                  justify-self: end;
-                  align-self: end;
-                  translate: 40% 40%;
-                  transition-property: var(--transition-property--opacity);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--ease-in-out
-                  );
-                `} ${
-                  application.database.get(
-                    sql`
+                  }"
+                >
+                  $${
+                    typeof user === "object"
+                      ? (() => {
+                          const nameParts = [
+                            ...user.name.matchAll(
+                              /[\p{Letter}\p{Number}\p{Private_Use}]+/gu,
+                            ),
+                          ];
+                          return html`${
+                            nameParts.length === 0
+                              ? (() => {
+                                  throw new Error();
+                                })()
+                              : nameParts.length === 1
+                                ? [
+                                    ...new Intl.Segmenter("en-US").segment(
+                                      nameParts[0][0],
+                                    ),
+                                  ][0].segment
+                                : [
+                                    ...new Intl.Segmenter("en-US").segment(
+                                      nameParts.at(0)![0],
+                                    ),
+                                  ][0].segment +
+                                  [
+                                    ...new Intl.Segmenter("en-US").segment(
+                                      nameParts.at(-1)![0],
+                                    ),
+                                  ][0].segment
+                          }`;
+                        })()
+                      : user === "courseParticipationDeleted"
+                        ? html`<i class="bi bi-person-x"></i>`
+                        : user === "anonymous"
+                          ? html`<i class="bi bi-person"></i>`
+                          : user === "courseAI"
+                            ? html`<i class="bi bi-stars"></i>`
+                            : (() => {
+                                throw new Error();
+                              })()
+                  }
+                </div>
+              `
+        }
+        $${
+          onlineIndicator && typeof user === "object"
+            ? html`
+                <div
+                  css="${css`
+                    font-size: var(--size--1-5);
+                    line-height: var(--size--0);
+                    color: light-dark(
+                      var(--color--green--500),
+                      var(--color--green--500)
+                    );
+                    justify-self: end;
+                    align-self: end;
+                    translate: 40% 40%;
+                    transition-property: var(--transition-property--opacity);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
+                  `} ${
+                    application.database.get(
+                      sql`
                       select true
                       from "userSessions"
                       where
                         "user" = ${user.id} and
                         ${Temporal.Now.instant().subtract({ minutes: 6 }).toString()} < "lastUsedAt";
                     `,
-                  ) === undefined
-                    ? css`
-                        opacity: var(--opacity--0);
-                      `
-                    : css``
-                }"
-              >
-                <i class="bi bi-circle-fill"></i>
-              </div>
-            `
-          : html``
-      }
-    </div>
-  `;
+                    ) === undefined
+                      ? css`
+                          opacity: var(--opacity--0);
+                        `
+                      : css``
+                  }"
+                >
+                  <i class="bi bi-circle-fill"></i>
+                </div>
+              `
+            : html``
+        }
+      </div>
+    `;
+  };
 
   application.webServer?.push({
     method: "PATCH",

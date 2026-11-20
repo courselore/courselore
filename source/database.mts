@@ -8330,7 +8330,6 @@ export default async (application: Application): Promise<void> => {
         alter table "courseParticipations" add column "mostRecentlyVisitedMode" text null;
         update "courseParticipations" set "mostRecentlyVisitedMode" = 'courseForum';
         alter table "courseParticipations" alter column "mostRecentlyVisitedMode" set not null;
-        alter table "courseParticipations" add column "mostRecentlyVisitedCourseAIChat" integer null;
       `,
 
       sql`
@@ -8654,14 +8653,11 @@ export default async (application: Application): Promise<void> => {
               courseAIChatMessageData,
             ] of courseAIChatData.courseAIChatMessages.entries()) {
               const contentTextContent =
-                await application.partials.courseForumConversationMessageContentProcessor(
-                  {
-                    course,
-                    courseForumConversationMessageContent:
-                      courseAIChatMessageData.content,
-                    mode: "textContent",
-                  },
-                );
+                await application.partials.courseAIChatMessageContentProcessor({
+                  coursePublicId: course.publicId,
+                  content: courseAIChatMessageData.content,
+                  mode: "textContent",
+                });
               const contentSemanticSearch = await (
                 await fetch("http://localhost:19000/vector-embedding", {
                   method: "POST",

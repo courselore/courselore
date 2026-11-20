@@ -1029,7 +1029,26 @@ export default async (application: Application): Promise<void> => {
           })()}
         </div>
       `,
-      body,
+      body: html`
+        <div
+          class="scroll"
+          css="${css`
+            height: 100%;
+          `}"
+        >
+          <div
+            css="${css`
+              max-width: var(--size--168);
+              padding: var(--size--2) var(--size--4);
+              @media (max-width: 899px) {
+                margin: var(--size--0) auto;
+              }
+            `}"
+          >
+            $${body}
+          </div>
+        </div>
+      `,
     });
   };
 

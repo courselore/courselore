@@ -1355,23 +1355,12 @@ export default async (application: Application): Promise<void> => {
             ></div>
           </div>
           <div
-            key="main--main ${request.URL.pathname}"
-            class="scroll"
+            key="main--main ${request.URL.pathname}${request.URL.search}"
             css="${css`
               flex: 1;
             `}"
           >
-            <div
-              css="${css`
-                max-width: var(--size--168);
-                padding: var(--size--2) var(--size--4);
-                @media (max-width: 899px) {
-                  margin: var(--size--0) auto;
-                }
-              `}"
-            >
-              $${body}
-            </div>
+            $${body}
           </div>
         </div>
       `,

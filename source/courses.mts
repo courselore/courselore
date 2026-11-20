@@ -627,7 +627,7 @@ export default async (application: Application): Promise<void> => {
     handler: async (
       request: serverTypes.Request<
         {},
-        {},
+        { section: string },
         {},
         {},
         Application["types"]["states"]["Course"]
@@ -3135,7 +3135,13 @@ export default async (application: Application): Promise<void> => {
                           </div>
                         </div>
                       </details>
-                      <details>
+                      <details
+                        $${
+                          request.search.section === "courseAISources"
+                            ? html`open`
+                            : html``
+                        }
+                      >
                         <summary
                           class="button button--rectangle button--transparent"
                           css="${css`
@@ -3646,7 +3652,14 @@ export default async (application: Application): Promise<void> => {
                                       </div>
                                     </div>
                                   </details>
-                                  <details>
+                                  <details
+                                    $${
+                                      request.search.section ===
+                                      "courseAISources"
+                                        ? html`open`
+                                        : html``
+                                    }
+                                  >
                                     <summary
                                       class="button button--rectangle button--transparent"
                                       css="${css`
